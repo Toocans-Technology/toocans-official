@@ -1,18 +1,17 @@
-import React from "react";
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import Stack from '@mui/material/Stack';
-import { Theme } from '@mui/material/styles';
-import Toolbar from '@mui/material/Toolbar';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { styled } from '@mui/material/styles';
 import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
-import Navigations from "./Navigations";
-import MobileSidebar from "./MobileSidebar";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import { styled, Theme } from "@mui/material/styles";
+import Toolbar from "@mui/material/Toolbar";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { IconMenu2 } from "@tabler/icons-react";
+import React from "react";
+import MobileSidebar from "./MobileSidebar";
+import Navigations from "./Navigations";
 
 const LpHeader = () => {
   const AppBarStyled = styled(AppBar)(({ theme }) => ({

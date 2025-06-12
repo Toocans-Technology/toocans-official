@@ -1,12 +1,11 @@
-import React from "react";
 import { Providers } from "@/store/providers";
+import React from "react";
 import MyApp from "./app";
 import "./global.css";
 
-
 export const metadata = {
-  title: "Modernize Main Demo",
-  description: "Modernize Main kit",
+  title: "Toocans",
+  description: "Toocans",
 };
 
 export default function RootLayout({

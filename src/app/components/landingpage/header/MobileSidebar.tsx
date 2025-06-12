@@ -1,72 +1,97 @@
-import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Collapse from '@mui/material/Collapse';
-import Stack from '@mui/material/Stack';
-import { IconChevronDown } from '@tabler/icons-react';
-import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo"
-import DemosDD from './DemosDD';
-import AppLinks from '@/app/(DashboardLayout)/layout/vertical/header/AppLinks';
-import QuickLinks from '@/app/(DashboardLayout)/layout/vertical/header/QuickLinks';
+import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
+import AuthButton from "@/app/components/forms/theme-elements/AuthButton";
+import { useUserProfileStore } from "@/store/userProfileStore";
+import Cookies from "js-cookie";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import { useRouter } from "next/navigation";
 
 const MobileSidebar = () => {
-    const [toggle, setToggle] = useState(false)
-    const [toggle2, setToggle2] = useState(false)
+  const { userProfile, clearUserProfile } = useUserProfileStore();
+  const router = useRouter();
 
-    return (
-        <>
-            <Box px={3}>
-                <Logo />
-            </Box>
-            <Box p={3}>
+  const handleLogout = async () => {
+    const accessToken = localStorage.getItem("access_token");
 
-                <Stack direction="column" spacing={2} >
-                    <Button color="inherit"
-                        onClick={() => setToggle(!toggle)}
-                        endIcon={<IconChevronDown width={20} />}
-                        sx={{
-                            justifyContent: 'space-between'
-                        }}>
+    try {
+      if (accessToken) {
+        const response = await fetch("https://dev-api.bdy.tech/auth/logout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        if (!response.ok) {
+          console.error(
+            "Logout API call failed:",
+            response.status,
+            await response.text()
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error during logout API call:", error);
+    } finally {
+      // Clear Zustand store
+      clearUserProfile();
+      
+      // Clear localStorage
+      localStorage.clear();
+      
+      // Clear cookies
+      Cookies.remove('auth-token', { path: '/' });
+      Cookies.remove('auth-token', { path: '/overview' });
+      
+      // Redirect to login
+      router.push("/auth/login");
+    }
+  };
 
-                        Demos
-                    </Button>
-                    {toggle && (
-                        <Collapse in={toggle}>
-                            <Box m="-21px">
-                                <Box ml={1}>
-                                    <DemosDD />
-                                </Box>
-                            </Box>
-                        </Collapse>
-                    )}
-
-                    <Button color="inherit"
-                        onClick={() => setToggle2(!toggle2)}
-                        endIcon={<IconChevronDown width={20} />}
-                        sx={{
-                            justifyContent: 'space-between'
-                        }}>Pages</Button>
-                    {toggle2 && (
-                        <Collapse in={toggle2}>
-                            <Box overflow="hidden" ml={1}>
-                                <AppLinks />
-                                <QuickLinks />
-                            </Box>
-                        </Collapse>
-                    )}
-                    <Button color="inherit" href="#" sx={{
-                        justifyContent: 'start'
-                    }}>Documentation</Button>
-                    <Button color="inherit" href="https://adminmart.com/support" sx={{
-                        justifyContent: 'start'
-                    }}>Support</Button>
-                    <Button color="primary" variant="contained" href="/auth/auth1/login">Login</Button>
-                </Stack>
-            </Box>
-        </>
-
-
-    );
+  return (
+    <>
+      <Box px={3}>
+        <Logo />
+      </Box>
+      <Box p={3}>
+        <Stack direction="column" spacing={2}>
+          {userProfile ? (
+            <>
+              <Button color="inherit" href="/deposit">
+                Deposit
+              </Button>
+              {/* <Button
+                color="primary"
+                variant="contained"
+                onClick={handleLogout}
+              >
+                Login out
+              </Button> */}
+              <AuthButton
+                buttonType="signup"
+                href="/auth/login"
+                fullWidth={false}
+              >
+                {" "}
+                {/* Assuming signup also goes to login page for now */}
+                Login out
+              </AuthButton>
+            </>
+          ) : (
+            <>
+              <Button color="inherit" href="/auth/login">
+                Login
+              </Button>
+              <Button color="primary" variant="contained" href="/auth/login">
+                Sign Up
+              </Button>
+            </>
+          )}
+        </Stack>
+      </Box>
+    </>
+  );
 };
 
 export default MobileSidebar;

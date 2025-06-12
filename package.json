@@ -6,7 +6,8 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "test": "jest"
     },
     "dependencies": {
         "@casl/ability": "^6.3.3",
@@ -20,6 +21,7 @@
         "@mui/material": "^5.15.15",
         "@mui/material-nextjs": "^5.15.11",
         "@mui/styled-engine-sc": "^6.0.0-alpha.1",
+        "@mui/system": "^7.1.1",
         "@mui/x-date-pickers": "^5.0.15",
         "@mui/x-tree-view": "^6.17.0",
         "@reduxjs/toolkit": "^1.9.7",
@@ -30,11 +32,13 @@
         "axios-mock-adapter": "^1.22.0",
         "chance": "^1.1.11",
         "date-fns": "^2.30.0",
+        "dayjs": "^1.11.13",
         "emoji-picker-react": "^4.5.2",
         "formik": "^2.4.5",
         "formik-mui": "^5.0.0-alpha.0",
         "framer-motion": "^10.16.4",
         "i18next": "^23.5.1",
+        "js-cookie": "^3.0.5",
         "lodash": "^4.17.21",
         "moment": "^2.29.4",
         "next": "14.2.0",
@@ -56,10 +60,17 @@
         "styled-components": "^6.0.8",
         "stylis-plugin-rtl": "^2.1.1",
         "typescript": "^5.2.2",
-        "yup": "^0.32.11"
+        "yup": "^0.32.11",
+        "zustand": "^5.0.5"
     },
     "devDependencies": {
+        "@testing-library/dom": "^10.4.0",
+        "@testing-library/jest-dom": "^6.6.3",
+        "@testing-library/react": "^16.3.0",
+        "@testing-library/user-event": "^14.6.1",
         "@types/chance": "^1.1.4",
+        "@types/jest": "^29.5.14",
+        "@types/js-cookie": "^3.0.6",
         "@types/lodash": "^4.14.199",
         "@types/node": "^20.8.4",
         "@types/react": "^18.2.28",
@@ -67,6 +78,9 @@
         "@types/react-helmet": "^6.1.7",
         "@types/react-slick": "^0.23.10",
         "eslint": "latest",
-        "eslint-config-next": "latest"
+        "eslint-config-next": "latest",
+        "jest": "^29.7.0",
+        "jest-environment-jsdom": "^30.0.0",
+        "ts-jest": "^29.3.4"
     }
 }

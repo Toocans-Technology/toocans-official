@@ -113,8 +113,8 @@ const AuthTwoSteps = ({ countdown, setCountdown }: { countdown: number, setCount
                 <CustomTextField
                   inputRef={inputRefs[index]}
                   value={value}
-                  onChange={(e) => handleChange(index, e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(index, e)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(index, e.target.value)}
+                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(index, e)}
                   variant="outlined"
                   fullWidth
                   inputProps={{

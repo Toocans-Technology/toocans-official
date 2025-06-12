@@ -31,13 +31,7 @@ import {
   InputAdornment
 } from '@mui/material';
 
-interface WithdrawalRecord {
-  token: string;
-  amount: string;
-  address: string;
-  state: string;
-  time: string;
-}
+import { WithdrawalRecord } from './types';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -124,35 +118,47 @@ export default function Withdrawal() {
   // Withdrawal data
   const usdtDeposits: WithdrawalRecord[] = [
     {
+      id: '1',
       token: 'USDT',
-      amount: '+ 102.12',
+      amount: 102.12,
+      currency: 'USDT',
       address: '0x59dC29b1e0cf3463a4Db4A1d6769505d4c61D1c2',
-      state: 'Completed',
-      time: '2021-05-21 13:20:00'
+      state: 'completed',
+      time: '2021-05-21 13:20:00',
+      timestamp: '2021-05-21T13:20:00Z'
     },
     {
+      id: '2',
       token: 'USDT',
-      amount: '+ 200',
+      amount: 200,
+      currency: 'USDT',
       address: '0x59dC29b1e0cf3463a4Db4A1d6769505d4c61D1c2',
-      state: 'Completed',
-      time: '2021-05-21 13:20:00'
+      state: 'completed',
+      time: '2021-05-21 13:20:00',
+      timestamp: '2021-05-21T13:20:00Z'
     }
   ];
 
   const recentWithdrawals: WithdrawalRecord[] = [
     {
+      id: '3',
       token: 'BTC',
-      amount: '+ 0.0023',
-      address:"0x59dC29b1e0cf3463a4Db4A1d6769505d4c61D1c2",
-      state: 'Completed',
-      time: '2021-05-21 13:20:00'
+      amount: 0.0023,
+      currency: 'BTC',
+      address: '0x59dC29b1e0cf3463a4Db4A1d6769505d4c61D1c2',
+      state: 'completed',
+      time: '2021-05-21 13:20:00',
+      timestamp: '2021-05-21T13:20:00Z'
     },
     {
+      id: '4',
       token: 'ETH',
-      amount: '+ 1.5',
-      address:"0x59dC29b1e0cf3463a4Db4A1d6769505d4c61D1c2",
-      state: 'Completed',
-      time: '2021-05-21 13:20:00'
+      amount: 1.5,
+      currency: 'ETH',
+      address: '0x59dC29b1e0cf3463a4Db4A1d6769505d4c61D1c2',
+      state: 'completed',
+      time: '2021-05-21 13:20:00',
+      timestamp: '2021-05-21T13:20:00Z'
     }
   ];
 

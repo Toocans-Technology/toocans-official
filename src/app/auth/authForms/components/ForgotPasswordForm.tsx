@@ -6,6 +6,7 @@ import EmailInput from './EmailInput';
 import PhoneInput from './PhoneInput';
 import { Country } from '../types/auth';
 import AuthButton from '@/app/components/forms/theme-elements/AuthButton';
+import { useFormik } from 'formik';
 
 interface ForgotPasswordFormProps {
   loginType: 'email' | 'phone';
@@ -22,6 +23,7 @@ interface ForgotPasswordFormProps {
 }
 
 const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
+
   loginType,
   setLoginType,
   countryCodes,
@@ -34,17 +36,34 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
   handlePopoverClose,
   handleNext
 }) => {
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      phoneNumber: ''
+    },
+    onSubmit: (values) => {
+      handleNext();
+    },
+  });
+
   return (
     <Box>
       <Box>
         <EmailPhoneToggle loginType={loginType} setLoginType={setLoginType} />
         {loginType === 'email' ? (
-          <EmailInput />
+          <EmailInput
+            {...formik.getFieldProps('email')}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email ? String(formik.errors.email) : undefined}
+          />
         ) : (
           <PhoneInput
+            {...formik.getFieldProps('phoneNumber')}
             countryCodes={countryCodes}
             selectedCountry={selectedCountry}
             setSelectedCountry={setSelectedCountry}
+            error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+            helperText={formik.touched.phoneNumber && formik.errors.phoneNumber ? String(formik.errors.phoneNumber) : undefined}
           />
         )}
       </Box>
@@ -117,7 +136,10 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
         </Popover>
       </Stack>
       <Box mb={1}>
-        <AuthButton onClick={handleNext}>
+        <AuthButton onClick={(e) => {
+          e.preventDefault();
+          formik.handleSubmit();
+        }}>
           Next
         </AuthButton>
       </Box>

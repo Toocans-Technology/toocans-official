@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography, Button, Tabs, Tab } from '@mui/material';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import TabPanel from '@/app/deposit/components/TabPanel';
-import { WithdrawalRecord } from '@/app/deposit/types';
+import { WithdrawalRecord } from '../types';
 
 interface WithdrawalTabsProps {
   selectedTab: number;

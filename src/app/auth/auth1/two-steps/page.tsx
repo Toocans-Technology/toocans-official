@@ -4,8 +4,11 @@ import PageContainer from '@/app/components/container/PageContainer';
 import Logo from '@/app/(DashboardLayout)/layout/shared/logo/Logo';
 import AuthTwoSteps from '../../authForms/AuthTwoSteps';
 import Image from 'next/image';
+import { useState } from 'react';
 
 export default function TwoSteps() {
+  const [countdown, setCountdown] = useState(0);
+
   return(
   <PageContainer title="Two steps Page" description="this is Sample page">
     <Grid container spacing={0} justifyContent="center" sx={{ overflowX: 'hidden' }}>
@@ -77,7 +80,7 @@ export default function TwoSteps() {
           <Typography variant="subtitle1" fontWeight="700" mb={1}>
             ******1234
           </Typography>
-          <AuthTwoSteps />
+          <AuthTwoSteps countdown={countdown} setCountdown={setCountdown} />
         </Box>
       </Grid>
     </Grid>

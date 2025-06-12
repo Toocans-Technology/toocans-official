@@ -6,17 +6,26 @@ import CustomFormLabel from "@/app/components/forms/theme-elements/CustomFormLab
 interface VerificationCodeInputProps {
   countdown: number;
   handleSendCode: () => void;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  name?: string; // Optional name prop
 }
 
 const VerificationCodeInput: React.FC<VerificationCodeInputProps> = ({ 
   countdown, 
-  handleSendCode 
+  handleSendCode,
+  value,
+  onChange,
+  name
 }) => {
   return (
     <Box>
       <CustomFormLabel htmlFor="code" color="#222" fontWeight="400">Verification Code</CustomFormLabel>
       <CustomTextField
         id="code"
+        name={name || "verificationCode"} // Use provided name or default
+        value={value}
+        onChange={onChange}
         variant="outlined"
         fullWidth
         InputProps={{

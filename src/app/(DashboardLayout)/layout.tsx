@@ -2,7 +2,8 @@
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { styled, useTheme } from "@mui/material/styles";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Added useEffect
+import { useRouter } from "next/navigation"; // Added useRouter
 import Header from "./layout/vertical/header/Header";
 import Sidebar from "./layout/vertical/sidebar/Sidebar";
 import Customizer from "./layout/shared/customizer/Customizer";
@@ -10,6 +11,7 @@ import Navigation from "./layout/horizontal/navbar/Navigation";
 import HorizontalHeader from "./layout/horizontal/header/Header";
 import { useSelector } from "@/store/hooks";
 import { AppState } from "@/store/store";
+import { useUserProfileStore } from "../../store/userProfileStore"; // Added useUserProfileStore
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -40,6 +42,34 @@ export default function RootLayout({
   const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const customizer = useSelector((state: AppState) => state.customizer);
   const theme = useTheme();
+
+  const { userProfile } = useUserProfileStore();
+  const router = useRouter();
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    const unsub = useUserProfileStore.persist.onRehydrateStorage(() => {
+      setIsHydrated(true);
+    });
+    // Also set if already hydrated (e.g., for subsequent renders)
+    if (useUserProfileStore.persist.hasHydrated()) {
+      setIsHydrated(true);
+    }
+    return () => {
+      unsub(); // Clean up subscription
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isHydrated && !userProfile) {
+      router.push("/auth/login");
+    }
+  }, [userProfile, router, isHydrated]);
+
+  if (!isHydrated || (isHydrated && !userProfile)) {
+    // You can replace this with a loading spinner component
+    return null;
+  }
 
   return (
     <MainWrapper>

@@ -8,17 +8,26 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 interface PasswordInputProps {
   showPassword: boolean;
   setShowPassword: (show: boolean) => void;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  name?: string; // Optional name prop
 }
 
 const PasswordInput: React.FC<PasswordInputProps> = ({ 
   showPassword, 
-  setShowPassword 
+  setShowPassword,
+  value,
+  onChange,
+  name
 }) => {
   return (
     <Box>
       <CustomFormLabel htmlFor="password" color="#222" fontWeight="400">Password</CustomFormLabel>
       <CustomTextField
         id="password"
+        name={name || "password"} // Use provided name or default
+        value={value}
+        onChange={onChange}
         type={showPassword ? 'text' : 'password'}
         variant="outlined"
         fullWidth
