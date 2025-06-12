@@ -323,7 +323,7 @@ export default function Home() {
                   textAlign: { xs: "center", md: "left" },
                   fontWeight: 900,
                   background:
-                    "linear-gradient(90deg, #00f, #0ff, #00f) -100%/ 200%",
+                    "linear-gradient(90deg, #ffffff, #9CFF1F, #ffffff) -100%/ 200%",
                   backgroundClip: "text",
                   WebkitBackgroundClip: "text",
                   color: "transparent",
