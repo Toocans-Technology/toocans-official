@@ -1,17 +1,17 @@
 "use client";
+import { useSelector } from "@/store/hooks";
+import { AppState } from "@/store/store";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { styled, useTheme } from "@mui/material/styles";
-import React, { useState, useEffect } from "react"; // Added useEffect
 import { useRouter } from "next/navigation"; // Added useRouter
+import React, { useEffect, useState } from "react"; // Added useEffect
+import { useUserProfileStore } from "../../store/userProfileStore"; // Added useUserProfileStore
+import HorizontalHeader from "./layout/horizontal/header/Header";
+import Navigation from "./layout/horizontal/navbar/Navigation";
+import Customizer from "./layout/shared/customizer/Customizer";
 import Header from "./layout/vertical/header/Header";
 import Sidebar from "./layout/vertical/sidebar/Sidebar";
-import Customizer from "./layout/shared/customizer/Customizer";
-import Navigation from "./layout/horizontal/navbar/Navigation";
-import HorizontalHeader from "./layout/horizontal/header/Header";
-import { useSelector } from "@/store/hooks";
-import { AppState } from "@/store/store";
-import { useUserProfileStore } from "../../store/userProfileStore"; // Added useUserProfileStore
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -48,15 +48,21 @@ export default function RootLayout({
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    const unsub = useUserProfileStore.persist.onRehydrateStorage(() => {
-      setIsHydrated(true);
-    });
-    // Also set if already hydrated (e.g., for subsequent renders)
+    // Check initial hydration state
     if (useUserProfileStore.persist.hasHydrated()) {
       setIsHydrated(true);
     }
+
+    // Set up an interval to check until hydrated
+    const checkHydration = setInterval(() => {
+      if (useUserProfileStore.persist.hasHydrated()) {
+        setIsHydrated(true);
+        clearInterval(checkHydration);
+      }
+    }, 100);
+
     return () => {
-      unsub(); // Clean up subscription
+      clearInterval(checkHydration);
     };
   }, []);
 
@@ -73,7 +79,7 @@ export default function RootLayout({
 
   return (
     <MainWrapper>
-      <title>Modernize NextJs 14.0.3</title>
+      <title>Toocans</title>
       {/* ------------------------------------------- */}
       {/* Sidebar */}
       {/* ------------------------------------------- */}

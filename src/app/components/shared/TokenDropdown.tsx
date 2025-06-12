@@ -70,7 +70,7 @@ const TokenDropdown: React.FC<TokenDropdownProps> = ({
       renderOption={(props, option) => {
         const selectedOption = options.find((opt) => opt.symbol === option);
         return (
-          <li key={option} {...props}>
+          <li {...props}>
             <Box
               sx={{
                 display: "flex",

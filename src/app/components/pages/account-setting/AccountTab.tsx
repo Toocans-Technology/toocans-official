@@ -1,70 +1,70 @@
-import React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import CardContent from '@mui/material/CardContent';
-import Grid from '@mui/material/Grid';
-import MenuItem from '@mui/material/MenuItem';
-import Typography from '@mui/material/Typography';
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import CardContent from "@mui/material/CardContent";
+import Grid from "@mui/material/Grid";
+import MenuItem from "@mui/material/MenuItem";
+import Typography from "@mui/material/Typography";
+import React from "react";
 
 // components
-import BlankCard from '../../shared/BlankCard';
-import CustomTextField from '../../forms/theme-elements/CustomTextField';
-import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
-import CustomSelect from '../../forms/theme-elements/CustomSelect';
+import CustomFormLabel from "../../forms/theme-elements/CustomFormLabel";
+import CustomSelect from "../../forms/theme-elements/CustomSelect";
+import CustomTextField from "../../forms/theme-elements/CustomTextField";
+import BlankCard from "../../shared/BlankCard";
 
 // images
-import { Stack } from '@mui/system';
+import { Stack } from "@mui/system";
 
 // locations
 const locations = [
   {
-    value: 'us',
-    label: 'United States',
+    value: "us",
+    label: "United States",
   },
   {
-    value: 'uk',
-    label: 'United Kingdom',
+    value: "uk",
+    label: "United Kingdom",
   },
   {
-    value: 'india',
-    label: 'India',
+    value: "india",
+    label: "India",
   },
   {
-    value: 'russia',
-    label: 'Russia',
+    value: "russia",
+    label: "Russia",
   },
 ];
 
 // currency
 const currencies = [
   {
-    value: 'us',
-    label: 'US Dollar ($)',
+    value: "us",
+    label: "US Dollar ($)",
   },
   {
-    value: 'uk',
-    label: 'United Kingdom (Pound)',
+    value: "uk",
+    label: "United Kingdom (Pound)",
   },
   {
-    value: 'india',
-    label: 'India (INR)',
+    value: "india",
+    label: "India (INR)",
   },
   {
-    value: 'russia',
-    label: 'Russia (Ruble)',
+    value: "russia",
+    label: "Russia (Ruble)",
   },
 ];
 
 const AccountTab = () => {
-  const [location, setLocation] = React.useState('india');
+  const [location, setLocation] = React.useState("india");
 
   const handleChange1 = (event: any) => {
     setLocation(event.target.value);
   };
 
   //   currency
-  const [currency, setCurrency] = React.useState('india');
+  const [currency, setCurrency] = React.useState("india");
 
   const handleChange2 = (event: any) => {
     setCurrency(event.target.value);
@@ -79,15 +79,22 @@ const AccountTab = () => {
             <Typography variant="h5" mb={1}>
               Change Profile
             </Typography>
-            <Typography color="textSecondary" mb={3}>Change your profile picture from here</Typography>
+            <Typography color="textSecondary" mb={3}>
+              Change your profile picture from here
+            </Typography>
             <Box textAlign="center" display="flex" justifyContent="center">
               <Box>
                 <Avatar
                   src={"/images/profile/user-1.jpg"}
                   alt={"user1"}
-                  sx={{ width: 120, height: 120, margin: '0 auto' }}
+                  sx={{ width: 120, height: 120, margin: "0 auto" }}
                 />
-                <Stack direction="row" justifyContent="center" spacing={2} my={3}>
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  spacing={2}
+                  my={3}
+                >
                   <Button variant="contained" color="primary" component="label">
                     Upload
                     <input hidden accept="image/*" multiple type="file" />
@@ -111,7 +118,9 @@ const AccountTab = () => {
             <Typography variant="h5" mb={1}>
               Change Password
             </Typography>
-            <Typography color="textSecondary" mb={3}>To change your password please confirm here</Typography>
+            <Typography color="textSecondary" mb={3}>
+              To change your password please confirm here
+            </Typography>
             <form>
               <CustomFormLabel
                 sx={{
@@ -129,7 +138,9 @@ const AccountTab = () => {
                 type="password"
               />
               {/* 2 */}
-              <CustomFormLabel htmlFor="text-npwd">New Password</CustomFormLabel>
+              <CustomFormLabel htmlFor="text-npwd">
+                New Password
+              </CustomFormLabel>
               <CustomTextField
                 id="text-npwd"
                 value="MathewAnderson"
@@ -138,7 +149,9 @@ const AccountTab = () => {
                 type="password"
               />
               {/* 3 */}
-              <CustomFormLabel htmlFor="text-conpwd">Confirm Password</CustomFormLabel>
+              <CustomFormLabel htmlFor="text-conpwd">
+                Confirm Password
+              </CustomFormLabel>
               <CustomTextField
                 id="text-conpwd"
                 value="MathewAnderson"
@@ -157,7 +170,9 @@ const AccountTab = () => {
             <Typography variant="h5" mb={1}>
               Personal Details
             </Typography>
-            <Typography color="textSecondary" mb={3}>To change your personal detail , edit and save from here</Typography>
+            <Typography color="textSecondary" mb={3}>
+              To change your personal detail , edit and save from here
+            </Typography>
             <form>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={6}>
@@ -253,7 +268,7 @@ const AccountTab = () => {
                   </CustomFormLabel>
                   <CustomTextField
                     id="text-email"
-                    value="info@modernize.com"
+                    value="info@Toocans.com"
                     variant="outlined"
                     fullWidth
                   />
@@ -296,7 +311,12 @@ const AccountTab = () => {
             </form>
           </CardContent>
         </BlankCard>
-        <Stack direction="row" spacing={2} sx={{ justifyContent: 'end' }} mt={3}>
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{ justifyContent: "end" }}
+          mt={3}
+        >
           <Button size="large" variant="contained" color="primary">
             Save
           </Button>

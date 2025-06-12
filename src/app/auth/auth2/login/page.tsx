@@ -61,7 +61,7 @@ export default function Login2() {
                       variant="h6"
                       fontWeight="500"
                     >
-                      New to Modernize?
+                      New to Toocans?
                     </Typography>
                     <Typography
                       component={Link}
