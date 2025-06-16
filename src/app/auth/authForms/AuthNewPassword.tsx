@@ -38,11 +38,16 @@ import React, { useState } from 'react';
 import {
   Box,
   Typography,
-  Stack
+  Stack,
+  Alert
 } from "@mui/material";
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation'; // No longer needed
 import NewPasswordForm from './components/NewPasswordForm';
 
+interface NotificationState {
+  type: "success" | "error";
+  message: string;
+}
 
 interface AuthNewPasswordProps {
   title?: string;
@@ -51,18 +56,20 @@ interface AuthNewPasswordProps {
 }
 
 const AuthNewPassword = ({ title, subtitle, subtext }: AuthNewPasswordProps) => {
-  const router = useRouter();
-
-  const handleNext = () => {
-    console.log('Password set successfully');
-    router.push('/auth/reset-password');
-  };
-  
-
-
+  const [notification, setNotification] = useState<NotificationState | null>(null);
 
   return (
     <>
+      {notification && (
+        <Alert
+          severity={notification.type}
+          sx={{ mb: 2 }}
+          onClose={() => setNotification(null)}
+        >
+          {notification.message}
+        </Alert>
+      )}
+      
       {title ? (
         <Typography fontWeight="500" variant="h3" mb={2} color="#000">
           {title}
@@ -76,7 +83,7 @@ const AuthNewPassword = ({ title, subtitle, subtext }: AuthNewPasswordProps) => 
         borderRadius: '16px',
         padding: '20px'
       }}>
-        <NewPasswordForm onSubmit={handleNext} />
+        <NewPasswordForm setNotification={setNotification} />
       </Box>
       {subtitle}
     </>

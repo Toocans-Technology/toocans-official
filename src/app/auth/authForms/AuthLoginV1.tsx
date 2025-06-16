@@ -1,9 +1,5 @@
 import { loginType } from "@/app/(DashboardLayout)/types/auth/auth";
-import {
-  EmailLoginRequest,
-  PasswordLoginRequest,
-  SmsLoginRequest,
-} from "@/app/api/auth/login/types";
+import { PasswordLoginRequest } from "@/app/api/auth/login/types";
 import { Response as UserProfileResponse } from "@/app/api/user/types"; // Import user profile types
 import CustomCheckbox from "@/app/components/forms/theme-elements/CustomCheckbox";
 import CustomFormLabel from "@/app/components/forms/theme-elements/CustomFormLabel";
@@ -28,16 +24,18 @@ import Alert, { AlertColor } from "@mui/material/Alert"; // Added Alert import
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
 import Cookies from "js-cookie";
+import { isValidPhoneNumber } from "libphonenumber-js/max";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
-import EmailInput from "./components/EmailInput";
-import PhoneInput from "./components/PhoneInput";
 import {
-  PhoneVerificationRequest,
-  PhoneVerificationResponse,
-} from "./types/auth";
+  sendEmailVerificationCode,
+  sendPhoneVerificationCode,
+  verifyLoginWithCode,
+} from "../utils/verificationCodeUtils";
+import EmailInput from "./components/EmailInput";
+import PhoneInput from "./components/PhoneInputV1";
 
 interface Country {
   countryEnName?: string;
@@ -56,6 +54,47 @@ interface Response {
   msg?: string;
 }
 
+// export const validationSchema = Yup.object().shape({
+//   email: Yup.string().when("loginType", {
+//     is: "email",
+//     then: (schema) =>
+//       schema.email("Invalid email address").required("Email is required"),
+//     otherwise: (schema) => schema.notRequired(),
+//   }),
+//   phoneNumber: Yup.string().when("loginType", {
+//     is: "phone",
+//     then: (schema) =>
+//       schema
+//         .matches(/^[0-9+]+$/, "Phone number must contain only digits and '+'")
+//         .min(5, "Phone number is too short")
+//         .max(20, "Phone number is too long")
+//         .required("Phone number is required")
+//         .test(
+//           "is-valid-phone",
+//           "The phone number is not valid. Please include country code (e.g., +1 for US)",
+//           function (value) {
+//             if (!value) {
+//               return true; // Should be caught by .required()
+//             }
+//             // const fullPhoneNum = selectedCountry + values
+
+//             // Ensure the number starts with a '+' and has the country code
+//             if (!value.startsWith("+")) {
+//               return false;
+//             }
+
+//             // Remove any non-digit characters except '+' for validation
+//             const cleanedValue = value.replace(/[^0-9+]/g, "");
+
+//             return /* isValidPhoneNumber (removed, use libphonenumber-js) */(cleanedValue);
+//           }
+//         ),
+//     otherwise: (schema) => schema.notRequired(),
+//   }),
+//   verificationCode: Yup.string().notRequired(), // Add other fields as needed
+//   password: Yup.string().notRequired(), // Add other fields as needed
+// });
+
 export const validationSchema = Yup.object().shape({
   email: Yup.string().when("loginType", {
     is: "email",
@@ -63,20 +102,44 @@ export const validationSchema = Yup.object().shape({
       schema.email("Invalid email address").required("Email is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
+  selectedCountry: Yup.string().when("loginType", {
+    is: "phone",
+    then: (schema) => schema.required("Country code is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
   phoneNumber: Yup.string().when("loginType", {
     is: "phone",
     then: (schema) =>
       schema
-        .matches(/^[0-9]+$/, "Phone number must be digits only")
+        .matches(/^[0-9+]+$/, "Phone number must contain only digits and '+'")
         .min(5, "Phone number is too short")
-        .max(15, "Phone number is too long")
-        .required("Phone number is required"),
-    otherwise: (schema) => schema.notRequired(),
+        .max(20, "Phone number is too long")
+        .required("Phone number is required")
+        // .matches(/^\+?[0-9]+$/, "只能包含数字和加号")
+        .test(
+          "is-valid-phone",
+          "The phone number is not valid",
+          function (value) {
+            if (!value) return false;
+            console.log("is-valid-phone value:", value);
+            console.log("is-valid-phone context:", this.options.context);
+            const countryCodeFromContext = (
+              this.options.context?.selectedCountry || ""
+            ).replace(/^\+/, "");
+            const phone = (value || "").replace(/^\+/, ""); // Ensure phone part doesn't have '+'
+            const fullPhoneNum = `+${countryCodeFromContext}${phone}`;
+            console.log("fullPhoneNum:", fullPhoneNum);
+            console.log(
+              "isValidPhoneNumber(fullPhoneNum):",
+              isValidPhoneNumber(fullPhoneNum)
+            );
+            // 基础验证
+            return isValidPhoneNumber(fullPhoneNum) || false; // Allow all valid phone number types
+          }
+        ),
+    otherwise: (schema) => schema.strip(), // 使用 strip() 而不是 notRequired() 完全移除字段
   }),
-  verificationCode: Yup.string().notRequired(), // Add other fields as needed
-  password: Yup.string().notRequired(), // Add other fields as needed
 });
-
 const StyledArrowDropDown = styled(ArrowDropDownIcon)(`
   color: #666666;
 `);
@@ -105,10 +168,10 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   // const [emailFocused, setEmailFocused] = useState(false); // Will be handled by Formik's touched state
   // const [phoneFocused, setPhoneFocused] = useState(false); // Will be handled by Formik's touched state
   const [loginMode, setLoginMode] = useState<"code" | "password">("code");
-  
+
   // Use a ref to track if we've already applied the email from URL
   const emailAppliedRef = React.useRef(false);
-  
+
   // Extract email from URL parameter
   useEffect(() => {
     if (typeof window !== "undefined" && !emailAppliedRef.current) {
@@ -117,10 +180,10 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
       if (emailParam) {
         // Set login type to email
         setLoginType("email");
-        
+
         // We'll update formik after it's initialized
         emailAppliedRef.current = true;
-        
+
         // Store the email for later use
         window.sessionStorage.setItem("loginEmailParam", emailParam);
       } else {
@@ -132,7 +195,8 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   // const [verificationCode, setVerificationCode] = useState(""); // Will be handled by Formik
   const [codeFocused, setCodeFocused] = useState(false); // Keep for UI interaction if needed, or remove if fully Formik controlled
   const [showPassword, setShowPassword] = useState(false);
-  
+  const [passwordFocused, setPasswordFocused] = useState(false);
+
   const [countryCodes, setCountryCodes] = useState<Country[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
@@ -143,8 +207,11 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   const { setUserProfile } = useUserProfileStore(); // Get the setUserProfile action from Zustand store
 
   // Get email from sessionStorage if available
-  const savedEmail = typeof window !== "undefined" ? window.sessionStorage.getItem("loginEmailParam") || "" : "";
-  
+  const savedEmail =
+    typeof window !== "undefined"
+      ? window.sessionStorage.getItem("loginEmailParam") || ""
+      : "";
+
   const formik = useFormik({
     initialValues: {
       email: savedEmail, // Use email from sessionStorage if available
@@ -152,51 +219,117 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
       verificationCode: "",
       password: "",
       loginType: "email", // Add loginType to initialValues to be used in validationSchema
+      selectedCountry: selectedCountry, // 绑定初始国家码
     },
     validationSchema,
     onSubmit: async (values) => {
+      if (loginMode === "code") {
+        // Use global verification function for code login
+        const success = await verifyLoginWithCode(
+          values.verificationCode,
+          values.loginType as "email" | "phone",
+          {
+            email: values.email,
+            phoneNumber: values.phoneNumber,
+            selectedCountry: selectedCountry,
+          },
+          {
+            setNotification,
+            setIsLoading,
+            onSuccess: async () => {
+              // Fetch user profile after successful login
+              const accessToken = localStorage.getItem("access_token");
+              if (accessToken) {
+                try {
+                  const userProfileResponse = await fetch(
+                    "https://dev-api.bdy.tech/user/info",
+                    {
+                      method: "GET",
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${accessToken}`,
+                      },
+                    }
+                  );
+
+                  if (userProfileResponse.ok) {
+                    const profileData: UserProfileResponse =
+                      await userProfileResponse.json();
+                    if (profileData.code === 200 && profileData.data) {
+                      setUserProfile(profileData.data);
+                      console.log(
+                        "User profile fetched and stored:",
+                        profileData.data
+                      );
+                    } else {
+                      console.error(
+                        "Failed to fetch user profile:",
+                        profileData.msg
+                      );
+                      setNotification({
+                        message: `Failed to fetch user profile: ${
+                          profileData.msg || "Unknown error"
+                        }`,
+                        severity: "warning",
+                      });
+                    }
+                  } else {
+                    const errorData = await userProfileResponse.json();
+                    console.error("Error fetching user profile:", errorData);
+                    setNotification({
+                      message: `Error fetching user profile: ${
+                        errorData.msg || userProfileResponse.statusText
+                      }`,
+                      severity: "warning",
+                    });
+                  }
+                } catch (profileError) {
+                  console.error(
+                    "Network or other error during user profile fetch:",
+                    profileError
+                  );
+                  setNotification({
+                    message:
+                      "An unexpected error occurred while fetching user profile.",
+                    severity: "warning",
+                  });
+                }
+              }
+
+              // Navigate to overview page
+              setTimeout(() => {
+                router.push("/overview");
+              }, 1500);
+            },
+          }
+        );
+
+        // Return early for code login - global function handles everything
+        return;
+      }
+
+      // Handle password login (existing logic)
       setIsLoading(true);
       setApiError(null);
       setNotification(null);
       const clientId = "24b5d2a7f4714409b4cc60bafc1dd2f6";
-      let payload: EmailLoginRequest | SmsLoginRequest | PasswordLoginRequest;
+      let payload: PasswordLoginRequest;
 
       try {
-        if (loginMode === "password") {
-          const commonPasswordPayload = {
-            clientId,
-            grantType: "password" as "password",
-            username: "",
-            password: values.password,
-          };
-          if (values.loginType === "email") {
-            payload = { ...commonPasswordPayload, username: values.email };
-          } else {
-            // phone
-            payload = {
-              ...commonPasswordPayload,
-              username: selectedCountry + values.phoneNumber,
-            };
-          }
+        const commonPasswordPayload = {
+          clientId,
+          grantType: "password" as "password",
+          username: "",
+          password: values.password,
+        };
+        if (values.loginType === "email") {
+          payload = { ...commonPasswordPayload, username: values.email };
         } else {
-          // code
-          if (values.loginType === "email") {
-            payload = {
-              clientId,
-              grantType: "email" as "email",
-              email: values.email,
-              emailCode: values.verificationCode,
-            };
-          } else {
-            // phone
-            payload = {
-              clientId,
-              grantType: "sms" as "sms",
-              nationalCode: selectedCountry,
-              phonenumber: values.phoneNumber,
-              smsCode: values.verificationCode,
-            };
-          }
+          // phone
+          payload = {
+            ...commonPasswordPayload,
+            username: selectedCountry + values.phoneNumber,
+          };
         }
 
         const response = await fetch("https://dev-api.bdy.tech/auth/login", {
@@ -207,6 +340,14 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
 
         if (response.ok) {
           const loginData = await response.json();
+          if (loginData.code === 500) {
+            return setNotification({
+              message:
+                loginData.msg ||
+                "An unexpected error occurred. Please try again.",
+              severity: "error",
+            });
+          }
           const accessToken = loginData.data.access_token;
           localStorage.setItem("access_token", accessToken);
           localStorage.setItem("refresh_token", loginData.data.refresh_token);
@@ -215,7 +356,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
 
           // Set the cookie
           Cookies.set("auth-token", accessToken, {
-            path: "/overview",
+            path: "/",
             expires: 1,
           }); // expires: 1 means 1 day
 
@@ -343,7 +484,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
           const activeCountries = responseData.data.filter(
             (country) => country.status === 1
           );
-          console.log("Active Countries:", activeCountries);
+          // console.log("Active Countries:", activeCountries);
 
           setCountryCodes(activeCountries);
 
@@ -363,88 +504,43 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
 
   // Log state changes
   useEffect(() => {
-    console.log("countryCodes state updated:", countryCodes);
-  }, [countryCodes]);
+    // console.log("countryCodes state updated:", countryCodes);
+    if (formik.values.loginType === "phone") {
+      console.log("select country:", selectedCountry);
+      console.log("formik.values.phoneNumber:", formik.values.phoneNumber);
+      const fullPhoneNum = `+${selectedCountry}${formik.values.phoneNumber}`;
+      console.log("useEffect fullPhoneNum:", fullPhoneNum);
+    }
+  }, [countryCodes, formik.values.phoneNumber]);
 
   useEffect(() => {
     console.log("selectedCountry state updated:", selectedCountry);
   }, [selectedCountry]);
 
   const handleSendEmailCode = async () => {
-    // Now using formik.values.email and formik.errors
     if (countdown === 0) {
-      setNotification(null); // Clear previous notification
-      // Validation is now handled by Formik, but we can still check formik.isValid or specific errors if needed before API call
+      // Validation check
       if (
         formik.values.loginType !== "email" ||
         !formik.values.email ||
         formik.errors.email
       ) {
-        // Optionally, trigger formik validation display if not already shown
         formik.validateField("email");
-        // Notification for general error or rely on field helperText
-        // setNotification({
-        //   message: formik.errors.email || "Please enter a valid email address.",
-        //   severity: "error",
-        // });
-        // setTimeout(() => setNotification(null), 5000);
         return;
       }
 
-      const apiUrl = `https://dev-api.bdy.tech/resource/email/code?email=${formik.values.email}`;
-
-      try {
-        const response = await fetch(apiUrl);
-        const responseData = await response.json(); // Assuming res: { code?, data?, msg? }
-
-        if (response.ok && responseData.code === 0) {
-          console.log("Code sent successfully:", responseData.msg || "Success");
-          setNotification({
-            message: responseData.msg || "Verification code sent successfully!",
-            severity: "success",
-          });
-          setTimeout(() => setNotification(null), 5000);
-          // Start countdown
-          setCountdown(60);
-          const timer = setInterval(() => {
-            setCountdown((prevCount) => {
-              if (prevCount <= 1) {
-                clearInterval(timer);
-                return 0;
-              }
-              return prevCount - 1;
-            });
-          }, 1000);
-        } else {
-          console.error(
-            "Failed to send code:",
-            responseData.msg || `Status: ${response.status}`
-          );
-          setNotification({
-            message: responseData.msg || "Failed to send verification code.",
-            severity: "error",
-          });
-          setTimeout(() => setNotification(null), 5000);
-        }
-      } catch (error) {
-        console.error("Error calling send code API:", error);
-        setNotification({
-          message: "An error occurred. Please try again.",
-          severity: "error",
-        });
-        setTimeout(() => setNotification(null), 5000);
-      }
+      await sendEmailVerificationCode(formik.values.email, {
+        setNotification,
+        setCountdown,
+        countdown,
+      });
     }
   };
 
   const handleSendPhoneCode = async () => {
-    if (countdown > 0) {
-      // Prevent sending if countdown is active
-      return;
-    }
-    setNotification(null); // Clear previous notification
+    if (countdown > 0) return;
 
-    // Now using formik.values.phoneNumber and formik.errors
+    // Validation check
     if (
       formik.values.loginType !== "phone" ||
       !formik.values.phoneNumber ||
@@ -452,70 +548,18 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
       formik.errors.phoneNumber
     ) {
       formik.validateField("phoneNumber");
-      // setNotification({
-      //   message: formik.errors.phoneNumber || "Please enter a valid phone number and select a country code.",
-      //   severity: "error",
-      // });
-      // setTimeout(() => setNotification(null), 5000);
       return;
     }
 
-    const requestPayload: PhoneVerificationRequest = {
-      mobile: formik.values.phoneNumber,
-      nationalCode: selectedCountry,
-    };
-
-    const apiUrl = `https://dev-api.bdy.tech/resource/sms/code?nationalCode=${selectedCountry}&mobile=${formik.values.phoneNumber}`;
-
-    try {
-      const response = await fetch(apiUrl);
-
-      const responseData: PhoneVerificationResponse = await response.json();
-
-      if (response.ok && responseData.code === 0) {
-        console.log(
-          "Phone code sent successfully:",
-          responseData.msg || "Success"
-        );
-        setNotification({
-          message:
-            responseData.msg ||
-            "Verification code sent successfully to your phone!",
-          severity: "success",
-        });
-        setTimeout(() => setNotification(null), 5000);
-        // Start countdown
-        setCountdown(60);
-        const timer = setInterval(() => {
-          setCountdown((prevCount) => {
-            if (prevCount <= 1) {
-              clearInterval(timer);
-              return 0;
-            }
-            return prevCount - 1;
-          });
-        }, 1000);
-      } else {
-        console.error(
-          "Failed to send phone code:",
-          responseData.msg || `Status: ${response.status}`
-        );
-        setNotification({
-          message:
-            responseData.msg || "Failed to send phone verification code.",
-          severity: "error",
-        });
-        setTimeout(() => setNotification(null), 5000);
+    await sendPhoneVerificationCode(
+      formik.values.phoneNumber,
+      selectedCountry,
+      {
+        setNotification,
+        setCountdown,
+        countdown,
       }
-    } catch (error) {
-      console.error("Error calling send phone code API:", error);
-      setNotification({
-        message:
-          "An error occurred while sending phone code. Please try again.",
-        severity: "error",
-      });
-      setTimeout(() => setNotification(null), 5000);
-    }
+    );
   };
 
   const handleEmailLogin = () => {};
@@ -597,6 +641,8 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
                 countryCodes={countryCodes}
                 selectedCountry={selectedCountry}
                 setSelectedCountry={setSelectedCountry}
+                setFieldValue={formik.setFieldValue} // Pass setFieldValue
+                validateField={formik.validateField} // Pass validateField
                 error={
                   formik.touched.phoneNumber &&
                   Boolean(formik.errors.phoneNumber)
@@ -727,30 +773,49 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
                   fullWidth
                   value={formik.values.password}
                   onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  // Add error and helperText from formik if validation is added for this field
-                  // error={formik.touched.password && Boolean(formik.errors.password)}
-                  // helperText={formik.touched.password && formik.errors.password}
+                  onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                    formik.handleBlur(e);
+                    setPasswordFocused(false);
+                  }}
+                  onFocus={() => setPasswordFocused(true)}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <Box
-                          component="span"
-                          onClick={() => setShowPassword(!showPassword)}
-                          sx={{
-                            cursor: "pointer",
-                            color: "#666",
-                            display: "flex",
-                            "&:hover": {
-                              color: "#333",
-                            },
-                          }}
-                        >
-                          {showPassword ? (
-                            <VisibilityOffOutlinedIcon />
-                          ) : (
-                            <VisibilityOutlinedIcon />
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          {passwordFocused && formik.values.password && (
+                            <IconButton
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                formik.setFieldValue("password", "");
+                              }}
+                              edge="end"
+                              size="small"
+                              sx={{ mr: 0.5 }}
+                            >
+                              <CancelIcon
+                                sx={{ color: "#666", fontSize: "20px" }}
+                              />
+                            </IconButton>
                           )}
+                          <Box
+                            component="span"
+                            onClick={() => setShowPassword(!showPassword)}
+                            sx={{
+                              cursor: "pointer",
+                              color: "#666",
+                              display: "flex",
+                              "&:hover": {
+                                color: "#333",
+                              },
+                            }}
+                          >
+                            {showPassword ? (
+                              <VisibilityOffOutlinedIcon />
+                            ) : (
+                              <VisibilityOutlinedIcon />
+                            )}
+                          </Box>
                         </Box>
                       </InputAdornment>
                     ),
@@ -956,7 +1021,8 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
             I have read and agreed to the
             <Typography
               component={Link}
-              href="/auth/auth1/forgot-password"
+              href="/terms"
+              target="_blank"
               fontWeight="500"
               sx={{
                 textDecoration: "none",
@@ -970,7 +1036,8 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
             and
             <Typography
               component={Link}
-              href="/auth/auth1/forgot-password"
+              href="/privacy"
+              target="_blank"
               fontWeight="500"
               sx={{
                 textDecoration: "none",

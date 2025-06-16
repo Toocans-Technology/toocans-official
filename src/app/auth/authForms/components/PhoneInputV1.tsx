@@ -11,7 +11,13 @@ import {
   TextField,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import React, { useCallback, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Country } from "../types/auth";
 
 // --- Static Styles and Functions ---
@@ -34,30 +40,40 @@ const autocompleteListboxStyle = {
   padding: "8px 0",
 };
 
-const paperComponentSx = {
+// Updated to accept width parameter
+const getPaperComponentSx = (width: number) => ({
   borderRadius: "8px",
   boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
   marginTop: "4px",
-};
+  width: width > 0 ? `${width}px` : "auto",
+  overflow: "hidden",
+});
 
 const renderOptionMenuItemSx = {
   display: "flex",
   alignItems: "center",
-  gap: "8px",
+  gap: "12px",
   color: "#000",
   backgroundColor: "#fff",
   padding: "8px 16px",
+  minHeight: "44px",
   "&:hover": {
-    backgroundColor: "#f5f5f5",
+    // backgroundColor: "#f8f9fa",
+    backgroundColor: "#e3f2fd",
   },
   "&.Mui-focused": {
-    backgroundColor: "#f5f5f5",
-    color: "#000",
+    backgroundColor: "#f1f3f5",
+  },
+  "&.Mui-selected": {
+    backgroundColor: "#e9ecef",
     "&:hover": {
-      backgroundColor: "#f5f5f5",
-      color: "#000",
+      backgroundColor: "#e9ecef",
     },
   },
+  "&.Mui-focusVisible": {
+    backgroundColor: "#f1f3f5",
+  },
+  transition: "background-color 0.2s ease-in-out",
 };
 
 const renderOptionImageStyle: React.CSSProperties = {
@@ -104,7 +120,24 @@ const StyledArrowDropDown = styled(ArrowDropDownIcon)(`
   color: #666666;
 `);
 
-const getOptionLabel = (option: Country) => `+${option.nationalCode}`;
+const getOptionLabel = (option: Country) => {
+  return `+${option.nationalCode}`;
+};
+
+const filterOptions = (
+  options: Country[],
+  { inputValue }: { inputValue: string }
+) => {
+  if (!inputValue) return options;
+
+  const input = inputValue.toLowerCase().trim();
+  return options.filter(
+    (option) =>
+      (option.nationalCode?.toLowerCase().includes(input) ?? false) ||
+      (option.countryEnName?.toLowerCase().includes(input) ?? false) ||
+      (option.countryName?.toLowerCase().includes(input) ?? false)
+  );
+};
 
 // --- Component ---
 interface PhoneInputProps {
@@ -118,6 +151,8 @@ interface PhoneInputProps {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void;
+  validateField: (field: string) => void;
   [key: string]: any;
 }
 
@@ -132,6 +167,8 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   countryCodes,
   selectedCountry,
   setSelectedCountry,
+  setFieldValue,
+  validateField,
   error,
   helperText,
   name,
@@ -142,6 +179,16 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
 }) => {
   console.log("Rendering PhoneInput");
   const [focused, setFocused] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const mainBoxRef = useRef<HTMLDivElement>(null);
+
+  // Measure container width when component mounts or updates
+  useEffect(() => {
+    if (mainBoxRef.current) {
+      const width = mainBoxRef.current.offsetWidth;
+      setContainerWidth(width);
+    }
+  }, []);
 
   const autocompleteValue = useMemo(() => {
     return (
@@ -150,29 +197,46 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   }, [countryCodes, selectedCountry]);
 
   const handleAutocompleteChange = useCallback(
-    (
-      _: React.SyntheticEvent<Element, Event>,
-      newValue: Country | undefined
-    ) => {
-      setSelectedCountry(newValue?.nationalCode || "");
+    (_: React.SyntheticEvent<Element, Event>, newValue: Country | null) => {
+      const newCountryCode = newValue?.nationalCode || "";
+      setSelectedCountry(newCountryCode); // Update local state
+      setFieldValue("selectedCountry", newCountryCode, false); // Update Formik state for country, don't validate yet
+      setFieldValue("phoneNumber", "", false); // Clear phone number in Formik, don't validate yet
+      validateField("phoneNumber"); // Explicitly trigger validation for phoneNumber
     },
-    [setSelectedCountry]
+    [setSelectedCountry, setFieldValue, validateField]
   );
 
-  const MemoizedPaperComponent = useCallback((props: any) => {
-    return <Paper {...props} sx={paperComponentSx} />;
-  }, []);
+  const MemoizedPaperComponent = useCallback(
+    (props: any) => {
+      return <Paper {...props} sx={getPaperComponentSx(containerWidth)} />;
+    },
+    [containerWidth]
+  );
 
   const memoizedRenderOption = useCallback((props: any, option: Country) => {
+    const countryName = option.countryEnName || option.countryName || "Unknown";
     return (
       <MenuItem {...props} key={option.id} sx={renderOptionMenuItemSx}>
         <img
+          key={`${option.id}-flag`}
           src={`https://flagcdn.com/w20/${option.domainShortName?.toLowerCase()}.png`}
-          alt={option.countryEnName || ""}
+          alt={countryName}
           style={renderOptionImageStyle}
           loading="lazy"
         />
-        +{option.nationalCode}
+        <Box
+          key={`${option.id}-content`}
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "100%",
+            alignItems: "center",
+          }}
+        >
+          <span>{countryName}</span>
+          <span style={{ color: "#666" }}>+{option.nationalCode}</span>
+        </Box>
       </MenuItem>
     );
   }, []);
@@ -255,19 +319,21 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   }, [focused, value, handleClearPhoneMouseDown]);
 
   return (
-    <Box sx={mainBoxSx}>
+    <Box ref={mainBoxRef} sx={mainBoxSx}>
       <Autocomplete
         value={autocompleteValue}
         onChange={handleAutocompleteChange}
         popupIcon={<StyledArrowDropDown />}
         options={countryCodes}
         getOptionLabel={getOptionLabel}
+        filterOptions={filterOptions}
         ListboxProps={{ style: autocompleteListboxStyle }}
         PaperComponent={MemoizedPaperComponent}
         renderOption={memoizedRenderOption}
         renderInput={memoizedRenderInput}
         disableClearable
         size="small"
+        sx={{ width: "90px" }}
       />
       <StyledLoginTextField
         id="phone"

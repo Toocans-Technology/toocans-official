@@ -2,7 +2,7 @@ import CustomTextField from "@/app/components/forms/theme-elements/CustomTextFie
 import CancelIcon from "@mui/icons-material/Cancel";
 import { IconButton, InputAdornment } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 interface EmailInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: boolean;
@@ -22,11 +22,24 @@ const StyledLoginTextField = styled(CustomTextField)(`
 `);
 
 const styledLoginTextFieldSx = {
-  "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+  "& .MuiOutlinedInput-notchedOutline": {
+    border: "1px solid transparent",
+  },
   "& .MuiOutlinedInput-root": {
     background: "#f5f5f5",
     borderRadius: "8px",
     color: "#000",
+    transition: "border-color 0.2s ease-in-out",
+    "&:hover": {
+      "& .MuiOutlinedInput-notchedOutline": {
+        border: "1px solid #222",
+      },
+    },
+    "&.Mui-focused": {
+      "& .MuiOutlinedInput-notchedOutline": {
+        border: "1px solid #222",
+      },
+    },
   },
 };
 
@@ -38,7 +51,7 @@ const EmailInput: React.FC<EmailInputProps> = ({
   helperText,
   ...rest
 }) => {
-  console.log('Rendering EmailInput');
+  console.log("Rendering EmailInput");
   const [focused, setFocused] = useState(false);
   const value = rest.value as string;
 

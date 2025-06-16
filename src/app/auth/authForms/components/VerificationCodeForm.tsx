@@ -1,17 +1,26 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import AuthTwoSteps from '../AuthTwoSteps';
+import { NotificationState } from '../../utils/verificationCodeUtils';
 
 interface VerificationCodeFormProps {
   loginType: 'email' | 'phone';
   countdown: number;
   setCountdown: React.Dispatch<React.SetStateAction<number>>;
+  email?: string;
+  phoneNumber?: string;
+  selectedCountry?: string;
+  onNotification?: (notification: NotificationState | null) => void;
 }
 
 const VerificationCodeForm: React.FC<VerificationCodeFormProps> = ({
   loginType,
   countdown,
-  setCountdown
+  setCountdown,
+  email,
+  phoneNumber,
+  selectedCountry,
+  onNotification
 }) => {
   // Helper function to mask email according to requirements
   const maskEmail = (email: string) => {
@@ -49,6 +58,11 @@ const VerificationCodeForm: React.FC<VerificationCodeFormProps> = ({
       <AuthTwoSteps
         countdown={countdown}
         setCountdown={setCountdown}
+        email={email}
+        phoneNumber={phoneNumber}
+        loginType={loginType}
+        selectedCountry={selectedCountry}
+        onNotification={onNotification}
       />
     </Box>
   );

@@ -4,8 +4,49 @@ import LpHeader from "@/app/components/landingpage/header/Header";
 import { Box, Grid } from "@mui/material";
 import Image from "next/image";
 import AuthLogin from "../authForms/AuthLoginV1";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useUserProfileStore } from '@/store/userProfileStore';
 
 export default function Login() {
+  const router = useRouter();
+  const { userProfile } = useUserProfileStore();
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    const checkHydration = () => {
+      if (useUserProfileStore.persist.hasHydrated()) {
+        setIsHydrated(true);
+        return true;
+      }
+      return false;
+    };
+
+    if (checkHydration()) {
+      return;
+    }
+
+    const intervalId = setInterval(() => {
+      if (checkHydration()) {
+        clearInterval(intervalId);
+      }
+    }, 100);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isHydrated && userProfile) {
+      router.push("/overview");
+    }
+  }, [isHydrated, userProfile, router]);
+
+  if (!isHydrated || (isHydrated && userProfile)) {
+    return null; // Or a loading spinner
+  }
+
   return (
     <PageContainer title="Login Page" description="this is Sample page">
       <LpHeader />

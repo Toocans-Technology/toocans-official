@@ -89,7 +89,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
   };
 
   const menuItems = [
-    { icon: <PersonOutlineIcon />, label: "Overview", href: "/account" }, // Added example href
+    { icon: <PersonOutlineIcon />, label: "Overview", href: "/overview" }, // Added example href
     { icon: <ArrowCircleDownIcon />, label: "Deposit", href: "/deposit" },
     { icon: <ArrowCircleUpIcon />, label: "Withdraw", href: "/withdrawal" }, // Added example href
     { icon: <SettingsIcon />, label: "Account", href: "/account" }, // Changed from /settings to /account

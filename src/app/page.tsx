@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "./page.module.css";
 import AuthButton from "@/app/components/forms/theme-elements/AuthButton";
 import DownloadApp from "@/app/components/landingpage/header/DownloadApp";
 import Language from "@/app/components/landingpage/header/Language";
@@ -479,7 +480,7 @@ export default function Home() {
       </Box>
 
       {/* Wallet Features */}
-      <Container maxWidth="lg" sx={{ py: 8 }}>
+      <Container maxWidth="lg" sx={{ pt: 8 }}>
         <Typography
           variant="h1"
           align="center"
@@ -503,7 +504,7 @@ export default function Home() {
           />
         </Box>
 
-        <Grid container spacing={{ xs: 3, md: 4 }}>
+        <Grid container spacing={{ xs: 3, md: 4 }} sx={{ pb: 4, mb: 0 }}>
           <Grid item xs={12} md={4}>
             <Box
               sx={{
@@ -596,7 +597,7 @@ export default function Home() {
                 variant="body2"
                 color="text.secondary"
                 sx={{
-                  mt: 2,
+                  // mt: 2,
                   color: "rgba(153, 153, 153, 1)",
                   fontSize: "14px",
                   width: "311px",
@@ -648,7 +649,7 @@ export default function Home() {
                 variant="body2"
                 color="text.secondary"
                 sx={{
-                  mt: 2,
+                  // mt: 2,
                   color: "rgba(153, 153, 153, 1)",
                   fontSize: "14px",
                   width: "311px",
@@ -663,7 +664,15 @@ export default function Home() {
           </Grid>
         </Grid>
       </Container>
-
+      <Box
+        sx={{
+          borderBottom: "1px solid rgba(31, 31, 31, 1)",
+          width: "72%",
+          mx: "auto",
+          maxWidth: "lg",
+          mb: 6,
+        }}
+      ></Box>
       {/* Assets and Markets Section */}
       <Container maxWidth="lg">
         <Grid container spacing={{ xs: 3, md: 6 }}>
@@ -842,9 +851,13 @@ export default function Home() {
               src="/images/home/chain-transfers.png"
               alt="Chain Transfers"
               fill
+              className={styles.imageShiftMobile}
               style={{
                 objectFit: "contain",
                 objectPosition: "center",
+                position: "absolute",
+                left: "50%",
+                transform: "translateX(-50%)"
               }}
             />
           </Box>

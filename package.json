@@ -40,6 +40,7 @@
         "framer-motion": "^10.16.4",
         "i18next": "^23.5.1",
         "js-cookie": "^3.0.5",
+        "libphonenumber-js": "^1.12.9",
         "lodash": "^4.17.21",
         "moment": "^2.29.4",
         "next": "14.2.0",

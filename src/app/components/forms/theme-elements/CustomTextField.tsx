@@ -1,18 +1,38 @@
-import React from 'react';
-import { styled } from '@mui/material/styles';
-import { TextField } from '@mui/material';
+import { TextField } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
-const CustomTextField = styled((props: any) => <TextField {...props} />)(({ theme }) => ({
-  '& .MuiOutlinedInput-input::-webkit-input-placeholder': {
+const CustomTextField = styled((props: any) => (
+  <TextField InputProps={{ disableUnderline: true }} {...props} />
+))(({ theme }) => ({
+  "& .MuiOutlinedInput-input::-webkit-input-placeholder": {
     color: theme.palette.text.secondary,
-    opacity: '0.8',
+    opacity: "0.8",
   },
-  '& .MuiOutlinedInput-input.Mui-disabled::-webkit-input-placeholder': {
+  "& .MuiOutlinedInput-input.Mui-disabled::-webkit-input-placeholder": {
     color: theme.palette.text.secondary,
-    opacity: '1',
+    opacity: "1",
   },
-  '& .Mui-disabled .MuiOutlinedInput-notchedOutline': {
+  "& .Mui-disabled .MuiOutlinedInput-notchedOutline": {
     borderColor: theme.palette.grey[200],
+  },
+  "& .MuiOutlinedInput-notchedOutline": {
+    border: "none",
+  },
+  "& .MuiOutlinedInput-root": {
+    background: "#f5f5f5 !important",
+    borderRadius: "8px",
+    color: "#000",
+    transition: "border-color 0.2s ease-in-out",
+    "&:hover": {
+      "& .MuiOutlinedInput-notchedOutline": {
+        border: "1px solid transparent",
+      },
+    },
+    "&.Mui-focused": {
+      "& .MuiOutlinedInput-notchedOutline": {
+        border: "1px solid #222",
+      },
+    },
   },
 }));
 

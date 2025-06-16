@@ -1,16 +1,16 @@
-import React from 'react';
-import { Box, Typography, Stack, Popover } from '@mui/material';
-import Link from 'next/link';
-import EmailPhoneToggle from './EmailPhoneToggle';
-import EmailInput from './EmailInput';
-import PhoneInput from './PhoneInput';
-import { Country } from '../types/auth';
-import AuthButton from '@/app/components/forms/theme-elements/AuthButton';
-import { useFormik } from 'formik';
+import AuthButton from "@/app/components/forms/theme-elements/AuthButton";
+import { Box, Popover, Stack, Typography } from "@mui/material";
+import { useFormik } from "formik";
+import Link from "next/link";
+import React from "react";
+import { Country } from "../types/auth";
+import EmailInput from "./EmailInput";
+import EmailPhoneToggle from "./EmailPhoneToggle";
+import PhoneInput from "./PhoneInput";
 
 interface ForgotPasswordFormProps {
-  loginType: 'email' | 'phone';
-  setLoginType: (type: 'email' | 'phone') => void;
+  loginType: "email" | "phone";
+  setLoginType: (type: "email" | "phone") => void;
   countryCodes: Country[];
   selectedCountry: string;
   setSelectedCountry: (code: string) => void;
@@ -19,11 +19,10 @@ interface ForgotPasswordFormProps {
   anchorEl: HTMLElement | null;
   handlePopoverOpen: (event: React.MouseEvent<HTMLElement>) => void;
   handlePopoverClose: () => void;
-  handleNext: () => void;
+  handleNext: (formValues: { email: string; phoneNumber: string }) => void;
 }
 
 const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
-
   loginType,
   setLoginType,
   countryCodes,
@@ -34,15 +33,15 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
   anchorEl,
   handlePopoverOpen,
   handlePopoverClose,
-  handleNext
+  handleNext,
 }) => {
   const formik = useFormik({
     initialValues: {
-      email: '',
-      phoneNumber: ''
+      email: "",
+      phoneNumber: "",
     },
     onSubmit: (values) => {
-      handleNext();
+      handleNext(values);
     },
   });
 
@@ -50,20 +49,30 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
     <Box>
       <Box>
         <EmailPhoneToggle loginType={loginType} setLoginType={setLoginType} />
-        {loginType === 'email' ? (
+        {loginType === "email" ? (
           <EmailInput
-            {...formik.getFieldProps('email')}
+            {...formik.getFieldProps("email")}
             error={formik.touched.email && Boolean(formik.errors.email)}
-            helperText={formik.touched.email && formik.errors.email ? String(formik.errors.email) : undefined}
+            helperText={
+              formik.touched.email && formik.errors.email
+                ? String(formik.errors.email)
+                : undefined
+            }
           />
         ) : (
           <PhoneInput
-            {...formik.getFieldProps('phoneNumber')}
+            {...formik.getFieldProps("phoneNumber")}
             countryCodes={countryCodes}
             selectedCountry={selectedCountry}
             setSelectedCountry={setSelectedCountry}
-            error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
-            helperText={formik.touched.phoneNumber && formik.errors.phoneNumber ? String(formik.errors.phoneNumber) : undefined}
+            error={
+              formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)
+            }
+            helperText={
+              formik.touched.phoneNumber && formik.errors.phoneNumber
+                ? String(formik.errors.phoneNumber)
+                : undefined
+            }
           />
         )}
       </Box>
@@ -81,8 +90,8 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
           sx={{
             textDecoration: "none",
             color: "#3C7BF4",
-            fontSize: '12px',
-            cursor: 'pointer'
+            fontSize: "12px",
+            cursor: "pointer",
           }}
         >
           Switch to password login
@@ -96,9 +105,9 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
             sx={{
               textDecoration: "none",
               color: "#A9A9A9",
-              fontSize: '12px'
+              fontSize: "12px",
             }}
-            aria-owns={open ? 'mouse-over-popover' : undefined}
+            aria-owns={open ? "mouse-over-popover" : undefined}
             aria-haspopup="true"
             onMouseEnter={handlePopoverOpen}
             onMouseLeave={handlePopoverClose}
@@ -108,38 +117,49 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
         )}
         <Popover
           id="mouse-over-popover"
-          sx={{ pointerEvents: 'none' }}
+          sx={{ pointerEvents: "none" }}
           open={open}
           anchorEl={anchorEl}
           anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
+            vertical: "bottom",
+            horizontal: "left",
           }}
           transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
+            vertical: "top",
+            horizontal: "left",
           }}
           onClose={handlePopoverClose}
           disableRestoreFocus
         >
-          <Typography sx={{ px: 2, py: 1, backgroundColor: '#FFF', width: '230px', color: '#000' }}>
+          <Typography
+            sx={{
+              px: 2,
+              py: 1,
+              backgroundColor: "#FFF",
+              width: "230px",
+              color: "#000",
+            }}
+          >
             Please try the following steps:
-            <ul style={{ color: '#666', padding: '2px 6px', fontSize: '12px' }}>
+            <ul style={{ color: "#666", padding: "2px 6px", fontSize: "12px" }}>
               <li>
                 Check if you are using the correct email address ab***@gm***
               </li>
               <li>
-                If you are still unable to receive it, please check your spam folder.
+                If you are still unable to receive it, please check your spam
+                folder.
               </li>
             </ul>
           </Typography>
         </Popover>
       </Stack>
       <Box mb={1}>
-        <AuthButton onClick={(e) => {
-          e.preventDefault();
-          formik.handleSubmit();
-        }}>
+        <AuthButton
+          onClick={(e) => {
+            e.preventDefault();
+            formik.handleSubmit();
+          }}
+        >
           Next
         </AuthButton>
       </Box>
