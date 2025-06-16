@@ -15,6 +15,9 @@ interface EmailInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const StyledLoginTextField = styled(CustomTextField)(`
+  "& .MuiOutlinedInput-notchedOutline": {
+  border: "none",
+},
   & .MuiInputBase-input.MuiOutlinedInput-input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 100px #f5f5f5 inset;
     -webkit-text-fill-color: #666666;

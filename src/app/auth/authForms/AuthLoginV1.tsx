@@ -220,8 +220,16 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
       password: "",
       loginType: "email", // Add loginType to initialValues to be used in validationSchema
       selectedCountry: selectedCountry, // 绑定初始国家码
+      agreed: false, // Agreement checkbox state
     },
-    validationSchema,
+    validationSchema: Yup.object()
+      .shape({
+        ...validationSchema.fields,
+        agreed: Yup.boolean()
+          // .oneOf([true], 'You must accept the terms and conditions')
+          .required("You must accept the terms and conditions"),
+      })
+      .concat(validationSchema),
     onSubmit: async (values) => {
       if (loginMode === "code") {
         // Use global verification function for code login
@@ -979,21 +987,28 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
                 "&:hover": {
                   bgcolor: "#8ce61c",
                 },
+                "&.Mui-disabled": {
+                  color: "rgba(0, 0, 0, 0.6)",
+                  backgroundColor: "rgba(0, 0, 0, 0.08)",
+                  opacity: 1,
+                },
               }}
               color="primary"
               variant="contained"
               size="large"
               fullWidth
-              // component={Link} // Remove Link component if submission is handled by Formik
-              // href="/" // Remove href if submission is handled by Formik
               onClick={(e) => {
                 e.preventDefault();
                 formik.handleSubmit();
-              }} // Trigger Formik submission
-              type="submit" // Keep type="submit" if inside a form, or manage with onClick
-              disabled={formik.isSubmitting || isLoading}
+              }}
+              type="submit"
+              disabled={
+                formik.isSubmitting || isLoading || !formik.values.agreed
+              }
             >
-              Sign In
+              <Box component="span" sx={{ opacity: formik.isSubmitting || isLoading || !formik.values.agreed ? 0.7 : 1 }}>
+                Sign In
+              </Box>
             </Button>
           )}
         </Box>
@@ -1006,9 +1021,23 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
         >
           <FormGroup>
             <FormControlLabel
-              control={<CustomCheckbox defaultChecked />}
+              control={
+                <CustomCheckbox
+                  name="agreed"
+                  checked={Boolean(formik.values.agreed)}
+                  onChange={(e) => {
+                    formik.setFieldValue("agreed", e.target.checked);
+                  }}
+                  onBlur={formik.handleBlur}
+                />
+              }
               label=""
             />
+            {formik.touched.agreed && formik.errors.agreed && (
+              <Typography color="error" variant="caption">
+                {formik.errors.agreed}
+              </Typography>
+            )}
           </FormGroup>
 
           <Typography
