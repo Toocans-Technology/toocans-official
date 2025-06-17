@@ -211,16 +211,51 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
     }
   }, [triggerAutoSelect]);
 
+  // Store the selected country's domain short name to distinguish between countries with same code
+  const [selectedDomain, setSelectedDomain] = useState<string | undefined>(undefined);
+
+  // Find the country by nationalCode and domainShortName if available
   const autocompleteValue = useMemo(() => {
-    return (
-      countryCodes.find((c) => c.nationalCode === selectedCountry) || undefined
-    );
-  }, [countryCodes, selectedCountry]);
+    // If selectedCountry is empty, return undefined
+    if (!selectedCountry) return undefined;
+    
+    // Find all countries with the matching nationalCode
+    const matchingCountries = countryCodes.filter(c => c.nationalCode === selectedCountry);
+    
+    // If none found, return undefined
+    if (matchingCountries.length === 0) return undefined;
+    
+    // If only one country has this code, return it
+    if (matchingCountries.length === 1) return matchingCountries[0];
+    
+    // If we have a stored domain for this country code, use it
+    if (selectedDomain) {
+      const countryByDomain = matchingCountries.find(c => c.domainShortName === selectedDomain);
+      if (countryByDomain) return countryByDomain;
+    }
+    
+    // If multiple countries share the code (like US and Canada with "1")
+    // Default to US ("US") if it exists in the matches
+    const usCountry = matchingCountries.find(c => c.domainShortName === "US");
+    if (usCountry) return usCountry;
+    
+    // Otherwise return the first match
+    return matchingCountries[0];
+  }, [countryCodes, selectedCountry, selectedDomain]);
 
   const handleAutocompleteChange = useCallback(
     (_: React.SyntheticEvent<Element, Event>, newValue: Country | null) => {
       const newCountryCode = newValue?.nationalCode || "";
       setSelectedCountry(newCountryCode); // Update local state
+      
+      // Store the domain short name to distinguish between countries with same code
+      if (newValue?.domainShortName) {
+        setSelectedDomain(newValue.domainShortName);
+        console.log(`Selected country: ${newValue.countryEnName} (${newValue.domainShortName})`);
+      } else {
+        setSelectedDomain(undefined);
+      }
+      
       setFieldValue("selectedCountry", newCountryCode, false); // Update Formik state for country, don't validate yet
       setFieldValue("phoneNumber", "", false); // Clear phone number in Formik, don't validate yet
       validateField("phoneNumber"); // Explicitly trigger validation for phoneNumber
@@ -264,9 +299,30 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
 
   const memoizedRenderInput = useCallback(
     (params: any) => {
-      const currentCountry = countryCodes.find(
-        (c) => c.nationalCode === selectedCountry
-      );
+      // Use the same logic as autocompleteValue to find the current country
+      let currentCountry = undefined;
+      
+      if (selectedCountry) {
+        const matchingCountries = countryCodes.filter(c => c.nationalCode === selectedCountry);
+        
+        if (matchingCountries.length === 1) {
+          currentCountry = matchingCountries[0];
+        } else if (matchingCountries.length > 1) {
+          // First try to use the stored domain if available
+          if (selectedDomain) {
+            const countryByDomain = matchingCountries.find(c => c.domainShortName === selectedDomain);
+            if (countryByDomain) {
+              currentCountry = countryByDomain;
+            }
+          }
+          
+          // If no domain match, default to US if it exists
+          if (!currentCountry) {
+            currentCountry = matchingCountries.find(c => c.domainShortName === "US") || matchingCountries[0];
+          }
+        }
+      }
+      
       return (
         <Box sx={renderInputBoxSx}>
           {selectedCountry && currentCountry && (
