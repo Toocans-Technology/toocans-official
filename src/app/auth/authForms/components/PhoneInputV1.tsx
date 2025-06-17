@@ -144,6 +144,7 @@ interface PhoneInputProps {
   countryCodes: Country[];
   selectedCountry: string;
   setSelectedCountry: (code: string) => void;
+  triggerAutoSelect?: boolean; 
   error?: boolean;
   helperText?: string;
   name?: string;
@@ -176,6 +177,8 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   onChange,
   onBlur,
   onFocus,
+  triggerAutoSelect,
+
 }) => {
   console.log("Rendering PhoneInput");
   const [focused, setFocused] = useState(false);
@@ -189,6 +192,24 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       setContainerWidth(width);
     }
   }, []);
+
+  const autocompleteDomRef = useRef<HTMLDivElement | null>(null);
+  const phoneInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (triggerAutoSelect) {
+      // 模拟点击 Autocomplete 打开下拉
+      if (autocompleteDomRef.current) {
+        const event = new MouseEvent("mousedown", { bubbles: true });
+        autocompleteDomRef.current.dispatchEvent(event);
+      }
+
+      // 聚焦 input
+      if (phoneInputRef.current) {
+        phoneInputRef.current.focus();
+      }
+    }
+  }, [triggerAutoSelect]);
 
   const autocompleteValue = useMemo(() => {
     return (
@@ -320,6 +341,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
 
   return (
     <Box ref={mainBoxRef} sx={mainBoxSx}>
+      <div ref={autocompleteDomRef}>
       <Autocomplete
         value={autocompleteValue}
         onChange={handleAutocompleteChange}
@@ -335,8 +357,11 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
         size="small"
         sx={{ width: "90px" }}
       />
+      </div>
       <StyledLoginTextField
         id="phone"
+        inputRef={phoneInputRef}
+
         name={name}
         value={value}
         onChange={onChange}

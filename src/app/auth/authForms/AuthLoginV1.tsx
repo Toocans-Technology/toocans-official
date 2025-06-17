@@ -205,6 +205,22 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   const [apiError, setApiError] = useState<string | null>(null);
   const router = useRouter();
   const { setUserProfile } = useUserProfileStore(); // Get the setUserProfile action from Zustand store
+  const [triggerPhoneAutoSelect, setTriggerPhoneAutoSelect] = useState(false);
+
+  useEffect(() => {
+    console.log("loginType:", loginType, "loginMode:", loginMode, "triggerPhoneAutoSelect:", triggerPhoneAutoSelect);
+    if (loginType === "phone" && loginMode === "code") {
+      setTriggerPhoneAutoSelect(true);
+      // 重置，避免后续无效触发
+      setTimeout(() => setTriggerPhoneAutoSelect(false), 500);
+    }
+  }, [loginType, loginMode]);
+
+  useEffect(() => {
+    if (triggerPhoneAutoSelect) {
+      formik.setFieldValue("selectedCountry", selectedCountry || "1");
+    }
+  }, [triggerPhoneAutoSelect]);
 
   // Get email from sessionStorage if available
   const savedEmail =
@@ -649,6 +665,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
                 countryCodes={countryCodes}
                 selectedCountry={selectedCountry}
                 setSelectedCountry={setSelectedCountry}
+                triggerAutoSelect={triggerPhoneAutoSelect}
                 setFieldValue={formik.setFieldValue} // Pass setFieldValue
                 validateField={formik.validateField} // Pass validateField
                 error={
