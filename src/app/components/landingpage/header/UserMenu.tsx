@@ -151,10 +151,28 @@ const UserMenu: React.FC<UserMenuProps> = ({
                   lineHeight: "24px",
                   color: "#222222",
                   mb: 0.5,
+                  maxWidth: 200,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
                 }}
+                title={displayName || email || "User"}
               >
-                {displayName || email || "User"}{" "}
-                {/* Show displayName, fallback to email or generic "User" */}
+                {(() => {
+                  const text = displayName || email || "User";
+                  if (text.length > 20) {
+                    const atIndex = text.indexOf('@');
+                    if (atIndex > -1) {
+                      // For emails: show first part before @, then ***, then domain
+                      const prefix = text.substring(0, 4);
+                      const domain = text.substring(atIndex);
+                      return `${prefix}***${domain}`;
+                    }
+                    // For other long text: show first and last 4 characters
+                    return `${text.substring(0, 4)}***${text.substring(text.length - 4)}`;
+                  }
+                  return text;
+                })()}
               </Typography>
               {uid && (
                 <Stack direction="row" spacing={1} alignItems="center">
@@ -164,9 +182,16 @@ const UserMenu: React.FC<UserMenuProps> = ({
                       color: "#666666",
                       fontSize: "14px",
                       lineHeight: "20px",
+                      maxWidth: 120,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
                     }}
+                    title={uid} // Show full UID on hover
                   >
-                    UID:{uid}
+                    UID: {uid.length > 10 
+                      ? `${uid.substring(0, 4)}***${uid.substring(uid.length - 4)}`
+                      : uid}
                   </Typography>
                   <Tooltip title={copyTooltip} placement="top">
                     <IconButton

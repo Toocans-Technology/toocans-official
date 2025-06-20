@@ -272,17 +272,18 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
 
   const memoizedRenderOption = useCallback((props: any, option: Country) => {
     const countryName = option.countryEnName || option.countryName || "Unknown";
+    const uniqueKey = `${option.id}-${option.domainShortName}`;
     return (
-      <MenuItem {...props} key={option.id} sx={renderOptionMenuItemSx}>
+      <MenuItem {...props} key={uniqueKey} sx={renderOptionMenuItemSx}>
         <img
-          key={`${option.id}-flag`}
+          key={`${uniqueKey}-flag`}
           src={`https://flagcdn.com/w20/${option.domainShortName?.toLowerCase()}.png`}
           alt={countryName}
           style={renderOptionImageStyle}
           loading="lazy"
         />
         <Box
-          key={`${option.id}-content`}
+          key={`${uniqueKey}-content`}
           sx={{
             display: "flex",
             justifyContent: "space-between",

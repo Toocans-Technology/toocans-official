@@ -2,6 +2,8 @@
 
 import PageContainer from "@/app/components/container/PageContainer";
 import LpHeader from "@/app/components/landingpage/header/Header";
+import { Token, tokenApi, tokenConfigApi } from "@/app/services/api";
+import { BalanceVo } from "@/app/types/balance";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -27,7 +29,8 @@ import {
 } from "@mui/material";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import Image from "next/image";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 interface TokenData {
   icon: string;
@@ -37,37 +40,123 @@ interface TokenData {
   value: string;
 }
 
-const tokens: TokenData[] = [
-  {
-    icon: "/images/crypto/btc.png",
-    name: "BTC",
-    price: "$67,725.90",
-    amount: "1.60",
-    value: "$67,725.90",
-  },
-  {
-    icon: "/images/crypto/usdt.png",
-    name: "USDT",
-    price: "$1.00",
-    amount: "0",
-    value: "$0",
-  },
-  {
-    icon: "/images/crypto/usdt.png",
-    name: "USDT",
-    price: "$3725.00",
-    amount: "2.00",
-    value: "$7450.00",
-  },
-];
+// const tokens: TokenData[] = [
+//   {
+//     icon: "/images/crypto/btc.png",
+//     name: "BTC",
+//     price: "$67,725.90",
+//     amount: "1.60",
+//     value: "$67,725.90",
+//   },
+//   {
+//     icon: "/images/crypto/usdt.png",
+//     name: "USDT",
+//     price: "$1.00",
+//     amount: "0",
+//     value: "$0",
+//   },
+//   {
+export default function OverviewPage() {
+  const [activeButton, setActiveButton] = useState("deposit");
+  const [showBalance, setShowBalance] = useState(true);
+  const [openDialog, setOpenDialog] = useState(true);
+  const [balanceData, setBalanceData] = useState<BalanceVo[] | null>(null);
+  const [tokens, setTokens] = useState<{ [key: string]: Token }>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [totalBalance, setTotalBalance] = useState<string>("0.00");
+  const [usdBalance, setUsdBalance] = useState<string>("0.00");
 
-export default function Overview() {
-  const [activeButton, setActiveButton] = React.useState("deposit");
-  const [showBalance, setShowBalance] = React.useState(true);
-  const [openDialog, setOpenDialog] = React.useState(true);
+  // Calculate total balance when balanceData changes
+  useEffect(() => {
+    if (!balanceData) return;
+
+    const total = balanceData.reduce((sum: number, token: BalanceVo) => {
+      const tokenTotal = Number(token.total) || 0;
+      const tokenPrice = Number(token.marketPrice) || 0;
+      return sum + tokenTotal * tokenPrice;
+    }, 0);
+
+    const formattedTotal = total.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+    setTotalBalance(formattedTotal);
+    setUsdBalance(`USDT≈ $${formattedTotal}`);
+  }, [balanceData]);
+
+  // Helper function to get token icon
+  const getTokenIcon = (tokenId: string) => {
+    if (!tokenId) return "/images/crypto/default.png";
+    const token = tokens[tokenId];
+    return token?.icon || `/images/crypto/${tokenId.toLowerCase()}.png`;
+  };
+
+  // Helper function to get token display name
+  const getTokenName = (tokenId: string) => {
+    if (!tokenId) return "Unknown Token";
+    const token = tokens[tokenId];
+    return token?.tokenName || token?.tokenFullName || tokenId;
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch tokens first
+        const tokensResponse = await tokenConfigApi.getAllTokens();
+        if (tokensResponse.code === 200 && tokensResponse.data) {
+          const tokensMap = tokensResponse.data.reduce((acc, token) => {
+            if (token.tokenId) {
+              acc[token.tokenId] = token;
+            }
+            return acc;
+          }, {} as { [key: string]: Token });
+          setTokens(tokensMap);
+
+          // Then fetch balance data
+          const balanceResponse = await tokenApi.getAllAssets();
+          if (balanceResponse.code === 200 && balanceResponse.data) {
+            const data = Array.isArray(balanceResponse.data)
+              ? balanceResponse.data
+              : [];
+            // Sort by total value (total * marketPrice) in descending order
+            const sortedData = [...data].sort((a, b) => {
+              const aValue =
+                (Number(a.total) || 0) * (Number(a.marketPrice) || 0);
+              const bValue =
+                (Number(b.total) || 0) * (Number(b.marketPrice) || 0);
+              return bValue - aValue; // Descending order
+            });
+            setBalanceData(sortedData);
+          } else {
+            setError(balanceResponse.msg || "Failed to load balance data");
+          }
+        } else {
+          setError(tokensResponse.msg || "Failed to load token data");
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError("Failed to load data. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const router = useRouter();
 
   const handleButtonClick = (button: string) => {
     setActiveButton(button);
+    if (button === "deposit") {
+      router.push("/deposit");
+    } else if (button === "withdrawal") {
+      router.push("/withdrawal");
+    }
   };
 
   const toggleBalance = () => {
@@ -142,7 +231,7 @@ export default function Overview() {
         <DialogActions sx={{ p: 3 }}>
           <Button
             variant="contained"
-            onClick={() => handleButtonClick("deposit")}
+            // onClick={() => handleButtonClick("deposit")}
             sx={{
               bgcolor: "#E0E0E0",
               color: "black",
@@ -159,7 +248,7 @@ export default function Overview() {
 
           <Button
             variant="contained"
-            onClick={() => handleButtonClick("deposit")}
+            // onClick={() => handleButtonClick("deposit")}
             sx={{
               bgcolor: "#9CFF1F",
               color: "black",
@@ -251,7 +340,7 @@ export default function Overview() {
                         wordBreak: "break-word",
                       }}
                     >
-                      {showBalance ? "742,851.00" : "******"}
+                      {showBalance ? totalBalance : "******"}
                       <Typography
                         component="span"
                         variant="body2"
@@ -261,7 +350,7 @@ export default function Overview() {
                           display: { xs: "block", sm: "inline" },
                         }}
                       >
-                        {showBalance ? "USDT≈ $742,851.00" : "USDT≈ $******"}
+                        {showBalance ? usdBalance : "USDT≈ $******"}
                       </Typography>
                     </Typography>
                   </Box>
@@ -293,7 +382,7 @@ export default function Overview() {
                     </Button>
                     <Button
                       variant="contained"
-                      onClick={() => handleButtonClick("withdraw")}
+                      onClick={() => handleButtonClick("withdrawal")}
                       sx={{
                         bgcolor:
                           activeButton === "withdraw" ? "#9CFF1F" : "#E0E0E0",
@@ -318,7 +407,13 @@ export default function Overview() {
           <Card sx={{ bgcolor: "#fff", color: "#222222" }}>
             <CardContent>
               <Box
-                sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  mb: 2,
+                  pb: 1,
+                  borderBottom: "1px solid rgba(244, 244, 244, 1)",
+                }}
               >
                 <Typography
                   variant="subtitle1"
@@ -331,32 +426,66 @@ export default function Overview() {
                 <ArticleOutlinedIcon />
               </Box>
 
-              <List>
-                {tokens.map((token, index) => (
-                  <ListItem key={index} sx={{ py: 2 }}>
-                    <ListItemIcon>
-                      <Image
-                        src={token.icon}
-                        alt={token.name}
-                        width={32}
-                        height={32}
+              {loading && <Typography>Loading...</Typography>}
+              {error && <Typography color="error">{error}</Typography>}
+              {!loading && !error && balanceData && (
+                <List>
+                  {balanceData.map((token, index) => (
+                    <ListItem
+                      key={token.id || index}
+                      sx={{
+                        py: 2,
+                        borderBottom: "1px solid rgba(244, 244, 244, 1)",
+                        pl: 0,
+                      }}
+                    >
+                      <ListItemIcon>
+                        {/* Assuming you have a way to get icon based on tokenId or a default icon */}
+                        <Image
+                          src={getTokenIcon(token.tokenId || "")}
+                          alt={getTokenName(token.tokenId || "")}
+                          width={32}
+                          height={32}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src =
+                              "/images/crypto/default.png";
+                          }}
+                        />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={getTokenName(token.tokenId || "")}
+                        secondary={
+                          <>
+                            {/* <Box component="span" display="block">{token.tokenId}</Box> */}
+                            {showBalance && token.marketPrice && (
+                              <Box component="span" display="block">
+                                Price: $
+                                {Number(token.marketPrice).toLocaleString()}
+                              </Box>
+                            )}
+                          </>
+                        }
                       />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={token.name}
-                      secondary={token.price}
-                    />
-                    <ListItemSecondaryAction>
-                      <Stack alignItems="flex-end">
-                        <Typography variant="body1">{token.amount}</Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {token.value}
-                        </Typography>
-                      </Stack>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                ))}
-              </List>
+                      <ListItemSecondaryAction>
+                        <Stack alignItems="flex-end">
+                          <Typography variant="body1">
+                            {showBalance && token.available
+                              ? Number(token.available).toLocaleString()
+                              : "******"}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {showBalance && token.assetTotal
+                              ? `≈ $${Number(
+                                  token.assetTotal
+                                ).toLocaleString()}`
+                              : "******"}
+                          </Typography>
+                        </Stack>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  ))}
+                </List>
+              )}
             </CardContent>
           </Card>
         </Box>
