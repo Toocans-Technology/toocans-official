@@ -9,6 +9,47 @@ import {
   VerifyGoogleAuthResponse,
 } from "../types/googleAuth";
 
+// Balance record interfaces for transaction history
+export enum BusinessType {
+  Convert = "CONVERT",
+  Deposit = "DEPOSIT",
+  Internal = "INTERNAL",
+  Invalid = "INVALID",
+  Transfer = "TRANSFER",
+  Withdraw = "WITHDRAW",
+}
+
+export interface BalanceRecordRequest {
+  beginTime?: number;
+  businessType?: BusinessType;
+  endTime?: number;
+  pageNo: number;
+  pageSize: number;
+  tokenId?: string;
+  [property: string]: any;
+}
+
+export interface BalanceChangeRecord {
+  accountId?: number;
+  amount?: number;
+  balanceId?: number;
+  beforeAmount?: number;
+  businessId?: number;
+  businessType?: number;
+  createDate?: number;
+  id?: number;
+  tokenId?: string;
+  tokenName?: string;
+  [property: string]: any;
+}
+
+export interface BalanceRecordResponse {
+  code?: number;
+  data?: BalanceChangeRecord[];
+  msg?: string;
+  [property: string]: any;
+}
+
 // Token configuration interfaces
 export interface Token {
   tokenId?: string;
@@ -99,6 +140,15 @@ export const tokenApi = {
       return response.data;
     } catch (error) {
       console.error("Error fetching asset:", error);
+      throw error;
+    }
+  },
+  getTransactionHistory: async (params: BalanceRecordRequest): Promise<BalanceRecordResponse> => {
+    try {
+      const response = await apiClient.get<BalanceRecordResponse>("/balance/recordPage", { params });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching transaction history:", error);
       throw error;
     }
   },
