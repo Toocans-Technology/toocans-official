@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "cp config/env/.env.development .env.development.local && next dev --turbopack",
     "dev:test": "cp config/env/.env.test .env.development.local && next dev --turbopack",
     "dev:uat": "cp config/env/.env.uat .env.development.local && next dev --turbopack",
     "dev:prod": "cp config/env/.env.production .env.development.local && next dev --turbopack",
