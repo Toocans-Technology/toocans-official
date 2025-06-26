@@ -19,9 +19,11 @@ const NotFound = () => {
       />
       <h1 className="text-2xl font-bold">{t('404:title')}</h1>
       <h4 className="text-lg">{t('404:description')}</h4>
-      <Link href="/" className="mt-4">
-        <Button color="primary">{t('404:goToHome')}</Button>
-      </Link>
+      <Button asChild>
+        <Link href="/" className="mt-4">
+          {t('404:goToHome')}
+        </Link>
+      </Button>
     </div>
   )
 }
