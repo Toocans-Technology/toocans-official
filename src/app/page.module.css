@@ -1,6 +1,0 @@
-@media (max-width: 600px) {
-  .imageShiftMobile {
-    left: 50% !important;
-    transform: translateX(-70%) !important;
-  }
-}
