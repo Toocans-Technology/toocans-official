@@ -1,7 +1,7 @@
 import { Button } from '@workspace/ui/components/button'
 
 export default function Page() {
-  console.log(process.env.NEXT_PUBLIC_ENV_NAME)
+  console.log('Current environment: ', process.env.NEXT_PUBLIC_ENV_NAME)
 
   return (
     <div className="flex min-h-svh items-center justify-center">

@@ -20,4 +20,4 @@ if (isTranslateEnvironment()) {
 
 export const defaultNamespace = 'common'
 
-export const cookieName = 'lang'
+export const langCookieName = 'lang'
