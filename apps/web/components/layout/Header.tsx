@@ -18,19 +18,37 @@ export const Header: FunctionComponent<Props> = () => {
       <div className="flex items-center justify-between gap-14">
         <Image src="/images/logo.png" alt="Toocans" width={113} height={18} />
         <div className="flex flex-1 items-center justify-between gap-10">
-          <Link href="/">{t('common:header.home')}</Link>
-          <Link href="/market">{t('common:header.market')}</Link>
-          <Link href="/trade">{t('common:header.trade')}</Link>
-          <Link href="/about">{t('common:header.about')}</Link>
+          <Link href="/" className="hover:opacity-80">
+            {t('common:header.home')}
+          </Link>
+          <Link href="/market" className="hover:opacity-80">
+            {t('common:header.market')}
+          </Link>
+          <Link href="/trade" className="hover:opacity-80">
+            {t('common:header.trade')}
+          </Link>
+          <Link href="/about" className="hover:opacity-80">
+            {t('common:header.about')}
+          </Link>
         </div>
       </div>
       <div className="flex items-center gap-6">
-        <Link href="/login">{t('common:loginIn')}</Link>
-        <Link href="/signup">
-          <Button rounded="full">{t('common:signUp')}</Button>
+        <Link href="/login" className="hover:opacity-80">
+          {t('common:loginIn')}
         </Link>
-        <Image src="/icons/download.svg" alt="Download" width={24} height={24} className="cursor-pointer" />
-        <Image src="/icons/intl.svg" alt="Intl" width={24} height={24} className="cursor-pointer" />
+        <Link href="/signup">
+          <Button rounded="full" className="text-[#222]">
+            {t('common:signUp')}
+          </Button>
+        </Link>
+        <Image
+          src="/icons/download.svg"
+          alt="Download"
+          width={24}
+          height={24}
+          className="cursor-pointer hover:opacity-80"
+        />
+        <Image src="/icons/intl.svg" alt="Intl" width={24} height={24} className="cursor-pointer hover:opacity-80" />
       </div>
     </div>
   )
