@@ -1,0 +1,5 @@
+export { default as HeroSection } from './HeroSection'
+export { default as Markets } from './Markets'
+export { default as SafeAndTrust } from './SafeAndTrust'
+export { default as AssetsAndMarkets } from './AssetsAndMarkets'
+export { default as SignUpNow } from './SignUpNow'
