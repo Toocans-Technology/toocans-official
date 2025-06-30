@@ -9,6 +9,8 @@ export async function middleware(req: NextRequest) {
   const localeFromPathname = pathname.split('/')[1]
   const normalizedLocaleFromPathname = localeFromPathname?.toLowerCase()
 
+  console.log('pathname', pathname)
+
   // Find the correct case-sensitive locale
   const currentLocale = locales.find((locale) => locale.toLowerCase() === normalizedLocaleFromPathname)
 
@@ -41,5 +43,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|images|icons|favicon.ico).*)'],
 }
