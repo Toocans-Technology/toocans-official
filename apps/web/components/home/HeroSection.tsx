@@ -1,13 +1,11 @@
-'use client'
-
 import Image from 'next/image'
 import { FunctionComponent } from 'react'
 import { Button, Input } from '@workspace/ui/components'
-import { useT } from '@/i18n'
+import { getT } from '@/i18n/server'
 import Link from '../Link'
 
-const HeroSection: FunctionComponent = () => {
-  const { t } = useT('home')
+const HeroSection: FunctionComponent<{ lang: string }> = async ({ lang }) => {
+  const { t } = await getT(lang, 'home')
 
   return (
     <div className="w-full bg-black">
