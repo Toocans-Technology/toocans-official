@@ -5,7 +5,7 @@ import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import * as React from 'react'
 import { getQueryClient } from '@/lib/utils/queryClient'
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function BaseProviders({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient()
 
   return (

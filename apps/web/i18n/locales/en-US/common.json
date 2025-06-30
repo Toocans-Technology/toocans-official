@@ -1,0 +1,10 @@
+{
+  "loginIn": "Login In",
+  "signUp": "Sign Up",
+  "header": {
+    "home": "Home",
+    "market": "Market",
+    "trade": "Trade",
+    "about": "About"
+  }
+}
