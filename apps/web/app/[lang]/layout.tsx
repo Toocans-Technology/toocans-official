@@ -1,6 +1,6 @@
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Inter } from 'next/font/google'
 import '@workspace/ui/globals.css'
-import { Providers } from '@/components/providers'
+import { BaseProviders, RouterProvider } from '@/components/providers'
 import { locales } from '@/i18n/config'
 
 const fontSans = Geist({
@@ -8,9 +8,9 @@ const fontSans = Geist({
   variable: '--font-sans',
 })
 
-const fontMono = Geist_Mono({
+const fontInter = Inter({
   subsets: ['latin'],
-  variable: '--font-mono',
+  variable: '--font-inter',
 })
 
 export async function generateStaticParams() {
@@ -31,8 +31,10 @@ export default async function RootLayout({ children, params }: Readonly<Props>) 
 
   return (
     <html lang={lang} suppressHydrationWarning>
-      <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}>
-        <Providers>{children}</Providers>
+      <body className={`${fontSans.variable} ${fontInter.variable} font-inter antialiased`}>
+        <BaseProviders>
+          <RouterProvider>{children}</RouterProvider>
+        </BaseProviders>
       </body>
     </html>
   )

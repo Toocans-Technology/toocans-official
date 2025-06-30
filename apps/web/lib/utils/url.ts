@@ -7,3 +7,8 @@ export const isAbsoluteUrl = (url: string) => {
     return false
   }
 }
+
+export const openNewWindow = (url: string) => {
+  const newWindow = window.open(url, '', 'noopener,noreferrer')
+  newWindow && (newWindow.opener = null)
+}
