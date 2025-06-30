@@ -1,6 +1,37 @@
 {
   "title": "Toocans",
+  "startNow": "Start Now",
+  "continueWith": "Continue With",
   "hero": {
-    "description": "The future of finance, powered by trading experts"
-  }
+    "description": "The future of finance, powered by trading experts",
+    "inputPlaceholder": "Enter email"
+  },
+  "safeAndTrust": {
+    "title": "Your Safe and Trusted Crypto Wallet",
+    "section1": {
+      "title": "Secure Asset Storage",
+      "description": "Our top-tier encryption and storage technologies guarantee that your assets remain fully protected and secure at all times."
+    },
+    "section2": {
+      "title": "Reliable Platform",
+      "description": "Built with a security-first approach, our platform is designed to detect and respond to cyber threats swiftly and effectively."
+    },
+    "section3": {
+      "title": "Multi-Device Access",
+      "description": "Whether on desktop or mobile, access your wallet anytime, anywhere, with full functionality across all devices, ensuring flexibility and convenience at your fingertips."
+    }
+  },
+  "assetsAndMarkets": {
+    "section1": {
+      "title": "Assets",
+      "description": "Provides clear information about wallet assets"
+    },
+    "section2": {
+      "title": "Markets",
+      "description": "Identify market opportunities and track market conditions"
+    }
+  },
+  "chainTransfer": "Chain transfers, free internal transfers, anytime, anywhere",
+  "signUpNow": "Sign Up Now",
+  "signUpNowDescription": "start your crypto security management wallet"
 }

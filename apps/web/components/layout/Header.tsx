@@ -10,7 +10,7 @@ interface Props {
   lang: string
 }
 
-export const Header: FunctionComponent<Props> = () => {
+const Header: FunctionComponent<Props> = () => {
   const { t } = useT('common')
 
   return (
@@ -53,3 +53,5 @@ export const Header: FunctionComponent<Props> = () => {
     </div>
   )
 }
+
+export default Header

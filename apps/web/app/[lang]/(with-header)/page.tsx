@@ -1,3 +1,5 @@
+import { AssetsAndMarkets, HeroSection, Markets, SafeAndTrust, SignUpNow } from '@/components/home'
+import { Footer } from '@/components/layout'
 import { getT } from '@/i18n/server'
 
 interface Props {
@@ -14,6 +16,17 @@ export async function generateMetadata({ params }: Props) {
   }
 }
 
-export default async function Page() {
-  return <div className="flex min-h-svh items-center justify-center text-2xl">Home Page</div>
+export default async function Page({ params }: Props) {
+  const { lang } = await params
+
+  return (
+    <div className="flex min-h-svh flex-col bg-black text-white">
+      <HeroSection lang={lang} />
+      <Markets />
+      <SafeAndTrust lang={lang} />
+      <AssetsAndMarkets lang={lang} />
+      <SignUpNow lang={lang} />
+      <Footer lang={lang} />
+    </div>
+  )
 }
