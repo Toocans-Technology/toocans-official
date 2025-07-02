@@ -1,0 +1,117 @@
+.overview-container {
+  min-height: 100vh;
+  background: #f6f6f6;
+  display: flex;
+  justify-content: center;
+
+  .overview-content {
+    width: 100%;
+    max-width: 942px;
+    padding: 32px;
+    padding-top: 60px;
+    .overview-title {
+      margin-bottom: 46px;
+      color: #000;
+      font-family: Inter;
+      font-size: 32px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 30px;
+    }
+    .overview-balance {
+      height: 154px;
+      padding: 30px 24px 10px 24px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      align-self: stretch;
+      border-radius: 12px;
+      background: #fff;
+      @media (min-width: 768px) {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+    .overview-balance-label {
+      margin-bottom: 29px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-2, #666);
+      font-family: Inter;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 30px; /* 150% */
+    }
+    .overview-balance-panel {
+      display: flex;
+      gap: 8px;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-content: center;
+      justify-content: flex-start;
+      align-items: center;
+    }
+    .overview-balance-value {
+      color: #000;
+      font-family: Inter;
+      font-size: 32px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 30px; /* 93.75% */
+    }
+    .overview-balance-usdt {
+      color: #666;
+      font-family: Inter;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 22px; /* 157.143% */
+    }
+    .overview-balance-actions {
+      margin-top: 24px;
+      display: flex;
+      gap: 12px;
+      @media (min-width: 768px) {
+        margin-top: 0;
+      }
+      .deposit-btn {
+        display: flex;
+        height: 20px;
+        padding: 20px 17px;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        border-radius: 20px;
+        background: var(--brand, #9cff1f);
+        cursor: pointer;
+        color: #222;
+        font-family: Inter;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 22px; /* 137.5% */
+      }
+      .withdraw-btn {
+        display: flex;
+        height: 20px;
+        padding: 20px 17px;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        border-radius: 40px;
+        background: #f4f4f4;
+        color: var(--text-1, #222);
+        font-family: 'PingFang HK';
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 22px; /* 137.5% */
+        letter-spacing: -0.408px;
+        cursor: pointer;
+      }
+    }
+  }
+}
