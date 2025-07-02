@@ -1,9 +1,7 @@
 import Image from 'next/image'
-import { Footer } from '@/components/layout'
 import TokenTable from '@/components/overview/TokenTable'
 import { getT } from '@/i18n/server'
 import styles from './overview.module.scss'
-
 interface Props {
   params: Promise<{ lang: string }>
 }
@@ -18,8 +16,8 @@ export async function generateMetadata({ params }: Props) {
   }
 }
 
-export default async function Page({ params }: Props) {
-  const { lang } = await params
+export default function Page({ params }: { params: { lang: string } }) {
+  const { lang } = params
 
   return (
     <div className={styles['overview-container']}>
@@ -35,10 +33,10 @@ export default async function Page({ params }: Props) {
               <div className={styles['overview-balance-value']}>742,851.00</div>
               <div className={styles['overview-balance-usdt']}>USDT ≈ $742,851.00</div>
             </div>
-              <div className={styles['overview-balance-actions']}>
-            <button className={styles['deposit-btn']}>Deposit</button>
-            <button className={styles['withdraw-btn']}>Withdraw</button>
-          </div>
+            <div className={styles['overview-balance-actions']}>
+              <a href="/deposit" className={styles['deposit-btn']}>Deposit</a>
+              <a href="/withdraw" className={styles['withdraw-btn']}>Withdraw</a>
+            </div>
           </div>
         </div>
         <TokenTable lang={lang} />
