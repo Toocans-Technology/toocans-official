@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// 此 csc-fetcher 仅适用于 http status code 200 + response status code 102000 的 pattern
+// 此 csc-fetcher 仅适用于 http status code 200 的 pattern
 import { cscFetcherConfig } from './config'
 import { handleData, CscFetcherOptions } from './helpers'
 
