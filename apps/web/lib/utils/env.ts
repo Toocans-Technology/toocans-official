@@ -1,9 +1,7 @@
 export const isDevEnvironment = () => process.env.NEXT_PUBLIC_ENV_NAME === 'development'
 
 export const isTestingEnvironment = () =>
-  process.env.NEXT_PUBLIC_ENV_NAME === 'dev' ||
-  process.env.NEXT_PUBLIC_ENV_NAME === 'uat' ||
-  process.env.NEXT_PUBLIC_ENV_NAME === 'test'
+  isDevEnvironment() || process.env.NEXT_PUBLIC_ENV_NAME === 'uat' || process.env.NEXT_PUBLIC_ENV_NAME === 'test'
 
 export const isOnlineEnvironment = () => process.env.NEXT_PUBLIC_ENV_NAME === 'production'
 

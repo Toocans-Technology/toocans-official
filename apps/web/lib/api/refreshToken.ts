@@ -1,6 +1,7 @@
 import { z } from 'zod'
-import { cscFetcherConfig, successCode } from '.'
+import { cscFetcherConfig } from '.'
 import { typedStorage } from '../utils'
+import { successCode } from './helpers'
 
 const refreshDataSchema = z.object({
   access_token: z.string(),

@@ -15,7 +15,7 @@ const HeroSection: FunctionComponent<{ lang: string }> = async ({ lang }) => {
           <div className="flex max-w-80 items-center rounded-full border border-[#666] p-1">
             <Input
               placeholder={t('home:hero.inputPlaceholder')}
-              className="focus-visible:ring--0 border-none focus-visible:outline-none"
+              className="border-none bg-transparent focus-visible:outline-none focus-visible:ring-0"
             />
             <Button rounded="full" className="text-[#222]">
               {t('home:startNow')}

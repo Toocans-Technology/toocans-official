@@ -36,7 +36,7 @@ export async function extractWrapData<T>(res: Response, args: CscFetcherOptions<
 
   if (!parseResult.success) {
     throw new WrongResponseStructError(
-      `[${args.url}] wrong response struct:\n ${JSON.stringify(parseResult.error.errors, null, 2)}`,
+      `[${args.url}] wrong response struct:\n ${JSON.stringify(parseResult.error.errors, null, 2)}`
     )
   }
 
