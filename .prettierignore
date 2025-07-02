@@ -1,0 +1,14 @@
+node_modules
+dist
+.next
+public
+pnpm-lock.yaml
+pnpm-workspace.yaml
+*.md
+.dockerignore
+.turbo
+**/node_modules/
+**/dist/
+**/.next/
+**/coverage/
+**/build/

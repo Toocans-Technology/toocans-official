@@ -1,0 +1,17 @@
+{
+  "loginIn": "Login In",
+  "signUp": "Sign Up",
+  "header": {
+    "home": "Home",
+    "market": "Market",
+    "trade": "Trade",
+    "about": "About"
+  },
+  "footer": {
+    "toocans": "Toocans",
+    "userAgreement": "User Agreement",
+    "privacyPolicy": "Privacy Policy",
+    "contactUs": "Contact Us",
+    "copyright": "Copyright © 2025 Toocans. All rights reserved."
+  }
+}
