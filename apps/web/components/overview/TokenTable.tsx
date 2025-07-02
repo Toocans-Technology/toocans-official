@@ -1,43 +1,19 @@
-import React from 'react'
-import { getT } from '@/i18n/server'
+"use client"
 import Image from 'next/image'
+import React from 'react'
+import { useAssetAll } from '@/hooks/asset'
 import styles from './TokenTable.module.scss'
 
-interface Token {
-  icon: string // 图片路径
-  name: string
-  price: string
-  amount: string
-  value: string
-  iconBg?: string // 这里不再用，背景色统一由scss控制
+const formatAmount = (val: number | string) => {
+  const num = Number(val)
+  if (isNaN(num)) return '--'
+  return num.toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 4 })
 }
 
-const tokens: Token[] = [
-  {
-    icon: '/images/overview/btc.svg',
-    name: 'BTC',
-    price: '$67,725.90',
-    amount: '1.00',
-    value: '$67,725.90',
-  },
-  {
-    icon: '/images/overview/btc.svg',
-    name: 'USDT',
-    price: '$1.00',
-    amount: '0',
-    value: '$0',
-  },
-  {
-    icon: '/images/overview/btc.svg',
-    name: 'USDT',
-    price: '$3725.00',
-    amount: '2.00',
-    value: '$7450.00',
-  },
-]
+export default function TokenTable() {
+  const { data } = useAssetAll()
+  const assets = data || []
 
-export default async function TokenTable({ lang }: { lang: string }) {
-  const { t } = await getT(lang, 'overview')
   return (
     <div className={styles['token-table']}>
       <div className={styles['token-table-header']}>
@@ -47,21 +23,23 @@ export default async function TokenTable({ lang }: { lang: string }) {
         </span>
       </div>
       <div className={styles['token-table-list']}>
-        {tokens.map((token, idx) => (
-          <div key={idx} className={styles['token-table-row']}>
-            <span className={styles['token-icon']}>
-              <img src={token.icon} alt={token.name} />
-            </span>
-            <div className={styles['token-info']}>
-              <div className={styles['token-name']}>{token.name}</div>
-              <div className={styles['token-price']}>{token.price}</div>
+        {assets.length === 0 ? null : (
+          assets.map((asset, idx) => (
+            <div key={asset.id || idx} className={styles['token-table-row']}>
+              <span className={styles['token-icon']}>
+                <Image src="/images/overview/btc.svg" alt={asset.tokenId} width={32} height={32} />
+              </span>
+              <div className={styles['token-info']}>
+                <div className={styles['token-name']}>{asset.tokenId}</div>
+                <div className={styles['token-price']}>市价: {formatAmount(asset.marketPrice)}</div>
+              </div>
+              <div className={styles['token-amount']}>
+                <div className={styles['token-value']}>{formatAmount(asset.total)}</div>
+                <div className={styles['token-fiat']}>≈ {formatAmount(asset.availableAssetTotal)}</div>
+              </div>
             </div>
-            <div className={styles['token-amount']}>
-              <div className={styles['token-value']}>{token.amount}</div>
-              <div className={styles['token-fiat']}>{token.value}</div>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   )
