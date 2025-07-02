@@ -1,5 +1,6 @@
 {
   "editor.formatOnSave": true,
+  "editor.tabSize": 2,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "tailwindCSS.experimental.configFile": "packages/ui/src/styles/globals.css",
   // 文档地址：https://github.com/lokalise/i18n-ally/wiki/Configurations
