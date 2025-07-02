@@ -10,6 +10,7 @@ import { useT } from '@/i18n'
 import { Token } from '@/services/basicConfig'
 import { getAddress } from '@/services/wallet'
 import { AllowDeposit } from '@/types/token'
+import RecentDeposits from './RecentDeposits'
 import SelectToken, { iconPlaceholder } from './SelectToken'
 
 enum DepositStep {
@@ -64,95 +65,98 @@ const DepositSteps: FunctionComponent = () => {
   )
 
   return (
-    <div className="mt-4 w-full rounded-[10px] bg-white p-6">
-      <div className="flex flex-col gap-10">
-        <div className="flex flex-col gap-2">
-          <div>
-            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#222] text-xs text-white">
-              1
-            </span>
-            <span className="ml-2 text-sm">{t('deposit:chooseToken')}</span>
-          </div>
-          <SelectToken onSelect={handleSelectToken} />
-        </div>
-        <div className="flex flex-col gap-2">
-          <div>
-            <span
-              className={cn(
-                'inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#999] text-xs text-white',
-                step >= DepositStep.ChooseNetwork && 'bg-[#222]'
-              )}
-            >
-              2
-            </span>
-            <span className={cn('ml-2 text-sm text-[#999]', step >= DepositStep.ChooseNetwork && 'text-[#222]')}>
-              {t('deposit:chooseNetwork')}
-            </span>
-          </div>
-          {step >= DepositStep.ChooseNetwork && (
-            <Select onValueChange={handleSelectNetwork} value={selectedNetwork?.id || ''}>
-              <SelectTrigger className="w-[456px]">
-                <SelectValue placeholder={t('deposit:selectNetwork')} />
-              </SelectTrigger>
-              <SelectContent>
-                {networkList.map((network) => (
-                  <SelectItem key={network.id} value={network.id} disabled={network.disabled} className="text-[#222]">
-                    <Image
-                      src={network.icon || iconPlaceholder}
-                      alt={network.name || ''}
-                      width={16}
-                      height={16}
-                      className="overflow-hidden rounded-full"
-                    />
-                    <span>{network.name}</span>
-                    {network.protocolName && <span>({network.protocolName})</span>}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        </div>
-        <div className="flex flex-col gap-2">
-          <div>
-            <span
-              className={cn(
-                'inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#999] text-xs text-white',
-                step >= DepositStep.DepositDetails && 'bg-[#222]'
-              )}
-            >
-              3
-            </span>
-            <span className={cn('ml-2 text-sm text-[#999]', step >= DepositStep.DepositDetails && 'text-[#222]')}>
-              {t('deposit:depositDetails')}
-            </span>
-          </div>
-          {step >= DepositStep.DepositDetails && (
-            <div className="max-w-[456px]">
-              <div className="flex items-center gap-2 rounded bg-[#f8f8f8] p-3">
-                <div className="rounded-md bg-white p-1.5">
-                  <QRCodeSVG value={address?.address || ''} size={52} />
-                </div>
-                <div className="flex-1 overflow-hidden">
-                  <div className="text-sm text-[#666]">{t('deposit:depositAddress')}</div>
-                  <p className="mt-1 break-words text-sm">{address?.address || ''}</p>
-                </div>
-                <CopyToClipboard text={address?.address || ''} onCopy={handleCopy}>
-                  <Button variant="ghost" size="icon" rounded="sm">
-                    <Image src="/icons/copy.svg" alt="copy" width={16} height={16} />
-                  </Button>
-                </CopyToClipboard>
-              </div>
-              <div className="mt-2 flex justify-between text-sm">
-                <span className="text-[#666]">{t('deposit:minDeposit')}</span>
-                <span className="text-[#222]">
-                  {selectedNetwork?.tokenSetting?.depositMinQuantity ?? '--'} {selectedNetwork?.tokenName ?? 'USDT'}
-                </span>
-              </div>
+    <>
+      <div className="mt-4 w-full rounded-[10px] bg-white p-6">
+        <div className="flex flex-col gap-10">
+          <div className="flex flex-col gap-2">
+            <div>
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#222] text-xs text-white">
+                1
+              </span>
+              <span className="ml-2 text-sm">{t('deposit:chooseToken')}</span>
             </div>
-          )}
+            <SelectToken onSelect={handleSelectToken} />
+          </div>
+          <div className="flex flex-col gap-2">
+            <div>
+              <span
+                className={cn(
+                  'inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#999] text-xs text-white',
+                  step >= DepositStep.ChooseNetwork && 'bg-[#222]'
+                )}
+              >
+                2
+              </span>
+              <span className={cn('ml-2 text-sm text-[#999]', step >= DepositStep.ChooseNetwork && 'text-[#222]')}>
+                {t('deposit:chooseNetwork')}
+              </span>
+            </div>
+            {step >= DepositStep.ChooseNetwork && (
+              <Select onValueChange={handleSelectNetwork} value={selectedNetwork?.id || ''}>
+                <SelectTrigger className="w-[456px]">
+                  <SelectValue placeholder={t('deposit:selectNetwork')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {networkList.map((network) => (
+                    <SelectItem key={network.id} value={network.id} disabled={network.disabled} className="text-[#222]">
+                      <Image
+                        src={network.icon || iconPlaceholder}
+                        alt={network.name || ''}
+                        width={16}
+                        height={16}
+                        className="overflow-hidden rounded-full"
+                      />
+                      <span>{network.name}</span>
+                      {network.protocolName && <span>({network.protocolName})</span>}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
+          <div className="flex flex-col gap-2">
+            <div>
+              <span
+                className={cn(
+                  'inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#999] text-xs text-white',
+                  step >= DepositStep.DepositDetails && 'bg-[#222]'
+                )}
+              >
+                3
+              </span>
+              <span className={cn('ml-2 text-sm text-[#999]', step >= DepositStep.DepositDetails && 'text-[#222]')}>
+                {t('deposit:depositDetails')}
+              </span>
+            </div>
+            {step >= DepositStep.DepositDetails && (
+              <div className="max-w-[456px]">
+                <div className="flex items-center gap-2 rounded bg-[#f8f8f8] p-3">
+                  <div className="rounded-md bg-white p-1.5">
+                    <QRCodeSVG value={address?.address || ''} size={52} />
+                  </div>
+                  <div className="flex-1 overflow-hidden">
+                    <div className="text-sm text-[#666]">{t('deposit:depositAddress')}</div>
+                    <p className="mt-1 break-words text-sm">{address?.address || ''}</p>
+                  </div>
+                  <CopyToClipboard text={address?.address || ''} onCopy={handleCopy}>
+                    <Button variant="ghost" size="icon" rounded="sm">
+                      <Image src="/icons/copy.svg" alt="copy" width={16} height={16} />
+                    </Button>
+                  </CopyToClipboard>
+                </div>
+                <div className="mt-2 flex justify-between text-sm">
+                  <span className="text-[#666]">{t('deposit:minDeposit')}</span>
+                  <span className="text-[#222]">
+                    {selectedNetwork?.tokenSetting?.depositMinQuantity ?? '--'} {selectedNetwork?.tokenName ?? 'USDT'}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+      <RecentDeposits tokenId={selectedNetwork?.tokenId || ''} />
+    </>
   )
 }
 

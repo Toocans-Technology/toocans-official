@@ -29,7 +29,13 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect }) => {
   const [selectedToken, setSelectedToken] = useState<string>()
 
   const tokenList = useMemo(
-    () => tokens?.map((token) => ({ id: token.id, icon: token.icon, name: token.tokenName })),
+    () =>
+      tokens?.map((token) => ({
+        id: token.id,
+        icon: token.icon,
+        name: token.tokenName,
+        fullName: token.tokenFullName,
+      })),
     [tokens]
   )
 
@@ -73,7 +79,11 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect }) => {
           </SelectGroup>
           <SelectGroup>
             {tokenList?.map((token) => {
-              if (search && !token.name.toLowerCase().includes(search.toLowerCase())) {
+              if (
+                search &&
+                (!token.name.toLowerCase().includes(search.toLowerCase()) ||
+                  !token.fullName.toLowerCase().includes(search.toLowerCase()))
+              ) {
                 return null
               }
 
@@ -86,7 +96,8 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect }) => {
                     height={18}
                     className="overflow-hidden rounded-full"
                   />
-                  {token.name}
+                  <span>{token.name}</span>
+                  <span className="ml-2 text-xs text-[#999]">{token.fullName}</span>
                 </SelectItem>
               )
             })}
