@@ -9,5 +9,10 @@
   "depositAddress": "Deposit address",
   "minDeposit": "Minimum deposit",
   "searchToken": "Search token",
-  "copySuccess": "Deposit address copied to clipboard"
+  "copySuccess": "Deposit address copied to clipboard",
+  "recentDeposits": "Recent deposits",
+  "token": "Token",
+  "amount": "Amount",
+  "time": "Time",
+  "noData": "No Data"
 }

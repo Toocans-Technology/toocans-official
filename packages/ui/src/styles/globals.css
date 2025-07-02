@@ -28,6 +28,7 @@
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --radius: 0.625rem;
+  --brand: oklch(from hsla(151, 77%, 45%, 1) l c h);
 }
 
 .dark {
@@ -50,6 +51,7 @@
   --border: oklch(0.269 0 0);
   --input: oklch(0.269 0 0);
   --ring: oklch(0.556 0 0);
+  --brand: oklch(from hsla(151, 77%, 45%, 1) l c h);
 }
 
 @theme inline {
@@ -72,6 +74,7 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-brand: var(--brand);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
