@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import React from 'react'
 import { useAssetAll } from '@/hooks/asset'
-import styles from './TokenTable.module.scss'
+import styles from '../../app/[lang]/(with-header)/overview/overview.module.scss'
 
 const formatAmount = (val: number | string) => {
   const num = Number(val)
