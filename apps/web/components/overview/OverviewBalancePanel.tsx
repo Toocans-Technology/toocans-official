@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { useAssetAll } from '@/hooks/asset'
 import { useAllToken } from '@/hooks/useAllToken'
+import BigNumber from 'bignumber.js'
 
 export default function OverviewBalancePanel() {
   const { data: data, isLoading: assetLoading } = useAssetAll()
@@ -12,26 +13,34 @@ export default function OverviewBalancePanel() {
   const [show, setShow] = useState(true)
 
   const formatAmount = (val: number | string) => {
-    const num = Number(val)
-    if (isNaN(num)) return '--'
-    return num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    try {
+      const num = new BigNumber(val)
+      if (!num.isFinite()) return '--'
+      return num.toFormat(2)
+    } catch {
+      return '--'
+    }
   }
+
+  const total =
+    Array.isArray(data) && Array.isArray(allTokenData)
+      ? data
+          .filter((item) => allTokenData.some((token) => token.tokenId === item.tokenId))
+          .reduce((sum, item) => {
+            const total = new BigNumber(item.total ?? 0)
+            return sum.plus(total)
+          }, new BigNumber(0))
+      : '--'
 
   const availableTotal =
     Array.isArray(data) && Array.isArray(allTokenData)
       ? data
           .filter((item) => allTokenData.some((token) => token.tokenId === item.tokenId))
           .reduce((sum, item) => {
-            const total = parseFloat(item.total ?? '0') || 0
-            const price = item.tokenId === 'USDT' ? 1 : parseFloat(item.marketPrice ?? '0') || 0
-            return sum + total * price
-          }, 0)
-      : '--'
-  const total =
-    Array.isArray(data) && Array.isArray(allTokenData)
-      ? data
-          .filter((item) => allTokenData.some((token) => token.tokenId === item.tokenId))
-          .reduce((sum, item) => sum + (parseFloat(item.total ?? '0') || 0), 0)
+            const total = new BigNumber(item.total ?? 0)
+            const price = item.tokenId === 'USDT' ? new BigNumber(1) : new BigNumber(item.marketPrice ?? 0)
+            return sum.plus(total.multipliedBy(price))
+          }, new BigNumber(0))
       : '--'
   return (
     <div className="h-[154px] p-[30px_24px_10px_24px] flex flex-col gap-[10px] rounded-xl bg-white justify-center">

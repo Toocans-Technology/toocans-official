@@ -53,6 +53,9 @@ importers:
       ahooks:
         specifier: ^3.8.5
         version: 3.8.5(react@19.0.0)
+      bignumber.js:
+        specifier: ^9.3.0
+        version: 9.3.0
       es-toolkit:
         specifier: ^1.39.5
         version: 1.39.5
@@ -1791,6 +1794,9 @@ packages:
   basic-ftp@5.0.5:
     resolution: {integrity: sha512-4Bcg1P8xhUuqcii/S0Z9wiHIrQVPMermM1any+MX5GeGD7faD3/msQUDGLol9wOcz4/jbg/WJnGqoJF6LiBdtg==}
     engines: {node: '>=10.0.0'}
+
+  bignumber.js@9.3.0:
+    resolution: {integrity: sha512-EM7aMFTXbptt/wZdMlBv2t8IViwQL+h6SLHosp8Yf0dqJMTnY6iL32opnAB6kAdL0SZPuvcAzFr31o0c/R3/RA==}
 
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
@@ -5434,6 +5440,8 @@ snapshots:
   base64-js@1.5.1: {}
 
   basic-ftp@5.0.5: {}
+
+  bignumber.js@9.3.0: {}
 
   bl@4.1.0:
     dependencies:
