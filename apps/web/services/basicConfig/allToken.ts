@@ -2,12 +2,13 @@ import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
+import { allowDepositSchema, allowWithdrawSchema } from '@/types/token'
 
 const TokenSettingSchema = z.object({
   id: z.string(),
   tokenId: z.string(),
-  allowDeposit: z.number(),
-  allowWithdraw: z.number(),
+  allowDeposit: allowDepositSchema,
+  allowWithdraw: allowWithdrawSchema,
   comingChainConfirmCount: z.number(),
   confirmedChainConfirmCount: z.number(),
   canWithdrawConfirmCount: z.number(),

@@ -12,8 +12,8 @@
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(from hsla(240, 10%, 14%, 1) l c h);
-  --popover-foreground: oklch(1 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(from hsla(111, 96%, 71%, 1) l c h);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
@@ -28,6 +28,7 @@
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --radius: 0.625rem;
+  --brand: oklch(from hsla(151, 77%, 45%, 1) l c h);
 }
 
 .dark {
@@ -50,6 +51,7 @@
   --border: oklch(0.269 0 0);
   --input: oklch(0.269 0 0);
   --ring: oklch(0.556 0 0);
+  --brand: oklch(from hsla(151, 77%, 45%, 1) l c h);
 }
 
 @theme inline {
@@ -72,7 +74,7 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --radius-xs: calc(var(--radius) - 6px);
+  --color-brand: var(--brand);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

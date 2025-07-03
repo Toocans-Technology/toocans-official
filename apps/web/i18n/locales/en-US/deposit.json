@@ -1,0 +1,18 @@
+{
+  "title": "Deposit",
+  "description": "Deposit",
+  "chooseToken": "Choose token to deposit",
+  "selectToken": "Select token",
+  "selectNetwork": "Select network",
+  "chooseNetwork": "Choose network",
+  "depositDetails": "Deposit details",
+  "depositAddress": "Deposit address",
+  "minDeposit": "Minimum deposit",
+  "searchToken": "Search token",
+  "copySuccess": "Deposit address copied to clipboard",
+  "recentDeposits": "Recent deposits",
+  "token": "Token",
+  "amount": "Amount",
+  "time": "Time",
+  "noData": "No Data"
+}
