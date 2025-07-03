@@ -14,6 +14,9 @@ const nextConfig = {
       {
         hostname: '*.bdy.tech',
       },
+      {
+        hostname: 'dummyimage.com',
+      },
     ],
   },
 }
