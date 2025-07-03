@@ -41,6 +41,7 @@ const Header: FunctionComponent<Props> = () => {
             {t('common:signUp')}
           </Button>
         </Link>
+        <Image src="/icons/user.svg" alt="User" width={24} height={24} className="cursor-pointer hover:opacity-80" />
         <Image
           src="/icons/download.svg"
           alt="Download"

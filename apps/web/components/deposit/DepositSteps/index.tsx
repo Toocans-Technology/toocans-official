@@ -4,13 +4,14 @@ import Image from 'next/image'
 import { QRCodeSVG } from 'qrcode.react'
 import { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, toast } from '@workspace/ui/components'
+import { Button, toast } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
 import { Token } from '@/services/basicConfig'
 import { getAddress } from '@/services/wallet'
 import { AllowDeposit } from '@/types/token'
 import RecentDeposits from './RecentDeposits'
+import SelectNetwork from './SelectNetwork'
 import SelectToken, { iconPlaceholder } from './SelectToken'
 
 enum DepositStep {
@@ -38,7 +39,7 @@ const DepositSteps: FunctionComponent = () => {
     return selectedToken.subTokenList.map((item) => ({
       id: item.id,
       name: item.chainName,
-      icon: item.chainIcon,
+      icon: item.chainIcon || iconPlaceholder,
       protocolName: item.protocolName,
       disabled: item.tokenSetting?.allowDeposit === AllowDeposit.disabled,
     }))
@@ -92,26 +93,11 @@ const DepositSteps: FunctionComponent = () => {
               </span>
             </div>
             {step >= DepositStep.ChooseNetwork && (
-              <Select onValueChange={handleSelectNetwork} value={selectedNetwork?.id || ''}>
-                <SelectTrigger className="w-[456px]">
-                  <SelectValue placeholder={t('deposit:selectNetwork')} />
-                </SelectTrigger>
-                <SelectContent>
-                  {networkList.map((network) => (
-                    <SelectItem key={network.id} value={network.id} disabled={network.disabled} className="text-[#222]">
-                      <Image
-                        src={network.icon || iconPlaceholder}
-                        alt={network.name || ''}
-                        width={16}
-                        height={16}
-                        className="overflow-hidden rounded-full"
-                      />
-                      <span>{network.name}</span>
-                      {network.protocolName && <span>({network.protocolName})</span>}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <SelectNetwork
+                value={selectedNetwork?.id || ''}
+                networks={networkList}
+                onValueChange={handleSelectNetwork}
+              />
             )}
           </div>
           <div className="flex flex-col gap-2">
