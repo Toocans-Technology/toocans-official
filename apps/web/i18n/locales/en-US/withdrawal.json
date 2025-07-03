@@ -1,0 +1,18 @@
+{
+  "title": "Withdrawal",
+  "description": "Withdrawal",
+  "chooseToken": "Choose token to withdraw",
+  "selectToken": "Select token",
+  "selectNetwork": "Select network",
+  "chooseNetwork": "Choose network",
+  "withdrawDetails": "Withdraw details",
+  "withdrawAddress": "Withdraw address",
+  "minWithdraw": "Minimum withdraw",
+  "searchToken": "Search token",
+  "copySuccess": "Withdraw address copied to clipboard",
+  "recentWithdraws": "Recent withdraws",
+  "token": "Token",
+  "amount": "Amount",
+  "time": "Time",
+  "noData": "No Data"
+}
