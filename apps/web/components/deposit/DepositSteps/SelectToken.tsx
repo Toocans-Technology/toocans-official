@@ -4,7 +4,6 @@ import { SearchIcon } from 'lucide-react'
 import Image from 'next/image'
 import { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import {
-  Button,
   Input,
   Select,
   SelectContent,
@@ -13,20 +12,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@workspace/ui/components'
+import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
-import { getAllToken, Token } from '@/services/basicConfig'
+import { Token } from '@/services/basicConfig'
+import DefaultTokens from './DefaultTokens'
 
 export const iconPlaceholder = 'https://dummyimage.com/18x18/999999/0011ff'
 
 interface Props {
+  defaultValue?: string
+  showDefaultTokens?: boolean
   onSelect: (token: Token) => void
 }
 
-const SelectToken: FunctionComponent<Props> = ({ onSelect }) => {
+const SelectToken: FunctionComponent<Props> = ({ defaultValue = '', onSelect, showDefaultTokens = true }) => {
   const { t } = useT('deposit')
-  const { data: tokens } = getAllToken()
+  const { tokens } = useAllToken()
   const [search, setSearch] = useState('')
-  const [selectedToken, setSelectedToken] = useState<string>()
+  const [selectedToken, setSelectedToken] = useState<string>(defaultValue)
 
   const tokenList = useMemo(
     () =>
@@ -56,10 +59,6 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect }) => {
   const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)
   }, [])
-
-  const usdtToken = useMemo(() => tokenList?.find((token) => token.name === 'USDT'), [tokenList])
-  const btcToken = useMemo(() => tokenList?.find((token) => token.name === 'BTC'), [tokenList])
-  const ethToken = useMemo(() => tokenList?.find((token) => token.name === 'ETH'), [tokenList])
 
   return (
     <>
@@ -104,53 +103,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect }) => {
           </SelectGroup>
         </SelectContent>
       </Select>
-      <div className="flex gap-2">
-        <Button
-          variant="secondary"
-          rounded="sm"
-          className="h-[34px] bg-[#f8f8f8] px-2"
-          onClick={() => handleSelectToken(usdtToken?.name || 'USDT')}
-        >
-          <Image
-            src={usdtToken?.icon || iconPlaceholder}
-            alt={usdtToken?.name || ''}
-            width={16}
-            height={16}
-            className="overflow-hidden rounded-full"
-          />
-          {usdtToken?.name ?? 'USDT'}
-        </Button>
-        <Button
-          variant="secondary"
-          rounded="sm"
-          className="h-[34px] bg-[#f8f8f8] px-2"
-          onClick={() => handleSelectToken(btcToken?.name || 'BTC')}
-        >
-          <Image
-            src={btcToken?.icon || iconPlaceholder}
-            alt={btcToken?.name || ''}
-            width={16}
-            height={16}
-            className="overflow-hidden rounded-full"
-          />
-          {btcToken?.name ?? 'BTC'}
-        </Button>
-        <Button
-          variant="secondary"
-          rounded="sm"
-          className="h-[34px] bg-[#f8f8f8] px-2"
-          onClick={() => handleSelectToken(ethToken?.name || 'ETH')}
-        >
-          <Image
-            src={ethToken?.icon || iconPlaceholder}
-            alt={ethToken?.name || ''}
-            width={16}
-            height={16}
-            className="overflow-hidden rounded-full"
-          />
-          {ethToken?.name ?? 'ETH'}
-        </Button>
-      </div>
+      {showDefaultTokens && <DefaultTokens tokens={tokens} onSelect={handleSelectToken} />}
     </>
   )
 }

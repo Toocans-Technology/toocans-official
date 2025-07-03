@@ -14,5 +14,16 @@
   "token": "Token",
   "amount": "Amount",
   "time": "Time",
-  "noData": "No Data"
+  "address": "Address",
+  "status": "Status",
+  "noData": "No Data",
+  "pendingReview": "Pending Review",
+  "autoApproved": "Auto Approved",
+  "manuallyApproved": "Manually Approved",
+  "manuallyRejected": "Manually Rejected",
+  "walletProcessing": "Wallet Processing",
+  "walletSubmitFailed": "Wallet Submit Failed",
+  "success": "Success",
+  "failed": "Failed",
+  "manualRejectFailed": "Manual Reject Failed"
 }
