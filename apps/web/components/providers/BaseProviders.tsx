@@ -30,13 +30,7 @@ export function BaseProviders({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient()
 
   return (
-    <NextThemesProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-      enableColorScheme
-    >
+    <NextThemesProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange enableColorScheme>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </NextThemesProvider>
   )

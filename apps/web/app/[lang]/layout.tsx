@@ -1,4 +1,5 @@
 import { Geist, Inter } from 'next/font/google'
+import { Toaster } from '@workspace/ui/components'
 import '@workspace/ui/globals.css'
 import { BaseProviders, RouterProvider } from '@/components/providers'
 import { locales } from '@/i18n/config'
@@ -33,6 +34,7 @@ export default async function RootLayout({ children, params }: Readonly<Props>) 
     <html lang={lang} suppressHydrationWarning>
       <body className={`${fontSans.variable} ${fontInter.variable} font-inter antialiased`}>
         <BaseProviders>
+          <Toaster position="top-center" />
           <RouterProvider>{children}</RouterProvider>
         </BaseProviders>
       </body>
