@@ -24,6 +24,7 @@
     "@workspace/ui": "workspace:*",
     "ahooks": "^3.8.5",
     "bignumber.js": "^9.3.0",
+    "dayjs": "^1.11.13",
     "es-toolkit": "^1.39.5",
     "humps": "^2.0.1",
     "i18next": "^25.2.1",
