@@ -3,21 +3,14 @@
 import { CircleX } from 'lucide-react'
 import { FunctionComponent, useState, useRef, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
-import { Input, Button, Checkbox, Label } from '@workspace/ui/components'
+import { Input, Button, Form } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
+import { useCodeByEmail, a } from '@/services/login'
 import { CheckComp, CountDown } from './index'
 
 const LoginBox: FunctionComponent = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setError,
-    setValue,
-    reset,
-    formState: { errors },
-  } = useForm({
+  const formData = useForm({
     defaultValues: {
       email: '',
       phone: '',
@@ -26,7 +19,20 @@ const LoginBox: FunctionComponent = () => {
     },
   })
 
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setError,
+    setValue,
+    reset,
+    formState: { errors },
+  } = formData
+
   const checkBoxRef: any = useRef(null)
+
+  const [paramsEmail, setParamsEmail] = useState<a>()
+  useCodeByEmail(paramsEmail)
 
   const [loginType, setLoginType] = useState<string | 'email' | 'phone'>('email')
   const [codeType, setCodeType] = useState<string | 'pwd' | 'code'>('code')
@@ -46,10 +52,9 @@ const LoginBox: FunctionComponent = () => {
     [key: string]: any
   }
 
-  const onSubmit = (data: FormData) => {
-    console.log(checkEmail(data.email))
-    console.log(checkPhone(data.phone))
-
+  const onSubmit = async (data: FormData) => {
+    console.log(1, data)
+    setParamsEmail({ email: data.email })
     if (loginType == 'email' && !checkEmail(data.email)) {
       setError('email', { type: 'custom', message: '1' })
       return
@@ -69,6 +74,9 @@ const LoginBox: FunctionComponent = () => {
       checkBoxRef.current.openShak2()
       return
     }
+
+    // const res = await getCodyByEmail({ email: data.email })
+    // console.log(res)
   }
 
   const handleNumberChange = (e: any, type: 'email' | 'phone') => {
@@ -109,99 +117,94 @@ const LoginBox: FunctionComponent = () => {
               </span>
             )
           })}
+          {/* onClick= */}
+          <Form {...formData}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="mb-4">
+                {/* email input */}
+                {loginType == 'email' && (
+                  <>
+                    <div className="relative">
+                      <Input
+                        {...register('email', {
+                          onBlur: () => {
+                            if (!checkEmail(emailValue)) {
+                              setError('email', { type: 'custom', message: '1' })
+                            }
+                          },
+                        })}
+                        maxLength={50}
+                        onFocus={() => setError('email', { type: 'custom', message: '' })}
+                        type="email"
+                        placeholder={t(`login:enter.email`)}
+                        className={cn('mt-2', 'bg-[#f8f8f8]', errors.email?.message && 'border-destructive border-1')}
+                      />
 
-          <div className="mb-4">
-            {/* email input */}
-            {loginType == 'email' && (
-              <>
-                <div className="relative">
-                  <Input
-                    {...register('email', {
-                      onBlur: () => {
-                        if (!checkEmail(emailValue)) {
-                          setError('email', { type: 'custom', message: '1' })
-                        }
-                      },
-                    })}
-                    maxLength={50}
-                    onFocus={() => setError('email', { type: 'custom', message: '' })}
-                    type="email"
-                    placeholder={t(`login:enter.email`)}
-                    className={cn('mt-2', 'bg-[#f8f8f8]', errors.email?.message && 'border-destructive border-1')}
-                  />
+                      {emailValue && (
+                        <Button
+                          className="absolute right-1 top-1/2 h-5 w-6 -translate-y-1/2 text-xs hover:bg-transparent"
+                          variant="ghost"
+                          onClick={() => setValue('email', '')}
+                        >
+                          <CircleX />
+                        </Button>
+                      )}
+                    </div>
+                    {errors.email?.message && <p className="mt-2 text-[12px] text-[#FD305D]">{t('formatErr.email')}</p>}
+                  </>
+                )}
 
-                  {emailValue && (
-                    <Button
-                      className="absolute right-1 top-1/2 h-5 w-6 -translate-y-1/2 text-xs hover:bg-transparent"
-                      variant="ghost"
-                      onClick={() => setValue('email', '')}
-                    >
-                      <CircleX />
-                    </Button>
-                  )}
-                </div>
-                {errors.email?.message && <p className="mt-2 text-[12px] text-[#FD305D]">{t('formatErr.email')}</p>}
-              </>
-            )}
+                {/* phone input */}
+                {loginType == 'phone' && (
+                  <>
+                    <div className="relative">
+                      <Input
+                        {...register('phone', {
+                          onBlur: () => {
+                            if (!checkPhone(phoneValue)) {
+                              setError('phone', { type: 'custom', message: '1' })
+                            }
+                          },
+                        })}
+                        type="text"
+                        onChange={(e) => handleNumberChange(e, 'phone')}
+                        onFocus={() => setError('phone', { type: 'custom', message: '' })}
+                        maxLength={11}
+                        placeholder={t(`login:enter.phone`)}
+                        className={cn('mt-2', 'bg-[#f8f8f8]', errors.phone?.message && 'border-destructive border-1')}
+                      />
 
-            {/* phone input */}
-            {loginType == 'phone' && (
-              <>
-                <div className="relative">
-                  <Input
-                    {...register('phone', {
-                      onBlur: () => {
-                        if (!checkPhone(phoneValue)) {
-                          setError('phone', { type: 'custom', message: '1' })
-                        }
-                      },
-                    })}
-                    type="text"
-                    onChange={(e) => handleNumberChange(e, 'phone')}
-                    onFocus={() => setError('phone', { type: 'custom', message: '' })}
-                    maxLength={11}
-                    placeholder={t(`login:enter.phone`)}
-                    className={cn('mt-2', 'bg-[#f8f8f8]', errors.phone?.message && 'border-destructive border-1')}
-                  />
+                      {phoneValue && (
+                        <Button
+                          className="absolute right-1 top-1/2 h-5 w-6 -translate-y-1/2 text-xs hover:bg-transparent"
+                          variant="ghost"
+                          onClick={() => setValue('phone', '')}
+                        >
+                          <CircleX />
+                        </Button>
+                      )}
+                    </div>
+                    {errors.phone?.message && <p className="mt-2 text-[12px] text-[#FD305D]">{t('formatErr.phone')}</p>}
+                  </>
+                )}
+              </div>
+              <span className={'select-none'}>{t(codeType == 'code' ? 'verificationCode' : 'password')}</span>
+              <div className="relative">
+                <Input type="text" placeholder={t(`login:enter.${codeType}`)} className="mb-4 mt-2 bg-[#f8f8f8]" />
 
-                  {phoneValue && (
-                    <Button
-                      className="absolute right-1 top-1/2 h-5 w-6 -translate-y-1/2 text-xs hover:bg-transparent"
-                      variant="ghost"
-                      onClick={() => setValue('phone', '')}
-                    >
-                      <CircleX />
-                    </Button>
-                  )}
-                </div>
-                {errors.phone?.message && <p className="mt-2 text-[12px] text-[#FD305D]">{t('formatErr.phone')}</p>}
-              </>
-            )}
-          </div>
-
-          <span className={'select-none'}>{t(codeType == 'code' ? 'verificationCode' : 'password')}</span>
-
-          <div className="relative">
-            <Input type="text" placeholder={t(`login:enter.${codeType}`)} className="mb-4 mt-2 bg-[#f8f8f8]" />
-
-            {codeType == 'code' && (checkEmail(emailValue) || checkPhone(phoneValue)) && <CountDown />}
-          </div>
-
-          <p
-            className="cursor-pointer select-none text-xs text-[#3C7BF4]"
-            onClick={() => setCodeType(codeType == 'code' ? 'pwd' : 'code')}
-          >
-            {t(codeType == 'code' ? 'switchToPwd' : 'switchToCode')}
-          </p>
-
-          <Button
-            type="button"
-            onClick={handleSubmit(onSubmit)}
-            className="mt-[36px] w-full rounded-[40px] text-base text-black"
-          >
-            {t('login')}
-          </Button>
-
+                {codeType == 'code' && (checkEmail(emailValue) || checkPhone(phoneValue)) && <CountDown />}
+              </div>
+              <p
+                className="cursor-pointer select-none text-xs text-[#3C7BF4]"
+                onClick={() => setCodeType(codeType == 'code' ? 'pwd' : 'code')}
+              >
+                {t(codeType == 'code' ? 'switchToPwd' : 'switchToCode')}
+              </p>
+              <Button type="submit" className="mt-[36px] w-full rounded-[40px] text-base text-black">
+                {t('login')}
+              </Button>
+            </form>
+          </Form>
           <CheckComp register={register} setValue={setValue} watch={watch} ref={checkBoxRef} />
         </div>
       </div>
