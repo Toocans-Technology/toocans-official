@@ -1,0 +1,28 @@
+{
+  "name": "Toocans",
+  "title": "Welcome to",
+  "send": "Send",
+  "email": "Email",
+  "phone": "Phone",
+  "password": "Password",
+  "verificationCode": "Verification Code",
+  "switchToPwd": "Switch to password login",
+  "switchToCode": "Switch to code login",
+  "login": "Log in",
+  "unregisteredTip": "Unregistered users will be automatically registered directly",
+  "agreedTip": "I have read and agreed to the",
+  "userAgreement": "User Agreement",
+  "and": "and",
+  "privacyPolicy": "Privacy policy",
+  "notCodeTip": "Not able to receive verification code?",
+  "enter": {
+    "email": "Enter Email",
+    "phone": "Enter Phone",
+    "code": "Enter Code",
+    "pwd": "Enter password"
+  },
+  "formatErr": {
+    "email": "Email address format error",
+    "phone": "Phone number format error"
+  }
+}
