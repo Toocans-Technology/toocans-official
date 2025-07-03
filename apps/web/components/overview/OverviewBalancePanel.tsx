@@ -2,13 +2,14 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
-import { useAssetAll } from '@/hooks/asset'
+import { useAssetAll, useAllToken } from '@/hooks/asset'
 import styles from '../../app/[lang]/(with-header)/overview/overview.module.scss'
 
 export default function OverviewBalancePanel() {
   const { data, isLoading } = useAssetAll()
+  const { data: allTokenData, isLoading: allTokenLoading } = useAllToken()
   const [show, setShow] = useState(true)
-
+    console.log('allTokenData data:', allTokenData)
 //   const balanceParams = { pageNo: 1, pageSize: 10 }
 //   const { records } = useAssetRecord(balanceParams)
 //   console.log('useBalanceRecord 返回:', records)
@@ -16,11 +17,15 @@ export default function OverviewBalancePanel() {
   const formatAmount = (val: number | string) => {
     const num = Number(val)
     if (isNaN(num)) return '--'
-    return num.toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 4 })
+    return num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   }
 
   const availableTotal = Array.isArray(data)
-    ? data.reduce((sum, item) => sum + (parseFloat(item.assetTotal) || 0), 0)
+    ? data.reduce((sum, item) => {
+        const total = parseFloat(item.total) || 0;
+        const price = item.tokenId === 'USDT' ? 1 : parseFloat(item.marketPrice) || 0;
+        return sum + total * price;
+      }, 0)
     : '--'
   const total = Array.isArray(data)
     ? data.reduce((sum, item) => sum + (parseFloat(item.total) || 0), 0)

@@ -108,11 +108,10 @@
 }
 
 .authapp-input {
-  margin-left: 30px;
   display: flex;
   width: 456px;
   height: 44px;
-  padding: 0px 12px;
+  padding: 0px 10px;
   align-items: center;
   gap: 327px;
   flex-shrink: 0;
@@ -177,4 +176,43 @@
   margin-left: 8px;
   vertical-align: middle;
   transition: opacity 0.2s;
+}
+.authapp-verify-area {
+  margin-left: 30px;
+  margin-bottom: 24px;
+}
+.authapp-label {
+  color: #000;
+
+  /* M3/label/small */
+  font-family: var(--Label-Small-Font, Roboto);
+  font-size: var(--Label-Small-Size, 11px);
+  font-style: normal;
+  font-weight: 500;
+  line-height: var(--Label-Small-Line-Height, 16px); /* 145.455% */
+  letter-spacing: var(--Label-Small-Tracking, 0.5px);
+  margin-bottom: 8px;
+}
+.authapp-send-btn {
+  display: flex;
+  height: 12px;
+  padding: 20px 17px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  border-radius: 40px;
+  background: var(--light-button-default, #86fc70);
+  cursor: pointer;
+  color: var(--text-222222, #222);
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px; /* 150% */
+  transition: background 0.2s;
+  margin-bottom: 30px;
+}
+.authapp-send-btn:active {
+  background: #36c954;
 }

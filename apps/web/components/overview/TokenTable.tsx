@@ -4,10 +4,10 @@ import React from 'react'
 import { useAssetAll } from '@/hooks/asset'
 import styles from '../../app/[lang]/(with-header)/overview/overview.module.scss'
 
-const formatAmount = (val: number | string) => {
+const formatAmount = (val: number | string, precision: number = 4) => {
   const num = Number(val)
   if (isNaN(num)) return '--'
-  return num.toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 4 })
+  return num.toLocaleString(undefined, { minimumFractionDigits: precision, maximumFractionDigits: precision })
 }
 
 export default function TokenTable() {
@@ -31,11 +31,15 @@ export default function TokenTable() {
               </span>
               <div className={styles['token-info']}>
                 <div className={styles['token-name']}>{asset.tokenId}</div>
-                <div className={styles['token-price']}>市价: {formatAmount(asset.marketPrice)}</div>
+                <div className={styles['token-price']}>
+                  市价: {asset.tokenId === 'USDT' ? '1' : formatAmount(asset.marketPrice, 4)}
+                </div>
               </div>
               <div className={styles['token-amount']}>
-                <div className={styles['token-value']}>{formatAmount(asset.total)}</div>
-                <div className={styles['token-fiat']}>≈ {formatAmount(asset.availableAssetTotal)}</div>
+                <div className={styles['token-value']}>{formatAmount(asset.total, 4)}</div>
+                <div className={styles['token-fiat']}>
+                  ≈ {formatAmount(Number(asset.total) * (asset.tokenId === 'USDT' ? 1 : Number(asset.marketPrice)), 2)}
+                </div>
               </div>
             </div>
           ))

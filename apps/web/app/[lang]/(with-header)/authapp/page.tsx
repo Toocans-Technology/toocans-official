@@ -1,13 +1,32 @@
-"use client";
+'use client'
+
 import Image from 'next/image'
 import { Toaster, toast } from '@workspace/ui/components'
+import React, { useState } from 'react'
 import styles from './authapp.module.scss'
 
 export default function AuthAppPage() {
+  const [emailCountdown, setEmailCountdown] = useState(0)
   const handleCopy = async () => {
     await navigator.clipboard.writeText('123123123123')
     toast.success('复制成功！')
   }
+  const handleSendCode = () => {
+    if (emailCountdown > 0) return
+    toast.success('验证码已发送')
+    setEmailCountdown(60)
+    const timer = setInterval(() => {
+      setEmailCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+  }
+  const verifyType = 'email'
+
   return (
     <div className={styles['authapp-container']}>
       <div className={styles['authapp-box']}>
@@ -66,10 +85,26 @@ export default function AuthAppPage() {
             <div className={styles['num']}>3</div>
             <div>Security authentication</div>
           </div>
-          <div className={styles['authapp-step-desc']}>
-            <div></div>
-          </div>
-          <input className={styles['authapp-input']} placeholder="Please enter the Authenticator code" />
+          {verifyType === 'email' ? (
+            <div className={styles['authapp-verify-area']}>
+              <div className={styles['authapp-label']}>Email authentication</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <input className={styles['authapp-input']} placeholder="Enter 6-digit generated code from your app" />
+                <button
+                  className={styles['authapp-send-btn']}
+                  onClick={handleSendCode}
+                  disabled={emailCountdown > 0}
+                  style={emailCountdown > 0 ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                >
+                  {emailCountdown > 0 ? `${emailCountdown}s` : 'Send'}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className={styles['authapp-verify-area']}>
+              <input className={styles['authapp-input']} placeholder="Please enter the Authenticator code" />
+            </div>
+          )}
           <button className={styles['authapp-btn']}>Confirm</button>
         </div>
       </div>
