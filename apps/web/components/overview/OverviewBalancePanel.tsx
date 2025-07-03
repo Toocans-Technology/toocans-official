@@ -5,13 +5,11 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { useAssetAll } from '@/hooks/asset'
 import { useAllToken } from '@/hooks/useAllToken'
-import styles from '../../app/[lang]/(with-header)/overview/overview.module.scss'
 
 export default function OverviewBalancePanel() {
   const { data: data, isLoading: assetLoading } = useAssetAll()
   const { tokens: allTokenData, isLoading: allTokenLoading } = useAllToken()
   const [show, setShow] = useState(true)
-  console.log('allTokenData data1:', allTokenData)
 
   const formatAmount = (val: number | string) => {
     const num = Number(val)
@@ -36,10 +34,10 @@ export default function OverviewBalancePanel() {
           .reduce((sum, item) => sum + (parseFloat(item.total ?? '0') || 0), 0)
       : '--'
   return (
-    <div className={styles['overview-balance']}>
-      <div className={styles['overview-balance-label']}>
+    <div className="h-[154px] p-[30px_24px_10px_24px] flex flex-col gap-[10px] rounded-xl bg-white justify-center">
+      <div className="flex items-center gap-2 text-[#666] font-inter text-[20px] font-normal leading-[30px] mb-2">
         Total Balance
-        <span onClick={() => setShow((s) => !s)} style={{ cursor: 'pointer' }}>
+        <span onClick={() => setShow((s) => !s)} className="cursor-pointer">
           <Image
             src={show ? '/images/overview/Action_Eye_Open.svg' : '/images/overview/Action_eye-close.svg'}
             alt="Assets"
@@ -48,12 +46,12 @@ export default function OverviewBalancePanel() {
           />
         </span>
       </div>
-      <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <div className={styles['overview-balance-panel']}>
-          <div className={styles['overview-balance-value']}>
+      <div className="flex flex-row w-full items-center justify-between">
+        <div className="flex gap-2 flex-row flex-nowrap items-center">
+          <div className="text-black font-inter text-[32px] font-medium leading-[30px]">
             {show && total !== '--' ? formatAmount(total) : !show && total !== '--' ? '****' : ''}
           </div>
-          <div className={styles['overview-balance-usdt']}>
+          <div className="text-[#666] font-inter text-[14px] font-normal leading-[22px]">
             USDT ≈{' '}
             {show && availableTotal !== '--'
               ? formatAmount(availableTotal)
@@ -62,11 +60,11 @@ export default function OverviewBalancePanel() {
                 : ''}
           </div>
         </div>
-        <div className={styles['overview-balance-actions']}>
-          <Link href="/deposit" className={styles['deposit-btn']}>
+        <div className="flex gap-3">
+          <Link href="/deposit" className="flex h-10 px-7 justify-center items-center gap-2 rounded-[20px] bg-[#9cff1f] cursor-pointer text-[#222] font-inter text-[16px] font-normal leading-[22px]">
             Deposit
           </Link>
-          <Link href="/withdrawal" className={styles['withdraw-btn']}>
+          <Link href="/withdrawal" className="flex h-10 px-7 justify-center items-center gap-2 rounded-[40px] bg-[#f4f4f4] text-[#222] font-pingfang text-[16px] font-normal leading-[22px] tracking-[-0.408px] cursor-pointer">
             Withdraw
           </Link>
         </div>
