@@ -16,7 +16,7 @@ const RecentWithdraw: FunctionComponent<Props> = ({ tokenId }) => {
 
   return (
     <div className="mt-6 rounded-[10px] bg-white p-6">
-      <div className="border-b border-[#f4f4f4] pb-2.5">
+      <div className="border-border border-b pb-2.5">
         <div className="text-brand after:bg-brand relative inline-block h-7 text-base after:absolute after:-bottom-3 after:left-1/2 after:h-0.5 after:w-8 after:-translate-x-1/2 after:content-['']">
           {t('withdrawal:recentWithdrawal')}
         </div>
