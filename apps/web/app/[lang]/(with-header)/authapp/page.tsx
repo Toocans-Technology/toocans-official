@@ -125,7 +125,6 @@ export default function AuthAppPage() {
           </button>
         </div>
       </div>
-      <Toaster position="top-center" richColors />
     </div>
   )
 }
