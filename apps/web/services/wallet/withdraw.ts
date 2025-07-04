@@ -11,8 +11,8 @@ const WithdrawReqSchema = z.object({
   amount: z.number(),
   tokenFee: z.optional(z.number()),
   chargeType: z.optional(z.number()),
-  code: z.number(),
-  gaCode: z.optional(z.number()),
+  code: z.string(),
+  gaCode: z.optional(z.string()),
 })
 
 export type WithdrawReq = z.infer<typeof WithdrawReqSchema>
