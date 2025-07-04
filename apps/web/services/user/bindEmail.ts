@@ -10,11 +10,7 @@ export const BindEmailParamsSchema = z.object({
 })
 export type BindEmailParams = z.infer<typeof BindEmailParamsSchema>
 
-export const BindEmailResponseSchema = z.object({
-  code: z.number().nullable(),
-  msg: z.string().nullable(),
-  data: z.string().nullable(),
-})
+export const BindEmailResponseSchema = z.string()
 
 export type BindEmailResponse = z.infer<typeof BindEmailResponseSchema>
 

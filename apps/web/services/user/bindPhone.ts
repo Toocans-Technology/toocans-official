@@ -12,11 +12,7 @@ export const BindPhoneParamsSchema = z.object({
 })
 export type BindPhoneParams = z.infer<typeof BindPhoneParamsSchema>
 
-export const BindPhoneResponseSchema = z.object({
-  code: z.number().nullable(),
-  msg: z.string().nullable(),
-  data: z.string().nullable(),
-})
+export const BindPhoneResponseSchema = z.string()
 export type BindPhoneResponse = z.infer<typeof BindPhoneResponseSchema>
 
 export const useBindPhone = (params?: BindPhoneParams) => {

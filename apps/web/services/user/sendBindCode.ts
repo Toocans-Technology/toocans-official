@@ -10,11 +10,7 @@ export const SendBindCodeParamsSchema = z.object({
 })
 export type SendBindCodeParams = z.infer<typeof SendBindCodeParamsSchema>
 
-export const SendBindCodeResponseSchema = z.object({
-  code: z.number().nullable(),
-  msg: z.string().nullable(),
-  data: z.any().nullable(),
-})
+export const SendBindCodeResponseSchema = z.object({})
 export type SendBindCodeResponse = z.infer<typeof SendBindCodeResponseSchema>
 
 export const useSendBindCode = (params?: SendBindCodeParams) => {

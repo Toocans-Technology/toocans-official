@@ -10,10 +10,7 @@ export const BindVerificationCodeParamsSchema = z.object({
 })
 export type BindVerificationCodeParams = z.infer<typeof BindVerificationCodeParamsSchema>
 
-export const BindVerificationCodeResponseSchema = z.object({
-  code: z.number().nullable(),
-  msg: z.string().nullable(),
-  data: z.any().nullable(),
+export const BindVerificationCodeResponseSchema = z.any({
 })
 export type BindVerificationCodeResponse = z.infer<typeof BindVerificationCodeResponseSchema>
 

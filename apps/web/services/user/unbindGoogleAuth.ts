@@ -8,11 +8,7 @@ export const UnbindGoogleAuthParamsSchema = z.object({
 })
 export type UnbindGoogleAuthParams = z.infer<typeof UnbindGoogleAuthParamsSchema>
 
-export const UnbindGoogleAuthResponseSchema = z.object({
-  code: z.number().nullable(),
-  msg: z.string().nullable(),
-  data: z.any().nullable(),
-})
+export const UnbindGoogleAuthResponseSchema = z.object({})
 export type UnbindGoogleAuthResponse = z.infer<typeof UnbindGoogleAuthResponseSchema>
 
 export const useUnbindGoogleAuth = (params: UnbindGoogleAuthParams) => {

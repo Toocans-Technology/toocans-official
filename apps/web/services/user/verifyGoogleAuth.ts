@@ -9,11 +9,7 @@ export const VerifyGoogleAuthParamsSchema = z.object({
 })
 export type VerifyGoogleAuthParams = z.infer<typeof VerifyGoogleAuthParamsSchema>
 
-export const VerifyGoogleAuthResponseSchema = z.object({
-  code: z.number().nullable(),
-  msg: z.string().nullable(),
-  data: z.any().nullable(),
-})
+export const VerifyGoogleAuthResponseSchema = z.object({})
 export type VerifyGoogleAuthResponse = z.infer<typeof VerifyGoogleAuthResponseSchema>
 
 export const useVerifyGoogleAuth = (params: VerifyGoogleAuthParams) => {

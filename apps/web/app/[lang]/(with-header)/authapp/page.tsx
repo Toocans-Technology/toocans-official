@@ -4,10 +4,14 @@ import Image from 'next/image'
 import React, { useState } from 'react'
 import { Toaster, toast } from '@workspace/ui/components'
 import { useT } from '@/i18n'
+import { useUserInfo } from '@/services/user/info'
 
 export default function AuthAppPage() {
   const { t } = useT('authapp')
-
+  const { data: userInfoRes } = useUserInfo();
+  if (userInfoRes) {
+    console.log('hasGaKey:', userInfoRes.hasGaKey)
+  }
   const [emailCountdown, setEmailCountdown] = useState(0)
   const handleCopy = async () => {
     await navigator.clipboard.writeText('123123123123')
