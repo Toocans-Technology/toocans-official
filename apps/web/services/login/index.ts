@@ -1,1 +1,2 @@
-export * from './getCodeByEmail'
+export * from './getCode'
+export * from './getCountrys'

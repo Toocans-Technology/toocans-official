@@ -14,7 +14,12 @@
   "userAgreement": "User Agreement",
   "and": "and",
   "privacyPolicy": "Privacy policy",
-  "notCodeTip": "Not able to receive verification code?",
+  "notCode": {
+    "tip1": "Not able to receive verification code?",
+    "tip2": "Please try the following steps:",
+    "step1": "Check if you are using the correct email address abc***@gmail.com",
+    "step2": "If you are still unable to receive it, please check your spam folder."
+  },
   "enter": {
     "email": "Enter Email",
     "phone": "Enter Phone",
@@ -23,6 +28,7 @@
   },
   "formatErr": {
     "email": "Email address format error",
-    "phone": "Phone number format error"
+    "phone": "Phone number format error",
+    "code": "Verification code format error"
   }
 }

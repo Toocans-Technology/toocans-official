@@ -82,7 +82,7 @@ export async function handleData<T>(args: CscFetcherOptions<T>, skipTokenError: 
   try {
     return args.transfer(parsedRawData.data)
   } catch (e) {
-    if (cscFetcherConfig.exposeError) console.error('transfer error with', args.method, args.url)
+    if (cscFetcherConfig.exposeError) console.error(e, 'transfer error with', args.method, args.url)
     throw e
   }
 }
