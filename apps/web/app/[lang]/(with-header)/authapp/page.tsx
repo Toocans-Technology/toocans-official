@@ -24,9 +24,9 @@ export default function AuthAppPage() {
     if (userInfoRes && userInfoRes.hasGaKey && !hasToast) {
       toast.error('已绑定谷歌验证器，请勿重复绑定');
       setHasToast(true);
-      setTimeout(() => {
-        window.history.back();
-      }, 2000);
+      // setTimeout(() => {
+      //   window.history.back();
+      // }, 2000);
     }
   }, [userInfoRes, hasToast])
   
@@ -85,7 +85,7 @@ export default function AuthAppPage() {
   // const { data: sendCodeByUserPhoneOrEmailRes } = useSendCodeByUserPhoneOrEmail()
   // 6 unbindGoogleAuth
   // const { data: unbindGoogleAuthRes } = useUnbindGoogleAuth({
-  //   code: '123456',
+  //   code: '497017',
   // })
   // 8 generateGoogleAuth
   const { data: generateGoogleAuthRes } = useGenerateGoogleAuth()
@@ -97,6 +97,7 @@ export default function AuthAppPage() {
   }
 
   const handleWithdraw = useCallback(
+    //这里服务端返回成功也会报错
     async (data: z.infer<typeof FormSchema>) => {
       console.log('data', data)
       await mutateVerifyGoogleAuth({
