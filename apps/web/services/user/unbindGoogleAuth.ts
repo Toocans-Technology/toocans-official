@@ -14,9 +14,10 @@ export type UnbindGoogleAuthResponse = z.infer<typeof UnbindGoogleAuthResponseSc
 export const useUnbindGoogleAuth = (params: UnbindGoogleAuthParams) => {
   return useQuery(
     getQuery({
-      method: 'GET',
+      method: 'POST',
       url: getUrl('/user/unbindGoogleAuth'),
       query: UnbindGoogleAuthParamsSchema.parse(params),
+      body: {},
       transfer: UnbindGoogleAuthResponseSchema.parse,
       headers: {
         Authorization:

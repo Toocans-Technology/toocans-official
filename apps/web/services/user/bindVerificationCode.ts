@@ -10,16 +10,16 @@ export const BindVerificationCodeParamsSchema = z.object({
 })
 export type BindVerificationCodeParams = z.infer<typeof BindVerificationCodeParamsSchema>
 
-export const BindVerificationCodeResponseSchema = z.any({
-})
+export const BindVerificationCodeResponseSchema = z.any({})
 export type BindVerificationCodeResponse = z.infer<typeof BindVerificationCodeResponseSchema>
 
 export const useBindVerificationCode = (params?: BindVerificationCodeParams) => {
   return useQuery(
     getQuery({
-      method: 'GET',
+      method: 'POST',
       url: getUrl('/user/bindVerificationCode'),
       query: params ? BindVerificationCodeParamsSchema.parse(params) : {},
+      body:{},
       transfer: BindVerificationCodeResponseSchema.parse,
       headers: {
         Authorization:
