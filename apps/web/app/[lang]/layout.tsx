@@ -34,7 +34,7 @@ export default async function RootLayout({ children, params }: Readonly<Props>) 
     <html lang={lang} suppressHydrationWarning>
       <body className={`${fontSans.variable} ${fontInter.variable} font-inter antialiased`}>
         <BaseProviders>
-          <Toaster position="top-center" />
+          <Toaster position="top-center" richColors />
           <RouterProvider>{children}</RouterProvider>
         </BaseProviders>
       </body>

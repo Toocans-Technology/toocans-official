@@ -42,6 +42,7 @@ const WithdrawSteps: FunctionComponent = () => {
     setSelectedToken(token)
     setSelectedNetwork(undefined)
     setStep(WithdrawStep.ChooseNetwork)
+    setAddress('')
   }, [])
 
   const handleSelectNetwork = useCallback(
@@ -53,6 +54,7 @@ const WithdrawSteps: FunctionComponent = () => {
       }
 
       setSelectedNetwork(network)
+      setAddress('')
 
       if (network && address) {
         setStep(WithdrawStep.WithdrawAmount)

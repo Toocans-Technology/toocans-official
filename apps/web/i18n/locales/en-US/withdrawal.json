@@ -34,6 +34,10 @@
   "emailAuthPlaceholder": "Please enter the email authentication code",
   "googleAuth": "Google 2FA code",
   "googleAuthPlaceholder": "Please enter the Google Authenticator code",
+  "amountError": {
+    "insufficientBalance": "Insufficient balance",
+    "minAmount": "Enter a minimum amount of {{minAmount}}"
+  },
   "withdrawModal": {
     "title": "Withdraw",
     "codeError.required": "Please enter the email authentication code",
