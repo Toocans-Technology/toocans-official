@@ -3,9 +3,12 @@ import { z } from 'zod'
 import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
 
-export const GetAllAssetParamsSchema = z.object({
-  tokenId: z.string().optional(),
-})
+export const GetAllAssetParamsSchema = z
+  .object({
+    tokenId: z.string().optional(),
+  })
+  .optional()
+
 export type GetAllAssetParams = z.infer<typeof GetAllAssetParamsSchema>
 
 export const BalanceVoSchema = z.object({
@@ -32,12 +35,13 @@ const GetAllAssetResponseSchema = z.array(BalanceVoSchema)
 export type GetAllAssetResponse = z.infer<typeof GetAllAssetResponseSchema>
 
 export const useGetAllAsset = (params?: GetAllAssetParams) => {
-  return useQuery(
-    getQuery({
+  return useQuery({
+    ...getQuery({
       method: 'GET',
       url: getUrl('/balance/getAllAsset'),
-      query: params ? GetAllAssetParamsSchema.parse(params) : {},
+      query: GetAllAssetParamsSchema.parse(params),
       transfer: GetAllAssetResponseSchema.parse,
-    })
-  )
+    }),
+    enabled: params ? !!params?.tokenId : true,
+  })
 }

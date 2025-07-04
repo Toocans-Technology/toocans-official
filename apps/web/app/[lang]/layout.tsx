@@ -41,7 +41,7 @@ export default async function RootLayout({ children, params }: Readonly<Props>) 
         <AntdRegistry>
           <ConfigProvider theme={themeConfig}>
             <BaseProviders>
-              <Toaster position="top-center" />
+              <Toaster position="top-center" richColors />
               <RouterProvider>
                 {/* https://ant-design.antgroup.com/docs/react/v5-for-19-cn */}
                 <Fix />
