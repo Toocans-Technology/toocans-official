@@ -5,8 +5,20 @@ import { useCountDown } from 'ahooks'
 import { FunctionComponent, useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Button, Form, Input, Label, Separator, toast } from '@workspace/ui/components'
+import {
+  Button,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  Separator,
+  toast,
+} from '@workspace/ui/components'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@workspace/ui/components'
+import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
 import { Token } from '@/services/basicConfig'
 import { getEmailCode } from '@/services/resource'
@@ -39,7 +51,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ accountId, address, token, am
       gaCode: '',
     },
   })
-  const { register, handleSubmit } = form
+  const { handleSubmit, formState } = form
 
   const [countdown] = useCountDown({
     targetDate,
@@ -53,14 +65,16 @@ const WithdrawModal: FunctionComponent<Props> = ({ accountId, address, token, am
       return
     }
 
+    // TODO: 获取用户邮箱
     setEmail('chacha@bdy.tech')
     refetch()
-    setTargetDate(Date.now() + 60 * 1000)
+    setTargetDate(Date.now() + 59 * 1000)
   }, [refetch, countdown])
 
   const handleWithdraw = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
-      console.log('data', data)
+      console.log('表单数据', data)
+
       try {
         await mutateWithdraw({
           ...data,
@@ -92,19 +106,21 @@ const WithdrawModal: FunctionComponent<Props> = ({ accountId, address, token, am
               <Separator />
             </DialogHeader>
             <div className="grid gap-2">
-              <div className="grid grid-cols-2 py-1.5 text-sm">
+              <div className="grid grid-cols-2 items-center py-1.5 text-sm">
                 <div className="text-[#999]">{t('withdrawal:network')}</div>
-                <div className="text-right font-medium">TRC20</div>
+                <div className="text-right font-medium">{token?.chainName ?? token?.protocolName}</div>
               </div>
-              <div className="grid grid-cols-2 py-1.5 text-sm">
+              <div className="grid grid-cols-2 items-center py-1.5 text-sm">
                 <div className="text-[#999]">{t('withdrawal:address')}</div>
-                <div className="text-right font-medium">{address}</div>
+                <div className="overflow-hidden break-words text-right font-medium">{address}</div>
               </div>
-              <div className="grid grid-cols-2 py-1.5 text-sm">
+              <div className="grid grid-cols-2 items-center py-1.5 text-sm">
                 <div className="text-[#999]">{t('withdrawal:amount')}</div>
-                <div className="text-right font-medium">{amount}</div>
+                <div className="text-right font-medium">
+                  {amount} {token?.tokenName}
+                </div>
               </div>
-              <div className="grid grid-cols-2 py-1.5 text-sm">
+              <div className="grid grid-cols-2 items-center py-1.5 text-sm">
                 <div className="text-[#999]">{t('withdrawal:chargeAndNetwork')}</div>
                 <div className="text-right font-medium">
                   {tokenFee} {token?.tokenName}
@@ -112,35 +128,45 @@ const WithdrawModal: FunctionComponent<Props> = ({ accountId, address, token, am
               </div>
             </div>
             <div className="mt-4 grid gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="code">{t('withdrawal:emailAuth')}</Label>
-                <div className="focus-within:border-ring focus-within:ring-primary flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]">
-                  <Input
-                    id="code"
-                    required
-                    autoComplete="off"
-                    className="flex-1 focus-visible:ring-0"
-                    placeholder={t('withdrawal:emailAuthPlaceholder')}
-                    {...register('code', { required: true, minLength: 6, maxLength: 6 })}
-                  />
-                  <span className="text-link cursor-pointer" onClick={handleSendCode}>
-                    {countdown ? `${Math.round(countdown / 1000)}s` : t('common:send')}
-                  </span>
-                </div>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="gaCode">{t('withdrawal:googleAuth')}</Label>
-                <Input
-                  id="gaCode"
-                  required
-                  autoComplete="off"
-                  placeholder={t('withdrawal:googleAuthPlaceholder')}
-                  {...register('gaCode', { required: true, minLength: 6, maxLength: 6 })}
-                />
-              </div>
+              <FormField
+                control={form.control}
+                name="code"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('withdrawal:emailAuth')}</FormLabel>
+                    <div className="focus-within:border-ring focus-within:ring-primary flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]">
+                      <FormControl>
+                        <Input
+                          {...field}
+                          autoCapitalize="off"
+                          placeholder={t('withdrawal:emailAuthPlaceholder')}
+                          className="focus-visible:ring-0"
+                        />
+                      </FormControl>
+                      <span className={cn('text-link', !countdown && 'cursor-pointer')} onClick={handleSendCode}>
+                        {countdown ? `${Math.round(countdown / 1000)}s` : t('common:send')}
+                      </span>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="gaCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('withdrawal:googleAuth')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} autoCapitalize="off" placeholder={t('withdrawal:googleAuthPlaceholder')} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
             <DialogFooter>
-              <Button type="submit" rounded="full">
+              <Button type="submit" rounded="full" disabled={!formState.isValid}>
                 {t('common:next')}
               </Button>
             </DialogFooter>
