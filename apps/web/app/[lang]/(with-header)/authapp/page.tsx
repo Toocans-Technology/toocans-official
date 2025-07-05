@@ -15,25 +15,32 @@ import { useUserInfo } from '@/services/user/info'
 // import { useSendCodeByUserPhoneOrEmail } from '@/services/user/sendCodeByUserPhoneOrEmail'
 // import { useUnbindGoogleAuth } from '@/services/user/unbindGoogleAuth'
 import { useVerifyGoogleAuth } from '@/services/user/verifyGoogleAuth'
+import { HttpError } from '@/types/http'
 
 export default function AuthAppPage() {
   const { t } = useT('authapp')
   const { data: userInfoRes } = useUserInfo()
-  const [hasToast, setHasToast] = useState(false)
-  React.useEffect(() => {
-    if (userInfoRes && userInfoRes.hasGaKey && !hasToast) {
-      toast.error('已绑定谷歌验证器，请勿重复绑定');
-      setHasToast(true);
-      // setTimeout(() => {
-      //   window.history.back();
-      // }, 2000);
-    }
-  }, [userInfoRes, hasToast])
-  
-  const { mutateAsync: mutateVerifyGoogleAuth } = useVerifyGoogleAuth()
-
+  const { mutateAsync: mutateVerifyGoogleAuth, isPending } = useVerifyGoogleAuth()
   const [emailCountdown, setEmailCountdown] = useState(0)
   const [googleCode, setGoogleCode] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [bindSuccess, setBindSuccess] = useState(true)
+  React.useEffect(() => {
+    if (userInfoRes && userInfoRes.hasGaKey) {
+      setLoading(true)
+      setGoogleCode('')
+      setBindSuccess(true)
+      toast.error('已绑定谷歌验证器，请勿重复绑定')
+      setTimeout(() => {
+        window.history.back();
+      }, 2000);
+    } else {
+      setLoading(true)
+      if (userInfoRes && !userInfoRes.hasGaKey) {
+        setBindSuccess(false)
+      }
+    }
+  }, [userInfoRes])
   const handleSendCode = () => {
     if (emailCountdown > 0) return
     toast.success(t('authapp:VerificationCodeSent'))
@@ -49,12 +56,6 @@ export default function AuthAppPage() {
     }, 1000)
   }
   const verifyType = 'google'
-
-  const FormSchema = z.object({
-    code: z.string(),
-    secretKey: z.string(),
-  })
-
   // // 1. 绑定邮箱
   // const { data: bindEmailRes, isLoading: bindEmailLoading, error: bindEmailError } = useBindEmail({
   //   email: 'test@bdy.tech',
@@ -85,8 +86,20 @@ export default function AuthAppPage() {
   // const { data: sendCodeByUserPhoneOrEmailRes } = useSendCodeByUserPhoneOrEmail()
   // 6 unbindGoogleAuth
   // const { data: unbindGoogleAuthRes } = useUnbindGoogleAuth({
-  //   code: '497017',
+  //   code: '562220',
   // })
+
+  // React.useEffect(() => {
+  //   if (unbindGoogleAuthRes) {
+  //     console.log('unbindGoogleAuthRes:', unbindGoogleAuthRes)
+  //     if (unbindGoogleAuthRes.code === 500) {
+  //       toast.error('解绑失败')
+  //     } else {
+  //       toast.success('解绑结果：' + (unbindGoogleAuthRes.msg || ''))
+  //     }
+  //   }
+  // }, [unbindGoogleAuthRes])
+
   // 8 generateGoogleAuth
   const { data: generateGoogleAuthRes } = useGenerateGoogleAuth()
   const handleCopySecretKey = async () => {
@@ -96,26 +109,29 @@ export default function AuthAppPage() {
     }
   }
 
-  const handleWithdraw = useCallback(
-    //这里服务端返回成功也会报错
-    async (data: z.infer<typeof FormSchema>) => {
-      console.log('data', data)
+  const handleWithdraw = useCallback(async () => {
+    try {
       await mutateVerifyGoogleAuth({
         code: googleCode ?? '',
         secretKey: generateGoogleAuthRes?.secretKey ?? '',
       })
-    },
-    [mutateVerifyGoogleAuth, googleCode, generateGoogleAuthRes]
-  )
+      toast.success(t('authapp:VerificationSuccess') || 'Verification successful!')
+      setGoogleCode('')
+      setBindSuccess(true)
+      setTimeout(() => {
+        window.history.back()
+      }, 2000)
+    } catch (error) {
+      setBindSuccess(false)
+      toast.error((error as HttpError).message)
+    }
+  }, [mutateVerifyGoogleAuth, googleCode, generateGoogleAuthRes, t])
   const handleVerifyGoogleAuth = () => {
     if (!googleCode || !generateGoogleAuthRes?.secretKey) {
       toast.error('Please enter the code and make sure secretKey exists')
       return
     }
-    handleWithdraw({
-      code: googleCode,
-      secretKey: generateGoogleAuthRes.secretKey,
-    })
+    handleWithdraw()
   }
   React.useEffect(() => {
     // if (bindEmailRes) {
@@ -141,6 +157,9 @@ export default function AuthAppPage() {
     }
     // }, [bindEmailRes, bindPhoneRes, bindVerificationCodeRes, sendBindCodeRes, sendCodeByUserPhoneOrEmailRes, unbindGoogleAuthRes, verifyGoogleAuthRes])
   }, [generateGoogleAuthRes])
+  if (!loading) {
+    return <div className="flex min-h-screen items-center justify-center bg-[#fafbfc]"></div>
+  }
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#fafbfc]">
       <div className="mx-auto w-full max-w-[942px] rounded-xl bg-white p-[60px_32px_24px_32px] shadow-[0_2px_16px_0_rgba(0,0,0,0.04)]">
@@ -216,6 +235,7 @@ export default function AuthAppPage() {
               <div className="mb-2 text-[14px] font-medium text-[#222]">Email authentication</div>
               <div className="flex items-center gap-3">
                 <input
+                  maxLength={6}
                   className="mb-7 ml-8 flex h-11 w-[456px] items-center rounded-md border-none bg-[#f5f5f5] px-3 text-black"
                   placeholder="Enter 6-digit generated code from your app"
                 />
@@ -230,20 +250,26 @@ export default function AuthAppPage() {
             </div>
           ) : (
             <div className="mb-6 ml-8">
-              <input
-                className="mb-7 ml-8 flex h-11 w-[456px] items-center rounded-md border-none bg-[#f5f5f5] px-3 text-black"
-                placeholder="Please enter the Authenticator code"
-                value={googleCode}
-                onChange={(e) => setGoogleCode(e.target.value)}
-              />
+              {!bindSuccess && (
+                <input
+                  maxLength={6}
+                  className="mb-7 ml-8 flex h-11 w-[456px] items-center rounded-md border-none bg-[#f5f5f5] px-3 text-black"
+                  placeholder="Please enter the Authenticator code"
+                  value={googleCode}
+                  onChange={(e) => setGoogleCode(e.target.value)}
+                />
+              )}
             </div>
           )}
-          <button
-            className="ml-8 flex h-[44px] w-[456px] cursor-pointer items-center justify-center rounded-[40px] bg-[#86fc70] px-4 text-[16px] font-normal leading-[22px] tracking-[-0.408px] text-[#222] transition-colors active:bg-[#36c954]"
-            onClick={handleVerifyGoogleAuth}
-          >
-            Confirm
-          </button>
+          {!bindSuccess && (
+            <button
+              disabled={isPending}
+              className="ml-8 flex h-[44px] w-[456px] cursor-pointer items-center justify-center rounded-[40px] bg-[#86fc70] px-4 text-[16px] font-normal leading-[22px] tracking-[-0.408px] text-[#222] transition-colors active:bg-[#36c954]"
+              onClick={handleVerifyGoogleAuth}
+            >
+              Confirm
+            </button>
+          )}
         </div>
       </div>
     </div>
