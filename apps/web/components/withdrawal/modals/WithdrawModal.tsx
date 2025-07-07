@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCountDown } from 'ahooks'
 import { Loader2Icon } from 'lucide-react'
-import { FunctionComponent, useCallback, useState } from 'react'
+import { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import {
@@ -28,11 +28,6 @@ import { VerifyType } from '@/types/withdraw'
 
 const COUNT_DOWN = 59 * 1000
 
-const FormSchema = z.object({
-  code: z.string().min(6).max(6),
-  gaCode: z.string().min(6).max(6).optional(),
-})
-
 interface Props {
   token: Token
   accountId: number
@@ -52,15 +47,27 @@ const WithdrawModal: FunctionComponent<Props> = ({
   openDetail,
   disabled = true,
 }) => {
+  const hasGaKey = false
   const { t } = useT(['withdrawal', 'common'])
   const [verifyType, setVerifyType] = useState<VerifyType>(VerifyType.email)
   const [targetDate, setTargetDate] = useState<number>()
   const { refetch } = getVerifyCode({ type: verifyType })
   const { mutateAsync: mutateWithdraw, isPending } = useWithdraw()
+
+  const FormSchema = useMemo(
+    () =>
+      z.object({
+        code: z.string().min(6).max(6),
+        gaCode: hasGaKey ? z.string().min(6).max(6) : z.string().optional(),
+      }),
+    [hasGaKey]
+  )
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       code: '',
+      gaCode: '',
     },
   })
   const { handleSubmit, formState } = form
@@ -173,19 +180,21 @@ const WithdrawModal: FunctionComponent<Props> = ({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="gaCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('withdrawal:googleAuth')}</FormLabel>
-                  <FormControl>
-                    <Input {...field} autoCapitalize="off" placeholder={t('withdrawal:googleAuthPlaceholder')} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {hasGaKey && (
+              <FormField
+                control={form.control}
+                name="gaCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('withdrawal:googleAuth')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} autoCapitalize="off" placeholder={t('withdrawal:googleAuthPlaceholder')} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </div>
           <DialogFooter>
             <Button rounded="full" disabled={!formState.isValid || isPending} onClick={handleSubmit(onSubmit)}>
