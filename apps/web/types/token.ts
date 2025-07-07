@@ -13,3 +13,10 @@ export enum AllowWithdraw {
 }
 
 export const allowWithdrawSchema = z.nativeEnum(AllowWithdraw)
+
+export enum WithdrawChargeType {
+  fixed = 1,
+  percentage = 2,
+}
+
+export const withdrawChargeTypeSchema = z.nativeEnum(WithdrawChargeType)

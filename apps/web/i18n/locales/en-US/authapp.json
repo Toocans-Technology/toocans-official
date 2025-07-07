@@ -1,0 +1,10 @@
+{
+  "title": "Copied successfully!",
+  "VerificationCodeSent": "Verification code sent",
+  "AlreadyBinded": "Google Authenticator already bound, do not bind again.",
+  "CopySuccess": "Copied!",
+  "VerificationSuccess": "Binding successful!",
+  "VerificationFailed": "Verification failed, please try again.",
+  "PleaseEnterCodeAndSecretKey": "Please enter the code and make sure secretKey exists",
+  "GoogleCode6Digits": "Google Authenticator code must be 6 digits"
+}
