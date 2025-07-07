@@ -30,17 +30,21 @@
   "success": "Success",
   "failed": "Failed",
   "manualRejectFailed": "Manual Reject Failed",
-  "emailAuth": "Email Authentication",
+  "emailAuth": "Enter the verification code that was sent to {{ email }}. It’s valid for 10 minutes.",
   "emailAuthPlaceholder": "Please enter the email authentication code",
+  "phoneAuth": "Enter the verification code that was sent to {{ phone }}. It’s valid for 10 minutes.",
+  "enterCode": "Enter Code",
   "googleAuth": "Google 2FA code",
   "googleAuthPlaceholder": "Please enter the Google Authenticator code",
+  "switchPhone": "Switch to Phone verification method",
+  "switchEmail": "Switch to Email verification method",
   "amountError": {
     "insufficientBalance": "Insufficient balance",
     "minAmount": "Enter a minimum amount of {{minAmount}}"
   },
   "withdrawModal": {
     "title": "Withdraw",
-    "codeError.required": "Please enter the email authentication code",
+    "codeError.required": "Please enter the verification code",
     "gaCodeError.required": "Please enter the Google Authenticator code"
   }
 }

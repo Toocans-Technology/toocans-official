@@ -6,6 +6,7 @@ import { useTokenFee } from '@/hooks/useTokenFee'
 import { useT } from '@/i18n'
 import { formatInputAmount } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
+import { WithdrawDetailModal } from '../modals'
 import WithdrawModal from '../modals/WithdrawModal'
 
 type InputValueType = {
@@ -22,6 +23,7 @@ interface Props {
 const ReceivedAmount: FunctionComponent<Props> = ({ token, address }) => {
   const { t } = useT('withdrawal')
   const minAmount = token?.tokenSetting?.withdrawMinQuantity || 0
+  const [open, setOpen] = useState(false)
   const [amount, setAmount] = useState<InputValueType>({ value: '', error: '', isInvalid: false })
   const tokenFee = useTokenFee(token, Number(amount.value))
   const { data } = useAssetAll(token?.tokenId)
@@ -112,8 +114,10 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address }) => {
           accountId={0}
           disabled={disabled}
           tokenFee={tokenFee}
+          openDetail={setOpen}
         />
       )}
+      {token && <WithdrawDetailModal onOpenChange={setOpen} open={open} />}
     </div>
   )
 }

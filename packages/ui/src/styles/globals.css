@@ -30,6 +30,7 @@
   --radius: 0.625rem;
   --brand: oklch(from #1ACA75 l c h);
   --link: oklch(from #3C7BF4 l c h);
+  --warning: oklch(from #FFCC00 l c h);
 }
 
 .dark {
@@ -54,6 +55,7 @@
   --ring: oklch(0.556 0 0);
   --brand: oklch(from #9CFF1F l c h);
   --link: oklch(from #3C7BF4 l c h);
+  --warning: oklch(from #FFCC00 l c h);
 }
 
 @theme inline {
@@ -82,6 +84,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --color-warning: var(--warning);
 }
 
 @layer base {
