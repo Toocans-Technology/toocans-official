@@ -3,17 +3,10 @@
 import Image from 'next/image'
 import { QRCodeSVG } from 'qrcode.react'
 import React, { useState, useCallback } from 'react'
-import { z } from 'zod'
 import { toast } from '@workspace/ui/components'
 import { useT } from '@/i18n'
-// import { useBindEmail } from '@/services/user/bindEmail'
-// import { useBindPhone } from '@/services/user/bindPhone'
-// import { useBindVerificationCode } from '@/services/user/bindVerificationCode'
 import { useGenerateGoogleAuth } from '@/services/user/generateGoogleAuth'
 import { useUserInfo } from '@/services/user/info'
-// import { useSendBindCode } from '@/services/user/sendBindCode'
-// import { useSendCodeByUserPhoneOrEmail } from '@/services/user/sendCodeByUserPhoneOrEmail'
-// import { useUnbindGoogleAuth } from '@/services/user/unbindGoogleAuth'
 import { useVerifyGoogleAuth } from '@/services/user/verifyGoogleAuth'
 import { HttpError } from '@/types/http'
 
@@ -56,51 +49,6 @@ export default function AuthAppPage() {
     }, 1000)
   }
   const verifyType = 'google'
-  // // 1. 绑定邮箱
-  // const { data: bindEmailRes, isLoading: bindEmailLoading, error: bindEmailError } = useBindEmail({
-  //   email: 'test@bdy.tech',
-  //   verificationCode: '123456',
-  //   validEmail: true,
-  // })
-  // // 2. 绑定手机
-  // const { data: bindPhoneRes, isLoading: bindPhoneLoading, error: bindPhoneError } = useBindPhone({
-  //   nationalCode: '86',
-  //   phoneNumber: '13800138000',
-  //   verificationCode: '654321',
-  //   fullPhoneNumber: '8613800138000',
-  //   validPhoneNumber: true,
-  // })
-  // // 3. 校验验证码
-  // const { data: bindVerificationCodeRes, isLoading: bindVerificationCodeLoading, error: bindVerificationCodeError } = useBindVerificationCode({
-  //   code: '123456',
-  //   googleCode: '654321',
-  //   idCard: '123456789012345678',
-  // })
-  // 4 sendBindCode
-  // const { data: sendBindCodeRes } = useSendBindCode({
-  //   countryCode: '86',
-  //   phone: '13800138000',
-  //   email: 'test@bdy.tech',
-  // })
-  // 5 sendCodeByUserPhoneOrEmail
-  // const { data: sendCodeByUserPhoneOrEmailRes } = useSendCodeByUserPhoneOrEmail()
-  // 6 unbindGoogleAuth
-  // const { data: unbindGoogleAuthRes } = useUnbindGoogleAuth({
-  //   code: '562220',
-  // })
-
-  // React.useEffect(() => {
-  //   if (unbindGoogleAuthRes) {
-  //     console.log('unbindGoogleAuthRes:', unbindGoogleAuthRes)
-  //     if (unbindGoogleAuthRes.code === 500) {
-  //       toast.error('解绑失败')
-  //     } else {
-  //       toast.success('解绑结果：' + (unbindGoogleAuthRes.msg || ''))
-  //     }
-  //   }
-  // }, [unbindGoogleAuthRes])
-
-  // 8 generateGoogleAuth
   const { data: generateGoogleAuthRes } = useGenerateGoogleAuth()
   const handleCopySecretKey = async () => {
     if (generateGoogleAuthRes?.secretKey) {
@@ -134,28 +82,9 @@ export default function AuthAppPage() {
     handleWithdraw()
   }
   React.useEffect(() => {
-    // if (bindEmailRes) {
-    //   console.log('bindEmailRes:', bindEmailRes)
-    // }
-    // if (bindPhoneRes) {
-    //   console.log('bindPhoneRes:', bindPhoneRes)
-    // }
-    // if (bindVerificationCodeRes) {
-    //   console.log('bindVerificationCodeRes:', bindVerificationCodeRes)
-    // }
-    // if (sendBindCodeRes) {
-    //   console.log('1:', sendBindCodeRes)
-    // }
-    // if (sendCodeByUserPhoneOrEmailRes) {
-    //   console.log('2:', sendCodeByUserPhoneOrEmailRes)
-    // }
-    // if (unbindGoogleAuthRes) {
-    //   console.log('3:', unbindGoogleAuthRes)
-    // }
     if (generateGoogleAuthRes) {
       console.log('5:', generateGoogleAuthRes)
     }
-    // }, [bindEmailRes, bindPhoneRes, bindVerificationCodeRes, sendBindCodeRes, sendCodeByUserPhoneOrEmailRes, unbindGoogleAuthRes, verifyGoogleAuthRes])
   }, [generateGoogleAuthRes])
   if (!loading) {
     return <div className="flex min-h-screen items-center justify-center bg-[#fafbfc]"></div>
