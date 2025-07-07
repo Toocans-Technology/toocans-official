@@ -8,13 +8,14 @@ import { useT } from '@/i18n'
 import { getWithdrawInfo } from '@/services/wallet'
 
 interface Props {
+  id?: number
   open?: boolean
   onOpenChange?: (open: boolean) => void
 }
 
-const WithdrawDetailModal: FunctionComponent<Props> = ({ open, onOpenChange }) => {
+const WithdrawDetailModal: FunctionComponent<Props> = ({ id, open, onOpenChange }) => {
   const { t } = useT(['withdrawal', 'common'])
-  const { data } = getWithdrawInfo(1)
+  const { data } = getWithdrawInfo(id)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
