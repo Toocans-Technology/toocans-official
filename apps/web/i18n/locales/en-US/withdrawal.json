@@ -32,7 +32,7 @@
   "manualRejectFailed": "Manual Reject Failed",
   "emailAuth": "Email Authentication",
   "emailVerification": "Enter the verification code that was sent to {{ email }}. It’s valid for 10 minutes.",
-  "emailAuthPlaceholder": "Please enter the email authentication code",
+  "emailAuthPlaceholder": "Please enter the verification code",
   "phoneAuth": "Phone Authentication",
   "phoneVerification": "Enter the verification code that was sent to {{ phone }}. It’s valid for 10 minutes.",
   "enterCode": "Enter Code",
