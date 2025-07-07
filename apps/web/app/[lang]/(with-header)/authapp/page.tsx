@@ -23,10 +23,10 @@ export default function AuthAppPage() {
       setLoading(true)
       setGoogleCode('')
       setBindSuccess(true)
-      toast.error('已绑定谷歌验证器，请勿重复绑定')
+      toast.error(t('authapp:AlreadyBinded'))
       setTimeout(() => {
-        window.history.back();
-      }, 2000);
+        window.history.back()
+      }, 2000)
     } else {
       setLoading(true)
       if (userInfoRes && !userInfoRes.hasGaKey) {
@@ -53,7 +53,7 @@ export default function AuthAppPage() {
   const handleCopySecretKey = async () => {
     if (generateGoogleAuthRes?.secretKey) {
       await navigator.clipboard.writeText(generateGoogleAuthRes.secretKey)
-      toast.success(t('authapp:CopySuccess') || 'Copied!')
+      toast.success(t('authapp:CopySuccess'))
     }
   }
 
@@ -63,7 +63,7 @@ export default function AuthAppPage() {
         code: googleCode ?? '',
         secretKey: generateGoogleAuthRes?.secretKey ?? '',
       })
-      toast.success(t('authapp:VerificationSuccess') || 'Verification successful!')
+      toast.success(t('authapp:VerificationSuccess'))
       setGoogleCode('')
       setBindSuccess(true)
       setTimeout(() => {
@@ -74,9 +74,14 @@ export default function AuthAppPage() {
       toast.error((error as HttpError).message)
     }
   }, [mutateVerifyGoogleAuth, googleCode, generateGoogleAuthRes, t])
+  
   const handleVerifyGoogleAuth = () => {
     if (!googleCode || !generateGoogleAuthRes?.secretKey) {
-      toast.error('Please enter the code and make sure secretKey exists')
+      toast.error(t('authapp:PleaseEnterCodeAndSecretKey'))
+      return
+    }
+    if (!/^\d{6}$/.test(googleCode)) {
+      toast.error(t('authapp:GoogleCode6Digits'))
       return
     }
     handleWithdraw()
