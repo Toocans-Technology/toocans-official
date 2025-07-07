@@ -131,10 +131,13 @@ const WithdrawModal: FunctionComponent<Props> = ({ accountId, address, token, am
             <FormField
               control={form.control}
               name="code"
-              render={({ field }) => (
+              render={({ field, formState }) => (
                 <FormItem>
                   <FormLabel>{t('withdrawal:emailAuth')}</FormLabel>
-                  <div className="focus-within:border-ring focus-within:ring-primary flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]">
+                  <div
+                    aria-invalid={formState.errors.code ? true : false}
+                    className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
+                  >
                     <FormControl>
                       <Input
                         {...field}
