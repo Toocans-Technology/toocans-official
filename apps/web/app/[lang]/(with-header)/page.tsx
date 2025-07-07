@@ -21,7 +21,7 @@ export default async function Page({ params }: Props) {
 
   return (
     <div className="flex min-h-svh flex-col bg-black text-white">
-      <HeroSection lang={lang} />
+      <HeroSection />
       <Markets />
       <SafeAndTrust lang={lang} />
       <AssetsAndMarkets lang={lang} />
