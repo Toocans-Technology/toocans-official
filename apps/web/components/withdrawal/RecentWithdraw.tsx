@@ -41,7 +41,9 @@ const RecentWithdraw: FunctionComponent<Props> = ({ tokenId }) => {
                 <TableCell className="text-right text-[#222]">
                   {dayjs(order.createdAt).format('YYYY-MM-DD HH:mm:ss')}
                 </TableCell>
-                <TableCell className="text-right text-[#222]">{order.status}</TableCell>
+                <TableCell className="rounded bg-[#f8f8f8] px-2.5 py-1 text-right text-[#222]">
+                  {order.status}
+                </TableCell>
               </TableRow>
             ))
           ) : (
