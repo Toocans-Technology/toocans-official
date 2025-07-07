@@ -13,7 +13,9 @@
   "agreedTip": "I have read and agreed to the",
   "userAgreement": "User Agreement",
   "and": "and",
+  "forgotPassword": "Forgot password",
   "privacyPolicy": "Privacy policy",
+  "sendSuccessfully": "Send successfully",
   "notCode": {
     "tip1": "Not able to receive verification code?",
     "tip2": "Please try the following steps:",

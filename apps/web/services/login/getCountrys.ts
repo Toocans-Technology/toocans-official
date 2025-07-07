@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
@@ -34,11 +33,9 @@ const CountrySchema = z.array(
 )
 
 export const getCountrys = () => {
-  return useQuery({
-    ...getQuery({
-      method: 'GET',
-      url: getUrl('/baseConfig/allSupportCountry'),
-      transfer: CountrySchema.parse,
-    }),
+  return getQuery({
+    method: 'GET',
+    url: getUrl('/baseConfig/allSupportCountry'),
+    transfer: CountrySchema.parse,
   })
 }

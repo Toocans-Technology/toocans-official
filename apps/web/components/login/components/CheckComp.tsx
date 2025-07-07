@@ -5,15 +5,17 @@ import { Checkbox, Label } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
 import Link from '@/components/Link'
 import { useT } from '@/i18n'
-import './common.css'
+import { useLoginContext } from '../LoginContext'
+import '../assets/style.css'
 
-const CheckComp = (props: any, ref: any) => {
-  const { register, setValue, watch } = props
+const CheckComp = (_props: any, ref: any) => {
+  const { t } = useT('login')
+  const { formData } = useLoginContext()
+  const { register, setValue, watch } = formData
+
   const checkVal1 = watch('check1')
   const checkVal2 = watch('check2')
   const [shak, setShak] = useState(0)
-
-  const { t } = useT('login')
 
   useImperativeHandle(ref, () => ({
     openShak1() {

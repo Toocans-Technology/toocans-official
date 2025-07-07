@@ -1,9 +1,11 @@
 'use client'
 
 import { useCodeByEmail, useCodeByMobile } from '@/services/login'
+import { useLoginContext } from '../LoginContext'
 
-const CountDownFetch = (props: any) => {
-  const { email, phone, nationalCode } = props.getValues()
+const CountDownFetch = () => {
+  const { formData } = useLoginContext()
+  const { email, phone, nationalCode } = formData.getValues()
 
   !!email && useCodeByEmail({ email })
   !!phone &&
