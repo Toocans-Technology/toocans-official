@@ -22,13 +22,15 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
 import { Token } from '@/services/basicConfig'
-import { getEmailCode } from '@/services/resource'
-import { useWithdraw } from '@/services/wallet'
+import { getVerifyCode, useWithdraw } from '@/services/wallet'
 import { HttpError } from '@/types/http'
+import { VerifyType } from '@/types/withdraw'
+
+const COUNT_DOWN = 59 * 1000
 
 const FormSchema = z.object({
   code: z.string().min(6).max(6),
-  gaCode: z.string().min(6).max(6),
+  gaCode: z.string().min(6).max(6).optional(),
 })
 
 interface Props {
@@ -38,19 +40,27 @@ interface Props {
   amount: number
   tokenFee: number
   disabled?: boolean
+  openDetail?: (open: boolean) => void
 }
 
-const WithdrawModal: FunctionComponent<Props> = ({ accountId, address, token, amount, tokenFee, disabled = true }) => {
+const WithdrawModal: FunctionComponent<Props> = ({
+  accountId,
+  address,
+  token,
+  amount,
+  tokenFee,
+  openDetail,
+  disabled = true,
+}) => {
   const { t } = useT(['withdrawal', 'common'])
-  const [email, setEmail] = useState<string>('')
+  const [verifyType, setVerifyType] = useState<VerifyType>(VerifyType.email)
   const [targetDate, setTargetDate] = useState<number>()
-  const { refetch } = getEmailCode({ email })
+  const { refetch } = getVerifyCode({ type: verifyType })
   const { mutateAsync: mutateWithdraw, isPending } = useWithdraw()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       code: '',
-      gaCode: '',
     },
   })
   const { handleSubmit, formState } = form
@@ -67,10 +77,8 @@ const WithdrawModal: FunctionComponent<Props> = ({ accountId, address, token, am
       return
     }
 
-    // TODO: 获取用户邮箱
-    setEmail('chacha@bdy.tech')
     refetch()
-    setTargetDate(Date.now() + 59 * 1000)
+    setTargetDate(Date.now() + COUNT_DOWN)
   }, [refetch, countdown])
 
   const onSubmit = useCallback(
@@ -85,6 +93,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ accountId, address, token, am
           tokenId: token.tokenId,
           chargeType: token.tokenSetting?.withdrawChargeType,
         })
+        openDetail?.(true)
       } catch (error) {
         toast.error((error as HttpError).message)
       }
@@ -133,7 +142,11 @@ const WithdrawModal: FunctionComponent<Props> = ({ accountId, address, token, am
               name="code"
               render={({ field, formState }) => (
                 <FormItem>
-                  <FormLabel>{t('withdrawal:emailAuth')}</FormLabel>
+                  <FormLabel>
+                    {verifyType === VerifyType.email
+                      ? t('withdrawal:emailAuth', { email: 'xxxx@gmail.com' })
+                      : t('withdrawal:phoneAuth', { phone: '1234567890' })}
+                  </FormLabel>
                   <div
                     aria-invalid={formState.errors.code ? true : false}
                     className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
@@ -151,6 +164,12 @@ const WithdrawModal: FunctionComponent<Props> = ({ accountId, address, token, am
                     </span>
                   </div>
                   <FormMessage />
+                  <span
+                    className="text-link cursor-pointer text-sm"
+                    onClick={() => setVerifyType(verifyType === VerifyType.email ? VerifyType.sms : VerifyType.email)}
+                  >
+                    {verifyType === VerifyType.email ? t('withdrawal:switchPhone') : t('withdrawal:switchEmail')}
+                  </span>
                 </FormItem>
               )}
             />

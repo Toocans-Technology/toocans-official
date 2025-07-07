@@ -21,3 +21,10 @@ export enum WithdrawMethod {
 }
 
 export const withdrawMethodSchema = z.nativeEnum(WithdrawMethod)
+
+export enum VerifyType {
+  sms = 'sms',
+  email = 'email',
+}
+
+export const verifyTypeSchema = z.nativeEnum(VerifyType)
