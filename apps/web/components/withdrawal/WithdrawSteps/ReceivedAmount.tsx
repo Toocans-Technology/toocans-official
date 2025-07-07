@@ -6,6 +6,7 @@ import { useTokenFee } from '@/hooks/useTokenFee'
 import { useT } from '@/i18n'
 import { formatInputAmount } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
+import { WithdrawRes } from '@/services/wallet'
 import { WithdrawDetailModal } from '../modals'
 import WithdrawModal from '../modals/WithdrawModal'
 
@@ -23,6 +24,7 @@ interface Props {
 const ReceivedAmount: FunctionComponent<Props> = ({ token, address }) => {
   const { t } = useT('withdrawal')
   const minAmount = token?.tokenSetting?.withdrawMinQuantity || 0
+  const [transferId, setTransferId] = useState<number | undefined>(undefined)
   const [open, setOpen] = useState(false)
   const [amount, setAmount] = useState<InputValueType>({ value: '', error: '', isInvalid: false })
   const tokenFee = useTokenFee(token, Number(amount.value))
@@ -41,6 +43,13 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address }) => {
     }
     return false
   }, [amount])
+
+  const receivedAmount = useMemo(() => {
+    if (!userAsset) {
+      return 0
+    }
+    return amount.value ?? 0
+  }, [userAsset, amount])
 
   const handleAll = useCallback(() => {
     const allAmount = BigNumber(userAsset?.available || 0).minus(tokenFee)
@@ -68,12 +77,10 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address }) => {
     [userAsset, minAmount, tokenFee]
   )
 
-  const receivedAmount = useMemo(() => {
-    if (!userAsset) {
-      return 0
-    }
-    return amount.value ?? 0
-  }, [userAsset, amount])
+  const handleOpenDetail = useCallback((open: boolean, data: WithdrawRes) => {
+    setOpen(open)
+    setTransferId(data.id)
+  }, [])
 
   return (
     <div className="flex max-w-[456px] flex-col gap-2">
@@ -117,10 +124,10 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address }) => {
           accountId={0}
           disabled={disabled}
           tokenFee={tokenFee}
-          openDetail={setOpen}
+          openDetail={handleOpenDetail}
         />
       )}
-      {token && <WithdrawDetailModal onOpenChange={setOpen} open={open} />}
+      {token && <WithdrawDetailModal id={transferId} onOpenChange={setOpen} open={open} />}
     </div>
   )
 }

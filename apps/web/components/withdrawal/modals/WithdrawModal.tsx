@@ -22,7 +22,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
 import { Token } from '@/services/basicConfig'
-import { getVerifyCode, useWithdraw } from '@/services/wallet'
+import { getVerifyCode, useWithdraw, WithdrawRes } from '@/services/wallet'
 import { HttpError } from '@/types/http'
 import { VerifyType } from '@/types/withdraw'
 
@@ -35,7 +35,7 @@ interface Props {
   amount: number
   tokenFee: number
   disabled?: boolean
-  openDetail?: (open: boolean) => void
+  openDetail?: (open: boolean, data: WithdrawRes) => void
 }
 
 const WithdrawModal: FunctionComponent<Props> = ({
@@ -82,6 +82,7 @@ const WithdrawModal: FunctionComponent<Props> = ({
   const onOpenChange = useCallback(
     (open: boolean) => {
       reset()
+      setTargetDate(undefined)
     },
     [reset]
   )
@@ -95,10 +96,17 @@ const WithdrawModal: FunctionComponent<Props> = ({
     setTargetDate(Date.now() + COUNT_DOWN)
   }, [refetch, countdown])
 
+  const formLabel = useMemo(() => {
+    if (verifyType === VerifyType.email) {
+      return countdown ? t('withdrawal:emailVerification', { email: 'xxxx@gmail.com' }) : t('withdrawal:emailAuth')
+    }
+    return countdown ? t('withdrawal:phoneVerification', { phone: '1234567890' }) : t('withdrawal:phoneAuth')
+  }, [verifyType, countdown])
+
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
       try {
-        await mutateWithdraw({
+        const res = await mutateWithdraw({
           ...data,
           accountId,
           address,
@@ -107,7 +115,12 @@ const WithdrawModal: FunctionComponent<Props> = ({
           tokenId: token.tokenId,
           chargeType: token.tokenSetting?.withdrawChargeType,
         })
-        openDetail?.(true)
+
+        if (!res) {
+          return
+        }
+
+        openDetail?.(true, res)
         reset()
       } catch (error) {
         toast.error((error as HttpError).message)
@@ -157,11 +170,7 @@ const WithdrawModal: FunctionComponent<Props> = ({
               name="code"
               render={({ field, formState }) => (
                 <FormItem>
-                  <FormLabel>
-                    {verifyType === VerifyType.email
-                      ? t('withdrawal:emailAuth', { email: 'xxxx@gmail.com' })
-                      : t('withdrawal:phoneAuth', { phone: '1234567890' })}
-                  </FormLabel>
+                  <FormLabel>{formLabel}</FormLabel>
                   <div
                     aria-invalid={formState.errors.code ? true : false}
                     className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"

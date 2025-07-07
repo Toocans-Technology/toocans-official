@@ -46,7 +46,7 @@ const WithdrawInfoSchema = z
 
 export type WithdrawInfo = z.infer<typeof WithdrawInfoSchema>
 
-export const getWithdrawInfo = (id: number) => {
+export const getWithdrawInfo = (id?: number) => {
   return useQuery({
     ...getQuery({
       method: 'GET',
