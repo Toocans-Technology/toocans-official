@@ -70,7 +70,7 @@ const WithdrawModal: FunctionComponent<Props> = ({
       gaCode: '',
     },
   })
-  const { handleSubmit, formState } = form
+  const { handleSubmit, reset, formState } = form
 
   const [countdown] = useCountDown({
     targetDate,
@@ -78,6 +78,13 @@ const WithdrawModal: FunctionComponent<Props> = ({
       setTargetDate(undefined)
     },
   })
+
+  const onOpenChange = useCallback(
+    (open: boolean) => {
+      reset()
+    },
+    [reset]
+  )
 
   const handleSendCode = useCallback(() => {
     if (countdown) {
@@ -101,15 +108,16 @@ const WithdrawModal: FunctionComponent<Props> = ({
           chargeType: token.tokenSetting?.withdrawChargeType,
         })
         openDetail?.(true)
+        reset()
       } catch (error) {
         toast.error((error as HttpError).message)
       }
     },
-    [mutateWithdraw, accountId, address, amount, tokenFee, token]
+    [mutateWithdraw, accountId, address, amount, tokenFee, token, reset]
   )
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button fullWidth rounded="full" disabled={disabled} className="mt-4 max-w-[456px]">
           {t('common:next')}

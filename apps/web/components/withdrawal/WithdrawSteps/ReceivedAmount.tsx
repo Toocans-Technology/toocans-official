@@ -47,23 +47,26 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address }) => {
     setAmount({ value: allAmount.toString(), error: '', isInvalid: false })
   }, [userAsset, tokenFee])
 
-  const handleAmountChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const value = formatInputAmount(e.target.value)
+  const handleAmountChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const value = formatInputAmount(e.target.value)
 
-    if (BigNumber(value).lt(minAmount)) {
-      setAmount({ value, error: t('withdrawal:amountError.minAmount', { minAmount }), isInvalid: true })
-      return
-    } else if (BigNumber(value).gt(BigNumber(userAsset?.available || 0).minus(tokenFee))) {
-      setAmount({
-        value,
-        error: t('withdrawal:amountError.insufficientBalance', { maxAmount: userAsset?.available }),
-        isInvalid: true,
-      })
-      return
-    } else {
-      setAmount({ value, error: '', isInvalid: false })
-    }
-  }, [])
+      if (BigNumber(value).lt(minAmount)) {
+        setAmount({ value, error: t('withdrawal:amountError.minAmount', { minAmount }), isInvalid: true })
+        return
+      } else if (BigNumber(value).gt(BigNumber(userAsset?.available || 0).minus(tokenFee))) {
+        setAmount({
+          value,
+          error: t('withdrawal:amountError.insufficientBalance', { maxAmount: userAsset?.available }),
+          isInvalid: true,
+        })
+        return
+      } else {
+        setAmount({ value, error: '', isInvalid: false })
+      }
+    },
+    [userAsset, minAmount, tokenFee]
+  )
 
   const receivedAmount = useMemo(() => {
     if (!userAsset) {
