@@ -2,8 +2,8 @@ import React, { createContext, useContext } from 'react'
 
 export interface LoginContextProps {
   formData: any
-  verifiType: string
-  setVerifiType: React.Dispatch<React.SetStateAction<string>>
+  grantType: string
+  setGrantType: React.Dispatch<React.SetStateAction<string>>
   loginType: string
   setLoginType: React.Dispatch<React.SetStateAction<string>>
   seconds: number

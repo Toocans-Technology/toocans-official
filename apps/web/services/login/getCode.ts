@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
@@ -10,24 +11,30 @@ const GetCodeReqParams = z
   })
   .optional()
 
-const ResponseSchema = z.object({ code: z.string() })
+const ResponseSchema = z.object({ code: z.string() }).nullable()
 
 export type CodeParams = z.infer<typeof GetCodeReqParams>
 
 export const useCodeByEmail = (params?: z.infer<typeof GetCodeReqParams>) => {
-  return getQuery({
-    method: 'GET',
-    url: getUrl('/resource/email/code'),
-    query: GetCodeReqParams.parse(params),
-    transfer: ResponseSchema.parse,
+  return useQuery({
+    ...getQuery({
+      method: 'GET',
+      url: getUrl('/resource/email/code'),
+      query: GetCodeReqParams.parse(params),
+      transfer: ResponseSchema.parse,
+    }),
+    enabled: !!params?.email,
   })
 }
 
 export const useCodeByMobile = (params?: z.infer<typeof GetCodeReqParams>) => {
-  return getQuery({
-    method: 'GET',
-    url: getUrl('/resource/email/code'),
-    query: GetCodeReqParams.parse(params),
-    transfer: ResponseSchema.parse,
+  return useQuery({
+    ...getQuery({
+      method: 'GET',
+      url: getUrl('/resource/email/code'),
+      query: GetCodeReqParams.parse(params),
+      transfer: ResponseSchema.parse,
+    }),
+    enabled: !!params?.mobile && !!params?.nationalCode,
   })
 }

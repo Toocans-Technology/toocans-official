@@ -19,3 +19,18 @@
 .shake {
   animation: shake 0.5s infinite;
 }
+
+.tooltipParent {
+  :global(.ant-tooltip-inner) {
+    width: 280px !important;
+    padding: 10px 18px !important;
+  }
+}
+
+.searchDropdown {
+  :global(.ant-input-affix-wrapper) {
+    border-radius: 66px !important;
+    border: none;
+    height: 36px;
+  }
+}

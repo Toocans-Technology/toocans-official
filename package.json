@@ -32,6 +32,8 @@
     "node": ">=20"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.0.0",
+    "@ant-design/nextjs-registry": "^1.0.2",
     "antd": "^5.26.4",
     "libphonenumber-js": "^1.12.9"
   }

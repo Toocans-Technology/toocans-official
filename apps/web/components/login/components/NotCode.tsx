@@ -1,28 +1,31 @@
 'use client'
 
-import { Tooltip, TooltipTrigger, TooltipContent } from '@workspace/ui/components'
+import { Tooltip } from 'antd'
 import { useT } from '@/i18n'
+import styles from '../assets/style.module.css'
 
 const NotCode = () => {
   const { t } = useT('login')
 
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span className="ml-auto text-xs text-[#a9a9a9]">{t('notCode.tip1')}</span>
-      </TooltipTrigger>
-      <TooltipContent
-        side="bottom"
-        className="w-70 bg-white p-4"
-        style={{ boxShadow: '0px 9px 28px 8px rgba(0, 0, 0, 0.10)' }}
+    <div className={styles.tooltipParent + ' ml-auto'}>
+      <Tooltip
+        placement="bottom"
+        color="white"
+        getPopupContainer={(current: any) => current.parentElement}
+        overlay={
+          <>
+            <p className="text-base text-black">{t('notCode.tip2')}</p>
+            <ul className="list-disc pl-4 text-sm text-[#666]">
+              <li>{t('notCode.step1')}</li>
+              <li>{t('notCode.step2')}</li>
+            </ul>
+          </>
+        }
       >
-        <p className="text-base text-black">{t('notCode.tip2')}</p>
-        <ul className="list-disc pl-4 text-sm text-[#666]">
-          <li>{t('notCode.step1')}</li>
-          <li>{t('notCode.step2')}</li>
-        </ul>
-      </TooltipContent>
-    </Tooltip>
+        <span className="ml-auto text-xs text-[#a9a9a9]">{t('notCode.tip1')}</span>
+      </Tooltip>
+    </div>
   )
 }
 

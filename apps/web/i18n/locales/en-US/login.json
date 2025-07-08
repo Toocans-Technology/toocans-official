@@ -3,8 +3,9 @@
   "title": "Welcome to",
   "send": "Send",
   "email": "Email",
-  "phone": "Phone",
+  "sms": "Phone",
   "password": "Password",
+  "search": "Search",
   "verificationCode": "Verification Code",
   "switchToPwd": "Switch to password login",
   "switchToCode": "Switch to code login",
@@ -16,6 +17,7 @@
   "forgotPassword": "Forgot password",
   "privacyPolicy": "Privacy policy",
   "sendSuccessfully": "Send successfully",
+  "loginSuccessfully": "Login successfully",
   "notCode": {
     "tip1": "Not able to receive verification code?",
     "tip2": "Please try the following steps:",
@@ -31,6 +33,7 @@
   "formatErr": {
     "email": "Email address format error",
     "phone": "Phone number format error",
-    "code": "Verification code format error"
+    "code": "Verification code format error",
+    "pwd": "Password format error"
   }
 }

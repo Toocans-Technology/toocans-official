@@ -1,0 +1,37 @@
+/* input */
+input {
+  caret-color: #86fc70;
+}
+input::-webkit-input-placeholder {
+  color: #999 !important;
+}
+.ant-input-affix-wrapper,
+.ant-input-number-affix-wrapper,
+.ant-input-number-input-wrap input {
+  background-color: #f8f8f8 !important;
+}
+.ant-input-number,
+.ant-input-number-affix-wrapper {
+  width: 100% !important;
+}
+
+/* notification 主题设置不生效, 额外覆盖 */
+.ant-notification {
+  top: 160px !important;
+}
+.ant-notification-notice {
+  padding: 16px 24px !important;
+}
+.ant-notification-notice-wrapper {
+  background-color: #000 !important;
+}
+.ant-notification-notice-close {
+  color: #fff !important;
+}
+.ant-notification-notice-close:hover {
+  color: #f8f8f8 !important;
+}
+.ant-notification-notice-message {
+  color: #fff !important;
+  margin-bottom: 0 !important;
+}

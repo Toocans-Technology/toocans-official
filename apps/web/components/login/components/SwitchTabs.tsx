@@ -7,9 +7,9 @@ import { useLoginContext } from '../LoginContext'
 
 const SwitchTabs = () => {
   const { t } = useT('login')
-  const { verifiType, setVerifiType, seconds, stateReset } = useLoginContext()
+  const { grantType, setGrantType, seconds, stateReset } = useLoginContext()
 
-  const tabs = ['email', 'phone']
+  const tabs = ['email', 'sms']
 
   return tabs.map((item) => {
     return (
@@ -17,13 +17,13 @@ const SwitchTabs = () => {
         className={cn(
           'select-none',
           'cursor-pointer',
-          verifiType == item ? 'font-medium text-[#222]' : 'text-[#666]',
-          item == 'phone' && 'ml-4'
+          grantType == item ? 'font-medium text-[#222]' : 'text-[#666]',
+          item == 'sms' && 'ml-4'
         )}
         key={item}
         onClick={() => {
-          if (verifiType != item && seconds == 60) {
-            setVerifiType(item)
+          if (grantType != item && seconds == 60) {
+            setGrantType(item)
             stateReset()
           }
         }}

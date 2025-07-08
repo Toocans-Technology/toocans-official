@@ -1,43 +1,46 @@
 'use client'
 
-import { Eye, EyeOff } from 'lucide-react'
-import { useState } from 'react'
-import { Input, Button } from '@workspace/ui/components'
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons'
+import { Form, Input } from 'antd'
 import { useT } from '@/i18n'
 import { useLoginContext } from '../LoginContext'
 
 const PasswordInput = () => {
   const { t } = useT('login')
-  const {
-    formData: { register, watch },
-  } = useLoginContext()
-
-  const password = watch('password')
-
-  const [pwdVisible, changePwdVisible] = useState(false)
+  const { formData } = useLoginContext()
 
   return (
-    <div className="relative">
-      <Input
-        {...register('password')}
+    <Form.Item
+      name="password"
+      rules={[
+        {
+          required: true,
+          message: '',
+          validator: (_rule, value) => {
+            if (value?.length > 8 && value?.length < 32) {
+              return Promise.resolve()
+            } else {
+              return Promise.reject(t('formatErr.pwd'))
+            }
+          },
+        },
+      ]}
+      validateTrigger="onBlur"
+      style={{ marginTop: '8px' }}
+    >
+      <Input.Password
         maxLength={32}
         minLength={8}
-        type={pwdVisible ? 'text' : 'password'}
         placeholder={t('login:enter.pwd')}
-        className="mt-2 bg-[#f8f8f8]"
+        autoComplete="off"
+        onFocus={() => {
+          if (formData.getFieldError('password')) {
+            formData.setFieldValue('password', formData.getFieldValue('password'))
+          }
+        }}
+        iconRender={(visible: boolean) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
       />
-
-      {password && (
-        <Button
-          className="absolute right-1 top-1/2 h-5 w-6 -translate-y-1/2 text-xs hover:bg-transparent"
-          variant="ghost"
-          type="button"
-          onClick={() => changePwdVisible(!pwdVisible)}
-        >
-          {pwdVisible ? <EyeOff /> : <Eye />}
-        </Button>
-      )}
-    </div>
+    </Form.Item>
   )
 }
 
