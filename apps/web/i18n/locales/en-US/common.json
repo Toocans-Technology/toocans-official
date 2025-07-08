@@ -1,6 +1,12 @@
 {
   "loginIn": "Login In",
   "signUp": "Sign Up",
+  "overview": "Overview",
+  "deposit": "Deposit",
+  "withdraw": "Withdraw",
+  "account": "Account",
+  "logout": "Logout",
+  "copySuccess": "Copy Success",
   "header": {
     "home": "Home",
     "market": "Market",
