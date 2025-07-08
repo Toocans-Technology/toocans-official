@@ -8,11 +8,11 @@ import { useAllToken } from '@/hooks/useAllToken'
 import BigNumber from 'bignumber.js'
 
 export default function OverviewBalancePanel() {
-  const { data: data, isLoading: assetLoading } = useAssetAll()
-  const { tokens: allTokenData, isLoading: allTokenLoading } = useAllToken()
+  const { data: data } = useAssetAll()
+  const { tokens: allTokenData } = useAllToken()
   const [show, setShow] = useState(true)
 
-  const formatAmount = (val: number | string) => {
+  const formatAmount = (val: number | string | BigNumber) => {
     try {
       const num = new BigNumber(val)
       if (!num.isFinite()) return '--'
