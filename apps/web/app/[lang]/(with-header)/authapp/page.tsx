@@ -12,15 +12,13 @@ import { HttpError } from '@/types/http'
 
 export default function AuthAppPage() {
   const { t } = useT('authapp')
-  const { data: userInfoRes } = useUserInfo()
+  const { data: userInfoRes,isLoading:loading } = useUserInfo()
   const { mutateAsync: mutateVerifyGoogleAuth, isPending } = useVerifyGoogleAuth()
   const [emailCountdown, setEmailCountdown] = useState(0)
   const [googleCode, setGoogleCode] = useState('')
-  const [loading, setLoading] = useState(false)
   const [bindSuccess, setBindSuccess] = useState(true)
   React.useEffect(() => {
     if (userInfoRes && userInfoRes.hasGaKey) {
-      setLoading(true)
       setGoogleCode('')
       setBindSuccess(true)
       toast.error(t('authapp:AlreadyBinded'))
@@ -28,7 +26,6 @@ export default function AuthAppPage() {
         window.history.back()
       }, 2000)
     } else {
-      setLoading(true)
       if (userInfoRes && !userInfoRes.hasGaKey) {
         setBindSuccess(false)
       }
