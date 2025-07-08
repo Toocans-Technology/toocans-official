@@ -5,6 +5,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import React, { useState, useCallback } from 'react'
 import { toast } from '@workspace/ui/components'
 import { useT } from '@/i18n'
+import { GOOGLE_CODE_REGEXP } from '@/lib/regexp'
 import { useGenerateGoogleAuth } from '@/services/user/generateGoogleAuth'
 import { useUserInfo } from '@/services/user/info'
 import { useVerifyGoogleAuth } from '@/services/user/verifyGoogleAuth'
@@ -12,7 +13,7 @@ import { HttpError } from '@/types/http'
 
 export default function AuthAppPage() {
   const { t } = useT('authapp')
-  const { data: userInfoRes,isLoading:loading } = useUserInfo()
+  const { data: userInfoRes, isLoading: loading } = useUserInfo()
   const { mutateAsync: mutateVerifyGoogleAuth, isPending } = useVerifyGoogleAuth()
   const [emailCountdown, setEmailCountdown] = useState(0)
   const [googleCode, setGoogleCode] = useState('')
@@ -54,7 +55,7 @@ export default function AuthAppPage() {
     }
   }
 
-  const handleWithdraw = useCallback(async () => {
+  const handleVerifyGoogleAuthSubmit = useCallback(async () => {
     try {
       await mutateVerifyGoogleAuth({
         code: googleCode ?? '',
@@ -71,17 +72,16 @@ export default function AuthAppPage() {
       toast.error((error as HttpError).message)
     }
   }, [mutateVerifyGoogleAuth, googleCode, generateGoogleAuthRes, t])
-  
   const handleVerifyGoogleAuth = () => {
     if (!googleCode || !generateGoogleAuthRes?.secretKey) {
       toast.error(t('authapp:PleaseEnterCodeAndSecretKey'))
       return
     }
-    if (!/^\d{6}$/.test(googleCode)) {
+    if (!GOOGLE_CODE_REGEXP.test(googleCode)) {
       toast.error(t('authapp:GoogleCode6Digits'))
       return
     }
-    handleWithdraw()
+    handleVerifyGoogleAuthSubmit()
   }
   React.useEffect(() => {
     if (generateGoogleAuthRes) {
@@ -180,17 +180,17 @@ export default function AuthAppPage() {
               </div>
             </div>
           ) : ( */}
-            <div className="mb-6 ml-8">
-              {!bindSuccess && (
-                <input
-                  maxLength={6}
-                  className="mb-7 ml-8 flex h-11 w-[456px] items-center rounded-md border-none bg-[#f5f5f5] px-3 text-black"
-                  placeholder="Please enter the Authenticator code"
-                  value={googleCode}
-                  onChange={(e) => setGoogleCode(e.target.value)}
-                />
-              )}
-            </div>
+          <div className="mb-6 ml-8">
+            {!bindSuccess && (
+              <input
+                maxLength={6}
+                className="mb-7 ml-8 flex h-11 w-[456px] items-center rounded-md border-none bg-[#f5f5f5] px-3 text-black"
+                placeholder="Please enter the Authenticator code"
+                value={googleCode}
+                onChange={(e) => setGoogleCode(e.target.value)}
+              />
+            )}
+          </div>
           {/* )} */}
           {!bindSuccess && (
             <button
@@ -198,7 +198,7 @@ export default function AuthAppPage() {
               className="ml-8 flex h-[44px] w-[456px] cursor-pointer items-center justify-center rounded-[40px] bg-[#86fc70] px-4 text-[16px] font-normal leading-[22px] tracking-[-0.408px] text-[#222] transition-colors active:bg-[#36c954]"
               onClick={handleVerifyGoogleAuth}
             >
-              Confirm
+              {t('authapp:Confirm')}
             </button>
           )}
         </div>
