@@ -48,7 +48,7 @@ export default function AuthAppPage() {
       })
     }, 1000)
   }
-  const verifyType = 'google'
+  // const verifyType = 'google'
   const { data: generateGoogleAuthRes } = useGenerateGoogleAuth()
   const handleCopySecretKey = async () => {
     if (generateGoogleAuthRes?.secretKey) {
@@ -164,7 +164,7 @@ export default function AuthAppPage() {
             </div>
             <div className="ml-2">Security authentication</div>
           </div>
-          {verifyType === 'email' ? (
+          {/* {verifyType === 'email' ? (
             <div className="mb-6 ml-8">
               <div className="mb-2 text-[14px] font-medium text-[#222]">Email authentication</div>
               <div className="flex items-center gap-3">
@@ -182,7 +182,7 @@ export default function AuthAppPage() {
                 </button>
               </div>
             </div>
-          ) : (
+          ) : ( */}
             <div className="mb-6 ml-8">
               {!bindSuccess && (
                 <input
@@ -194,7 +194,7 @@ export default function AuthAppPage() {
                 />
               )}
             </div>
-          )}
+          {/* )} */}
           {!bindSuccess && (
             <button
               disabled={isPending}

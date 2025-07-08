@@ -59,7 +59,7 @@ const TokenTable = () => {
               .sort((a, b) => {
                 const aTotal = safeMul(a.total ?? 0, a.tokenId === 'USDT' ? 1 : (a.marketPrice ?? 0))
                 const bTotal = safeMul(b.total ?? 0, b.tokenId === 'USDT' ? 1 : (b.marketPrice ?? 0))
-                return bTotal.comparedTo(aTotal)
+                return bTotal.comparedTo(aTotal) || 0
               })
               .map((asset, idx) => (
                 <div
@@ -97,7 +97,7 @@ const TokenTable = () => {
                     <div className="font-din text-right text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
                       $
                       {formatAmount(
-                        safeMul(asset.total ?? 0, asset.tokenId === 'USDT' ? 1 : (asset.marketPrice ?? 0)),
+                        safeMul(asset.total ?? 0, asset.tokenId === 'USDT' ? 1 : (asset.marketPrice ?? 0)).toString(),
                         2
                       )}
                     </div>
