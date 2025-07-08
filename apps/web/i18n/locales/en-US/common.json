@@ -6,6 +6,9 @@
   "withdraw": "Withdraw",
   "account": "Account",
   "logout": "Logout",
+  "copy": "Copy",
+  "change": "Change",
+  "settings": "Settings",
   "copySuccess": "Copy Success",
   "header": {
     "home": "Home",
