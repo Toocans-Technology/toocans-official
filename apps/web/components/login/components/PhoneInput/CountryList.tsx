@@ -1,6 +1,6 @@
 import { SearchOutlined } from '@ant-design/icons'
 import { Dropdown, Input, Form, Spin } from 'antd'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
 import { getCountrys } from '@/services/login'
@@ -16,6 +16,14 @@ const CountryList = () => {
   const [nationalCode, setNationalCode] = useState<string | undefined | null>(undefined)
   const [searchVal, setSearchVal] = useState<string>('')
 
+  const filterCountrys = useMemo(
+    () =>
+      countrys?.filter(
+        (item: any) => item.countryEnName.toLowerCase().includes(searchVal) || item.nationalCode.includes(searchVal)
+      ),
+    [countrys, searchVal]
+  )
+
   useEffect(() => {
     setNationalCode(countrys?.[0]?.nationalCode)
   }, [countrys])
@@ -23,6 +31,11 @@ const CountryList = () => {
   useEffect(() => {
     formData.setFieldValue('nationalCode', nationalCode)
   }, [nationalCode])
+
+  const handleCuntryClick = useCallback((item: any) => {
+    setNationalCode(item.nationalCode)
+    setCuntrysVisible(false)
+  }, [])
 
   return (
     <div className={`absolute left-2 top-[10px] z-10 h-5 w-12 ${styles.searchDropdown}`}>
@@ -38,7 +51,7 @@ const CountryList = () => {
           if (seconds < 60) return
           setCuntrysVisible(!cuntrysVisible)
         }}
-        getPopupContainer={(triggerNode: any) => triggerNode.parentElement}
+        getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentElement as HTMLElement}
         popupRender={() => {
           return (
             <div
@@ -53,30 +66,22 @@ const CountryList = () => {
                 onChange={(e) => setSearchVal(e.target.value)}
                 placeholder={t('search')}
               />
-              <div className="max-h-[200px] overflow-y-scroll">
-                {countrys
-                  ?.filter(
-                    (item: any) =>
-                      item.countryEnName.toLowerCase().includes(searchVal) || item.nationalCode.includes(searchVal)
-                  )
-                  ?.map((item: any) => {
-                    return (
-                      <div
-                        className="flex h-[48px] w-[360px] cursor-pointer items-center justify-between pl-[10px] pr-[10px]"
-                        key={item.countryEnName}
-                        onClick={() => {
-                          setNationalCode(item.nationalCode)
-                          setCuntrysVisible(false)
-                        }}
-                      >
-                        <div className="flex items-center">
-                          <img src={item.flagUrls?.[0].url} alt={item.countryEnName} width={20} className="mr-2" />
-                          {item.countryEnName}
-                        </div>
-                        <div>+{item.nationalCode}</div>
+              <div className="mt-2 max-h-[200px] overflow-y-scroll">
+                {filterCountrys?.map((item: any) => {
+                  return (
+                    <div
+                      className="flex h-[48px] w-[360px] cursor-pointer items-center justify-between rounded-lg pl-[10px] pr-[10px] hover:bg-[#f0f8ff]"
+                      key={item.countryEnName}
+                      onClick={() => handleCuntryClick(item)}
+                    >
+                      <div className="flex items-center">
+                        <img src={item.flagUrls?.[0].url} alt={item.countryEnName} width={20} className="mr-2" />
+                        {item.countryEnName}
                       </div>
-                    )
-                  })}
+                      <div>+{item.nationalCode}</div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           )

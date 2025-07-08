@@ -1,9 +1,11 @@
 'use client'
 
 import { Button, Form, notification } from 'antd'
+import { useState } from 'react'
 import { useT } from '@/i18n'
 import { useCodeByEmail, useCodeByMobile } from '@/services/login'
 import { useLoginContext } from '../../LoginContext'
+import { GrantType } from '../../data'
 import { matchEmail, matchPhoneNum } from '../../utils'
 
 const SendAndCountDown = () => {
@@ -15,15 +17,24 @@ const SendAndCountDown = () => {
   const phone = Form.useWatch('phone', formData)
   const nationalCode = Form.useWatch('nationalCode', formData)
 
-  // TODO: 有email自动触发 send
-  const codeByEmailQuery = useCodeByEmail({ email })
-  const codeByMobileQuery = useCodeByMobile({ mobile: phone, nationalCode })
+  const [selfEmail, setSelfEmail] = useState('')
+  const [selfPhone, setSelfPhone] = useState('')
+  const [selfNationalCode, setSelfNationalCode] = useState('')
+
+  useCodeByEmail({ email: selfEmail })
+  useCodeByMobile({ mobile: selfPhone, nationalCode: selfNationalCode })
 
   const handleSendCode = () => {
     if (seconds < 60) return
 
     try {
-      grantType == 'email' ? codeByEmailQuery.refetch() : codeByMobileQuery.refetch()
+      if (grantType == GrantType.EMAIL) {
+        setSelfEmail(email)
+      } else {
+        setSelfPhone(phone)
+        setSelfNationalCode(nationalCode)
+      }
+
       notification.success({
         message: t('sendSuccessfully'),
         placement: 'top',
@@ -54,8 +65,8 @@ const SendAndCountDown = () => {
       onClick={handleSendCode}
       disabled={
         seconds < 60 ||
-        (grantType == 'email' && !matchEmail(email)) ||
-        (grantType == 'sms' && !matchPhoneNum(nationalCode, phone))
+        (grantType == GrantType.EMAIL && !matchEmail(email)) ||
+        (grantType == GrantType.SMS && !matchPhoneNum(nationalCode, phone))
       }
       style={{ position: 'absolute' }}
     >

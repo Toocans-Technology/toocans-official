@@ -1,6 +1,7 @@
 'use client'
 
 import { Form, Input } from 'antd'
+import { emailReg } from '@/data'
 import { useT } from '@/i18n'
 import { useLoginContext } from '../LoginContext'
 
@@ -14,7 +15,7 @@ const EmailInput = () => {
       rules={[
         { required: true, message: '' },
         {
-          pattern: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,6}$/,
+          pattern: emailReg,
           message: t('formatErr.email'),
         },
       ]}

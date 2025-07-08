@@ -1,7 +1,8 @@
 import { isValidNumber } from 'libphonenumber-js'
+import { emailReg } from '@/data'
 
 export const matchEmail = (val: string) => {
-  return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,6}$/.test(val)
+  return emailReg.test(val)
 }
 
 export const matchPhoneNum = (nationalCode: string, val: string) => {

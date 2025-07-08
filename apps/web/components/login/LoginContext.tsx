@@ -1,11 +1,12 @@
 import React, { createContext, useContext } from 'react'
+import { GrantType, LoginType } from './data'
 
 export interface LoginContextProps {
   formData: any
-  grantType: string
-  setGrantType: React.Dispatch<React.SetStateAction<string>>
-  loginType: string
-  setLoginType: React.Dispatch<React.SetStateAction<string>>
+  grantType: GrantType
+  setGrantType: React.Dispatch<React.SetStateAction<GrantType>>
+  loginType: LoginType
+  setLoginType: React.Dispatch<React.SetStateAction<LoginType>>
   seconds: number
   setSeconds: React.Dispatch<React.SetStateAction<number>>
   cuntrysVisible: boolean

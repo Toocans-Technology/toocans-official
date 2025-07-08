@@ -23,7 +23,7 @@ input::-webkit-input-placeholder {
   padding: 16px 24px !important;
 }
 .ant-notification-notice-wrapper {
-  background-color: #000 !important;
+  background-color: #1f1f26 !important;
 }
 .ant-notification-notice-close {
   color: #fff !important;

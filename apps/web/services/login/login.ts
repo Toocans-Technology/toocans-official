@@ -8,7 +8,9 @@ export const useLogin = () => {
       method: 'POST',
       url: getUrl('/auth/login'),
       body: params as any,
-      transfer: () => {},
+      transfer: (data) => {
+        return data
+      },
     }))
   )
 }

@@ -1,15 +1,15 @@
 'use client'
 
-import { useState } from 'react'
 import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
 import { useLoginContext } from '../LoginContext'
+import { GrantType } from '../data'
+
+const tabs = [GrantType.EMAIL, GrantType.SMS]
 
 const SwitchTabs = () => {
   const { t } = useT('login')
   const { grantType, setGrantType, seconds, stateReset } = useLoginContext()
-
-  const tabs = ['email', 'sms']
 
   return tabs.map((item) => {
     return (
@@ -18,7 +18,7 @@ const SwitchTabs = () => {
           'select-none',
           'cursor-pointer',
           grantType == item ? 'font-medium text-[#222]' : 'text-[#666]',
-          item == 'sms' && 'ml-4'
+          item == GrantType.SMS && 'ml-4'
         )}
         key={item}
         onClick={() => {

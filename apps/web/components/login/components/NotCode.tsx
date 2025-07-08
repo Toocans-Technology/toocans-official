@@ -12,7 +12,7 @@ const NotCode = () => {
       <Tooltip
         placement="bottom"
         color="white"
-        getPopupContainer={(current: any) => current.parentElement}
+        getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentElement as HTMLElement}
         overlay={
           <>
             <p className="text-base text-black">{t('notCode.tip2')}</p>

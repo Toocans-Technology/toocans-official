@@ -1,6 +1,8 @@
 'use client'
 
+import type { FormProps } from 'antd'
 import { Button, Form, notification } from 'antd'
+import { useRouter } from 'next/navigation'
 import { FunctionComponent, useState, useRef, useCallback } from 'react'
 import { useT } from '@/i18n'
 import { typedStorage } from '@/lib/utils'
@@ -15,17 +17,19 @@ import {
   NotCode,
   CheckComp,
 } from './components/index'
+import { GrantType, LoginType } from './data'
 
 const LoginBox: FunctionComponent = () => {
   const { t } = useT('login')
+  const router = useRouter()
 
   const [form] = Form.useForm()
   const checkBoxRef: any = useRef(null)
 
   // 验证类型
-  const [grantType, setGrantType] = useState<string | 'email' | 'sms'>('email')
+  const [grantType, setGrantType] = useState<GrantType>(GrantType.EMAIL)
   // 登录类型
-  const [loginType, setLoginType] = useState<string | 'pwd' | 'code'>('code')
+  const [loginType, setLoginType] = useState<LoginType>(LoginType.CODE)
   // 国家选择框展示
   const [cuntrysVisible, setCuntrysVisible] = useState(false)
   // 选取问题, 选中后开启手机号blur校验
@@ -41,7 +45,7 @@ const LoginBox: FunctionComponent = () => {
     setPhoneCheckState(false)
   }
 
-  const onSubmit = useCallback(async (values: any) => {
+  const onSubmit = useCallback(async (values: { [key: string]: string }) => {
     if (!values.unregisteredTip && checkBoxRef.current) {
       checkBoxRef.current.openShak1()
       return
@@ -61,14 +65,14 @@ const LoginBox: FunctionComponent = () => {
       appInfo: null,
     }
 
-    if (loginType == 'pwd') {
+    if (loginType == LoginType.PWD) {
       Object.assign(resultParams, {
         username: values.email || `${values.nationalCode}${values.phone}`,
         grantType: 'password',
         password: values.password,
       })
     } else {
-      if (grantType == 'email') {
+      if (grantType == GrantType.EMAIL) {
         Object.assign(resultParams, {
           grantType,
           email: values.email,
@@ -85,18 +89,16 @@ const LoginBox: FunctionComponent = () => {
     }
 
     try {
-      const data = await handleLogin(resultParams)
-      // TODO: log没数据
-      console.log(data)
-      // typedStorage.accessToken = res.data.access_token
-      // typedStorage.refreshToken = res.data.refresh_token
-      // typedStorage.expireIn = res.data.expire_in
+      const { accessToken, refreshToken, expiresIn } = await handleLogin(resultParams)
+      typedStorage.accessToken = accessToken
+      typedStorage.refreshToken = refreshToken
+      typedStorage.expireIn = expiresIn
 
       notification.success({
         message: t('loginSuccessfully'),
         placement: 'top',
       })
-      // TODO: 登录成功以后?
+      router.replace('/zh-CN')
     } catch (error) {
       notification.error({
         message: (error as Error).message,
@@ -135,18 +137,18 @@ const LoginBox: FunctionComponent = () => {
 
             <Form form={form} initialValues={{ unregisteredTip: true, userAgreement: true }} onFinish={onSubmit}>
               {/* email input */}
-              {grantType == 'email' && <EmailInput />}
+              {grantType == GrantType.EMAIL && <EmailInput />}
 
               {/* phone input */}
-              {grantType == 'sms' && <PhoneInput />}
+              {grantType == GrantType.SMS && <PhoneInput />}
 
-              <p className={'mt-4 select-none'}>{t(loginType == 'code' ? 'verificationCode' : 'password')}</p>
+              <p className={'mt-4 select-none'}>{t(loginType == LoginType.CODE ? 'verificationCode' : 'password')}</p>
 
               {/* Verification Code input */}
-              {loginType == 'code' && <VerificationCode />}
+              {loginType == LoginType.CODE && <VerificationCode />}
 
               {/* password input */}
-              {loginType == 'pwd' && <PasswordInput />}
+              {loginType == LoginType.PWD && <PasswordInput />}
 
               <div className="mt-4 flex select-none">
                 {seconds == 60 ? (
@@ -154,13 +156,13 @@ const LoginBox: FunctionComponent = () => {
                     <p
                       className="cursor-pointer text-xs text-[#3C7BF4]"
                       onClick={() => {
-                        setLoginType(loginType == 'code' ? 'pwd' : 'code')
-                        form.resetFields(loginType == 'code' ? ['password'] : ['code'])
+                        setLoginType(loginType == LoginType.CODE ? LoginType.PWD : LoginType.CODE)
+                        form.resetFields(loginType == LoginType.CODE ? ['password'] : ['code'])
                       }}
                     >
-                      {t(loginType == 'code' ? 'switchToPwd' : 'switchToCode')}
+                      {t(loginType == LoginType.CODE ? 'switchToPwd' : 'switchToCode')}
                     </p>
-                    {loginType == 'pwd' && (
+                    {loginType == LoginType.PWD && (
                       <a href="#" className="ml-auto text-xs text-[#3C7BF4]">
                         {t('forgotPassword')}
                       </a>
