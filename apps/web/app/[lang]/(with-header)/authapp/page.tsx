@@ -13,9 +13,8 @@ import { HttpError } from '@/types/http'
 
 export default function AuthAppPage() {
   const { t } = useT('authapp')
-  const { data: userInfoRes, isLoading: loading } = useUserInfo()
+  const { data: userInfoRes } = useUserInfo()
   const { mutateAsync: mutateVerifyGoogleAuth, isPending } = useVerifyGoogleAuth()
-  const [emailCountdown, setEmailCountdown] = useState(0)
   const [googleCode, setGoogleCode] = useState('')
   const [bindSuccess, setBindSuccess] = useState(true)
   React.useEffect(() => {
@@ -32,21 +31,7 @@ export default function AuthAppPage() {
       }
     }
   }, [userInfoRes])
-  const handleSendCode = () => {
-    if (emailCountdown > 0) return
-    toast.success(t('authapp:VerificationCodeSent'))
-    setEmailCountdown(60)
-    const timer = setInterval(() => {
-      setEmailCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer)
-          return 0
-        }
-        return prev - 1
-      })
-    }, 1000)
-  }
-  // const verifyType = 'google'
+  
   const { data: generateGoogleAuthRes } = useGenerateGoogleAuth()
   const handleCopySecretKey = async () => {
     if (generateGoogleAuthRes?.secretKey) {
@@ -72,6 +57,7 @@ export default function AuthAppPage() {
       toast.error((error as HttpError).message)
     }
   }, [mutateVerifyGoogleAuth, googleCode, generateGoogleAuthRes, t])
+
   const handleVerifyGoogleAuth = () => {
     if (!googleCode || !generateGoogleAuthRes?.secretKey) {
       toast.error(t('authapp:PleaseEnterCodeAndSecretKey'))
@@ -83,14 +69,12 @@ export default function AuthAppPage() {
     }
     handleVerifyGoogleAuthSubmit()
   }
+  
   React.useEffect(() => {
     if (generateGoogleAuthRes) {
       console.log('5:', generateGoogleAuthRes)
     }
   }, [generateGoogleAuthRes])
-  if (!loading) {
-    return <div className="flex min-h-screen items-center justify-center bg-[#fafbfc]"></div>
-  }
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#fafbfc]">
       <div className="mx-auto w-full max-w-[942px] rounded-xl bg-white p-[60px_32px_24px_32px] shadow-[0_2px_16px_0_rgba(0,0,0,0.04)]">
