@@ -1,12 +1,12 @@
 'use client'
 
-import type { FormProps } from 'antd'
-import { Button, Form, notification } from 'antd'
+import { Button, Form } from 'antd'
 import { useRouter } from 'next/navigation'
 import { FunctionComponent, useState, useRef, useCallback } from 'react'
 import { useT } from '@/i18n'
 import { typedStorage } from '@/lib/utils'
 import { useLogin } from '@/services/login/login'
+import { openToast } from '@/utils'
 import { LoginContext } from './LoginContext'
 import {
   SwitchTabs,
@@ -38,6 +38,8 @@ const LoginBox: FunctionComponent = () => {
   const [seconds, setSeconds] = useState(60)
 
   const { mutateAsync: handleLogin } = useLogin()
+
+  openToast(t('loginSuccessfully'))
 
   const stateReset = () => {
     form.resetFields()
@@ -94,16 +96,10 @@ const LoginBox: FunctionComponent = () => {
       typedStorage.refreshToken = refreshToken
       typedStorage.expireIn = expiresIn
 
-      notification.success({
-        message: t('loginSuccessfully'),
-        placement: 'top',
-      })
+      openToast(t('loginSuccessfully'))
       router.replace('/zh-CN')
     } catch (error) {
-      notification.error({
-        message: (error as Error).message,
-        placement: 'top',
-      })
+      openToast((error as Error).message, 'error')
     }
   }, [])
 
