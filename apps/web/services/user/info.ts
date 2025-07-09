@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
+import { kycLevelSchema } from '@/types/user'
 
 export const UserInfoSchema = z.object({
   accountId: z.string(),
@@ -18,7 +19,7 @@ export const UserInfoSchema = z.object({
   grantType: z.string().nullable(),
   deviceType: z.string().nullable(),
   setPassword: z.boolean(),
-  kycLevel: z.number(),
+  kycLevel: kycLevelSchema,
   language: z.string().nullable(),
   hasGaKey: z.boolean(),
   nickname: z.string().nullable(),

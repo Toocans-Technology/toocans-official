@@ -6,15 +6,16 @@ import { FunctionComponent, useCallback } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Button, toast } from '@workspace/ui/components'
 import { Separator } from '@workspace/ui/components'
+import { useSecurityLevel } from '@/hooks'
 import { useT } from '@/i18n'
 import { useUserInfo } from '@/services/user/info'
+import { KycLevel } from '@/types/user'
 import Link from '../Link'
 
 const AccountInfo: FunctionComponent = () => {
   const { t } = useT(['account', 'common'])
   const { data } = useUserInfo()
-
-  console.log('data', data)
+  const kycLevel = useSecurityLevel(data?.kycLevel)
 
   const handleCopy = useCallback(() => {
     toast.success(t('common:copySuccess'))
@@ -48,13 +49,13 @@ const AccountInfo: FunctionComponent = () => {
           <p className="text-[#666]">{t('account:identityVerification')}</p>
           <div>
             <span className="bg-destructive/20 text-destructive inline-block rounded px-2 py-0.5 text-sm">
-              {data?.kycLevel === 1 ? t('account:verified') : t('account:unverified')}
+              {data?.kycLevel === KycLevel.unverified ? t('account:unverified') : t('account:verified')}
             </span>
           </div>
         </div>
         <div className="flex flex-col items-end gap-1">
           <p className="text-[#666]">{t('account:securityLevel')}</p>
-          <span className="text-sm">{data?.kycLevel}</span>
+          <span className="text-sm">{kycLevel}</span>
         </div>
       </div>
       <Separator />
