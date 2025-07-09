@@ -6,9 +6,10 @@ import { Button, Separator } from '@workspace/ui/components'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@workspace/ui/components'
 import { useT } from '@/i18n'
 import { getWithdrawInfo } from '@/services/wallet'
+import { getStatus } from '../utils'
 
 interface Props {
-  id?: number
+  id?: string
   open?: boolean
   onOpenChange?: (open: boolean) => void
 }
@@ -16,6 +17,7 @@ interface Props {
 const WithdrawDetailModal: FunctionComponent<Props> = ({ id, open, onOpenChange }) => {
   const { t } = useT(['withdrawal', 'common'])
   const { data } = getWithdrawInfo(id)
+  const status = getStatus(data?.status)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -35,16 +37,16 @@ const WithdrawDetailModal: FunctionComponent<Props> = ({ id, open, onOpenChange 
               <span className="bg-warning flex h-4 w-4 items-center justify-center rounded-full">
                 <ArrowUpFromDot className="rotate-90 text-white" size="12" />
               </span>
-              <span className="ml-1 text-[#222]">{data?.status}</span>
+              <span className="ml-1 text-[#222]">{t(`withdrawal:${status.text}`)}</span>
             </div>
           </div>
           <div className="grid grid-cols-2 items-center py-1.5 text-sm">
             <div className="text-[#999]">{t('withdrawal:network')}</div>
-            <div className="text-right font-medium">{data?.chainName}</div>
+            <div className="text-right font-medium">{data?.chainName ?? '-'}</div>
           </div>
           <div className="grid grid-cols-2 items-center py-1.5 text-sm">
             <div className="text-[#999]">{t('withdrawal:address')}</div>
-            <div className="overflow-hidden break-words text-right font-medium">{data?.address}</div>
+            <div className="overflow-hidden break-words text-right font-medium">{data?.address ?? '-'}</div>
           </div>
           <div className="grid grid-cols-2 items-center py-1.5 text-sm">
             <div className="text-[#999]">{t('withdrawal:amount')}</div>
@@ -55,7 +57,7 @@ const WithdrawDetailModal: FunctionComponent<Props> = ({ id, open, onOpenChange 
           <div className="grid grid-cols-2 items-center py-1.5 text-sm">
             <div className="text-[#999]">{t('withdrawal:chargeAndNetwork')}</div>
             <div className="text-right font-medium">
-              {data?.walletFee} {data?.tokenName}
+              {data?.platformFee} {data?.tokenName}
             </div>
           </div>
         </div>

@@ -22,7 +22,8 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
 import { Token } from '@/services/basicConfig'
-import { getVerifyCode, useWithdraw, WithdrawRes } from '@/services/wallet'
+import { useUserInfo } from '@/services/user/info'
+import { getWithdrawOrder, useSendCode, useWithdraw, Withdrawal } from '@/services/wallet'
 import { HttpError } from '@/types/http'
 import { VerifyType } from '@/types/withdraw'
 
@@ -30,29 +31,23 @@ const COUNT_DOWN = 59 * 1000
 
 interface Props {
   token: Token
-  accountId: number
   address: string
   amount: number
   tokenFee: number
   disabled?: boolean
-  openDetail?: (open: boolean, data: WithdrawRes) => void
+  openDetail?: (open: boolean, data: Withdrawal) => void
 }
 
-const WithdrawModal: FunctionComponent<Props> = ({
-  accountId,
-  address,
-  token,
-  amount,
-  tokenFee,
-  openDetail,
-  disabled = true,
-}) => {
-  const hasGaKey = false
+const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, tokenFee, openDetail, disabled = true }) => {
+  const { data: userInfo } = useUserInfo()
+  const hasGaKey = userInfo?.hasGaKey ?? false
   const { t } = useT(['withdrawal', 'common'])
+  const [open, setOpen] = useState(false)
   const [verifyType, setVerifyType] = useState<VerifyType>(VerifyType.email)
   const [targetDate, setTargetDate] = useState<number>()
-  const { refetch } = getVerifyCode({ type: verifyType })
+  const { mutateAsync: mutateSendCode } = useSendCode()
   const { mutateAsync: mutateWithdraw, isPending } = useWithdraw()
+  const { refetch } = getWithdrawOrder({ pageNo: 1, pageSize: 10, tokenId: token.tokenId })
 
   const FormSchema = useMemo(
     () =>
@@ -92,27 +87,31 @@ const WithdrawModal: FunctionComponent<Props> = ({
       return
     }
 
-    refetch()
+    mutateSendCode({ type: verifyType })
     setTargetDate(Date.now() + COUNT_DOWN)
-  }, [refetch, countdown])
+  }, [mutateSendCode, verifyType, countdown])
 
   const formLabel = useMemo(() => {
     if (verifyType === VerifyType.email) {
-      return countdown ? t('withdrawal:emailVerification', { email: 'xxxx@gmail.com' }) : t('withdrawal:emailAuth')
+      return countdown ? t('withdrawal:emailVerification', { email: userInfo?.email }) : t('withdrawal:emailAuth')
     }
-    return countdown ? t('withdrawal:phoneVerification', { phone: '1234567890' }) : t('withdrawal:phoneAuth')
+    return countdown ? t('withdrawal:phoneVerification', { phone: userInfo?.concatMobile }) : t('withdrawal:phoneAuth')
   }, [verifyType, countdown])
 
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
+      if (!userInfo) {
+        return
+      }
+
       try {
         const res = await mutateWithdraw({
           ...data,
-          accountId,
           address,
           amount,
           tokenFee,
           tokenId: token.tokenId,
+          accountId: userInfo.accountId,
           chargeType: token.tokenSetting?.withdrawChargeType,
         })
 
@@ -120,19 +119,27 @@ const WithdrawModal: FunctionComponent<Props> = ({
           return
         }
 
-        openDetail?.(true, res)
+        setOpen(false)
         reset()
+        refetch()
+        openDetail?.(true, res)
       } catch (error) {
         toast.error((error as HttpError).message)
       }
     },
-    [mutateWithdraw, accountId, address, amount, tokenFee, token, reset]
+    [mutateWithdraw, address, amount, tokenFee, token, reset, userInfo, refetch]
   )
 
   return (
-    <Dialog onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button fullWidth rounded="full" disabled={disabled} className="mt-4 max-w-[456px]">
+        <Button
+          fullWidth
+          rounded="full"
+          disabled={disabled}
+          className="mt-4 max-w-[456px]"
+          onClick={() => setOpen(true)}
+        >
           {t('common:next')}
         </Button>
       </DialogTrigger>

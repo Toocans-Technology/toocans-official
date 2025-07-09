@@ -29,6 +29,8 @@
   "walletSubmitFailed": "Wallet Submit Failed",
   "success": "Success",
   "failed": "Failed",
+  "transferring": "Transferring",
+  "sent": "Sent",
   "manualRejectFailed": "Manual Reject Failed",
   "emailAuth": "Email Authentication",
   "emailVerification": "Enter the verification code that was sent to {{ email }}. It’s valid for 10 minutes.",

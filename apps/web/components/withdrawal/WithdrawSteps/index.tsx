@@ -9,6 +9,7 @@ import { useT } from '@/i18n'
 import { validateAddress } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { AllowDeposit } from '@/types/token'
+import RecentWithdraw from '../RecentWithdraw'
 import ReceivedAmount from './ReceivedAmount'
 
 enum WithdrawStep {
@@ -80,64 +81,71 @@ const WithdrawSteps: FunctionComponent = () => {
   )
 
   return (
-    <div className="mt-4 flex w-full flex-col gap-10 rounded-[10px] bg-white p-6">
-      <div className="flex flex-col gap-2">
-        <div>
-          <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#222] text-xs text-white">
-            1
-          </span>
-          <span className="ml-2 text-sm">{t('withdrawal:selectToken')}</span>
+    <>
+      <div className="mt-4 flex w-full flex-col gap-10 rounded-[10px] bg-white p-6">
+        <div className="flex flex-col gap-2">
+          <div>
+            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#222] text-xs text-white">
+              1
+            </span>
+            <span className="ml-2 text-sm">{t('withdrawal:selectToken')}</span>
+          </div>
+          <SelectToken onSelect={handleSelectToken} showDefaultTokens={false} />
         </div>
-        <SelectToken onSelect={handleSelectToken} showDefaultTokens={false} />
-      </div>
-      <div className="flex flex-col gap-2">
-        <div>
-          <span
-            className={cn(
-              'inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#999] text-xs text-white',
-              step >= WithdrawStep.ChooseNetwork && 'bg-[#222]'
-            )}
-          >
-            2
-          </span>
-          <span className={cn('ml-2 text-sm text-[#999]', step >= WithdrawStep.ChooseNetwork && 'text-[#222]')}>
-            {t('withdrawal:setDestination')}
-          </span>
+        <div className="flex flex-col gap-2">
+          <div>
+            <span
+              className={cn(
+                'inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#999] text-xs text-white',
+                step >= WithdrawStep.ChooseNetwork && 'bg-[#222]'
+              )}
+            >
+              2
+            </span>
+            <span className={cn('ml-2 text-sm text-[#999]', step >= WithdrawStep.ChooseNetwork && 'text-[#222]')}>
+              {t('withdrawal:setDestination')}
+            </span>
+          </div>
+          {step >= WithdrawStep.ChooseNetwork && (
+            <>
+              <div className="flex flex-col gap-2">
+                <Label className="text-sm text-[#222]">{t('withdrawal:onChainType')}</Label>
+                <SelectNetwork
+                  value={selectedNetwork?.id || ''}
+                  networks={networkList}
+                  onValueChange={handleSelectNetwork}
+                />
+              </div>
+              <div className="mt-4 flex max-w-[456px] flex-col gap-2">
+                <Label className="text-sm text-[#222]">{t('withdrawal:address')}</Label>
+                <Input
+                  placeholder={t('withdrawal:addressPlaceholder')}
+                  value={address}
+                  onChange={handleAddressChange}
+                />
+              </div>
+            </>
+          )}
         </div>
-        {step >= WithdrawStep.ChooseNetwork && (
-          <>
-            <div className="flex flex-col gap-2">
-              <Label className="text-sm text-[#222]">{t('withdrawal:onChainType')}</Label>
-              <SelectNetwork
-                value={selectedNetwork?.id || ''}
-                networks={networkList}
-                onValueChange={handleSelectNetwork}
-              />
-            </div>
-            <div className="mt-4 flex max-w-[456px] flex-col gap-2">
-              <Label className="text-sm text-[#222]">{t('withdrawal:address')}</Label>
-              <Input placeholder={t('withdrawal:addressPlaceholder')} value={address} onChange={handleAddressChange} />
-            </div>
-          </>
-        )}
-      </div>
-      <div className="flex flex-col gap-2">
-        <div>
-          <span
-            className={cn(
-              'inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#999] text-xs text-white',
-              step >= WithdrawStep.WithdrawAmount && 'bg-[#222]'
-            )}
-          >
-            3
-          </span>
-          <span className={cn('ml-2 text-sm text-[#999]', step >= WithdrawStep.WithdrawAmount && 'text-[#222]')}>
-            {t('withdrawal:setAmount')}
-          </span>
+        <div className="flex flex-col gap-2">
+          <div>
+            <span
+              className={cn(
+                'inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#999] text-xs text-white',
+                step >= WithdrawStep.WithdrawAmount && 'bg-[#222]'
+              )}
+            >
+              3
+            </span>
+            <span className={cn('ml-2 text-sm text-[#999]', step >= WithdrawStep.WithdrawAmount && 'text-[#222]')}>
+              {t('withdrawal:setAmount')}
+            </span>
+          </div>
+          {step >= WithdrawStep.WithdrawAmount && <ReceivedAmount token={selectedNetwork} address={address} />}
         </div>
-        {step >= WithdrawStep.WithdrawAmount && <ReceivedAmount token={selectedToken} address={address} />}
       </div>
-    </div>
+      {selectedNetwork && <RecentWithdraw tokenId={selectedNetwork?.tokenId} />}
+    </>
   )
 }
 

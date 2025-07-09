@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { withdrawalStatusSchema, withdrawMethodSchema } from '@/types/withdraw'
 
-export const WithdrawSchema = z.object({
+export const WithdrawalSchema = z.object({
   id: z.string(),
   clientWithdrawalId: z.nullable(z.string()),
   transactionId: z.nullable(z.string()),
@@ -40,4 +40,4 @@ export const WithdrawSchema = z.object({
   transferShowName: z.nullable(z.string()),
 })
 
-export type Withdraw = z.infer<typeof WithdrawSchema>
+export type Withdrawal = z.infer<typeof WithdrawalSchema>

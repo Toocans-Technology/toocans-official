@@ -3,8 +3,10 @@
 import dayjs from 'dayjs'
 import { FunctionComponent } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@workspace/ui/components'
+import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
 import { getWithdrawOrder } from '@/services/wallet'
+import { getStatus } from './utils'
 
 interface Props {
   tokenId: string
@@ -34,15 +36,15 @@ const RecentWithdraw: FunctionComponent<Props> = ({ tokenId }) => {
         <TableBody>
           {orderList?.length ? (
             orderList?.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell className="font-medium text-[#222]">{order.tokenName}</TableCell>
-                <TableCell className="text-brand">{order.arriveQuantity}</TableCell>
-                <TableCell className="text-right text-[#222]">{order.address}</TableCell>
-                <TableCell className="text-right text-[#222]">
-                  {dayjs(order.createdAt).format('YYYY-MM-DD HH:mm:ss')}
-                </TableCell>
-                <TableCell className="rounded bg-[#f8f8f8] px-2.5 py-1 text-right text-[#222]">
-                  {order.status}
+              <TableRow key={order.id} className="border-none">
+                <TableCell className="p-3 font-medium text-[#222]">{order.tokenName}</TableCell>
+                <TableCell className="text-destructive p-3">-{order.totalQuantity}</TableCell>
+                <TableCell className="p-3">{order.address}</TableCell>
+                <TableCell className="p-3">{dayjs(Number(order.createdAt)).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
+                <TableCell className="p-3">
+                  <span className={cn('rounded px-2.5 py-1 text-[#222]', getStatus(order.status).color)}>
+                    {t(`withdrawal:${getStatus(order.status).text}`)}
+                  </span>
                 </TableCell>
               </TableRow>
             ))

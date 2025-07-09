@@ -6,7 +6,7 @@ import { useTokenFee } from '@/hooks/useTokenFee'
 import { useT } from '@/i18n'
 import { formatInputAmount } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
-import { WithdrawRes } from '@/services/wallet'
+import { Withdrawal } from '@/services/wallet'
 import { WithdrawDetailModal } from '../modals'
 import WithdrawModal from '../modals/WithdrawModal'
 
@@ -24,7 +24,7 @@ interface Props {
 const ReceivedAmount: FunctionComponent<Props> = ({ token, address }) => {
   const { t } = useT('withdrawal')
   const minAmount = token?.tokenSetting?.withdrawMinQuantity || 0
-  const [transferId, setTransferId] = useState<number | undefined>(undefined)
+  const [transferId, setTransferId] = useState<string | undefined>(undefined)
   const [open, setOpen] = useState(false)
   const [amount, setAmount] = useState<InputValueType>({ value: '', error: '', isInvalid: false })
   const tokenFee = useTokenFee(token, Number(amount.value))
@@ -77,7 +77,7 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address }) => {
     [userAsset, minAmount, tokenFee]
   )
 
-  const handleOpenDetail = useCallback((open: boolean, data: WithdrawRes) => {
+  const handleOpenDetail = useCallback((open: boolean, data: Withdrawal) => {
     setOpen(open)
     setTransferId(data.id)
   }, [])
@@ -121,7 +121,6 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address }) => {
           token={token}
           amount={Number(amount.value)}
           address={address}
-          accountId={0}
           disabled={disabled}
           tokenFee={tokenFee}
           openDetail={handleOpenDetail}

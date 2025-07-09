@@ -33,10 +33,10 @@ const RecentDeposits: FunctionComponent<Props> = ({ tokenId }) => {
           {orderList?.length ? (
             orderList?.map((order) => (
               <TableRow key={order.id}>
-                <TableCell className="font-medium text-[#222]">{order.tokenName}</TableCell>
-                <TableCell className="text-brand">{order.quantity}</TableCell>
-                <TableCell className="text-right text-[#222]">
-                  {dayjs(order.createdAt).format('YYYY-MM-DD HH:mm:ss')}
+                <TableCell className="py-3 font-medium">{order.tokenName}</TableCell>
+                <TableCell className="text-brand py-3">{order.quantity}</TableCell>
+                <TableCell className="py-3 text-right">
+                  {dayjs(Number(order.createdAt)).format('YYYY-MM-DD HH:mm:ss')}
                 </TableCell>
               </TableRow>
             ))
