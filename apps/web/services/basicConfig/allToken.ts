@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
-import { allowDepositSchema, allowWithdrawSchema } from '@/types/token'
+import { allowDepositSchema, allowWithdrawSchema, withdrawChargeTypeSchema } from '@/types/token'
 
 const TokenSettingSchema = z.object({
   id: z.string(),
@@ -15,7 +15,7 @@ const TokenSettingSchema = z.object({
   depositMinQuantity: z.string(),
   withdrawMinQuantity: z.string(),
   withdrawMaxDayQuantity: z.string(),
-  withdrawChargeType: z.number(),
+  withdrawChargeType: withdrawChargeTypeSchema,
   withdrawChargeValue: z.string(),
   withdrawWithoutReviewDayQuantity: z.string(),
   addressNeedTag: z.boolean(),

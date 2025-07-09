@@ -9,8 +9,6 @@ export async function middleware(req: NextRequest) {
   const localeFromPathname = pathname.split('/')[1]
   const normalizedLocaleFromPathname = localeFromPathname?.toLowerCase()
 
-  console.log('pathname', pathname)
-
   // Find the correct case-sensitive locale
   const currentLocale = locales.find((locale) => locale.toLowerCase() === normalizedLocaleFromPathname)
 

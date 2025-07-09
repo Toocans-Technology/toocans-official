@@ -1,5 +1,5 @@
+import { BalanceRecordParams, useBalanceRecord } from '@/services/asset/useBalanceRecord'
 import { useGetAllAsset } from '@/services/asset/useGetAllAsset'
-import { useBalanceRecord } from '@/services/asset/useBalanceRecord'
 
 export const useAssetRecord = (params: BalanceRecordParams) => {
   const { data, isLoading, error, refetch } = useBalanceRecord(params)

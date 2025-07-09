@@ -1,25 +1,49 @@
+'use client'
+
 import Image from 'next/image'
-import { FunctionComponent } from 'react'
+import { useRouter } from 'next/router'
+import { FunctionComponent, useCallback, useState } from 'react'
 import { Button, Input } from '@workspace/ui/components'
-import { getT } from '@/i18n/server'
+import { useT } from '@/i18n'
+import { EMAIL_REGEX } from '@/lib/utils/constants'
 import Link from '../Link'
 
-const HeroSection: FunctionComponent<{ lang: string }> = async ({ lang }) => {
-  const { t } = await getT(lang, 'home')
+const HeroSection: FunctionComponent = () => {
+  const { t } = useT(['home'])
+  const router = useRouter()
+  const [isValid, setIsValid] = useState(false)
+  const [email, setEmail] = useState('')
+
+  const validateEmail = useCallback((email: string) => {
+    const isValid = EMAIL_REGEX.test(email)
+    setEmail(email)
+    setIsValid(isValid)
+  }, [])
+
+  const handleStartNow = useCallback(() => {
+    if (isValid) {
+      router.push('/signin', { query: { email } })
+    }
+  }, [isValid, email])
 
   return (
     <div className="w-full bg-black">
       <div className="mx-auto flex max-w-[1200px] items-center justify-between px-8 py-16 text-white">
         <div className="inline-flex flex-col gap-10">
           <p className="max-w-[560px] text-[40px]">{t('home:hero.description')}</p>
-          <div className="flex max-w-80 items-center rounded-full border border-[#666] p-1">
-            <Input
-              placeholder={t('home:hero.inputPlaceholder')}
-              className="border-none bg-transparent focus-visible:outline-none focus-visible:ring-0"
-            />
-            <Button rounded="full" className="text-[#222]">
-              {t('home:startNow')}
-            </Button>
+          <div className="flex flex-col gap-2">
+            <div className="flex max-w-80 items-center rounded-full border border-[#666] p-1">
+              <Input
+                value={email}
+                placeholder={t('home:hero.inputPlaceholder')}
+                className="h-9 border-none bg-transparent focus-visible:outline-none focus-visible:ring-0"
+                onChange={(e) => validateEmail(e.target.value)}
+              />
+              <Button rounded="full" className="text-[#222]" onClick={handleStartNow}>
+                {t('home:startNow')}
+              </Button>
+            </div>
+            {isValid && <p className="text-destructive">{t('home:invalidEmail')}</p>}
           </div>
           <div className="flex flex-col">
             <p className="text-[#999]">{t('home:continueWith')}</p>

@@ -51,6 +51,9 @@ importers:
       '@formatjs/intl-localematcher':
         specifier: ^0.6.1
         version: 0.6.1
+      '@hookform/resolvers':
+        specifier: ^5.1.1
+        version: 5.1.1(react-hook-form@7.58.1(react@19.0.0))
       '@tanstack/react-query':
         specifier: ^5.81.2
         version: 5.81.2(react@19.0.0)
@@ -69,6 +72,9 @@ importers:
       bignumber.js:
         specifier: ^9.3.0
         version: 9.3.0
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.13
       es-toolkit:
         specifier: ^1.39.5
         version: 1.39.5
@@ -115,8 +121,8 @@ importers:
         specifier: ^15.5.3
         version: 15.5.3(i18next@25.2.1(typescript@5.7.3))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)
       zod:
-        specifier: ^3.24.2
-        version: 3.24.2
+        specifier: ^3.25.71
+        version: 3.25.71
       zustand:
         specifier: ^5.0.5
         version: 5.0.5(@types/react@19.0.10)(immer@10.1.1)(react@19.0.0)(use-sync-external-store@1.5.0(react@19.0.0))
@@ -4377,6 +4383,9 @@ packages:
 
   zod@3.24.2:
     resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
+
+  zod@3.25.71:
+    resolution: {integrity: sha512-BsBc/NPk7h8WsUWYWYL+BajcJPY8YhjelaWu2NMLuzgraKAz4Lb4/6K11g9jpuDetjMiqhZ6YaexFLOC0Ogi3Q==}
 
   zustand@5.0.5:
     resolution: {integrity: sha512-mILtRfKW9xM47hqxGIxCv12gXusoY/xTSHBYApXozR0HmQv299whhBeeAcRy+KrPPybzosvJBCOmVjq6x12fCg==}
@@ -8782,6 +8791,8 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   zod@3.24.2: {}
+
+  zod@3.25.71: {}
 
   zustand@5.0.5(@types/react@19.0.10)(immer@10.1.1)(react@19.0.0)(use-sync-external-store@1.5.0(react@19.0.0)):
     optionalDependencies:
