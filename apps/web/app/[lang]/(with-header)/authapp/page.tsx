@@ -15,7 +15,6 @@ export default function AuthAppPage() {
   const { t } = useT('authapp')
   const { data: userInfoRes } = useUserInfo()
   const { mutateAsync: mutateVerifyGoogleAuth, isPending } = useVerifyGoogleAuth()
-  // const [emailCountdown, setEmailCountdown] = useState(0)
   const [googleCode, setGoogleCode] = useState('')
   const [bindSuccess, setBindSuccess] = useState(true)
   React.useEffect(() => {
@@ -32,21 +31,7 @@ export default function AuthAppPage() {
       }
     }
   }, [userInfoRes])
-  // const handleSendCode = () => {
-  //   if (emailCountdown > 0) return
-  //   toast.success(t('authapp:VerificationCodeSent'))
-  //   setEmailCountdown(60)
-  //   const timer = setInterval(() => {
-  //     setEmailCountdown((prev) => {
-  //       if (prev <= 1) {
-  //         clearInterval(timer)
-  //         return 0
-  //       }
-  //       return prev - 1
-  //     })
-  //   }, 1000)
-  // }
-  // const verifyType = 'google'
+  
   const { data: generateGoogleAuthRes } = useGenerateGoogleAuth()
   const handleCopySecretKey = async () => {
     if (generateGoogleAuthRes?.secretKey) {

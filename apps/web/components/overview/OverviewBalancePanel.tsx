@@ -7,6 +7,8 @@ import { useMemo, useState } from 'react'
 import { useAssetAll } from '@/hooks/asset'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
+import { sumBy } from 'es-toolkit'
+import type { GetAllAssetResponse } from '@/services/asset/useGetAllAsset'
 
 export default function OverviewBalancePanel() {
   const { t } = useT('overview')
@@ -26,34 +28,34 @@ export default function OverviewBalancePanel() {
 
   const total = useMemo(() => {
     if (!Array.isArray(data) || !Array.isArray(allTokenData)) return '--'
-    return data
-      .filter((item) => allTokenData.some((token) => token.tokenId === item.tokenId))
-      .reduce((sum, item) => {
-        const total = new BigNumber(item.total ?? 0)
-        return sum.plus(total)
-      }, new BigNumber(0))
+    return sumBy(
+      (data as GetAllAssetResponse).filter((item) => allTokenData.some((token) => token.tokenId === item.tokenId)),
+      (item) => new BigNumber(item.total ?? 0).toNumber()
+    )
   }, [data, allTokenData])
 
   const availableTotal = useMemo(() => {
     if (!Array.isArray(data) || !Array.isArray(allTokenData)) return '--'
-    return data
-      .filter((item) => allTokenData.some((token) => token.tokenId === item.tokenId))
-      .reduce((sum, item) => {
+    return sumBy(
+      (data as GetAllAssetResponse).filter((item) => allTokenData.some((token) => token.tokenId === item.tokenId)),
+      (item) => {
         const total = new BigNumber(item.total ?? 0)
         const price = item.tokenId === 'USDT' ? new BigNumber(1) : new BigNumber(item.marketPrice ?? 0)
-        return sum.plus(total.multipliedBy(price))
-      }, new BigNumber(0))
+        return total.multipliedBy(price).toNumber()
+      }
+    )
   }, [data, allTokenData])
 
   const availableBalance = useMemo(() => {
     if (!Array.isArray(data) || !Array.isArray(allTokenData)) return '--'
-    return data
-      .filter((item) => allTokenData.some((token) => token.tokenId === item.tokenId))
-      .reduce((sum, item) => {
+    return sumBy(
+      (data as GetAllAssetResponse).filter((item) => allTokenData.some((token) => token.tokenId === item.tokenId)),
+      (item) => {
         const total = new BigNumber(item.total ?? 0)
         const price = item.tokenId === 'USDT' ? new BigNumber(1) : new BigNumber(item.availableAssetTotal ?? 0)
-        return sum.plus(total.multipliedBy(price))
-      }, new BigNumber(0))
+        return total.multipliedBy(price).toNumber()
+      }
+    )
   }, [data, allTokenData])
   return (
     <div className="flex h-[154px] flex-col justify-center gap-[10px] rounded-xl bg-white p-[30px_24px_10px_24px]">
