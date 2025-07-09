@@ -11,6 +11,7 @@ import { useT } from '@/i18n'
 import { useUserInfo } from '@/services/user/info'
 import { KycLevel } from '@/types/user'
 import Link from '../Link'
+import { ChangeNicknameModal } from './modals'
 
 const AccountInfo: FunctionComponent = () => {
   const { t } = useT(['account', 'common'])
@@ -63,9 +64,7 @@ const AccountInfo: FunctionComponent = () => {
         <div className="text-sm">{t('account:nickName')}</div>
         <div className="text-xs">{data?.nickname}</div>
         <div className="flex justify-end">
-          <Button rounded="full" variant="secondary">
-            {t('common:change')}
-          </Button>
+          <ChangeNicknameModal />
         </div>
       </div>
       <div className="my-3 grid grid-cols-3 items-center py-3">

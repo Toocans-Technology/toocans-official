@@ -72,7 +72,7 @@ const UserDropdown: FunctionComponent = () => {
               {t('common:deposit')}
             </DropdownMenuItem>
           </Link>
-          <Link href="/withdraw">
+          <Link href="/withdrawal">
             <DropdownMenuItem className="py-2.5">
               <CircleArrowUp color="#222" />
               {t('common:withdraw')}

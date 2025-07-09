@@ -20,5 +20,8 @@
   "medium": "Medium",
   "high": "High",
   "verified": "Verified",
-  "unverified": "Unverified"
+  "unverified": "Unverified",
+  "changeNickname": "Change Nickname",
+  "changeNicknamePlaceholder": "Enter nickname",
+  "changeNicknameTips": "5-20 characters."
 }
