@@ -1,8 +1,13 @@
+import { AntdRegistry } from '@ant-design/nextjs-registry'
+import { ConfigProvider } from 'antd'
 import { Geist, Inter } from 'next/font/google'
 import { Toaster } from '@workspace/ui/components'
 import '@workspace/ui/globals.css'
 import { BaseProviders, RouterProvider } from '@/components/providers'
 import { locales } from '@/i18n/config'
+import '@/styles/antd/globals.css'
+import themeConfig from '@/styles/themeConfig'
+import Fix from '@/utils/fix'
 
 const fontSans = Geist({
   subsets: ['latin'],
@@ -33,10 +38,18 @@ export default async function RootLayout({ children, params }: Readonly<Props>) 
   return (
     <html lang={lang} suppressHydrationWarning>
       <body className={`${fontSans.variable} ${fontInter.variable} font-inter antialiased`}>
-        <BaseProviders>
-          <Toaster position="top-center" />
-          <RouterProvider>{children}</RouterProvider>
-        </BaseProviders>
+        <AntdRegistry>
+          <ConfigProvider theme={themeConfig}>
+            <BaseProviders>
+              <Toaster position="top-center" />
+              <RouterProvider>
+                {/* https://ant-design.antgroup.com/docs/react/v5-for-19-cn */}
+                <Fix />
+                {children}
+              </RouterProvider>
+            </BaseProviders>
+          </ConfigProvider>
+        </AntdRegistry>
       </body>
     </html>
   )
