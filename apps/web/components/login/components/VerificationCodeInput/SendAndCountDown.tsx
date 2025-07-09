@@ -1,9 +1,10 @@
 'use client'
 
-import { Button, Form, notification } from 'antd'
+import { Button, Form } from 'antd'
 import { useState } from 'react'
 import { useT } from '@/i18n'
 import { useCodeByEmail, useCodeByMobile } from '@/services/login'
+import { openToast } from '@/utils'
 import { useLoginContext } from '../../LoginContext'
 import { GrantType } from '../../data'
 import { matchEmail, matchPhoneNum } from '../../utils'
@@ -35,10 +36,7 @@ const SendAndCountDown = () => {
         setSelfNationalCode(nationalCode)
       }
 
-      notification.success({
-        message: t('sendSuccessfully'),
-        placement: 'top',
-      })
+      openToast(t('sendSuccessfully'))
       setSeconds(60)
 
       const timer = setInterval(() => {
@@ -51,10 +49,7 @@ const SendAndCountDown = () => {
         })
       }, 1000)
     } catch (error) {
-      notification.error({
-        message: (error as Error).message,
-        placement: 'top',
-      })
+      openToast((error as Error).message, 'error')
     }
   }
 

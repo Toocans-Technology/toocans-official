@@ -14,24 +14,3 @@ input::-webkit-input-placeholder {
 .ant-input-number-affix-wrapper {
   width: 100% !important;
 }
-
-/* notification 主题设置不生效, 额外覆盖 */
-.ant-notification {
-  top: 160px !important;
-}
-.ant-notification-notice {
-  padding: 16px 24px !important;
-}
-.ant-notification-notice-wrapper {
-  background-color: #1f1f26 !important;
-}
-.ant-notification-notice-close {
-  color: #fff !important;
-}
-.ant-notification-notice-close:hover {
-  color: #f8f8f8 !important;
-}
-.ant-notification-notice-message {
-  color: #fff !important;
-  margin-bottom: 0 !important;
-}

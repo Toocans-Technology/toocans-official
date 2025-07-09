@@ -1,0 +1,24 @@
+/* notification 主题设置不生效, 额外覆盖 */
+.ant-notification {
+  top: 100px !important;
+
+  &-notice {
+    padding: 16px 24px !important;
+  }
+  &-notice-wrapper {
+    background-color: #1f1f26 !important;
+  }
+  &-notice-message {
+    color: #fff !important;
+    margin-bottom: 0 !important;
+  }
+  &-notice-close {
+    color: #fff !important;
+  }
+  &-notice-close:hover {
+    color: #f8f8f8 !important;
+  }
+  &-notice-close-icon {
+    margin-top: -5px;
+  }
+}
