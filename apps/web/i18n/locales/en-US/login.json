@@ -1,0 +1,39 @@
+{
+  "name": "Toocans",
+  "title": "Welcome to",
+  "send": "Send",
+  "email": "Email",
+  "sms": "Phone",
+  "password": "Password",
+  "search": "Search",
+  "verificationCode": "Verification Code",
+  "switchToPwd": "Switch to password login",
+  "switchToCode": "Switch to code login",
+  "login": "Log in",
+  "unregisteredTip": "Unregistered users will be automatically registered directly",
+  "agreedTip": "I have read and agreed to the",
+  "userAgreement": "User Agreement",
+  "and": "and",
+  "forgotPassword": "Forgot password",
+  "privacyPolicy": "Privacy policy",
+  "sendSuccessfully": "Send successfully",
+  "loginSuccessfully": "Login successfully",
+  "notCode": {
+    "tip1": "Not able to receive verification code?",
+    "tip2": "Please try the following steps:",
+    "step1": "Check if you are using the correct email address abc***@gmail.com",
+    "step2": "If you are still unable to receive it, please check your spam folder."
+  },
+  "enter": {
+    "email": "Enter Email",
+    "phone": "Enter Phone",
+    "code": "Enter Code",
+    "pwd": "Enter password"
+  },
+  "formatErr": {
+    "email": "Email address format error",
+    "phone": "Phone number format error",
+    "code": "Verification code format error",
+    "pwd": "Password format error"
+  }
+}
