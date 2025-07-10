@@ -2,7 +2,7 @@
 
 import { Tooltip } from 'antd'
 import { useT } from '@/i18n'
-import styles from '../assets/style.module.css'
+import styles from '../assets/style.module.scss'
 
 const NotCode = () => {
   const { t } = useT('login')
