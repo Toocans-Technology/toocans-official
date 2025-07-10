@@ -5,7 +5,7 @@
   RUN corepack enable && corepack prepare pnpm@latest --activate
   COPY . .
   RUN pnpm install --frozen-lockfile
-  RUN  pnpm run build
+
   # --- Stage 2: Runtime ---
   FROM node:22-alpine AS runtime
   WORKDIR /work/wallet/nodejs
@@ -22,5 +22,6 @@
   USER bdy
   EXPOSE 3000
   # 设置工作目录
+  RUN  pnpm run build:dev
   WORKDIR /work/wallet/nodejs/apps/web
-  CMD ["pnpm", "start"]
+  CMD ["node", ".next/standalone/apps/web/server.js"]
