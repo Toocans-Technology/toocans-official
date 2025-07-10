@@ -124,9 +124,13 @@ const AccountInfo: FunctionComponent = () => {
         </div>
         <div className="text-xs">{data?.hasGaKey ? '******' : t('account:notConfigured')}</div>
         <div className="flex justify-end">
-          <Button rounded="full" variant="secondary">
-            {t('common:settings')}
-          </Button>
+          {!data?.hasGaKey && (
+            <Link href="/authapp">
+              <Button rounded="full" variant="secondary">
+                {t('common:settings')}
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </div>
