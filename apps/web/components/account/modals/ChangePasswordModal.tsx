@@ -1,9 +1,9 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, Loader2Icon } from 'lucide-react'
+import { Eye, EyeOff, Loader2Icon } from 'lucide-react'
 import { FunctionComponent, useCallback, useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { ControllerRenderProps, FormState, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import {
   Button,
@@ -21,6 +21,44 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { useT } from '@/i18n'
 import { useUpdatePassword } from '@/services/user'
 import { HttpError } from '@/types/http'
+
+interface PasswordInputProps {
+  placeholder?: string
+  formState: FormState<{
+    password: string
+    oldPassword: string
+  }>
+  field: ControllerRenderProps<
+    {
+      password: string
+      oldPassword: string
+    },
+    'oldPassword' | 'password'
+  >
+}
+
+const PasswordInput = ({ formState, field, placeholder }: PasswordInputProps) => {
+  const [show, setShow] = useState(false)
+
+  return (
+    <div
+      aria-invalid={formState.errors.password ? true : false}
+      className="aria-invalid:border-destructive aria-invalid:ring-destructive aria-invalid:ring-[1px] focus-within:border-ring focus-within:ring-primary flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-3 focus-within:ring-[1px]"
+    >
+      <Input
+        {...field}
+        maxLength={32}
+        autoComplete="off"
+        type={show ? 'text' : 'password'}
+        className="aria-invalid:ring-0 rounded-sm focus-visible:ring-0"
+        placeholder={placeholder}
+      />
+      <span onClick={() => setShow(!show)} className="cursor-pointer">
+        {show ? <Eye color="#666" strokeWidth={1.5} size={16} /> : <EyeOff color="#666" strokeWidth={1.5} size={16} />}
+      </span>
+    </div>
+  )
+}
 
 const ChangePasswordModal: FunctionComponent = () => {
   const { t } = useT(['account', 'common'])
@@ -43,6 +81,7 @@ const ChangePasswordModal: FunctionComponent = () => {
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    shouldFocusError: false,
     defaultValues: {
       oldPassword: '',
       password: '',
@@ -50,12 +89,9 @@ const ChangePasswordModal: FunctionComponent = () => {
   })
   const { handleSubmit, reset, formState } = form
 
-  console.log('formState', formState)
-
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
       try {
-        console.log('data', data)
         const res = await mutateUpdatePassword(data)
 
         if (!res) {
@@ -91,22 +127,9 @@ const ChangePasswordModal: FunctionComponent = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('account:password')}</FormLabel>
-                  <div
-                    aria-invalid={formState.errors.password ? true : false}
-                    className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-3 focus-within:ring-[1px]"
-                  >
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="password"
-                        maxLength={32}
-                        autoComplete="off"
-                        className="rounded-sm focus-visible:ring-0"
-                        placeholder={t('account:passwordPlaceholder')}
-                      />
-                    </FormControl>
-                    <Eye color="#666" strokeWidth={1.5} className="cursor-pointer" />
-                  </div>
+                  <FormControl>
+                    <PasswordInput formState={formState} field={field} placeholder={t('account:passwordPlaceholder')} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -117,22 +140,13 @@ const ChangePasswordModal: FunctionComponent = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('account:newPassword')}</FormLabel>
-                  <div
-                    aria-invalid={formState.errors.password ? true : false}
-                    className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-3 focus-within:ring-[1px]"
-                  >
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="password"
-                        maxLength={32}
-                        autoComplete="off"
-                        className="rounded-sm focus-visible:ring-0"
-                        placeholder={t('account:newPasswordPlaceholder')}
-                      />
-                    </FormControl>
-                    <Eye color="#666" strokeWidth={1.5} className="cursor-pointer" />
-                  </div>
+                  <FormControl>
+                    <PasswordInput
+                      formState={formState}
+                      field={field}
+                      placeholder={t('account:newPasswordPlaceholder')}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
