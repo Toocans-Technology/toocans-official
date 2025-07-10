@@ -19,7 +19,7 @@ import {
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@workspace/ui/components'
 import { useT } from '@/i18n'
 import { useUserInfo } from '@/services/user'
-import { useUpdateNickname } from '@/services/user/updateNickname'
+import { useUpdateNickname } from '@/services/user'
 import { HttpError } from '@/types/http'
 
 const ChangeNicknameModal: FunctionComponent = () => {
@@ -104,9 +104,12 @@ const ChangeNicknameModal: FunctionComponent = () => {
             />
           </div>
           <DialogFooter>
+            <Button rounded="full" variant="secondary" onClick={() => setOpen(false)}>
+              {t('common:cancel')}
+            </Button>
             <Button rounded="full" disabled={!formState.isValid || isPending} onClick={handleSubmit(onSubmit)}>
               {isPending && <Loader2Icon className="animate-spin" />}
-              {t('common:next')}
+              {t('common:confirm')}
             </Button>
           </DialogFooter>
         </Form>

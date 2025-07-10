@@ -23,5 +23,11 @@
   "unverified": "Unverified",
   "changeNickname": "Change Nickname",
   "changeNicknamePlaceholder": "Enter nickname",
-  "changeNicknameTips": "5-20 characters."
+  "changeNicknameTips": "5-20 characters.",
+  "changePassword": "Change Password",
+  "password": "Password",
+  "newPassword": "Confirm new password",
+  "passwordPlaceholder": "Please enter a new password",
+  "newPasswordPlaceholder": "Please enter a new password again",
+  "verificationCode": "Verification Code"
 }

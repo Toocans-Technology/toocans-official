@@ -11,12 +11,14 @@ import { useT } from '@/i18n'
 import { useUserInfo } from '@/services/user/info'
 import { KycLevel } from '@/types/user'
 import Link from '../Link'
-import { ChangeNicknameModal } from './modals'
+import { ChangeNicknameModal, ChangePasswordModal } from './modals'
 
 const AccountInfo: FunctionComponent = () => {
   const { t } = useT(['account', 'common'])
   const { data } = useUserInfo()
   const kycLevel = useSecurityLevel(data?.kycLevel)
+
+  console.log('data', data)
 
   const handleCopy = useCallback(() => {
     toast.success(t('common:copySuccess'))
@@ -24,13 +26,15 @@ const AccountInfo: FunctionComponent = () => {
 
   return (
     <div className="mt-5 w-full rounded-[10px] bg-white p-6">
-      <div className="rounded-md bg-[#FFF3A5] p-4">
-        <p className="text-xs">{t('account:lowSecurityDescription')}</p>
-        <Link href="/authapp" className="mt-2 inline-flex cursor-pointer items-center gap-2">
-          <span className="text-sm">{t('account:google2fa')}</span>
-          <ChevronRight color="#666" size={16} />
-        </Link>
-      </div>
+      {!data?.hasGaKey && (
+        <div className="rounded-md bg-[#FFF3A5] p-4">
+          <p className="text-xs">{t('account:lowSecurityDescription')}</p>
+          <Link href="/authapp" className="mt-2 inline-flex cursor-pointer items-center gap-2">
+            <span className="text-sm">{t('account:google2fa')}</span>
+            <ChevronRight color="#666" size={16} />
+          </Link>
+        </div>
+      )}
       <div className="mt-5 grid grid-cols-3 py-3 text-xs">
         <div className="flex items-center gap-2">
           <Image src={data?.avatar || '/icons/user.svg'} alt="User" width={28} height={28} className="size-7 rounded" />
@@ -110,9 +114,7 @@ const AccountInfo: FunctionComponent = () => {
         </div>
         <div className="text-xs">{data?.setPassword ? '******' : t('account:notConfigured')}</div>
         <div className="flex justify-end">
-          <Button rounded="full" variant="secondary">
-            {t('common:settings')}
-          </Button>
+          <ChangePasswordModal />
         </div>
       </div>
       <div className="my-3 grid grid-cols-3 items-center py-3">

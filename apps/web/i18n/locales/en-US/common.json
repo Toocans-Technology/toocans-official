@@ -25,5 +25,7 @@
   },
   "next": "Next",
   "send": "Send",
-  "ok": "OK"
+  "ok": "OK",
+  "confirm": "Confirm",
+  "cancel": "Cancel"
 }
