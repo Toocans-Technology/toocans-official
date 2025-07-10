@@ -6,7 +6,6 @@ import { getUrl } from '@/lib/api/getUrl'
 export const UpdatePasswordParamsSchema = z.object({
   password: z.string().min(8).max(32),
   oldPassword: z.string().min(8).max(32),
-  code: z.string().min(6).max(6),
 })
 
 export type UpdatePasswordParams = z.infer<typeof UpdatePasswordParamsSchema>

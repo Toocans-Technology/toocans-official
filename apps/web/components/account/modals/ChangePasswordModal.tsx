@@ -34,7 +34,6 @@ const ChangePasswordModal: FunctionComponent = () => {
       z.object({
         password: z.string().min(8).max(32),
         oldPassword: z.string().min(8).max(32),
-        code: z.string().min(6).max(6),
       }),
     []
   )
@@ -44,7 +43,6 @@ const ChangePasswordModal: FunctionComponent = () => {
     defaultValues: {
       oldPassword: '',
       password: '',
-      code: '',
     },
   })
   const { handleSubmit, reset, formState } = form
@@ -120,25 +118,6 @@ const ChangePasswordModal: FunctionComponent = () => {
                       autoCapitalize="off"
                       className="rounded-sm"
                       placeholder={t('account:newPasswordPlaceholder')}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="code"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('account:verificationCode')}</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      maxLength={6}
-                      autoCapitalize="off"
-                      className="rounded-sm"
-                      placeholder={t('account:verificationCode')}
                     />
                   </FormControl>
                   <FormMessage />
