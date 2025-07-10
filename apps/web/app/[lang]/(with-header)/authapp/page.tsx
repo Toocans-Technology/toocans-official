@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { QRCodeSVG } from 'qrcode.react'
 import React, { useState, useCallback } from 'react'
-import { openToast } from '@/utils'
+import { toast } from '@workspace/ui/components'
 import { useT } from '@/i18n'
 import { GOOGLE_CODE_REGEXP } from '@/lib/regexp'
 import { useGenerateGoogleAuth } from '@/services/user/generateGoogleAuth'
@@ -21,7 +21,7 @@ export default function AuthAppPage() {
     if (userInfoRes && userInfoRes.hasGaKey) {
       setGoogleCode('')
       setBindSuccess(true)
-      openToast(t('authapp:AlreadyBinded'), 'error');
+      toast.error(t('authapp:AlreadyBinded'))
       setTimeout(() => {
         window.history.back()
       }, 2000)
@@ -31,11 +31,12 @@ export default function AuthAppPage() {
       }
     }
   }, [userInfoRes])
+  
   const { data: generateGoogleAuthRes } = useGenerateGoogleAuth()
   const handleCopySecretKey = async () => {
     if (generateGoogleAuthRes?.secretKey) {
       await navigator.clipboard.writeText(generateGoogleAuthRes.secretKey)
-      openToast(t('authapp:CopySuccess'))
+      toast.success(t('authapp:CopySuccess'))
     }
   }
 
@@ -45,7 +46,7 @@ export default function AuthAppPage() {
         code: googleCode ?? '',
         secretKey: generateGoogleAuthRes?.secretKey ?? '',
       })
-      openToast(t('authapp:VerificationSuccess'))
+      toast.success(t('authapp:VerificationSuccess'))
       setGoogleCode('')
       setBindSuccess(true)
       setTimeout(() => {
@@ -53,17 +54,17 @@ export default function AuthAppPage() {
       }, 2000)
     } catch (error) {
       setBindSuccess(false)
-      openToast((error as HttpError).message, 'error');
+      toast.error((error as HttpError).message)
     }
   }, [mutateVerifyGoogleAuth, googleCode, generateGoogleAuthRes, t])
 
   const handleVerifyGoogleAuth = () => {
     if (!googleCode || !generateGoogleAuthRes?.secretKey) {
-      openToast(t('authapp:PleaseEnterCodeAndSecretKey'), 'error');
+      toast.error(t('authapp:PleaseEnterCodeAndSecretKey'))
       return
     }
     if (!GOOGLE_CODE_REGEXP.test(googleCode)) {
-      openToast(t('authapp:GoogleCode6Digits'), 'error');
+      toast.error(t('authapp:GoogleCode6Digits'))
       return
     }
     handleVerifyGoogleAuthSubmit()
@@ -144,25 +145,6 @@ export default function AuthAppPage() {
             </div>
             <div className="ml-2">Security authentication</div>
           </div>
-          {/* {verifyType === 'email' ? (
-            <div className="mb-6 ml-8">
-              <div className="mb-2 text-[14px] font-medium text-[#222]">Email authentication</div>
-              <div className="flex items-center gap-3">
-                <input
-                  maxLength={6}
-                  className="mb-7 ml-8 flex h-11 w-[456px] items-center rounded-md border-none bg-[#f5f5f5] px-3 text-black"
-                  placeholder="Enter 6-digit generated code from your app"
-                />
-                <button
-                  className="h-9 cursor-pointer rounded-[20px] bg-[#86fc70] px-5 text-[14px] font-medium text-[#222] transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-                  onClick={handleSendCode}
-                  disabled={emailCountdown > 0}
-                >
-                  {emailCountdown > 0 ? `${emailCountdown}s` : 'Send'}
-                </button>
-              </div>
-            </div>
-          ) : ( */}
           <div className="mb-6 ml-8">
             {!bindSuccess && (
               <input
@@ -174,7 +156,6 @@ export default function AuthAppPage() {
               />
             )}
           </div>
-          {/* )} */}
           {!bindSuccess && (
             <button
               disabled={isPending}
