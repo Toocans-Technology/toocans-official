@@ -39,8 +39,6 @@ const LoginBox: FunctionComponent = () => {
 
   const { mutateAsync: handleLogin } = useLogin()
 
-  openToast(t('loginSuccessfully'))
-
   const stateReset = () => {
     form.resetFields()
     setCuntrysVisible(false)
