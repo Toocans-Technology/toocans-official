@@ -29,10 +29,15 @@ const ChangePasswordModal: FunctionComponent = () => {
 
   const FormSchema = useMemo(
     () =>
-      z.object({
-        password: z.string().min(8).max(32),
-        oldPassword: z.string().min(8).max(32),
-      }),
+      z
+        .object({
+          password: z.string().nonempty(t('account:newPasswordPlaceholder')).min(8).max(32),
+          oldPassword: z.string().nonempty(t('account:passwordPlaceholder')).min(8).max(32),
+        })
+        .refine((data) => data.password === data.oldPassword, {
+          message: t('account:passwordError'),
+          path: ['password'],
+        }),
     []
   )
 
@@ -43,10 +48,9 @@ const ChangePasswordModal: FunctionComponent = () => {
       password: '',
     },
   })
-  const { handleSubmit, reset, watch, formState } = form
+  const { handleSubmit, reset, formState } = form
 
-  const oldPassword = watch('oldPassword')
-  const password = watch('password')
+  console.log('formState', formState)
 
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
@@ -84,13 +88,6 @@ const ChangePasswordModal: FunctionComponent = () => {
             <FormField
               control={form.control}
               name="oldPassword"
-              rules={{
-                required: true,
-                minLength: 8,
-                maxLength: 32,
-                deps: ['password'],
-                validate: (value) => value === password || t('account:passwordError'),
-              }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('account:password')}</FormLabel>
@@ -117,13 +114,6 @@ const ChangePasswordModal: FunctionComponent = () => {
             <FormField
               control={form.control}
               name="password"
-              rules={{
-                required: true,
-                minLength: 8,
-                maxLength: 32,
-                deps: ['oldPassword'],
-                validate: (value) => value === oldPassword || t('account:passwordError'),
-              }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('account:newPassword')}</FormLabel>
