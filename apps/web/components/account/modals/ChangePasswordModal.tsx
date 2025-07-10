@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff, Loader2Icon } from 'lucide-react'
-import { FunctionComponent, useCallback, useMemo, useState } from 'react'
+import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import { ControllerRenderProps, FormState, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import {
@@ -81,13 +81,18 @@ const ChangePasswordModal: FunctionComponent = () => {
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    shouldFocusError: false,
     defaultValues: {
       oldPassword: '',
       password: '',
     },
   })
   const { handleSubmit, reset, formState } = form
+
+  useEffect(() => {
+    return () => {
+      reset()
+    }
+  }, [open])
 
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
