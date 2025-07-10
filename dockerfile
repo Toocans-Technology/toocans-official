@@ -23,4 +23,4 @@
   EXPOSE 3000
   # 设置工作目录
   WORKDIR /work/wallet/nodejs/apps/web
-  CMD ["pnpm", "start"]
+  CMD ["node", ".next/standalone/apps/web/server.js"]
