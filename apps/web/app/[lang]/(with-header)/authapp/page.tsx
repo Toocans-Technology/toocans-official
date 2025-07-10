@@ -3,13 +3,13 @@
 import Image from 'next/image'
 import { QRCodeSVG } from 'qrcode.react'
 import React, { useState, useCallback } from 'react'
-import { openToast } from '@/utils'
 import { useT } from '@/i18n'
 import { GOOGLE_CODE_REGEXP } from '@/lib/regexp'
 import { useGenerateGoogleAuth } from '@/services/user/generateGoogleAuth'
 import { useUserInfo } from '@/services/user/info'
 import { useVerifyGoogleAuth } from '@/services/user/verifyGoogleAuth'
 import { HttpError } from '@/types/http'
+import { openToast } from '@/utils'
 
 export default function AuthAppPage() {
   const { t } = useT('authapp')
@@ -21,7 +21,7 @@ export default function AuthAppPage() {
     if (userInfoRes && userInfoRes.hasGaKey) {
       setGoogleCode('')
       setBindSuccess(true)
-      openToast(t('authapp:AlreadyBinded'), 'error');
+      openToast(t('authapp:AlreadyBinded'), 'error')
       setTimeout(() => {
         window.history.back()
       }, 2000)
@@ -53,22 +53,22 @@ export default function AuthAppPage() {
       }, 2000)
     } catch (error) {
       setBindSuccess(false)
-      openToast((error as HttpError).message, 'error');
+      openToast((error as HttpError).message, 'error')
     }
   }, [mutateVerifyGoogleAuth, googleCode, generateGoogleAuthRes, t])
 
   const handleVerifyGoogleAuth = () => {
     if (!googleCode || !generateGoogleAuthRes?.secretKey) {
-      openToast(t('authapp:PleaseEnterCodeAndSecretKey'), 'error');
+      openToast(t('authapp:PleaseEnterCodeAndSecretKey'), 'error')
       return
     }
     if (!GOOGLE_CODE_REGEXP.test(googleCode)) {
-      openToast(t('authapp:GoogleCode6Digits'), 'error');
+      openToast(t('authapp:GoogleCode6Digits'), 'error')
       return
     }
     handleVerifyGoogleAuthSubmit()
   }
-  
+
   React.useEffect(() => {
     if (generateGoogleAuthRes) {
       console.log('5:', generateGoogleAuthRes)
