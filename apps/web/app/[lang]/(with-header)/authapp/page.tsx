@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { QRCodeSVG } from 'qrcode.react'
 import React, { useState, useCallback } from 'react'
-import { toast } from '@workspace/ui/components'
+import { openToast } from '@/utils'
 import { useT } from '@/i18n'
 import { GOOGLE_CODE_REGEXP } from '@/lib/regexp'
 import { useGenerateGoogleAuth } from '@/services/user/generateGoogleAuth'
@@ -21,7 +21,7 @@ export default function AuthAppPage() {
     if (userInfoRes && userInfoRes.hasGaKey) {
       setGoogleCode('')
       setBindSuccess(true)
-      toast.error(t('authapp:AlreadyBinded'))
+      openToast(t('authapp:AlreadyBinded'), 'error');
       setTimeout(() => {
         window.history.back()
       }, 2000)
@@ -31,12 +31,11 @@ export default function AuthAppPage() {
       }
     }
   }, [userInfoRes])
-  
   const { data: generateGoogleAuthRes } = useGenerateGoogleAuth()
   const handleCopySecretKey = async () => {
     if (generateGoogleAuthRes?.secretKey) {
       await navigator.clipboard.writeText(generateGoogleAuthRes.secretKey)
-      toast.success(t('authapp:CopySuccess'))
+      openToast(t('authapp:CopySuccess'))
     }
   }
 
@@ -46,7 +45,7 @@ export default function AuthAppPage() {
         code: googleCode ?? '',
         secretKey: generateGoogleAuthRes?.secretKey ?? '',
       })
-      toast.success(t('authapp:VerificationSuccess'))
+      openToast(t('authapp:VerificationSuccess'))
       setGoogleCode('')
       setBindSuccess(true)
       setTimeout(() => {
@@ -54,17 +53,17 @@ export default function AuthAppPage() {
       }, 2000)
     } catch (error) {
       setBindSuccess(false)
-      toast.error((error as HttpError).message)
+      openToast((error as HttpError).message, 'error');
     }
   }, [mutateVerifyGoogleAuth, googleCode, generateGoogleAuthRes, t])
 
   const handleVerifyGoogleAuth = () => {
     if (!googleCode || !generateGoogleAuthRes?.secretKey) {
-      toast.error(t('authapp:PleaseEnterCodeAndSecretKey'))
+      openToast(t('authapp:PleaseEnterCodeAndSecretKey'), 'error');
       return
     }
     if (!GOOGLE_CODE_REGEXP.test(googleCode)) {
-      toast.error(t('authapp:GoogleCode6Digits'))
+      openToast(t('authapp:GoogleCode6Digits'), 'error');
       return
     }
     handleVerifyGoogleAuthSubmit()
