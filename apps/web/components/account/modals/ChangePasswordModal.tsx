@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2Icon } from 'lucide-react'
+import { Eye, Loader2Icon } from 'lucide-react'
 import { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -19,14 +19,12 @@ import {
 } from '@workspace/ui/components'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@workspace/ui/components'
 import { useT } from '@/i18n'
-import { useUserInfo } from '@/services/user'
 import { useUpdatePassword } from '@/services/user'
 import { HttpError } from '@/types/http'
 
 const ChangePasswordModal: FunctionComponent = () => {
   const { t } = useT(['account', 'common'])
   const [open, setOpen] = useState(false)
-  const { data: userInfo, refetch } = useUserInfo()
   const { mutateAsync: mutateUpdatePassword, isPending } = useUpdatePassword()
 
   const FormSchema = useMemo(
@@ -45,29 +43,28 @@ const ChangePasswordModal: FunctionComponent = () => {
       password: '',
     },
   })
-  const { handleSubmit, reset, formState } = form
+  const { handleSubmit, reset, watch, formState } = form
+
+  const oldPassword = watch('oldPassword')
+  const password = watch('password')
 
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
-      if (!userInfo) {
-        return
-      }
-
       try {
+        console.log('data', data)
         const res = await mutateUpdatePassword(data)
 
         if (!res) {
           return
         }
 
-        refetch()
         setOpen(false)
         reset()
       } catch (error) {
         toast.error((error as HttpError).message)
       }
     },
-    [mutateUpdatePassword, refetch, userInfo]
+    [mutateUpdatePassword]
   )
 
   return (
@@ -87,19 +84,32 @@ const ChangePasswordModal: FunctionComponent = () => {
             <FormField
               control={form.control}
               name="oldPassword"
+              rules={{
+                required: true,
+                minLength: 8,
+                maxLength: 32,
+                deps: ['password'],
+                validate: (value) => value === password || t('account:passwordError'),
+              }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('account:password')}</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      maxLength={32}
-                      autoCapitalize="off"
-                      className="rounded-sm"
-                      placeholder={t('account:passwordPlaceholder')}
-                    />
-                  </FormControl>
+                  <div
+                    aria-invalid={formState.errors.password ? true : false}
+                    className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-3 focus-within:ring-[1px]"
+                  >
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="password"
+                        maxLength={32}
+                        autoComplete="off"
+                        className="rounded-sm focus-visible:ring-0"
+                        placeholder={t('account:passwordPlaceholder')}
+                      />
+                    </FormControl>
+                    <Eye color="#666" strokeWidth={1.5} className="cursor-pointer" />
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -107,19 +117,32 @@ const ChangePasswordModal: FunctionComponent = () => {
             <FormField
               control={form.control}
               name="password"
+              rules={{
+                required: true,
+                minLength: 8,
+                maxLength: 32,
+                deps: ['oldPassword'],
+                validate: (value) => value === oldPassword || t('account:passwordError'),
+              }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('account:newPassword')}</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      maxLength={32}
-                      autoCapitalize="off"
-                      className="rounded-sm"
-                      placeholder={t('account:newPasswordPlaceholder')}
-                    />
-                  </FormControl>
+                  <div
+                    aria-invalid={formState.errors.password ? true : false}
+                    className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-3 focus-within:ring-[1px]"
+                  >
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="password"
+                        maxLength={32}
+                        autoComplete="off"
+                        className="rounded-sm focus-visible:ring-0"
+                        placeholder={t('account:newPasswordPlaceholder')}
+                      />
+                    </FormControl>
+                    <Eye color="#666" strokeWidth={1.5} className="cursor-pointer" />
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}

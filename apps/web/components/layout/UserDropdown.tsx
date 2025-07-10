@@ -16,6 +16,7 @@ import {
 } from '@workspace/ui/components'
 import { useT } from '@/i18n'
 import { typedStorage } from '@/lib/utils'
+import { getQueryClient } from '@/lib/utils'
 import { useUserInfo } from '@/services/user/info'
 import Link from '../Link'
 
@@ -23,15 +24,17 @@ const UserDropdown: FunctionComponent = () => {
   const { t } = useT('common')
   const { data } = useUserInfo()
   const router = useRouter()
+  const queryClient = getQueryClient()
 
   const handleCopy = useCallback(() => {
     toast.success(t('common:copySuccess'))
-  }, [])
+  }, [t])
 
   const handleLogout = useCallback(() => {
     typedStorage.clearToken()
+    queryClient.clear()
     router.push('/login')
-  }, [])
+  }, [queryClient, router])
 
   return (
     <DropdownMenu>

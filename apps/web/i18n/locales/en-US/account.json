@@ -29,5 +29,6 @@
   "newPassword": "Confirm new password",
   "passwordPlaceholder": "Please enter a new password",
   "newPasswordPlaceholder": "Please enter a new password again",
+  "passwordError": "The two passwords do not match",
   "verificationCode": "Verification Code"
 }

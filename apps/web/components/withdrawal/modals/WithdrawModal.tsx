@@ -185,7 +185,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
                     <FormControl>
                       <Input
                         {...field}
-                        autoCapitalize="off"
+                        autoComplete="off"
                         placeholder={t('withdrawal:emailAuthPlaceholder')}
                         className="focus-visible:ring-0"
                       />
@@ -212,7 +212,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
                   <FormItem>
                     <FormLabel>{t('withdrawal:googleAuth')}</FormLabel>
                     <FormControl>
-                      <Input {...field} autoCapitalize="off" placeholder={t('withdrawal:googleAuthPlaceholder')} />
+                      <Input {...field} autoComplete="off" placeholder={t('withdrawal:googleAuthPlaceholder')} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
