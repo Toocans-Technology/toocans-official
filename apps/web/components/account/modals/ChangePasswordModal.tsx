@@ -96,6 +96,7 @@ const ChangePasswordModal: FunctionComponent = () => {
                     <Input
                       {...field}
                       type="password"
+                      maxLength={32}
                       autoCapitalize="off"
                       className="rounded-sm"
                       placeholder={t('account:passwordPlaceholder')}
@@ -115,6 +116,7 @@ const ChangePasswordModal: FunctionComponent = () => {
                     <Input
                       {...field}
                       type="password"
+                      maxLength={32}
                       autoCapitalize="off"
                       className="rounded-sm"
                       placeholder={t('account:newPasswordPlaceholder')}
@@ -133,6 +135,7 @@ const ChangePasswordModal: FunctionComponent = () => {
                   <FormControl>
                     <Input
                       {...field}
+                      maxLength={6}
                       autoCapitalize="off"
                       className="rounded-sm"
                       placeholder={t('account:verificationCode')}
