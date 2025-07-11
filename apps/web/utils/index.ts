@@ -1,6 +1,6 @@
 import { isValidNumber } from 'libphonenumber-js'
 import { EmailReg, PasswordReg } from '@/data'
-import { searchToObj } from './searchToObj'
+import throttle from './throttle'
 import { openToast } from './toast'
 
 const matchEmail = (val: string) => {
@@ -50,4 +50,4 @@ const matchPassword = (val: string) => {
   return true
 }
 
-export { openToast, searchToObj, matchEmail, matchPhoneNum, matchPassword }
+export { openToast, matchEmail, matchPhoneNum, matchPassword, throttle }

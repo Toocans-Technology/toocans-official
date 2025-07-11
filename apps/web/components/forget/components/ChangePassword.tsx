@@ -3,11 +3,12 @@
 import { EyeFilled, EyeInvisibleFilled, CloseCircleFilled } from '@ant-design/icons'
 import { Form, Input, Button } from 'antd'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import { useT } from '@/i18n'
 import { useSetPassword } from '@/services/login'
 import { matchPassword, PasswordErrorType } from '@/utils'
 import { openToast } from '@/utils'
+import throttle from '@/utils/throttle'
 import { useForgetContext } from '../ForgetContext'
 
 const ChangePassword = () => {
@@ -22,15 +23,18 @@ const ChangePassword = () => {
   const confirmPassword = Form.useWatch('confirmPassword', formData)
   const [errType, setErrType] = useState<PasswordErrorType | null>(null)
 
-  const submitNewPws = async () => {
-    try {
-      await handleSetPassword({ password })
-      openToast(t('successfully', { name: t('set') }))
-      router.replace('/')
-    } catch (error) {
-      openToast((error as Error).message, 'error')
-    }
-  }
+  const onSubmit = useCallback(
+    throttle(async () => {
+      try {
+        await handleSetPassword({ password: formData.getFieldValue('password') })
+        openToast(t('successfully', { name: t('set') }))
+        router.replace('/')
+      } catch (error) {
+        openToast((error as Error).message, 'error')
+      }
+    }, 1000),
+    []
+  )
 
   useEffect(() => {
     setIsDisabled(!(matchPassword(password) && confirmPassword === password && !!password))
@@ -141,7 +145,7 @@ const ChangePassword = () => {
         />
       </Form.Item>
 
-      <Button disabled={isDisabled} className="mt-6 w-full" type="primary" onClick={submitNewPws}>
+      <Button disabled={isDisabled} className="mt-6 w-full" type="primary" onClick={onSubmit}>
         {t('next')}
       </Button>
     </>

@@ -8,7 +8,7 @@ import { RouterContext } from '@/components/providers'
 import { useT } from '@/i18n'
 import { typedStorage } from '@/lib/utils'
 import { useLogin } from '@/services/login'
-import { openToast } from '@/utils'
+import { throttle, openToast } from '@/utils'
 import { matchEmail, matchPhoneNum } from '@/utils'
 import { LoginContext } from './LoginContext'
 import { SwitchTabs, EmailInput, VerificationCode, PasswordInput, NotCode, CheckComp } from './components/index'
@@ -79,62 +79,65 @@ const LoginBox: FunctionComponent = () => {
     router.push('/forget', { query })
   }, [grantType])
 
-  const onSubmit = useCallback(async (values: { [key: string]: string }) => {
-    if (!values.unregisteredTip && checkBoxRef.current) {
-      checkBoxRef.current.openShak1()
-      return
-    }
-    if (!values.userAgreement && checkBoxRef.current) {
-      checkBoxRef.current.openShak2()
-      return
-    }
+  const onSubmit = useCallback(
+    throttle(async (values: { [key: string]: string }) => {
+      if (!values.unregisteredTip && checkBoxRef.current) {
+        checkBoxRef.current.openShak1()
+        return
+      }
+      if (!values.userAgreement && checkBoxRef.current) {
+        checkBoxRef.current.openShak2()
+        return
+      }
 
-    const resultParams = {
-      clientId: '24b5d2a7f4714409b4cc60bafc1dd2f6',
-      code: null,
-      uuid: null,
-      channel: null,
-      source: null,
-      inputInviteCode: null,
-      appInfo: null,
-    }
+      const resultParams = {
+        clientId: '24b5d2a7f4714409b4cc60bafc1dd2f6',
+        code: null,
+        uuid: null,
+        channel: null,
+        source: null,
+        inputInviteCode: null,
+        appInfo: null,
+      }
 
-    if (loginType == LoginType.PASSWORD) {
-      Object.assign(resultParams, {
-        username: values.email || `${values.nationalCode}${values.phone}`,
-        grantType: 'password',
-        password: values.password,
-      })
-    } else {
-      if (grantType == GrantType.EMAIL) {
+      if (loginType == LoginType.PASSWORD) {
         Object.assign(resultParams, {
-          grantType,
-          email: values.email,
-          emailCode: values.code,
+          username: values.email || `${values.nationalCode}${values.phone}`,
+          grantType: 'password',
+          password: values.password,
         })
       } else {
-        Object.assign(resultParams, {
-          grantType,
-          nationalCode: values.nationalCode,
-          phonenumber: values.phone,
-          smsCode: values.code,
-        })
+        if (grantType == GrantType.EMAIL) {
+          Object.assign(resultParams, {
+            grantType,
+            email: values.email,
+            emailCode: values.code,
+          })
+        } else {
+          Object.assign(resultParams, {
+            grantType,
+            nationalCode: values.nationalCode,
+            phonenumber: values.phone,
+            smsCode: values.code,
+          })
+        }
       }
-    }
 
-    try {
-      const { accessToken, refreshToken, expiresIn } = await handleLogin(resultParams)
+      try {
+        const { accessToken, refreshToken, expiresIn } = await handleLogin(resultParams)
 
-      typedStorage.accessToken = accessToken
-      typedStorage.refreshToken = refreshToken
-      typedStorage.expireIn = expiresIn
+        typedStorage.accessToken = accessToken
+        typedStorage.refreshToken = refreshToken
+        typedStorage.expireIn = expiresIn
 
-      openToast(t('successfully', { name: t('login') }))
-      router.replace('/')
-    } catch (error) {
-      openToast((error as Error).message, 'error')
-    }
-  }, [])
+        openToast(t('successfully', { name: t('login') }))
+        router.replace('/')
+      } catch (error) {
+        openToast((error as Error).message, 'error')
+      }
+    }, 1000),
+    []
+  )
 
   return (
     <LoginContext.Provider
