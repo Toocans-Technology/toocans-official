@@ -1,6 +1,7 @@
 'use client'
 
 import { Button, Form } from 'antd'
+import dynamic from 'next/dynamic'
 import { FunctionComponent, useState, useRef, useCallback } from 'react'
 import { useContext } from 'react'
 import { RouterContext } from '@/components/providers'
@@ -10,16 +11,10 @@ import { useLogin } from '@/services/login'
 import { openToast } from '@/utils'
 import { matchEmail, matchPhoneNum } from '@/utils'
 import { LoginContext } from './LoginContext'
-import {
-  SwitchTabs,
-  EmailInput,
-  PhoneInput,
-  VerificationCode,
-  PasswordInput,
-  NotCode,
-  CheckComp,
-} from './components/index'
+import { SwitchTabs, EmailInput, VerificationCode, PasswordInput, NotCode, CheckComp } from './components/index'
 import { GrantType, LoginType } from './data'
+
+const PhoneInput = dynamic(() => import('./components/PhoneInput'))
 
 const LoginBox: FunctionComponent = () => {
   const { t } = useT('login')
