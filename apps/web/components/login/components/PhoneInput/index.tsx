@@ -4,8 +4,8 @@ import { Form, Input } from 'antd'
 import { useRef, useEffect } from 'react'
 import '@workspace/ui/components'
 import { useT } from '@/i18n'
+import { matchPhoneNum } from '@/utils'
 import { useLoginContext } from '../../LoginContext'
-import { matchPhoneNum } from '../../utils'
 import CountryList from './CountryList'
 
 const PhoneInput = () => {
@@ -20,7 +20,7 @@ const PhoneInput = () => {
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       if (!phoneInputRef?.current?.contains(event.target) && phoneCheckState && !matchPhoneNum(nationalCode, phone)) {
-        formData.setFields([{ name: 'phone', value: phone, errors: [t('formatErr.phone')] }])
+        formData.setFields([{ name: 'phone', errors: [t('formatErr.phone')] }])
       }
     }
 
@@ -44,7 +44,12 @@ const PhoneInput = () => {
           onFocus={() => {
             setPhoneCheckState(true)
             if (formData.getFieldError('phone')) {
-              formData.setFieldValue('phone', formData.getFieldValue('phone'))
+              formData.setFields([
+                {
+                  name: ['phone'],
+                  errors: [],
+                },
+              ])
             }
           }}
           onChange={(e) => {

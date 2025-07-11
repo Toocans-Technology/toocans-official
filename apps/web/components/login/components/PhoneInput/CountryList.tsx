@@ -4,9 +4,9 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
 import { getCountrys } from '@/services/login'
+import { matchPhoneNum } from '@/utils'
 import { useLoginContext } from '../../LoginContext'
 import styles from '../../assets/style.module.css'
-import { matchPhoneNum } from '../../utils'
 
 const CountryList = () => {
   const { t } = useT('login')

@@ -30,7 +30,12 @@ const VerificationCode = () => {
           controls={false}
           onFocus={() => {
             if (formData.getFieldError('code')) {
-              formData.setFieldValue('code', formData.getFieldValue('code'))
+              formData.setFields([
+                {
+                  name: ['code'],
+                  errors: [],
+                },
+              ])
             }
           }}
         />

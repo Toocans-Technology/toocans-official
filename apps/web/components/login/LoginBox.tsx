@@ -1,12 +1,14 @@
 'use client'
 
 import { Button, Form } from 'antd'
-import { useRouter } from 'next/navigation'
 import { FunctionComponent, useState, useRef, useCallback } from 'react'
+import { useContext } from 'react'
+import { RouterContext } from '@/components/providers'
 import { useT } from '@/i18n'
 import { typedStorage } from '@/lib/utils'
-import { useLogin } from '@/services/login/login'
+import { useLogin } from '@/services/login'
 import { openToast } from '@/utils'
+import { matchEmail, matchPhoneNum } from '@/utils'
 import { LoginContext } from './LoginContext'
 import {
   SwitchTabs,
@@ -21,7 +23,7 @@ import { GrantType, LoginType } from './data'
 
 const LoginBox: FunctionComponent = () => {
   const { t } = useT('login')
-  const router = useRouter()
+  const router = useContext(RouterContext)
 
   const [form] = Form.useForm()
   const checkBoxRef: any = useRef(null)
@@ -44,6 +46,39 @@ const LoginBox: FunctionComponent = () => {
     setCuntrysVisible(false)
     setPhoneCheckState(false)
   }
+
+  const handleForget = useCallback(() => {
+    const phone = form.getFieldValue('phone')
+    const email = form.getFieldValue('email')
+    const nationalCode = form.getFieldValue('nationalCode')
+    let query = {}
+
+    if (grantType == GrantType.EMAIL) {
+      if (!email) {
+        form.setFields([{ name: 'email', value: '', errors: [t('please') + ' ' + t('enter.email')] }])
+        return
+      }
+      if (!matchEmail(email)) {
+        form.setFields([{ name: 'email', value: email, errors: [t('formatErr.email')] }])
+        return
+      }
+      query = { email }
+    }
+
+    if (grantType == GrantType.SMS) {
+      if (!phone) {
+        form.setFields([{ name: 'phone', value: phone, errors: [t('please') + ' ' + t('enter.phone')] }])
+        return
+      }
+      if (!matchPhoneNum(nationalCode, phone)) {
+        form.setFields([{ name: 'phone', value: phone, errors: [t('formatErr.phone')] }])
+        return
+      }
+      query = { phone, nationalCode }
+    }
+
+    router.push('/forget', { query })
+  }, [grantType])
 
   const onSubmit = useCallback(async (values: { [key: string]: string }) => {
     if (!values.unregisteredTip && checkBoxRef.current) {
@@ -90,6 +125,7 @@ const LoginBox: FunctionComponent = () => {
 
     try {
       const { accessToken, refreshToken, expiresIn } = await handleLogin(resultParams)
+
       typedStorage.accessToken = accessToken
       typedStorage.refreshToken = refreshToken
       typedStorage.expireIn = expiresIn
@@ -157,7 +193,7 @@ const LoginBox: FunctionComponent = () => {
                       {t(loginType == LoginType.CODE ? 'switchToPwd' : 'switchToCode')}
                     </p>
                     {loginType == LoginType.PWD && (
-                      <a href="#" className="ml-auto text-xs text-[#3C7BF4]">
+                      <a onClick={handleForget} className="ml-auto text-xs text-[#3C7BF4]">
                         {t('forgotPassword')}
                       </a>
                     )}
@@ -168,7 +204,13 @@ const LoginBox: FunctionComponent = () => {
               </div>
 
               <Form.Item>
-                <Button type="primary" htmlType="submit" className="mt-[36px] w-full" style={{ fontWeight: 500 }}>
+                <Button
+                  disabled={seconds == 60}
+                  type="primary"
+                  htmlType="submit"
+                  className="mt-[36px] w-full"
+                  style={{ fontWeight: 500 }}
+                >
                   {t('login')}
                 </Button>
               </Form.Item>

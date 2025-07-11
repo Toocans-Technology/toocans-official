@@ -1,6 +1,6 @@
 'use client'
 
-import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons'
+import { EyeFilled, EyeInvisibleFilled } from '@ant-design/icons'
 import { Form, Input } from 'antd'
 import { useT } from '@/i18n'
 import { useLoginContext } from '../LoginContext'
@@ -12,6 +12,8 @@ const PasswordInput = () => {
   return (
     <Form.Item
       name="password"
+      validateTrigger="onBlur"
+      style={{ marginTop: '8px' }}
       rules={[
         {
           required: true,
@@ -25,20 +27,24 @@ const PasswordInput = () => {
           },
         },
       ]}
-      validateTrigger="onBlur"
-      style={{ marginTop: '8px' }}
     >
       <Input.Password
         maxLength={32}
         minLength={8}
+        allowClear
         placeholder={t('login:enter.pwd')}
         autoComplete="off"
         onFocus={() => {
           if (formData.getFieldError('password')) {
-            formData.setFieldValue('password', formData.getFieldValue('password'))
+            formData.setFields([
+              {
+                name: ['password'],
+                errors: [],
+              },
+            ])
           }
         }}
-        iconRender={(visible: boolean) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+        iconRender={(visible: boolean) => (visible ? <EyeFilled /> : <EyeInvisibleFilled />)}
       />
     </Form.Item>
   )

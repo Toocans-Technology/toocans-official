@@ -1,5 +1,4 @@
 export { default as LeftImg } from './LeftImg'
-export { default as LoginBox } from '../LoginBox'
 export { default as CheckComp } from './CheckComp'
 export { default as EmailInput } from './EmailInput'
 export { default as PhoneInput } from './PhoneInput'

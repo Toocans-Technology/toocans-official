@@ -5,11 +5,13 @@
   "email": "Email",
   "sms": "Phone",
   "password": "Password",
+  "confirmPassword": "Confirm Password",
   "search": "Search",
   "verificationCode": "Verification Code",
   "switchToPwd": "Switch to password login",
   "switchToCode": "Switch to code login",
   "login": "Log in",
+  "please": "Please",
   "unregisteredTip": "Unregistered users will be automatically registered directly",
   "agreedTip": "I have read and agreed to the",
   "userAgreement": "User Agreement",
@@ -35,5 +37,6 @@
     "phone": "Phone number format error",
     "code": "Verification code format error",
     "pwd": "Password format error"
-  }
+  },
+  "The passwords is inconsistent": "The passwords is inconsistent"
 }
