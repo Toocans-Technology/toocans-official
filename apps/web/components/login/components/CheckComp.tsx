@@ -2,7 +2,9 @@
 
 import { Form, Checkbox } from 'antd'
 import { forwardRef, useImperativeHandle, useState } from 'react'
+import { Trans } from 'react-i18next'
 import { cn } from '@workspace/ui/lib/utils'
+import Link from '@/components/Link'
 import { useT } from '@/i18n'
 import styles from '../assets/style.module.css'
 
@@ -38,14 +40,13 @@ const CheckComp = (_props: any, ref: any) => {
             <Checkbox />
           </Form.Item>
           <p className="ml-2 w-[85%] cursor-pointer leading-[18px] text-[#666]">
-            {t('agreedTip')}
-            <a type="link" href="#" className="text-[#3c7bf4]">
-              {t('userAgreement', { name: t('name') })}
-            </a>
-            {t('and')}
-            <a type="link" href="#" className="text-[#3c7bf4]">
-              {t('privacyPolicy')}
-            </a>
+            <Trans
+              i18nKey="login:privacyPolicyAgreement"
+              components={{
+                UserAgreement: <Link href="/agreement" />,
+                PrivacyPolicy: <Link href="/privacy" />,
+              }}
+            ></Trans>
           </p>
         </label>
       </div>
