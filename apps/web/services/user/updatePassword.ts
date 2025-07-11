@@ -20,8 +20,7 @@ export const useUpdatePassword = () => {
       return {
         method: 'POST',
         url: getUrl('/user/updatePassword'),
-        query: UpdatePasswordParamsSchema.parse(params),
-        body: {},
+        body: UpdatePasswordParamsSchema.parse(params),
         transfer: UpdatePasswordResponseSchema.parse,
       }
     })
