@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
-import { getQuery } from '@/lib/api'
+import { getMutation } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
 
 export const BindEmailParamsSchema = z.object({
@@ -14,13 +14,13 @@ export const BindEmailResponseSchema = z.string()
 
 export type BindEmailResponse = z.infer<typeof BindEmailResponseSchema>
 
-export const useBindEmail = (params?: BindEmailParams) => {
-  return useQuery(
-    getQuery({
+export const useBindEmail = () => {
+  return useMutation(
+    getMutation((params: BindEmailParams) => ({
       method: 'POST',
       url: getUrl('/user/bindEmail'),
-      body: params ? BindEmailParamsSchema.parse(params) : {},
+      body: BindEmailParamsSchema.parse(params),
       transfer: BindEmailResponseSchema.parse,
-    })
+    }))
   )
 }
