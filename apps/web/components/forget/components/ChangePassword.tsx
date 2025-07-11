@@ -2,13 +2,13 @@
 
 import { EyeFilled, EyeInvisibleFilled, CloseCircleFilled } from '@ant-design/icons'
 import { Form, Input, Button } from 'antd'
+import { throttle } from 'es-toolkit'
 import { useRouter } from 'next/navigation'
 import { useEffect, useCallback, useState } from 'react'
 import { useT } from '@/i18n'
 import { useSetPassword } from '@/services/login'
 import { matchPassword, PasswordErrorType } from '@/utils'
 import { openToast } from '@/utils'
-import throttle from '@/utils/throttle'
 import { useForgetContext } from '../ForgetContext'
 
 const ChangePassword = () => {

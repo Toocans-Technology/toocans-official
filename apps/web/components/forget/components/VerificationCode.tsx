@@ -23,7 +23,7 @@ const VerificationCode = () => {
   const urlPhone = routerParams.get('phone') || ''
   const urlNationalCode = routerParams.get('nationalCode') || ''
 
-  let timer: NodeJS.Timeout | null = null
+  let timer: ReturnType<typeof setInterval> | null = null
 
   const [selfEmail, setSelfEmail] = useState('')
   const [selfPhoneData, setSelfPhoneData] = useState({ mobile: '', nationalCode: '' })
