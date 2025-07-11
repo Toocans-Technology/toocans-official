@@ -53,9 +53,9 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
   const FormSchema = useMemo(
     () =>
       z.object({
-        code: z.string().regex(VERIFICATION_CODE_REGEX, t('withdrawal:withdrawModal.verificationCodeError')).length(6),
+        code: z.string().regex(VERIFICATION_CODE_REGEX, t('withdrawal:withdrawModal.codeError')).length(6),
         gaCode: hasGaKey
-          ? z.string().regex(VERIFICATION_CODE_REGEX, t('withdrawal:withdrawModal.verificationCodeError')).length(6)
+          ? z.string().regex(VERIFICATION_CODE_REGEX, t('withdrawal:withdrawModal.gaCodeError')).length(6)
           : z.string().optional(),
       }),
     [hasGaKey]

@@ -50,7 +50,7 @@
     "title": "Withdraw",
     "codeError.required": "Please enter the verification code",
     "gaCodeError.required": "Please enter the Google Authenticator code",
-    "verificationCodeError": "Verification code format error",
+    "codeError": "Verification code format error",
     "gaCodeError": "Google Authenticator code format error"
   }
 }
