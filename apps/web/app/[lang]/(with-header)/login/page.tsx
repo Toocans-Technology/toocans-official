@@ -1,4 +1,3 @@
-// 'use client'
 import { LeftImg, LoginBox } from '@/components/login/components'
 
 export default async function Login() {
