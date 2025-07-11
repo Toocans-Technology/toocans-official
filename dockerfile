@@ -1,4 +1,3 @@
-# --- Stage 1: Build ---
 FROM node:22-alpine AS builder
 ARG BUILD_ENV=dev
 WORKDIR /repo
@@ -8,7 +7,6 @@ COPY . .
 RUN pnpm install --frozen-lockfile
 WORKDIR /repo/apps/web
 RUN pnpm run build:${BUILD_ENV}
-
 # --- Stage 2: Runtime ---
 FROM node:22-alpine AS runtime
 WORKDIR /work/wallet/nodejs
@@ -28,4 +26,4 @@ ENV PORT=$PORT
 EXPOSE $PORT
 # 设置工作目录
 WORKDIR /work/wallet/nodejs/apps/web
-CMD ["node", ".next/standalone/apps/web/server.js"]
+CMD ["pnpm", "start"]
