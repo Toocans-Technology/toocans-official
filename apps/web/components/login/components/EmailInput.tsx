@@ -16,7 +16,7 @@ const EmailInput = () => {
         { required: true, message: '' },
         {
           pattern: EmailReg,
-          message: t('formatErr.email'),
+          message: t('formatErr', { name: `${t('email')} ${t('address')}` }),
         },
       ]}
       validateTrigger="onBlur"
@@ -26,7 +26,7 @@ const EmailInput = () => {
         disabled={seconds < 60}
         maxLength={50}
         type="text"
-        placeholder={t(`login:enter.email`)}
+        placeholder={t('enter', { name: t('email') })}
         allowClear
         onFocus={() => {
           if (formData.getFieldError('email')) {

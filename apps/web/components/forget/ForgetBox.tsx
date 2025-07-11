@@ -12,7 +12,7 @@ import ChangePassword from './components/ChangePassword'
 import VerificationCode from './components/VerificationCode'
 
 const ForgetBox: FunctionComponent = () => {
-  const { t } = useT('forgot')
+  const { t } = useT('login')
   const [form] = Form.useForm()
   const routerParams = useSearchParams()
 
@@ -38,8 +38,8 @@ const ForgetBox: FunctionComponent = () => {
       }}
     >
       <div className="flex flex-1 content-center bg-[#f1f1f1]">
-        <div className="mt-55 ml-35">
-          <p className="title text-2xl font-medium">{t('forgot')}</p>
+        <div className="mt-45 ml-35">
+          <p className="title text-2xl font-medium">{t('forgotPassword')}</p>
           <div
             className="w-108 min-h-50 mt-4 rounded-2xl bg-white p-6"
             style={{ boxShadow: '10px 19px 250px 0px rgba(0, 0, 0, 0.22)' }}

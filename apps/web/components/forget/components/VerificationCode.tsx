@@ -63,7 +63,7 @@ const VerificationCode = () => {
         })
       }, 1000)
 
-      openToast(t('sendSuccessfully'))
+      openToast(t('successfully', { name: t('send') }))
     } catch (error) {
       openToast((error as Error).message, 'error')
     }
@@ -108,7 +108,10 @@ const VerificationCode = () => {
       (grantType == GrantType.EMAIL && !matchEmail(urlEmail)) ||
       (grantType == GrantType.SMS && !matchPhoneNum(urlNationalCode, urlPhone))
     ) {
-      openToast(t(`formatErr.${grantType == GrantType.EMAIL ? 'email' : 'phone'}`), 'error')
+      grantType == GrantType.EMAIL
+        ? openToast(t('formatErr', { name: `${t('email')} ${t('address')}` }), 'error')
+        : openToast(t('formatErr', { name: `${t('phone')} ${t('number')}` }), 'error')
+
       router.replace('/login')
       return
     }

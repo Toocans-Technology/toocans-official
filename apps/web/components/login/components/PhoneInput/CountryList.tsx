@@ -54,7 +54,9 @@ const CountryList = () => {
             formData.setFieldValue('phone', phoneVal)
             setSearchVal('')
           } else if (!matchPhoneNum(nationalCode as string, phoneVal)) {
-            formData.setFields([{ name: 'phone', value: phoneVal, errors: [t('formatErr.phone')] }])
+            formData.setFields([
+              { name: 'phone', value: phoneVal, errors: [t('formatErr', { name: `${t('phone')} ${t('number')}` })] },
+            ])
           }
           setCuntrysVisible(value)
         }}

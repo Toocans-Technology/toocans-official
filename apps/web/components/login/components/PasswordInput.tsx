@@ -22,7 +22,7 @@ const PasswordInput = () => {
             if (value?.length > 8 && value?.length < 32) {
               return Promise.resolve()
             } else {
-              return Promise.reject(t('formatErr.pwd'))
+              return Promise.reject(t('formatErr', { name: t('password') }))
             }
           },
         },
@@ -32,7 +32,7 @@ const PasswordInput = () => {
         maxLength={32}
         minLength={8}
         allowClear
-        placeholder={t('login:enter.pwd')}
+        placeholder={t('enter', { name: t('password') })}
         autoComplete="off"
         onFocus={() => {
           if (formData.getFieldError('password')) {

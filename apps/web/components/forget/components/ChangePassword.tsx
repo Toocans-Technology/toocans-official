@@ -25,7 +25,7 @@ const ChangePassword = () => {
   const submitNewPws = async () => {
     try {
       await handleSetPassword({ password })
-      openToast(t('success'))
+      openToast(t('successfully', { name: t('set') }))
       router.replace('/')
     } catch (error) {
       openToast((error as Error).message, 'error')
@@ -33,7 +33,7 @@ const ChangePassword = () => {
   }
 
   useEffect(() => {
-    setIsDisabled(!(matchPassword(password) && confirmPassword === password))
+    setIsDisabled(!(matchPassword(password) && confirmPassword === password && !!password))
   }, [password, confirmPassword])
 
   return (
@@ -65,7 +65,7 @@ const ChangePassword = () => {
         <Input.Password
           maxLength={32}
           minLength={8}
-          placeholder={t('login:enter.pwd')}
+          placeholder={t('enter', { name: 'password' })}
           autoComplete="off"
           onFocus={() => {
             formData.setFields([
@@ -83,18 +83,19 @@ const ChangePassword = () => {
       <div className="text-[#666] [&>p]:mt-2 [&_.anticon-close-circle]:mr-2">
         <p className={errType == PasswordErrorType.lowercase ? 'text-destructive' : ''}>
           <CloseCircleFilled />
-          At least one lowercase character
+          {t('ruleTip.lowercase')}
         </p>
         <p className={errType == PasswordErrorType.uppercase ? 'text-destructive' : ''}>
           <CloseCircleFilled />
-          At least one uppercase character
+          {t('ruleTip.uppercase')}
         </p>
         <p className={errType == PasswordErrorType.number ? 'text-destructive' : ''}>
           <CloseCircleFilled />
-          At least one number
+          {t('ruleTip.number')}
         </p>
         <p className={errType == PasswordErrorType.length ? 'text-destructive' : ''}>
-          <CloseCircleFilled />8 to 32 characters
+          <CloseCircleFilled />
+          {t('ruleTip.length')}
         </p>
       </div>
 
@@ -114,7 +115,7 @@ const ChangePassword = () => {
               if (value === formData.getFieldValue('password')) {
                 return Promise.resolve()
               } else {
-                return Promise.reject(t('The passwords is inconsistent'))
+                return Promise.reject(t('inconsistent', { name: t('password') }))
               }
             },
           },
@@ -124,7 +125,7 @@ const ChangePassword = () => {
           maxLength={32}
           allowClear
           minLength={8}
-          placeholder={t('login:enter.pwd')}
+          placeholder={t('enter', { name: 'password' })}
           onFocus={() => {
             if (formData.getFieldError('confirmPassword')) {
               formData.setFields([

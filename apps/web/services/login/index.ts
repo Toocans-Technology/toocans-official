@@ -16,7 +16,7 @@ const LoginReqParams = z.object({
   inputInviteCode: z.nullable(z.string()),
   appInfo: z.nullable(z.string()),
   email: z.string().optional(),
-  emailCode: z.string().optional(),
+  emailCode: z.union([z.string(), z.number()]).optional(),
   nationalCode: z.string().optional(),
   phonenumber: z.string().optional(),
   smsCode: z.string().optional(),

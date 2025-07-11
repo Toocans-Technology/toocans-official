@@ -43,7 +43,7 @@ const SendAndCountDown = () => {
           return prev - 1
         })
       }, 1000)
-      openToast(t('sendSuccessfully'))
+      openToast(t('successfully', { name: t('send') }))
     } catch (error) {
       openToast((error as Error).message, 'error')
     }

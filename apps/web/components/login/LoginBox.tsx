@@ -55,11 +55,13 @@ const LoginBox: FunctionComponent = () => {
 
     if (grantType == GrantType.EMAIL) {
       if (!email) {
-        form.setFields([{ name: 'email', value: '', errors: [t('please') + ' ' + t('enter.email')] }])
+        form.setFields([{ name: 'email', value: '', errors: [t('please', { name: t('enter', { name: 'email' }) })] }])
         return
       }
       if (!matchEmail(email)) {
-        form.setFields([{ name: 'email', value: email, errors: [t('formatErr.email')] }])
+        form.setFields([
+          { name: 'email', value: email, errors: [t('formatErr', { name: `${t('email')} ${t('address')}` })] },
+        ])
         return
       }
       query = { email }
@@ -67,11 +69,13 @@ const LoginBox: FunctionComponent = () => {
 
     if (grantType == GrantType.SMS) {
       if (!phone) {
-        form.setFields([{ name: 'phone', value: phone, errors: [t('please') + ' ' + t('enter.phone')] }])
+        form.setFields([
+          { name: 'phone', value: phone, errors: [t('please', { name: t('enter', { name: 'phone' }) })] },
+        ])
         return
       }
       if (!matchPhoneNum(nationalCode, phone)) {
-        form.setFields([{ name: 'phone', value: phone, errors: [t('formatErr.phone')] }])
+        form.setFields([{ name: 'phone', value: phone, errors: [t('formatErr', { name: 'phone' })] }])
         return
       }
       query = { phone, nationalCode }
@@ -100,7 +104,7 @@ const LoginBox: FunctionComponent = () => {
       appInfo: null,
     }
 
-    if (loginType == LoginType.PWD) {
+    if (loginType == LoginType.PASSWORD) {
       Object.assign(resultParams, {
         username: values.email || `${values.nationalCode}${values.phone}`,
         grantType: 'password',
@@ -130,8 +134,8 @@ const LoginBox: FunctionComponent = () => {
       typedStorage.refreshToken = refreshToken
       typedStorage.expireIn = expiresIn
 
-      openToast(t('loginSuccessfully'))
-      router.replace('/zh-CN')
+      openToast(t('successfully', { name: t('login') }))
+      router.replace('/')
     } catch (error) {
       openToast((error as Error).message, 'error')
     }
@@ -156,9 +160,7 @@ const LoginBox: FunctionComponent = () => {
     >
       <div className="flex flex-1 content-center bg-[#f1f1f1]">
         <div className="mt-35 ml-35">
-          <p className="title text-2xl font-medium">
-            {t('login:title')} {t('login:name')}
-          </p>
+          <p className="title text-2xl font-medium">{t('welcome', { name: t('name') })}</p>
           <div
             className="w-108 min-h-100 mt-4 rounded-2xl bg-white p-6"
             style={{ boxShadow: '10px 19px 250px 0px rgba(0, 0, 0, 0.22)' }}
@@ -178,7 +180,7 @@ const LoginBox: FunctionComponent = () => {
               {loginType == LoginType.CODE && <VerificationCode />}
 
               {/* password input */}
-              {loginType == LoginType.PWD && <PasswordInput />}
+              {loginType == LoginType.PASSWORD && <PasswordInput />}
 
               <div className="mt-4 flex select-none">
                 {seconds == 60 ? (
@@ -186,13 +188,13 @@ const LoginBox: FunctionComponent = () => {
                     <p
                       className="cursor-pointer text-xs text-[#3C7BF4]"
                       onClick={() => {
-                        setLoginType(loginType == LoginType.CODE ? LoginType.PWD : LoginType.CODE)
+                        setLoginType(loginType == LoginType.CODE ? LoginType.PASSWORD : LoginType.CODE)
                         form.resetFields(loginType == LoginType.CODE ? ['password'] : ['code'])
                       }}
                     >
-                      {t(loginType == LoginType.CODE ? 'switchToPwd' : 'switchToCode')}
+                      {t('switchTo', { type: loginType })}
                     </p>
-                    {loginType == LoginType.PWD && (
+                    {loginType == LoginType.PASSWORD && (
                       <a onClick={handleForget} className="ml-auto text-xs text-[#3C7BF4]">
                         {t('forgotPassword')}
                       </a>

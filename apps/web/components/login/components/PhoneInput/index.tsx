@@ -20,7 +20,7 @@ const PhoneInput = () => {
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       if (!phoneInputRef?.current?.contains(event.target) && phoneCheckState && !matchPhoneNum(nationalCode, phone)) {
-        formData.setFields([{ name: 'phone', errors: [t('formatErr.phone')] }])
+        formData.setFields([{ name: 'phone', errors: [t('formatErr', { name: `${t('phone')} ${t('number')}` })] }])
       }
     }
 
@@ -40,7 +40,7 @@ const PhoneInput = () => {
           style={{ paddingLeft: '64px' }}
           allowClear
           maxLength={11}
-          placeholder={t('login:enter.phone')}
+          placeholder={t('enter', { name: t('phone') })}
           onFocus={() => {
             setPhoneCheckState(true)
             if (formData.getFieldError('phone')) {

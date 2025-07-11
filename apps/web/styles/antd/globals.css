@@ -15,3 +15,7 @@ input::-webkit-input-placeholder {
 .ant-input-number-affix-wrapper {
   width: 100% !important;
 }
+
+.ant-btn-link:disabled {
+  color: #999 !important;
+}

@@ -4,7 +4,6 @@ import { Form, Checkbox } from 'antd'
 import { forwardRef, useImperativeHandle, useState } from 'react'
 import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
-import { useLoginContext } from '../LoginContext'
 import styles from '../assets/style.module.css'
 
 const CheckComp = (_props: any, ref: any) => {
@@ -41,12 +40,10 @@ const CheckComp = (_props: any, ref: any) => {
           <p className="ml-2 w-[85%] cursor-pointer leading-[18px] text-[#666]">
             {t('agreedTip')}
             <a type="link" href="#" className="text-[#3c7bf4]">
-              {' '}
-              {t('name')} {t('userAgreement')}{' '}
+              {t('userAgreement', { name: t('name') })}
             </a>
             {t('and')}
             <a type="link" href="#" className="text-[#3c7bf4]">
-              {' '}
               {t('privacyPolicy')}
             </a>
           </p>
