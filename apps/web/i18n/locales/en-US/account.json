@@ -30,5 +30,6 @@
   "passwordPlaceholder": "Please enter a new password",
   "newPasswordPlaceholder": "Please enter a new password again",
   "passwordError": "The two passwords do not match",
-  "verificationCode": "Verification Code"
+  "verificationCode": "Verification Code",
+  "changePasswordSuccess": "Change password successfully"
 }
