@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { QRCodeSVG } from 'qrcode.react'
 import React, { useState, useCallback } from 'react'
+import { Input } from '@workspace/ui/components'
 import { openToast } from '@/utils'
 import { useT } from '@/i18n'
 import { GOOGLE_CODE_REGEXP } from '@/lib/regexp'
@@ -18,6 +19,7 @@ export default function AuthAppPage() {
   const [googleCode, setGoogleCode] = useState('')
   const [bindSuccess, setBindSuccess] = useState(true)
   React.useEffect(() => {
+    
     if (userInfoRes && userInfoRes.hasGaKey) {
       setGoogleCode('')
       setBindSuccess(true)
@@ -144,11 +146,11 @@ export default function AuthAppPage() {
             </div>
             <div className="ml-2">Security authentication</div>
           </div>
-          <div className="mb-6 ml-8">
+          <div className="mb-6">
             {!bindSuccess && (
-              <input
+              <Input
                 maxLength={6}
-                className="mb-7 ml-8 flex h-11 w-[456px] items-center rounded-md border-none bg-[#f5f5f5] px-3 text-black"
+                className="mb-7 ml-7 flex h-11 w-[456px] items-center rounded-md border-none bg-[#f5f5f5] px-3 text-black"
                 placeholder="Please enter the Authenticator code"
                 value={googleCode}
                 onChange={(e) => setGoogleCode(e.target.value)}
