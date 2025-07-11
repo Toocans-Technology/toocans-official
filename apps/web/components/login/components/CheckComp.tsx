@@ -42,6 +42,7 @@ const CheckComp = (_props: any, ref: any) => {
           <p className="ml-2 w-[85%] cursor-pointer leading-[18px] text-[#666]">
             <Trans
               i18nKey="login:privacyPolicyAgreement"
+              values={{ name: t('name') }}
               components={{
                 UserAgreement: <Link href="/agreement" />,
                 PrivacyPolicy: <Link href="/privacy" />,
