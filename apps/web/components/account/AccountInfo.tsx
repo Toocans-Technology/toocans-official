@@ -11,7 +11,7 @@ import { useT } from '@/i18n'
 import { useUserInfo } from '@/services/user/info'
 import { KycLevel } from '@/types/user'
 import Link from '../Link'
-import { ChangeNicknameModal, ChangePasswordModal } from './modals'
+import { BindPhoneModal, ChangeNicknameModal, ChangePasswordModal } from './modals'
 
 const AccountInfo: FunctionComponent = () => {
   const { t } = useT(['account', 'common'])
@@ -101,11 +101,9 @@ const AccountInfo: FunctionComponent = () => {
           <p>{t('account:phoneAuth')}</p>
           <p className="text-[#666]">{t('account:phoneAuthDescription')}</p>
         </div>
-        <div className="text-xs">+{data?.concatMobile ?? '-'}</div>
+        <div className="text-xs">{data?.concatMobile ?? '-'}</div>
         <div className="flex justify-end">
-          <Button rounded="full" variant="secondary">
-            {t('common:settings')}
-          </Button>
+          <BindPhoneModal />
         </div>
       </div>
       <div className="my-3 grid grid-cols-3 items-center py-3">
@@ -122,7 +120,7 @@ const AccountInfo: FunctionComponent = () => {
           <p>{t('account:authenticationApp')}</p>
           <p className="text-[#666]">{t('account:authenticationAppDescription')}</p>
         </div>
-        <div className="text-xs">{data?.hasGaKey ? '******' : t('account:notConfigured')}</div>
+        <div className="text-xs">{data?.hasGaKey ? '' : t('account:notConfigured')}</div>
         <div className="flex justify-end">
           {!data?.hasGaKey && (
             <Link href="/authapp">

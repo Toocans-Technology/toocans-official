@@ -24,6 +24,7 @@
   "changeNickname": "Change Nickname",
   "changeNicknamePlaceholder": "Enter nickname",
   "changeNicknameTips": "5-20 characters.",
+  "changeNicknameSuccess": "Change nickname successfully",
   "changePassword": "Change Password",
   "password": "Password",
   "newPassword": "Confirm new password",
@@ -31,5 +32,14 @@
   "newPasswordPlaceholder": "Please enter a new password again",
   "passwordError": "The two passwords do not match",
   "verificationCode": "Verification Code",
-  "changePasswordSuccess": "Change password successfully"
+  "verificationCodeError": "Verification code format error",
+  "changePasswordSuccess": "Change password successfully",
+  "bindPhoneSuccess": "Bind phone successfully",
+  "bindEmailSuccess": "Bind email successfully",
+  "bindPhoneNumber": "Bind Phone Number",
+  "bindEmailAddress": "Bind Email Address",
+  "phoneVerificationCode": "Phone Verification Code",
+  "emailVerificationCode": "Email Verification Code",
+  "newPhoneNumber": "New Phone Number",
+  "newEmail": "New Email"
 }

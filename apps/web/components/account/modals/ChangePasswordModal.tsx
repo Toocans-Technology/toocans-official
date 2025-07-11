@@ -103,7 +103,6 @@ const ChangePasswordModal: FunctionComponent = () => {
 
         toast.success(t('account:changePasswordSuccess'))
         setOpen(false)
-        reset()
       } catch (error) {
         toast.error((error as HttpError).message)
       }

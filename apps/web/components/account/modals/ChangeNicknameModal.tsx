@@ -61,6 +61,7 @@ const ChangeNicknameModal: FunctionComponent = () => {
           return
         }
 
+        toast.success(t('account:changeNicknameSuccess'))
         refetch()
         setOpen(false)
       } catch (error) {
