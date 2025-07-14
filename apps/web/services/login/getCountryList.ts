@@ -6,9 +6,9 @@ import { getUrl } from '@/lib/api/getUrl'
 const CountrySchema = z.array(
   z.object({
     id: z.string().nullable(),
-    nationalCode: z.string().nullable(),
+    nationalCode: z.string(),
     domainShortName: z.string().nullable(),
-    countryName: z.string().nullable(),
+    countryName: z.string(),
     countryEnName: z.string().nullable(),
     customOrder: z.string().nullable(),
     status: z.number().int().min(0).max(1),
@@ -33,7 +33,7 @@ const CountrySchema = z.array(
   })
 )
 
-export const getCountrys = () => {
+export const getCountryList = () => {
   return useQuery({
     ...getQuery({
       method: 'GET',
