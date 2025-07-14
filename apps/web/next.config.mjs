@@ -22,6 +22,9 @@ const nextConfig = {
       {
         hostname: 'dummyimage.com',
       },
+      {
+        hostname: 'flagcdn.com',
+      },
     ],
   },
 }

@@ -19,6 +19,7 @@ import {
   toast,
 } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
+import { PhoneNumberInput } from '@/components/common'
 import { useT } from '@/i18n'
 import { ONE_MINUTE_COUNT_DOWN, VERIFICATION_CODE_REGEX } from '@/lib/utils'
 import { useBindPhone, UserInfo, useSendBindCode } from '@/services/user'
@@ -49,7 +50,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      nationalCode: '+86',
+      nationalCode: '86',
       verificationCode: '',
     },
   })
@@ -77,7 +78,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
 
     mutateSendCode({ countryCode: nationalCode, phone: phoneNumber })
     setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
-  }, [mutateSendCode])
+  }, [mutateSendCode, nationalCode, phoneNumber])
 
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
@@ -104,27 +105,12 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t('account:newPhoneNumber')}</FormLabel>
-              <div
-                aria-invalid={formState.errors.phoneNumber ? true : false}
-                className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-3 focus-within:ring-[1px]"
-              >
-                <FormControl>
-                  <Input
-                    {...field}
-                    autoComplete="off"
-                    placeholder={t('account:phoneVerificationCode')}
-                    className="focus-visible:ring-0"
-                  />
-                </FormControl>
-                {field.value && (
-                  <span
-                    className="inline-flex h-4 min-w-4 cursor-pointer items-center justify-center rounded-full bg-[#666]"
-                    onClick={() => setValue('phoneNumber', '')}
-                  >
-                    <XIcon color="#fff" size={12} />
-                  </span>
-                )}
-              </div>
+              <FormControl>
+                <PhoneNumberInput
+                  {...field}
+                  onCountryChange={(nationalCode) => setValue('nationalCode', nationalCode)}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

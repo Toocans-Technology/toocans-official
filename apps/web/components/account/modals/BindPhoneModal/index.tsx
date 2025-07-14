@@ -1,6 +1,6 @@
 'use client'
 
-import { FunctionComponent, useCallback, useState } from 'react'
+import { FunctionComponent, useCallback, useEffect, useState } from 'react'
 import { Button, Separator } from '@workspace/ui/components'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@workspace/ui/components'
 import { useT } from '@/i18n'
@@ -19,10 +19,18 @@ const BindPhoneModal: FunctionComponent = () => {
   const [step, setStep] = useState<BindSteps>(BindSteps.sendCode)
   const { data: userInfo, refetch } = useUserInfo()
 
+  useEffect(() => {
+    setStep(BindSteps.sendCode)
+  }, [open])
+
   const handleSuccess = useCallback(() => {
     refetch()
     setOpen(false)
   }, [refetch])
+
+  const handleCancel = useCallback(() => {
+    setOpen(false)
+  }, [])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -37,9 +45,7 @@ const BindPhoneModal: FunctionComponent = () => {
           <Separator />
         </DialogHeader>
         {step === BindSteps.sendCode && <SendCodeStep userInfo={userInfo} onSuccess={() => setStep(BindSteps.bind)} />}
-        {step === BindSteps.bind && (
-          <BindStep userInfo={userInfo} onSuccess={handleSuccess} onCancel={() => setOpen(false)} />
-        )}
+        {step === BindSteps.bind && <BindStep userInfo={userInfo} onSuccess={handleSuccess} onCancel={handleCancel} />}
       </DialogContent>
     </Dialog>
   )

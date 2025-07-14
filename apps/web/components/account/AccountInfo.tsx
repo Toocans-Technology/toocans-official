@@ -18,8 +18,6 @@ const AccountInfo: FunctionComponent = () => {
   const { data } = useUserInfo()
   const kycLevel = useSecurityLevel(data?.kycLevel)
 
-  console.log('data', data)
-
   const handleCopy = useCallback(() => {
     toast.success(t('common:copySuccess'))
   }, [])
@@ -101,9 +99,17 @@ const AccountInfo: FunctionComponent = () => {
           <p>{t('account:phoneAuth')}</p>
           <p className="text-[#666]">{t('account:phoneAuthDescription')}</p>
         </div>
-        <div className="text-xs">{data?.concatMobile ?? '-'}</div>
+        <div className="text-xs">{data?.mobile ? `+${data?.nationalCode}${data?.mobile}` : '-'}</div>
         <div className="flex justify-end">
-          <BindPhoneModal />
+          {data?.mobile ? (
+            <CopyToClipboard text={data?.mobile || ''} onCopy={handleCopy}>
+              <Button rounded="full" variant="secondary">
+                {t('common:copy')}
+              </Button>
+            </CopyToClipboard>
+          ) : (
+            <BindPhoneModal />
+          )}
         </div>
       </div>
       <div className="my-3 grid grid-cols-3 items-center py-3">

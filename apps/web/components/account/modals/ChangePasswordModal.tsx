@@ -54,7 +54,7 @@ const PasswordInput = ({ formState, field, placeholder }: PasswordInputProps) =>
         placeholder={placeholder}
       />
       <span onClick={() => setShow(!show)} className="cursor-pointer">
-        {show ? <Eye color="#666" strokeWidth={1.5} size={16} /> : <EyeOff color="#666" strokeWidth={1.5} size={16} />}
+        {show ? <Eye color="#666" strokeWidth={1.75} size={16} /> : <EyeOff color="#666" strokeWidth={1.5} size={16} />}
       </span>
     </div>
   )

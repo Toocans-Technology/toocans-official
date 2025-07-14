@@ -4,7 +4,7 @@ import { getMutation } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
 
 export * from './getCode'
-export * from './getCountrys'
+export * from './getCountryList'
 
 const LoginReqParams = z.object({
   clientId: z.string(),

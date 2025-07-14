@@ -27,5 +27,8 @@
   "send": "Send",
   "ok": "OK",
   "confirm": "Confirm",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "search": "Search",
+  "enterPhone": "Enter Phone",
+  "noNationalCode": "No national code found"
 }
