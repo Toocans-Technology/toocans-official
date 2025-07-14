@@ -5,7 +5,7 @@ import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
 import { getCountrys } from '@/services/login'
 import { useLoginContext } from '../../LoginContext'
-import styles from '../../assets/style.module.css'
+import styles from '../../assets/style.module.scss'
 
 const CountryList = () => {
   const { t } = useT('login')

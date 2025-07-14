@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
 
-export const UserInfoDataSchema = z.object({
+export const UserInfoSchema = z.object({
   accountId: z.string(),
   userId: z.string(),
   nationalCode: z.string().nullable(),
@@ -29,12 +29,14 @@ export const UserInfoDataSchema = z.object({
   loginName: z.string().nullable(),
 })
 
+export type UserInfo = z.infer<typeof UserInfoSchema>
+
 export const useUserInfo = () => {
   return useQuery(
     getQuery({
       method: 'GET',
       url: getUrl('/user/info'),
-      transfer: UserInfoDataSchema.parse,
+      transfer: UserInfoSchema.parse,
     })
   )
 }

@@ -4,8 +4,7 @@ import { Form, Checkbox } from 'antd'
 import { forwardRef, useImperativeHandle, useState } from 'react'
 import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
-import { useLoginContext } from '../LoginContext'
-import styles from '../assets/style.module.css'
+import styles from '../assets/style.module.scss'
 
 const CheckComp = (_props: any, ref: any) => {
   const { t } = useT('login')
