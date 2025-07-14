@@ -28,7 +28,7 @@ const ChangePassword = () => {
       try {
         await handleSetPassword({ password: formData.getFieldValue('password') })
         openToast(t('successfully', { name: t('set') }))
-        router.replace('/')
+        router.replace('/login')
       } catch (error) {
         openToast((error as Error).message, 'error')
       }

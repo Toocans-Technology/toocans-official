@@ -104,7 +104,7 @@ const LoginBox: FunctionComponent = () => {
       if (loginType == LoginType.PASSWORD) {
         Object.assign(resultParams, {
           username: values.email || `${values.nationalCode}${values.phone}`,
-          grantType: 'password',
+          grantType: LoginType.PASSWORD,
           password: values.password,
         })
       } else {
@@ -132,7 +132,7 @@ const LoginBox: FunctionComponent = () => {
         typedStorage.expireIn = expiresIn
 
         openToast(t('successfully', { name: t('login') }))
-        router.replace('/')
+        router.replace('/overview')
       } catch (error) {
         openToast((error as Error).message, 'error')
       }
@@ -205,13 +205,7 @@ const LoginBox: FunctionComponent = () => {
               </div>
 
               <Form.Item>
-                <Button
-                  disabled={seconds == 60}
-                  type="primary"
-                  htmlType="submit"
-                  className="mt-[36px] w-full"
-                  style={{ fontWeight: 500 }}
-                >
+                <Button type="primary" htmlType="submit" className="mt-[36px] w-full" style={{ fontWeight: 500 }}>
                   {t('login')}
                 </Button>
               </Form.Item>
