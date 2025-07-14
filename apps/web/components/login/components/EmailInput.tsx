@@ -1,7 +1,7 @@
 'use client'
 
 import { Form, Input } from 'antd'
-import { emailReg } from '@/data'
+import { EmailReg } from '@/data'
 import { useT } from '@/i18n'
 import { useLoginContext } from '../LoginContext'
 
@@ -15,8 +15,8 @@ const EmailInput = () => {
       rules={[
         { required: true, message: '' },
         {
-          pattern: emailReg,
-          message: t('formatErr.email'),
+          pattern: EmailReg,
+          message: t('formatErr', { name: `${t('email')} ${t('address')}` }),
         },
       ]}
       validateTrigger="onBlur"
@@ -26,11 +26,16 @@ const EmailInput = () => {
         disabled={seconds < 60}
         maxLength={50}
         type="text"
-        placeholder={t(`login:enter.email`)}
+        placeholder={t('enter', { name: t('email') })}
         allowClear
         onFocus={() => {
           if (formData.getFieldError('email')) {
-            formData.setFieldValue('email', formData.getFieldValue('email'))
+            formData.setFields([
+              {
+                name: ['email'],
+                errors: [],
+              },
+            ])
           }
         }}
       />

@@ -1,11 +1,11 @@
-import LoginBox from '@/components/login/LoginBox'
+import ForgetBox from '@/components/forget/ForgetBox'
 import { LeftImg } from '@/components/login/components'
 
-export default function Login() {
+export default async function Login() {
   return (
     <div className="min-w-305 flex overflow-x-scroll" style={{ height: 'calc(100vh - 76px)' }}>
       <LeftImg />
-      <LoginBox />
+      <ForgetBox />
     </div>
   )
 }
