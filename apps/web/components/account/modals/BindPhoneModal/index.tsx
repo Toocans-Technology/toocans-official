@@ -37,7 +37,9 @@ const BindPhoneModal: FunctionComponent = () => {
           <Separator />
         </DialogHeader>
         {step === BindSteps.sendCode && <SendCodeStep userInfo={userInfo} onSuccess={() => setStep(BindSteps.bind)} />}
-        {step === BindSteps.bind && <BindStep userInfo={userInfo} onSuccess={handleSuccess} />}
+        {step === BindSteps.bind && (
+          <BindStep userInfo={userInfo} onSuccess={handleSuccess} onCancel={() => setOpen(false)} />
+        )}
       </DialogContent>
     </Dialog>
   )

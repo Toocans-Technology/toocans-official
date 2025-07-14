@@ -26,10 +26,11 @@ import { HttpError } from '@/types/http'
 
 interface Props {
   userInfo?: UserInfo
+  onCancel?: () => void
   onSuccess?: () => void
 }
 
-const BindStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
+const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) => {
   const { t } = useT(['account', 'common'])
   const [targetDate, setTargetDate] = useState<number>()
   const { mutateAsync: mutateSendCode } = useSendBindCode()
@@ -78,7 +79,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
     setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
   }, [mutateSendCode])
 
-  const onSubmitCode = useCallback(
+  const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
       if (!userInfo) {
         return
@@ -156,9 +157,12 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
         />
       </div>
       <DialogFooter>
-        <Button rounded="full" disabled={!formState.isValid || isPending} onClick={handleSubmit(onSubmitCode)}>
+        <Button rounded="full" variant="secondary" onClick={onCancel}>
+          {t('common:cancel')}
+        </Button>
+        <Button rounded="full" disabled={!formState.isValid || isPending} onClick={handleSubmit(onSubmit)}>
           {isPending && <Loader2Icon className="animate-spin" />}
-          {t('common:next')}
+          {t('common:confirm')}
         </Button>
       </DialogFooter>
     </Form>
