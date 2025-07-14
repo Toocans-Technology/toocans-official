@@ -6,7 +6,7 @@ import { Trans } from 'react-i18next'
 import { cn } from '@workspace/ui/lib/utils'
 import Link from '@/components/Link'
 import { useT } from '@/i18n'
-import styles from '../assets/style.module.css'
+import styles from '../assets/style.module.scss'
 
 const CheckComp = (_props: any, ref: any) => {
   const { t } = useT('login')
