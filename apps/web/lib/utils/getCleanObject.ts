@@ -8,6 +8,6 @@ export function getCleanObject(obj: Record<string, string>) {
       }
       return acc
     },
-    {} as Record<string, string>,
+    {} as Record<string, string>
   )
 }

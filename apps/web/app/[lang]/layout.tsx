@@ -3,6 +3,7 @@ import { ConfigProvider } from 'antd'
 import { Geist, Inter } from 'next/font/google'
 import { Toaster } from '@workspace/ui/components'
 import '@workspace/ui/globals.css'
+import { WebVitals } from '@/app/_components'
 import { BaseProviders, RouterProvider } from '@/components/providers'
 import { locales } from '@/i18n/config'
 import '@/styles/antd/globals.css'
@@ -45,6 +46,7 @@ export default async function RootLayout({ children, params }: Readonly<Props>) 
               <RouterProvider>
                 {/* https://ant-design.antgroup.com/docs/react/v5-for-19-cn */}
                 <Fix />
+                <WebVitals />
                 {children}
               </RouterProvider>
             </BaseProviders>

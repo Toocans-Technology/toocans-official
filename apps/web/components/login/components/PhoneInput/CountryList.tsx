@@ -6,7 +6,7 @@ import { useT } from '@/i18n'
 import { getCountrys } from '@/services/login'
 import { matchPhoneNum } from '@/utils'
 import { useLoginContext } from '../../LoginContext'
-import styles from '../../assets/style.module.css'
+import styles from '../../assets/style.module.scss'
 
 const CountryList = () => {
   const { t } = useT('login')

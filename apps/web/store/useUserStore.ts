@@ -1,10 +1,10 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-import { User } from '@/services/user/info'
+import { UserInfo } from '@/services/user/info'
 
 interface UserState {
-  user: User | null
-  setUser: (user: User | null) => void
+  user: UserInfo | null
+  setUser: (user: UserInfo | null) => void
   clearUser: () => void
 }
 
