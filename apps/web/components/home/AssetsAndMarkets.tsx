@@ -24,7 +24,7 @@ const AssetsAndMarkets: FunctionComponent<{ lang: string }> = async ({ lang }) =
             <Image src="/images/home/home-markets.png" alt="Assets" width={164} height={218} />
           </div>
         </div>
-        <div className="pb-18 relative mt-11 flex w-full overflow-hidden rounded-[12px] bg-[#0f0f0f] p-10">
+        <div className="hover:border-primary pb-18 relative mt-11 flex w-full overflow-hidden rounded-[12px] border border-transparent bg-[#0f0f0f] p-10">
           <h1 className="max-w-80 text-[40px]">{t('home:chainTransfer')}</h1>
           <Image
             src="/images/home/on-chain.png"
