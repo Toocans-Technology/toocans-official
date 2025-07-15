@@ -18,7 +18,7 @@ export const useUpdateNickname = () => {
     getMutation((params: UpdateNicknameParams) => {
       return {
         method: 'POST',
-        url: getUrl('/user/updateNickname'),
+        url: getUrl('/uc/user/updateNickname'),
         query: UpdateNicknameParamsSchema.parse(params),
         body: {},
         transfer: UpdateNicknameResponseSchema.parse,

@@ -37,7 +37,7 @@ export const getCountryList = () => {
   return useQuery({
     ...getQuery({
       method: 'GET',
-      url: getUrl('/baseConfig/allSupportCountry'),
+      url: getUrl('/bc/baseConfig/allSupportCountry'),
       transfer: CountrySchema.parse,
     }),
   })

@@ -18,7 +18,7 @@ export const useAddPassword = () => {
     getMutation((params: AddPasswordParams) => {
       return {
         method: 'POST',
-        url: getUrl('/user/addPassword'),
+        url: getUrl('/uc/user/addPassword'),
         body: AddPasswordParamsSchema.parse(params),
         transfer: AddPasswordResponseSchema.parse,
       }

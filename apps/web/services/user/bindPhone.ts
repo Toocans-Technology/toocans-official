@@ -20,7 +20,7 @@ export const useBindPhone = () => {
   return useMutation(
     getMutation((params: BindPhoneParams) => ({
       method: 'POST',
-      url: getUrl('/user/bindPhone'),
+      url: getUrl('/uc/user/bindPhone'),
       body: BindPhoneParamsSchema.parse(params),
       transfer: BindPhoneResponseSchema.parse,
     }))

@@ -19,7 +19,7 @@ import {
 } from '@workspace/ui/components'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@workspace/ui/components'
 import { useT } from '@/i18n'
-import { useAddPassword } from '@/services/user'
+import { useAddPassword, useUserInfo } from '@/services/user'
 import { HttpError } from '@/types/http'
 
 interface PasswordInputProps {
@@ -63,6 +63,7 @@ const PasswordInput = ({ formState, field, placeholder }: PasswordInputProps) =>
 const ChangePasswordModal: FunctionComponent = () => {
   const { t } = useT(['account', 'common'])
   const [open, setOpen] = useState(false)
+  const { refetch } = useUserInfo()
   const { mutateAsync: mutateAddPassword, isPending } = useAddPassword()
 
   const FormSchema = useMemo(
@@ -100,14 +101,14 @@ const ChangePasswordModal: FunctionComponent = () => {
         await mutateAddPassword({
           password: data.password,
         })
-
         toast.success(t('account:changePasswordSuccess'))
+        refetch()
         setOpen(false)
       } catch (error) {
         toast.error((error as HttpError).message)
       }
     },
-    [mutateAddPassword]
+    [mutateAddPassword, refetch]
   )
 
   return (

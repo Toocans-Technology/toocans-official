@@ -17,7 +17,7 @@ export const useBindVerificationCode = () => {
   return useMutation(
     getMutation((params: BindVerificationCodeParams) => ({
       method: 'POST',
-      url: getUrl('/user/bindVerificationCode'),
+      url: getUrl('/uc/user/bindVerificationCode'),
       query: BindVerificationCodeParamsSchema.parse(params),
       body: {},
       transfer: BindVerificationCodeResponseSchema.parse,

@@ -19,7 +19,7 @@ export const useBindEmail = () => {
   return useMutation(
     getMutation((params: BindEmailParams) => ({
       method: 'POST',
-      url: getUrl('/user/bindEmail'),
+      url: getUrl('/uc/user/bindEmail'),
       body: BindEmailParamsSchema.parse(params),
       transfer: BindEmailResponseSchema.parse,
     }))

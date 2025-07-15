@@ -22,7 +22,7 @@ export const getWithdrawOrder = (params?: WithdrawOrderParams) => {
   return useQuery({
     ...getQuery({
       method: 'GET',
-      url: getUrl('/wallet/pageWithdraw'),
+      url: getUrl('/dw/wallet/pageWithdraw'),
       query: WithdrawOrderParamsSchema.parse(params),
       transfer: WithdrawOrderListSchema.parse,
     }),

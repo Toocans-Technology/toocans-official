@@ -10,7 +10,7 @@ export const useSendCodeByUserPhoneOrEmail = () => {
   return useMutation(
     getMutation(() => ({
       method: 'POST',
-      url: getUrl('/user/sendCodeByUserPhoneOrEmail'),
+      url: getUrl('/uc/user/sendCodeByUserPhoneOrEmail'),
       body: {},
       transfer: SendCodeByUserPhoneOrEmailResponseSchema.parse,
     }))

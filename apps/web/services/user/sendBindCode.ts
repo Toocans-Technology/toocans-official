@@ -33,7 +33,7 @@ export const useSendBindCode = () => {
   return useMutation(
     getMutation((params: SendBindCodeParams) => ({
       method: 'POST',
-      url: getUrl('/user/sendBindCode'),
+      url: getUrl('/uc/user/sendBindCode'),
       body: SendBindCodeParamsSchema.parse(params),
       transfer: SendBindCodeResponseSchema.parse,
     }))

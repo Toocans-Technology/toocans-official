@@ -133,7 +133,7 @@ const AccountInfo: FunctionComponent = () => {
         </div>
         <div className="text-xs">{data?.hasGaKey ? '' : t('account:notConfigured')}</div>
         <div className="flex justify-end">
-          {!data?.hasGaKey ? (
+          {data?.hasGaKey ? (
             <UnbindGAModal />
           ) : (
             <Link href="/authapp">

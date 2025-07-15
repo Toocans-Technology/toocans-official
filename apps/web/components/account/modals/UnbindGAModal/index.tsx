@@ -35,7 +35,7 @@ const UnbindGAModal: FunctionComponent = () => {
       code: '',
     },
   })
-  const { handleSubmit, formState } = form
+  const { handleSubmit, formState, reset } = form
 
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
@@ -55,7 +55,10 @@ const UnbindGAModal: FunctionComponent = () => {
     [mutateUnbindGoogleAuth, refetch, userInfo]
   )
 
-  const handleCancel = useCallback(() => {}, [])
+  const handleCancel = useCallback(() => {
+    setOpen(false)
+    reset()
+  }, [reset])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

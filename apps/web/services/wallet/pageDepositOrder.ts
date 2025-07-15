@@ -49,7 +49,7 @@ export const getDepositOrder = (params?: DepositOrderParams) => {
   return useQuery({
     ...getQuery({
       method: 'GET',
-      url: getUrl('/wallet/pageDepositOrder'),
+      url: getUrl('/dw/wallet/pageDepositOrder'),
       query: DepositOrderParamsSchema.parse(params),
       transfer: DepositOrderListSchema.parse,
     }),

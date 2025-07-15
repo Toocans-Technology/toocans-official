@@ -14,7 +14,7 @@ export const useGenerateGoogleAuth = () => {
   return useQuery(
     getQuery({
       method: 'GET',
-      url: getUrl('/user/generateGoogleAuth'),
+      url: getUrl('/uc/user/generateGoogleAuth'),
       transfer: GoogleAuthDTOSchema.parse,
     })
   )

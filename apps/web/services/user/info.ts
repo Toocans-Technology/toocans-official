@@ -36,7 +36,7 @@ export const useUserInfo = () => {
   return useQuery(
     getQuery({
       method: 'GET',
-      url: getUrl('/user/info'),
+      url: getUrl('/uc/user/info'),
       transfer: UserInfoSchema.parse,
     })
   )

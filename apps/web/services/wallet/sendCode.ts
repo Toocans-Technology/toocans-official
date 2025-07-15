@@ -20,7 +20,7 @@ export const useSendCode = () => {
   return useMutation(
     getMutation((params: CodeParams) => ({
       method: 'GET',
-      url: getUrl('/wallet/send/code'),
+      url: getUrl('/dw/wallet/send/code'),
       query: CodeParamsSchema.parse(params),
       transfer: CodeResSchema.parse,
     }))
