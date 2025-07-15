@@ -12,6 +12,7 @@ import { useUserInfo } from '@/services/user/info'
 import { KycLevel } from '@/types/user'
 import Link from '../Link'
 import { BindEmailModal, BindPhoneModal, ChangeNicknameModal, ChangePasswordModal } from './modals'
+import UnbindGAModal from './modals/UnbindGAModal'
 
 const AccountInfo: FunctionComponent = () => {
   const { t } = useT(['account', 'common'])
@@ -132,7 +133,9 @@ const AccountInfo: FunctionComponent = () => {
         </div>
         <div className="text-xs">{data?.hasGaKey ? '' : t('account:notConfigured')}</div>
         <div className="flex justify-end">
-          {!data?.hasGaKey && (
+          {!data?.hasGaKey ? (
+            <UnbindGAModal />
+          ) : (
             <Link href="/authapp">
               <Button rounded="full" variant="secondary">
                 {t('common:settings')}

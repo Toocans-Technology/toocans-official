@@ -29,6 +29,7 @@
   "confirm": "Confirm",
   "cancel": "Cancel",
   "search": "Search",
+  "disable": "Disable",
   "enterPhone": "Enter Phone",
   "noNationalCode": "No national code found"
 }

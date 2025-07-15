@@ -43,5 +43,9 @@
   "newPhone": "New Phone Number",
   "newEmail": "New Email",
   "newEmailPlaceholder": "Enter new email address",
-  "newEmailError": "Email format error"
+  "newEmailError": "Email format error",
+  "unbindGoogleAuth": "Disable Authentication App",
+  "google2FA": "Google 2FA code",
+  "google2FAPlaceholder": "Please enter the Google Authenticator code",
+  "unbindGoogleAuthSuccess": "Disable Authentication App successfully"
 }

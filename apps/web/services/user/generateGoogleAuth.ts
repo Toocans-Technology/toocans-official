@@ -5,8 +5,8 @@ import { getUrl } from '@/lib/api/getUrl'
 
 export const GoogleAuthDTOSchema = z
   .object({
-    secretKey: z.string().nullable(),
-    qrCodeUrl: z.string().nullable(),
+    secretKey: z.string(),
+    qrCodeUrl: z.string(),
   })
   .nullable()
 
