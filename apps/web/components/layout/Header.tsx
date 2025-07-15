@@ -46,7 +46,9 @@ const Header: FunctionComponent<Props> = () => {
   return (
     <div className="flex items-center justify-between bg-black px-8 py-5 text-white">
       <div className="flex items-center justify-between gap-14">
-        <Image src="/images/logo.png" alt="Toocans" width={113} height={18} />
+        <Link href="/">
+          <Image src="/images/logo.png" alt="Toocans" width={113} height={18} />
+        </Link>
         {/* TODO: Header menu */}
         {/* <div className="flex flex-1 items-center justify-between gap-10">
           <Link href="/" className="hover:opacity-80">

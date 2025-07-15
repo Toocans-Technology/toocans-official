@@ -10,9 +10,13 @@ const Footer: FunctionComponent<{ lang: string }> = async ({ lang }) => {
       <div className="mx-auto flex items-center justify-center py-4 text-[#666]">
         <span>@{t('common:footer.toocans')}</span>
         <div className="ml-10 flex items-center gap-3">
-          <Link href="/agreement">{t('common:footer.userAgreement')}</Link>
+          <Link href="/agreement" className="text-[#666]">
+            {t('common:footer.userAgreement')}
+          </Link>
           <span>|</span>
-          <Link href="/privacy">{t('common:footer.privacyPolicy')}</Link>
+          <Link href="/privacy" className="text-[#666]">
+            {t('common:footer.privacyPolicy')}
+          </Link>
         </div>
       </div>
     </div>

@@ -22,7 +22,7 @@ const HeroSection: FunctionComponent = () => {
 
   const handleStartNow = useCallback(() => {
     if (isValid) {
-      router.push(`/signin?email=${email}`)
+      router.push(`/login?email=${email}`)
     }
   }, [isValid, email])
 
