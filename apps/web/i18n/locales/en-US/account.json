@@ -40,6 +40,8 @@
   "bindEmailAddress": "Bind Email Address",
   "phoneVerificationCode": "Phone Verification Code",
   "emailVerificationCode": "Email Verification Code",
-  "newPhoneNumber": "New Phone Number",
-  "newEmail": "New Email"
+  "newPhone": "New Phone Number",
+  "newEmail": "New Email",
+  "newEmailPlaceholder": "Enter new email address",
+  "newEmailError": "Email format error"
 }

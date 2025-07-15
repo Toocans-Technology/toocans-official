@@ -11,7 +11,7 @@ import { useT } from '@/i18n'
 import { useUserInfo } from '@/services/user/info'
 import { KycLevel } from '@/types/user'
 import Link from '../Link'
-import { BindPhoneModal, ChangeNicknameModal, ChangePasswordModal } from './modals'
+import { BindEmailModal, BindPhoneModal, ChangeNicknameModal, ChangePasswordModal } from './modals'
 
 const AccountInfo: FunctionComponent = () => {
   const { t } = useT(['account', 'common'])
@@ -87,11 +87,15 @@ const AccountInfo: FunctionComponent = () => {
         </div>
         <div className="text-xs">{data?.email}</div>
         <div className="flex justify-end">
-          <CopyToClipboard text={data?.email || ''} onCopy={handleCopy}>
-            <Button rounded="full" variant="secondary">
-              {t('common:copy')}
-            </Button>
-          </CopyToClipboard>
+          {!data?.email ? (
+            <CopyToClipboard text={data?.email || ''} onCopy={handleCopy}>
+              <Button rounded="full" variant="secondary">
+                {t('common:copy')}
+              </Button>
+            </CopyToClipboard>
+          ) : (
+            <BindEmailModal />
+          )}
         </div>
       </div>
       <div className="my-3 grid grid-cols-3 items-center py-3">

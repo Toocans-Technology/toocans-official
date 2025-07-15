@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCountDown } from 'ahooks'
-import { Loader2Icon } from 'lucide-react'
+import { Loader2Icon, XIcon } from 'lucide-react'
 import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -19,10 +19,9 @@ import {
   toast,
 } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
-import { PhoneNumberInput } from '@/components/common'
 import { useT } from '@/i18n'
-import { ONE_MINUTE_COUNT_DOWN, VERIFICATION_CODE_REGEX } from '@/lib/utils'
-import { useBindPhone, UserInfo, useSendBindCode } from '@/services/user'
+import { EMAIL_REGEX, ONE_MINUTE_COUNT_DOWN, VERIFICATION_CODE_REGEX } from '@/lib/utils'
+import { useBindEmail, UserInfo, useSendBindCode } from '@/services/user'
 import { HttpError } from '@/types/http'
 
 interface Props {
@@ -35,28 +34,27 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
   const { t } = useT(['account', 'common'])
   const [targetDate, setTargetDate] = useState<number>()
   const { mutateAsync: mutateSendCode } = useSendBindCode()
-  const { mutateAsync: mutateBindPhone, isPending } = useBindPhone()
+  const { mutateAsync: mutateBindEmail, isPending } = useBindEmail()
 
   const FormSchema = useMemo(
     () =>
       z.object({
-        nationalCode: z.string(),
-        phoneNumber: z.string(),
+        email: z.string().regex(EMAIL_REGEX, t('account:newEmailError')),
         verificationCode: z.string().regex(VERIFICATION_CODE_REGEX, t('account:verificationCodeError')).length(6),
       }),
     [t]
   )
 
   const form = useForm<z.infer<typeof FormSchema>>({
+    mode: 'onChange',
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      nationalCode: '86',
+      email: '',
       verificationCode: '',
     },
   })
-  const { handleSubmit, formState, watch, reset, setValue } = form
-  const nationalCode = watch('nationalCode')
-  const phoneNumber = watch('phoneNumber')
+  const { handleSubmit, formState, watch, trigger, reset } = form
+  const email = watch('email')
 
   const [countdown] = useCountDown({
     targetDate,
@@ -72,13 +70,15 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
   }, [])
 
   const handleSendCode = useCallback(() => {
-    if (countdown) {
+    trigger('email')
+
+    if (countdown || !!formState.errors.email) {
       return
     }
 
-    mutateSendCode({ countryCode: nationalCode, phone: phoneNumber })
+    mutateSendCode({ email })
     setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
-  }, [mutateSendCode, nationalCode, phoneNumber])
+  }, [mutateSendCode, email, formState.errors.email])
 
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
@@ -87,13 +87,13 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
       }
 
       try {
-        await mutateBindPhone(data)
+        await mutateBindEmail(data)
         onSuccess?.()
       } catch (error) {
         toast.error((error as HttpError).message)
       }
     },
-    [mutateBindPhone, onSuccess, userInfo]
+    [mutateBindEmail, onSuccess, userInfo]
   )
 
   return (
@@ -101,15 +101,16 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
       <div className="mt-2 grid gap-6">
         <FormField
           control={form.control}
-          name="phoneNumber"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('account:newPhone')}</FormLabel>
+              <FormLabel>{t('account:newEmail')}</FormLabel>
               <FormControl>
-                <PhoneNumberInput
+                <Input
                   {...field}
-                  invalid={!!formState.errors.phoneNumber}
-                  onCountryChange={(nationalCode) => setValue('nationalCode', nationalCode)}
+                  autoComplete="off"
+                  placeholder={t('account:newEmailPlaceholder')}
+                  className="focus-visible:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -121,7 +122,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
           name="verificationCode"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('account:phoneVerificationCode')}</FormLabel>
+              <FormLabel>{t('account:emailVerificationCode')}</FormLabel>
               <div
                 aria-invalid={formState.errors.verificationCode ? true : false}
                 className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
@@ -130,7 +131,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
                   <Input
                     {...field}
                     autoComplete="off"
-                    placeholder={t('account:phoneVerificationCode')}
+                    placeholder={t('account:emailVerificationCode')}
                     className="focus-visible:ring-0"
                   />
                 </FormControl>

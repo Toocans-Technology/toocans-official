@@ -19,44 +19,42 @@ import {
   toast,
 } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
-import { PhoneNumberInput } from '@/components/common'
 import { useT } from '@/i18n'
 import { ONE_MINUTE_COUNT_DOWN, VERIFICATION_CODE_REGEX } from '@/lib/utils'
-import { useBindPhone, UserInfo, useSendBindCode } from '@/services/user'
+import { useBindVerificationCode, UserInfo, useSendCodeByUserPhoneOrEmail } from '@/services/user'
 import { HttpError } from '@/types/http'
 
 interface Props {
   userInfo?: UserInfo
-  onCancel?: () => void
   onSuccess?: () => void
 }
 
-const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) => {
+const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
   const { t } = useT(['account', 'common'])
   const [targetDate, setTargetDate] = useState<number>()
-  const { mutateAsync: mutateSendCode } = useSendBindCode()
-  const { mutateAsync: mutateBindPhone, isPending } = useBindPhone()
+  const { mutateAsync: mutateSendCode } = useSendCodeByUserPhoneOrEmail()
+  const { mutateAsync: mutateBindVerificationCode, isPending } = useBindVerificationCode()
+  const hasGaKey = userInfo?.hasGaKey ?? false
 
   const FormSchema = useMemo(
     () =>
       z.object({
-        nationalCode: z.string(),
-        phoneNumber: z.string(),
-        verificationCode: z.string().regex(VERIFICATION_CODE_REGEX, t('account:verificationCodeError')).length(6),
+        code: z.string().regex(VERIFICATION_CODE_REGEX, t('account:verificationCodeError')).length(6),
+        googleCode: hasGaKey
+          ? z.string().regex(VERIFICATION_CODE_REGEX, t('account:verificationCodeError')).length(6)
+          : z.string().optional(),
       }),
-    [t]
+    [hasGaKey, t]
   )
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      nationalCode: '86',
-      verificationCode: '',
+      code: '',
+      googleCode: '',
     },
   })
-  const { handleSubmit, formState, watch, reset, setValue } = form
-  const nationalCode = watch('nationalCode')
-  const phoneNumber = watch('phoneNumber')
+  const { handleSubmit, formState, reset } = form
 
   const [countdown] = useCountDown({
     targetDate,
@@ -76,24 +74,24 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
       return
     }
 
-    mutateSendCode({ countryCode: nationalCode, phone: phoneNumber })
+    mutateSendCode({})
     setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
-  }, [mutateSendCode, nationalCode, phoneNumber])
+  }, [mutateSendCode])
 
-  const onSubmit = useCallback(
+  const onSubmitCode = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
       if (!userInfo) {
         return
       }
 
       try {
-        await mutateBindPhone(data)
+        await mutateBindVerificationCode(data)
         onSuccess?.()
       } catch (error) {
         toast.error((error as HttpError).message)
       }
     },
-    [mutateBindPhone, onSuccess, userInfo]
+    [mutateBindVerificationCode, onSuccess, userInfo]
   )
 
   return (
@@ -101,36 +99,19 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
       <div className="mt-2 grid gap-6">
         <FormField
           control={form.control}
-          name="phoneNumber"
+          name="code"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('account:newPhone')}</FormLabel>
-              <FormControl>
-                <PhoneNumberInput
-                  {...field}
-                  invalid={!!formState.errors.phoneNumber}
-                  onCountryChange={(nationalCode) => setValue('nationalCode', nationalCode)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="verificationCode"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t('account:phoneVerificationCode')}</FormLabel>
+              <FormLabel>{t('account:emailVerificationCode')}</FormLabel>
               <div
-                aria-invalid={formState.errors.verificationCode ? true : false}
+                aria-invalid={formState.errors.code ? true : false}
                 className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
               >
                 <FormControl>
                   <Input
                     {...field}
                     autoComplete="off"
-                    placeholder={t('account:phoneVerificationCode')}
+                    placeholder={t('account:emailVerificationCode')}
                     className="focus-visible:ring-0"
                   />
                 </FormControl>
@@ -142,18 +123,30 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
             </FormItem>
           )}
         />
+        {hasGaKey && (
+          <FormField
+            control={form.control}
+            name="googleCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t('withdrawal:googleAuth')}</FormLabel>
+                <FormControl>
+                  <Input {...field} autoComplete="off" placeholder={t('withdrawal:googleAuthPlaceholder')} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
       </div>
       <DialogFooter>
-        <Button rounded="full" variant="secondary" onClick={onCancel}>
-          {t('common:cancel')}
-        </Button>
-        <Button rounded="full" disabled={!formState.isValid || isPending} onClick={handleSubmit(onSubmit)}>
+        <Button rounded="full" disabled={!formState.isValid || isPending} onClick={handleSubmit(onSubmitCode)}>
           {isPending && <Loader2Icon className="animate-spin" />}
-          {t('common:confirm')}
+          {t('common:next')}
         </Button>
       </DialogFooter>
     </Form>
   )
 }
 
-export default BindStep
+export default SendCodeStep
