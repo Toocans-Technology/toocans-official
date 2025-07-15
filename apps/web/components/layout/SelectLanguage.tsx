@@ -1,9 +1,9 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 import { FunctionComponent, useCallback } from 'react'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger } from '@workspace/ui/components'
 import { Locale } from '@/i18n/config'
-import { Link } from '../common'
 
 const SelectLanguage: FunctionComponent = () => {
   const params = useParams()
