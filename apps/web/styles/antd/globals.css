@@ -5,6 +5,7 @@ input {
 input::-webkit-input-placeholder {
   color: #999 !important;
 }
+.ant-otp-input,
 .ant-input-affix-wrapper,
 .ant-input-number-affix-wrapper,
 .ant-input-number-input-wrap input {
@@ -13,4 +14,8 @@ input::-webkit-input-placeholder {
 .ant-input-number,
 .ant-input-number-affix-wrapper {
   width: 100% !important;
+}
+
+.ant-btn-link:disabled {
+  color: #999 !important;
 }

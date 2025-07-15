@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { FunctionComponent, useCallback, useState } from 'react'
 import { Button, Input } from '@workspace/ui/components'
 import { useT } from '@/i18n'
@@ -22,7 +22,7 @@ const HeroSection: FunctionComponent = () => {
 
   const handleStartNow = useCallback(() => {
     if (isValid) {
-      router.push('/signin', { query: { email } })
+      router.push(`/signin?email=${email}`)
     }
   }, [isValid, email])
 

@@ -39,7 +39,7 @@ export const BalanceChangeRecordSchema = z.object({
 
 export type BalanceChangeRecord = z.infer<typeof BalanceChangeRecordSchema>
 
-export const BalanceRecordResponseSchema = z.array(BalanceChangeRecordSchema);
+export const BalanceRecordResponseSchema = z.array(BalanceChangeRecordSchema)
 
 export type BalanceRecordResponse = z.infer<typeof BalanceRecordResponseSchema>
 

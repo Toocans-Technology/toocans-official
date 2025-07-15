@@ -5,9 +5,9 @@ import { useState } from 'react'
 import { useT } from '@/i18n'
 import { useCodeByEmail, useCodeByMobile } from '@/services/login'
 import { openToast } from '@/utils'
+import { matchEmail, matchPhoneNum } from '@/utils'
 import { useLoginContext } from '../../LoginContext'
 import { GrantType } from '../../data'
-import { matchEmail, matchPhoneNum } from '../../utils'
 
 const SendAndCountDown = () => {
   const { t } = useT('login')
@@ -19,11 +19,10 @@ const SendAndCountDown = () => {
   const nationalCode = Form.useWatch('nationalCode', formData)
 
   const [selfEmail, setSelfEmail] = useState('')
-  const [selfPhone, setSelfPhone] = useState('')
-  const [selfNationalCode, setSelfNationalCode] = useState('')
+  const [selfPhoneData, setSelfPhoneData] = useState({ mobile: '', nationalCode: '' })
 
   useCodeByEmail({ email: selfEmail })
-  useCodeByMobile({ mobile: selfPhone, nationalCode: selfNationalCode })
+  useCodeByMobile({ mobile: selfPhoneData.mobile, nationalCode: selfPhoneData.nationalCode })
 
   const handleSendCode = () => {
     if (seconds < 60) return
@@ -32,12 +31,8 @@ const SendAndCountDown = () => {
       if (grantType == GrantType.EMAIL) {
         setSelfEmail(email)
       } else {
-        setSelfPhone(phone)
-        setSelfNationalCode(nationalCode)
+        setSelfPhoneData({ mobile: phone, nationalCode })
       }
-
-      openToast(t('sendSuccessfully'))
-      setSeconds(60)
 
       const timer = setInterval(() => {
         setSeconds((prev) => {
@@ -48,6 +43,7 @@ const SendAndCountDown = () => {
           return prev - 1
         })
       }, 1000)
+      openToast(t('successfully', { name: t('send') }))
     } catch (error) {
       openToast((error as Error).message, 'error')
     }

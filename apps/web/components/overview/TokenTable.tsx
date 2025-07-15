@@ -60,9 +60,7 @@ const TokenTable = () => {
   return (
     <div className="mt-6 overflow-hidden rounded-2xl bg-white p-0">
       <div className="flex items-center justify-between px-6 pb-2 pt-6">
-        <span className="font-inter text-[16px] font-medium leading-[26px] text-[#222]">
-          {t('overview:Token')}
-        </span>
+        <span className="font-inter text-[16px] font-medium leading-[26px] text-[#222]">{t('overview:Token')}</span>
         <span className="flex cursor-pointer items-center">
           <Image src="/images/overview/Navigation-order.svg" alt="Assets" width={20} height={20} />
         </span>

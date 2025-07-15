@@ -17,7 +17,7 @@ const VerificationCode = () => {
           { required: true, message: '' },
           {
             pattern: /^\d{6}$/,
-            message: t('formatErr.code'),
+            message: t('formatErr', { name: 'code' }),
           },
         ]}
         validateTrigger="onBlur"
@@ -26,11 +26,16 @@ const VerificationCode = () => {
       >
         <InputNumber
           maxLength={6}
-          placeholder={t('login:enter.code')}
+          placeholder={t('enter', { name: t('verificationCode') })}
           controls={false}
           onFocus={() => {
             if (formData.getFieldError('code')) {
-              formData.setFieldValue('code', formData.getFieldValue('code'))
+              formData.setFields([
+                {
+                  name: ['code'],
+                  errors: [],
+                },
+              ])
             }
           }}
         />

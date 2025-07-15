@@ -4,14 +4,14 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
 import { getCountrys } from '@/services/login'
+import { matchPhoneNum } from '@/utils'
 import { useLoginContext } from '../../LoginContext'
-import styles from '../../assets/style.module.css'
+import styles from '../../assets/style.module.scss'
 
 const CountryList = () => {
   const { t } = useT('login')
   const { data: countrys, isLoading } = getCountrys()
-  const { seconds, formData, cuntrysVisible, setCuntrysVisible, phoneCheckState, setPhoneCheckState } =
-    useLoginContext()
+  const { seconds, formData, cuntrysVisible, setCuntrysVisible } = useLoginContext()
 
   const [nationalCode, setNationalCode] = useState<string | undefined | null>(undefined)
   const [searchVal, setSearchVal] = useState<string>('')
@@ -47,9 +47,18 @@ const CountryList = () => {
         }}
         open={cuntrysVisible}
         trigger={['click']}
-        onOpenChange={() => {
+        onOpenChange={(value) => {
           if (seconds < 60) return
-          setCuntrysVisible(!cuntrysVisible)
+          const phoneVal = formData.getFieldValue('phone')
+          if (value) {
+            formData.setFieldValue('phone', phoneVal)
+            setSearchVal('')
+          } else if (!matchPhoneNum(nationalCode as string, phoneVal)) {
+            formData.setFields([
+              { name: 'phone', value: phoneVal, errors: [t('formatErr', { name: `${t('phone')} ${t('number')}` })] },
+            ])
+          }
+          setCuntrysVisible(value)
         }}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode.parentElement as HTMLElement}
         popupRender={() => {
