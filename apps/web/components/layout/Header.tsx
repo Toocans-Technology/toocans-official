@@ -6,6 +6,7 @@ import { Button } from '@workspace/ui/components'
 import { useLogin } from '@/hooks/useLogin'
 import { useT } from '@/i18n'
 import Link from '../common/Link'
+import SelectLanguage from './SelectLanguage'
 import UserDropdown from './UserDropdown'
 
 interface Props {
@@ -71,7 +72,7 @@ const Header: FunctionComponent<Props> = () => {
           height={24}
           className="cursor-pointer hover:opacity-80"
         />
-        <Image src="/icons/intl.svg" alt="Intl" width={24} height={24} className="cursor-pointer hover:opacity-80" />
+        <SelectLanguage />
       </div>
     </div>
   )
