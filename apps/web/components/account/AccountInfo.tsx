@@ -87,7 +87,7 @@ const AccountInfo: FunctionComponent = () => {
         </div>
         <div className="text-xs">{data?.email}</div>
         <div className="flex justify-end">
-          {!data?.email ? (
+          {data?.email ? (
             <CopyToClipboard text={data?.email || ''} onCopy={handleCopy}>
               <Button rounded="full" variant="secondary">
                 {t('common:copy')}
