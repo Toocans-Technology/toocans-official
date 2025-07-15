@@ -1,8 +1,8 @@
 'use client'
 
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, PencilLine } from 'lucide-react'
 import Image from 'next/image'
-import { FunctionComponent, useCallback } from 'react'
+import { FunctionComponent, useCallback, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Button, toast } from '@workspace/ui/components'
 import { Separator } from '@workspace/ui/components'
@@ -10,14 +10,15 @@ import { useSecurityLevel } from '@/hooks'
 import { useT } from '@/i18n'
 import { useUserInfo } from '@/services/user/info'
 import { KycLevel } from '@/types/user'
-import Link from '../Link'
-import { BindEmailModal, BindPhoneModal, ChangeNicknameModal, ChangePasswordModal } from './modals'
+import Link from '../common/Link'
+import { BindEmailModal, BindPhoneModal, ChangeNicknameModal, ChangePasswordModal, ChangeAvatarModal } from './modals'
 import UnbindGAModal from './modals/UnbindGAModal'
 
 const AccountInfo: FunctionComponent = () => {
   const { t } = useT(['account', 'common'])
+  const [openChangeAvatarModal, setOpenChangeAvatarModal] = useState(false)
   const { data } = useUserInfo()
-  const kycLevel = useSecurityLevel(data?.kycLevel)
+  const securityLevel = useSecurityLevel(data?.kycLevel)
 
   const handleCopy = useCallback(() => {
     toast.success(t('common:copySuccess'))
@@ -36,7 +37,18 @@ const AccountInfo: FunctionComponent = () => {
       )}
       <div className="mt-5 grid grid-cols-3 py-3 text-xs">
         <div className="flex items-center gap-2">
-          <Image src={data?.avatar || '/icons/user.svg'} alt="User" width={28} height={28} className="size-7 rounded" />
+          <div className="relative cursor-pointer overflow-hidden" onClick={() => setOpenChangeAvatarModal(true)}>
+            <Image
+              src={data?.avatar || '/images/avatar.png'}
+              alt="User"
+              width={36}
+              height={36}
+              className="max-h-9 rounded"
+            />
+            <div className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-white">
+              <PencilLine color="#222" strokeWidth={1.5} size={8} />
+            </div>
+          </div>
           <div className="flex flex-col gap-1">
             <h2>{data?.loginName}</h2>
             <div className="flex items-center gap-2 text-xs text-[#666]">
@@ -59,7 +71,7 @@ const AccountInfo: FunctionComponent = () => {
         </div>
         <div className="flex flex-col items-end gap-1">
           <p className="text-[#666]">{t('account:securityLevel')}</p>
-          <span className="text-sm">{kycLevel}</span>
+          <span className="text-sm">{securityLevel}</span>
         </div>
       </div>
       <Separator />
@@ -144,6 +156,7 @@ const AccountInfo: FunctionComponent = () => {
           )}
         </div>
       </div>
+      <ChangeAvatarModal open={openChangeAvatarModal} onOpenChange={setOpenChangeAvatarModal} />
     </div>
   )
 }

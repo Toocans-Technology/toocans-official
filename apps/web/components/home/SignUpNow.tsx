@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'react'
 import { Button } from '@workspace/ui/components'
 import { getT } from '@/i18n/server'
-import Link from '../Link'
+import Link from '../common/Link'
 
 const SignUpNow: FunctionComponent<{ lang: string }> = async ({ lang }) => {
   const { t } = await getT(lang, 'home')

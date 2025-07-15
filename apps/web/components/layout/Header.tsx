@@ -5,7 +5,7 @@ import { FunctionComponent, useMemo } from 'react'
 import { Button } from '@workspace/ui/components'
 import { useLogin } from '@/hooks/useLogin'
 import { useT } from '@/i18n'
-import Link from '../Link'
+import Link from '../common/Link'
 import UserDropdown from './UserDropdown'
 
 interface Props {

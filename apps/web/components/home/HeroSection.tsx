@@ -6,7 +6,7 @@ import { FunctionComponent, useCallback, useState } from 'react'
 import { Button, Input } from '@workspace/ui/components'
 import { useT } from '@/i18n'
 import { EMAIL_REGEX } from '@/lib/utils/constants'
-import Link from '../Link'
+import Link from '../common/Link'
 
 const HeroSection: FunctionComponent = () => {
   const { t } = useT(['home'])

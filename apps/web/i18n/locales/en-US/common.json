@@ -31,5 +31,14 @@
   "search": "Search",
   "disable": "Disable",
   "enterPhone": "Enter Phone",
-  "noNationalCode": "No national code found"
+  "noNationalCode": "No national code found",
+  "changeAvatarModal": {
+    "title": "Change profile picture",
+    "description": "Upload a photo or drag and drop",
+    "uploadPhone": "Upload photo",
+    "uploading": "Uploading...",
+    "uploadSuccess": "Upload successfully",
+    "imageSizeLimit": "Please upload a JPG/PNG image no larger than 10MB.",
+    "uploadTips": "Supports JPG, PNG. Maximum upload file size:10 MB"
+  }
 }

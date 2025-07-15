@@ -1,6 +1,6 @@
 import { FunctionComponent } from 'react'
 import { getT } from '@/i18n/server'
-import Link from '../Link'
+import Link from '../common/Link'
 
 const Footer: FunctionComponent<{ lang: string }> = async ({ lang }) => {
   const { t } = await getT(lang, 'common')
