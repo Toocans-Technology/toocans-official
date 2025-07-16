@@ -1,6 +1,5 @@
 import Image from 'next/image'
-import Link from 'next/link'
-import { useParams, usePathname } from 'next/navigation'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { FunctionComponent, useCallback } from 'react'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger } from '@workspace/ui/components'
 import { Locale } from '@/i18n/config'
@@ -8,33 +7,27 @@ import { Locale } from '@/i18n/config'
 const SelectLanguage: FunctionComponent = () => {
   const params = useParams()
   const pathname = usePathname()
+  const router = useRouter()
   const currentLang = params.lang as Locale
 
-  const getLanguagePath = useCallback(
+  const changeLanguagePath = useCallback(
     (locale: Locale) => {
       const pathSegments = pathname.split('/').slice(2)
-      return `/${locale}/${pathSegments.join('/')}`
+      const newPath = `/${locale}/${pathSegments.join('/')}`
+      router.replace(newPath)
     },
     [pathname]
   )
 
   return (
-    <Select>
+    <Select defaultValue={currentLang} onValueChange={(value: string) => changeLanguagePath(value as Locale)}>
       <SelectTrigger className="bg-transparent p-0 hover:ring-0 focus:ring-0">
         <Image src="/icons/intl.svg" alt="Intl" width={24} height={24} className="cursor-pointer hover:opacity-80" />
       </SelectTrigger>
       <SelectContent>
-        <SelectGroup defaultValue={currentLang}>
-          <Link href={getLanguagePath(Locale.EN_US)}>
-            <SelectItem value={Locale.EN_US} className="text-[#0D0D0D]">
-              English
-            </SelectItem>
-          </Link>
-          <Link href={getLanguagePath(Locale.ZH_CN)}>
-            <SelectItem value={Locale.ZH_CN} className="text-[#0D0D0D]">
-              简体中文
-            </SelectItem>
-          </Link>
+        <SelectGroup>
+          <SelectItem value={Locale.EN_US}>English</SelectItem>
+          <SelectItem value={Locale.ZH_CN}>简体中文</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>
