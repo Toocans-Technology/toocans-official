@@ -26,6 +26,7 @@ const VerificationCode = () => {
       >
         <Input
           maxLength={6}
+          type="text"
           placeholder={t('enter', { name: t('verificationCode') })}
           onChange={(e) => {
             // 只允许输入数字
