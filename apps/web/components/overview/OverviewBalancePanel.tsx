@@ -46,17 +46,6 @@ export default function OverviewBalancePanel() {
     )
   }, [data, allTokenData])
 
-  const availableBalance = useMemo(() => {
-    if (!Array.isArray(data) || !Array.isArray(allTokenData)) return '--'
-    return sumBy(
-      (data as GetAllAssetResponse).filter((item) => allTokenData.some((token) => token.tokenId === item.tokenId)),
-      (item) => {
-        const total = new BigNumber(item.total ?? 0)
-        const price = item.tokenId === 'USDT' ? new BigNumber(1) : new BigNumber(item.availableAssetTotal ?? 0)
-        return total.multipliedBy(price).toNumber()
-      }
-    )
-  }, [data, allTokenData])
   return (
     <div className="flex h-[154px] flex-col justify-center gap-[10px] rounded-xl bg-white p-[30px_24px_10px_24px]">
       <div className="flex flex-row flex-nowrap justify-between">
@@ -70,18 +59,6 @@ export default function OverviewBalancePanel() {
               height={20}
             />
           </span>
-        </div>
-        <div className="font-inter mb-2 flex items-center justify-end gap-2 text-[20px] font-normal leading-[30px] text-[#666]">
-          {t('overview:AvailableBalance')}
-          <div>
-            {' '}
-            {show && availableBalance !== '--'
-              ? formatAmount(availableBalance)
-              : !show && availableBalance !== '--'
-                ? '****'
-                : ''}{' '}
-            USDT
-          </div>
         </div>
       </div>
       <div className="flex w-full flex-row items-center justify-between">
