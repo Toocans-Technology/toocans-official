@@ -1,21 +1,15 @@
 import { Form, Button, Input } from 'antd'
-import { useSearchParams } from 'next/navigation'
-import { useState, useEffect, useContext } from 'react'
-import Link from '@/components/Link'
+import Link from '@/components/common/Link'
 import { GrantType, LoginType } from '@/components/login/data'
-import { RouterContext } from '@/components/providers'
 import { EmailReg } from '@/data'
+import { useRouter } from '@/hooks'
 import { useT } from '@/i18n'
-import { useCodeByEmail, useCodeByMobile } from '@/services/login'
-import { useLogin } from '@/services/login'
-import { openToast } from '@/utils'
-import { matchEmail, matchPhoneNum } from '@/utils'
 import { useForgetContext } from '../ForgetContext'
 import PhoneInput from './PhoneInput'
 
 const InputComp = () => {
   const { t } = useT('login')
-  const router = useContext(RouterContext)
+  const router = useRouter()
 
   const { grantType, formData, step, setStep } = useForgetContext()
 

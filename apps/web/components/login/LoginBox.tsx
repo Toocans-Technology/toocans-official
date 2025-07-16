@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic'
 import { useSearchParams } from 'next/navigation'
 import { FunctionComponent, useState, useRef, useCallback } from 'react'
 import Link from '@/components/common/Link'
+import { useRouter } from '@/hooks'
 import { useT } from '@/i18n'
 import { typedStorage } from '@/lib/utils'
 import { useLogin } from '@/services/login'
@@ -18,6 +19,8 @@ const PhoneInput = dynamic(() => import('./components/PhoneInput'))
 
 const LoginBox: FunctionComponent = () => {
   const { t } = useT('login')
+
+  const router = useRouter()
 
   const routerParams = useSearchParams()
   const [form] = Form.useForm()
