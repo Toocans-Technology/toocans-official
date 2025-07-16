@@ -166,7 +166,7 @@ const LoginBox: FunctionComponent = () => {
           >
             <SwitchTabs />
 
-            <Form form={form} initialValues={{ unregisteredTip: true, userAgreement: true }} onFinish={onSubmit}>
+            <Form form={form} initialValues={{ unregisteredTip: false, userAgreement: false }} onFinish={onSubmit}>
               {/* email input */}
               {grantType == GrantType.EMAIL && <EmailInput />}
 
@@ -191,7 +191,7 @@ const LoginBox: FunctionComponent = () => {
                         form.resetFields(loginType == LoginType.CODE ? ['password'] : ['code'])
                       }}
                     >
-                      {t('switchTo', { type: loginType })}
+                      {t('switchTo', { type: loginType == LoginType.CODE ? LoginType.PASSWORD : LoginType.CODE })}
                     </p>
                     {loginType == LoginType.PASSWORD && (
                       <a onClick={handleForget} className="ml-auto text-xs text-[#3C7BF4]">

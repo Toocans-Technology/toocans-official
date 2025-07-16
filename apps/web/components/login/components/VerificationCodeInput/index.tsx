@@ -1,6 +1,6 @@
 'use client'
 
-import { Form, InputNumber } from 'antd'
+import { Form, Input } from 'antd'
 import { useT } from '@/i18n'
 import { useLoginContext } from '../../LoginContext'
 import SendAndCountDown from './SendAndCountDown'
@@ -24,10 +24,14 @@ const VerificationCode = () => {
         style={{ marginTop: '8px' }}
         className="relative"
       >
-        <InputNumber
+        <Input
           maxLength={6}
           placeholder={t('enter', { name: t('verificationCode') })}
-          controls={false}
+          onChange={(e) => {
+            // 只允许输入数字
+            const value = e.target.value.replace(/\D/g, '').slice(0, 6)
+            formData.setFieldsValue({ code: value })
+          }}
           onFocus={() => {
             if (formData.getFieldError('code')) {
               formData.setFields([
