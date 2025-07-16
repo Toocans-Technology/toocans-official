@@ -75,7 +75,7 @@ export const getAllToken = (params?: AllTokenParams) => {
   return useQuery(
     getQuery({
       method: 'GET',
-      url: getUrl('/baseConfig/allToken'),
+      url: getUrl('/bc/baseConfig/allToken'),
       query: AllTokenParamsSchema.parse(params),
       transfer: AllTokenSchema.parse,
     })

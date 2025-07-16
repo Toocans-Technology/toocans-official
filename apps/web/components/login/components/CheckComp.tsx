@@ -4,7 +4,7 @@ import { Form, Checkbox } from 'antd'
 import { forwardRef, useImperativeHandle, useState } from 'react'
 import { Trans } from 'react-i18next'
 import { cn } from '@workspace/ui/lib/utils'
-import Link from '@/components/Link'
+import Link from '@/components/common/Link'
 import { useT } from '@/i18n'
 import styles from '../assets/style.module.scss'
 

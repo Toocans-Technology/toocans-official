@@ -10,7 +10,7 @@ export const getOptions = (lng: string = defaultLocale, ns: Namespace = defaultN
   defaultNS: defaultNamespace,
   ns,
   interpolation: {
-    format: (value: string, format: string) => {
+    format: (value: string, format?: string) => {
       if (format === 'capitalize') {
         if (!value) return ''
         return value.charAt(0).toUpperCase() + value.slice(1)

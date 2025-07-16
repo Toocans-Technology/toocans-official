@@ -21,6 +21,7 @@ import {
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
+import { VERIFICATION_CODE_REGEX } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { useUserInfo } from '@/services/user/info'
 import { getWithdrawOrder, useSendCode, useWithdraw, Withdrawal } from '@/services/wallet'
@@ -52,8 +53,10 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
   const FormSchema = useMemo(
     () =>
       z.object({
-        code: z.string().min(6).max(6),
-        gaCode: hasGaKey ? z.string().min(6).max(6) : z.string().optional(),
+        code: z.string().regex(VERIFICATION_CODE_REGEX, t('withdrawal:withdrawModal.codeError')).length(6),
+        gaCode: hasGaKey
+          ? z.string().regex(VERIFICATION_CODE_REGEX, t('withdrawal:withdrawModal.gaCodeError')).length(6)
+          : z.string().optional(),
       }),
     [hasGaKey]
   )
@@ -185,7 +188,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
                     <FormControl>
                       <Input
                         {...field}
-                        autoCapitalize="off"
+                        autoComplete="off"
                         placeholder={t('withdrawal:emailAuthPlaceholder')}
                         className="focus-visible:ring-0"
                       />
@@ -212,7 +215,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
                   <FormItem>
                     <FormLabel>{t('withdrawal:googleAuth')}</FormLabel>
                     <FormControl>
-                      <Input {...field} autoCapitalize="off" placeholder={t('withdrawal:googleAuthPlaceholder')} />
+                      <Input {...field} autoComplete="off" placeholder={t('withdrawal:googleAuthPlaceholder')} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
