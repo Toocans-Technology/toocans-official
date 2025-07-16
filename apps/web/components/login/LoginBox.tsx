@@ -4,8 +4,7 @@ import { Button, Form } from 'antd'
 import { throttle } from 'es-toolkit'
 import dynamic from 'next/dynamic'
 import { FunctionComponent, useState, useRef, useCallback } from 'react'
-import { useContext } from 'react'
-import { RouterContext } from '@/components/providers'
+import { useRouter, useRedirectIfLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { typedStorage } from '@/lib/utils'
 import { useLogin } from '@/services/login'
@@ -19,8 +18,11 @@ const PhoneInput = dynamic(() => import('./components/PhoneInput'))
 
 const LoginBox: FunctionComponent = () => {
   const { t } = useT('login')
-  const router = useContext(RouterContext)
 
+  // 如果已登录，重定向到首页
+  useRedirectIfLogin()
+
+  const router = useRouter()
   const [form] = Form.useForm()
   const checkBoxRef: any = useRef(null)
 
