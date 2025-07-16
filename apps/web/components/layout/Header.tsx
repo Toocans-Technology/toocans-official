@@ -30,10 +30,10 @@ const Header: FunctionComponent<Props> = () => {
         </>
       ) : (
         <>
-          <Link href="/login" className="hover:opacity-80">
+          <Link href="/login" className="text-white hover:opacity-80">
             {t('common:loginIn')}
           </Link>
-          <Link href="/signup">
+          <Link href="/login">
             <Button rounded="full" className="text-[#222]">
               {t('common:signUp')}
             </Button>

@@ -4,5 +4,5 @@ import { typedStorage } from '@/lib/utils'
 export const useLogin = () => {
   const token = typedStorage.accessToken
 
-  return { isLoggedIn: !isNil(token) }
+  return { isLoggedIn: token !== '' && !isNil(token) }
 }
