@@ -6,6 +6,7 @@ import React from 'react'
 import { useAssetAll } from '@/hooks/asset'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
+import { Link } from '../common'
 
 function formatAmount(val: string | number | null | undefined, precision: number = 4) {
   const num = new BigNumber(val ?? 0)
@@ -61,9 +62,9 @@ const TokenTable = () => {
     <div className="mt-6 overflow-hidden rounded-2xl bg-white p-0">
       <div className="flex items-center justify-between px-6 pb-2 pt-6">
         <span className="font-inter text-[16px] font-medium leading-[26px] text-[#222]">{t('overview:Token')}</span>
-        <span className="flex cursor-pointer items-center">
+        <Link href="/history" className="cursor-pointer">
           <Image src="/images/overview/Navigation-order.svg" alt="Assets" width={20} height={20} />
-        </span>
+        </Link>
       </div>
       <div>
         {filteredSortedAssets.length === 0

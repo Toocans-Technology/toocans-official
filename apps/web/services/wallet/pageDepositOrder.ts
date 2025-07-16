@@ -53,6 +53,6 @@ export const getDepositOrder = (params?: DepositOrderParams) => {
       query: DepositOrderParamsSchema.parse(params),
       transfer: DepositOrderListSchema.parse,
     }),
-    enabled: !!params?.tokenId,
+    // enabled: !!params?.tokenId,
   })
 }
