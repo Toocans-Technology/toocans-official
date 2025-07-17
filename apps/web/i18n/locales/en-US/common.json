@@ -47,5 +47,7 @@
   "startDate": "Start date",
   "endDate": "End date",
   "selectToken": "Select token",
+  "searchToken": "Search token",
+  "noData": "No Data",
   "all": "All"
 }

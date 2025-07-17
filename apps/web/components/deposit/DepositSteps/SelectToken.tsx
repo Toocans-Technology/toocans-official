@@ -1,35 +1,36 @@
 'use client'
 
-import { SearchIcon } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import Image from 'next/image'
 import { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import {
-  Input,
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Button,
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from '@workspace/ui/components'
+import { cn } from '@workspace/ui/lib/utils'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
+import { SYMBOL_ICON_PLACEHOLDER } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import DefaultTokens from './DefaultTokens'
 
-export const iconPlaceholder = 'https://dummyimage.com/18x18/999999/0011ff'
-
 interface Props {
-  defaultValue?: string
   showDefaultTokens?: boolean
   onSelect: (token: Token) => void
 }
 
-const SelectToken: FunctionComponent<Props> = ({ defaultValue = '', onSelect, showDefaultTokens = true }) => {
-  const { t } = useT('deposit')
+const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = true }) => {
+  const { t } = useT('common')
   const { tokens } = useAllToken()
-  const [search, setSearch] = useState('')
-  const [selectedToken, setSelectedToken] = useState<string>(defaultValue)
+  const [open, setOpen] = useState(false)
+  const [selectedToken, setSelectedToken] = useState<Token>()
 
   const tokenList = useMemo(
     () =>
@@ -43,66 +44,76 @@ const SelectToken: FunctionComponent<Props> = ({ defaultValue = '', onSelect, sh
   )
 
   const handleSelectToken = useCallback(
-    (token: string) => {
-      setSelectedToken(token)
-      const selectedToken = tokens?.find((item) => item.tokenName === token)
+    (value: string) => {
+      const selectedToken = tokens?.find((item) => item.tokenName === value)
 
       if (!selectedToken) {
         return
       }
 
+      setSelectedToken(selectedToken)
       onSelect(selectedToken)
     },
     [tokens]
   )
 
-  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value)
-  }, [])
-
   return (
     <>
-      <Select onValueChange={handleSelectToken} value={selectedToken}>
-        <SelectTrigger className="w-[456px]">
-          <SelectValue placeholder={t('deposit:selectToken')} />
-        </SelectTrigger>
-        <SelectContent className="max-h-80">
-          <SelectGroup className="mt-2 flex items-center bg-[#f8f8f8] px-3">
-            <SearchIcon size={16} className="text-[#666]" />
-            <Input
-              className="rounded-none focus-visible:ring-0"
-              placeholder={t('deposit:searchToken')}
-              value={search}
-              onChange={handleSearch}
-            />
-          </SelectGroup>
-          <SelectGroup>
-            {tokenList?.map((token) => {
-              if (
-                search &&
-                (!token.name.toLowerCase().includes(search.toLowerCase()) ||
-                  !token.fullName.toLowerCase().includes(search.toLowerCase()))
-              ) {
-                return null
-              }
-
-              return (
-                <SelectItem key={token.id} value={token.name}>
+      <Popover open={open} onOpenChange={setOpen} modal={true}>
+        <PopoverTrigger asChild>
+          <Button
+            rounded="sm"
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="hover:border-brand h-11 w-[456px] justify-between border-none bg-[#f8f8f8] px-3 hover:border"
+          >
+            <div className="flex items-center gap-2">
+              {selectedToken ? (
+                <>
                   <Image
-                    src={token.icon || iconPlaceholder}
-                    alt={token.name}
-                    width={18}
-                    height={18}
-                    className="overflow-hidden rounded-full"
+                    src={selectedToken?.icon || SYMBOL_ICON_PLACEHOLDER}
+                    width={16}
+                    height={16}
+                    alt={selectedToken?.tokenName ?? ''}
                   />
-                  <span>{token.name}</span>
-                  <span className="ml-2 text-xs text-[#999]">{token.fullName}</span>
-                </SelectItem>
-              )
-            })}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+                  <div className="text-sm text-[#333]">{selectedToken?.tokenName}</div>
+                </>
+              ) : (
+                <span className="text-xs text-[#999]">{t('common:searchToken')}</span>
+              )}
+            </div>
+            <ChevronDown className="opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[518px] border-none p-0 shadow-lg" align="start">
+          <Command className="p-3">
+            <CommandInput placeholder={t('common:search')} />
+            <CommandList className="pt-2">
+              <CommandEmpty>{t('common:noData')}</CommandEmpty>
+              {tokenList?.map((token) => (
+                <CommandItem
+                  key={token.id}
+                  value={token.name}
+                  onSelect={handleSelectToken}
+                  keywords={[token.name, token.fullName]}
+                  className={cn('py-3', selectedToken?.tokenName === token.name && 'data-[selected=true]:bg-[#f4f4f4]')}
+                >
+                  <Image
+                    width={16}
+                    height={16}
+                    alt={token.name ?? ''}
+                    src={token.icon || SYMBOL_ICON_PLACEHOLDER}
+                    className="max-h-4 rounded-full"
+                  />
+                  <div className="text-sm text-[#333]">{token.name}</div>
+                  <span className="ml-3 text-[#999]">{token.fullName}</span>
+                </CommandItem>
+              ))}
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
       {showDefaultTokens && <DefaultTokens tokens={tokens} onSelect={handleSelectToken} />}
     </>
   )
