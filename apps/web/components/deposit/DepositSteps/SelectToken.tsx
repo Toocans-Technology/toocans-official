@@ -23,7 +23,7 @@ import DefaultTokens from './DefaultTokens'
 
 interface Props {
   showDefaultTokens?: boolean
-  onSelect: (token: Token) => void
+  onSelect?: (token: Token) => void
 }
 
 const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = true }) => {
@@ -51,8 +51,9 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
         return
       }
 
+      setOpen(false)
       setSelectedToken(selectedToken)
-      onSelect(selectedToken)
+      onSelect?.(selectedToken)
     },
     [tokens]
   )
@@ -66,7 +67,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="hover:border-brand h-11 w-[456px] justify-between border-none bg-[#f8f8f8] px-3 hover:border"
+            className="hover:border-primary focus:border-primary h-11 w-[456px] justify-between border-[#f8f8f8] bg-[#f8f8f8] px-3"
           >
             <div className="flex items-center gap-2">
               {selectedToken ? (

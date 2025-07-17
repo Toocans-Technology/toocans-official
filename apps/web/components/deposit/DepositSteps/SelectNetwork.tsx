@@ -22,12 +22,12 @@ const SelectNetwork: React.FC<SelectNetworkProps> = ({ value, networks, onValueC
 
   return (
     <Select onValueChange={onValueChange} value={value}>
-      <SelectTrigger className="w-[456px]">
+      <SelectTrigger className="hover:border-primary focus:border-primary w-[456px] rounded border-[#f8f8f8] bg-[#f8f8f8] px-3 py-2 data-[size=default]:h-11">
         <SelectValue placeholder={placeholder || t('deposit:selectNetwork')} />
       </SelectTrigger>
       <SelectContent>
         {networks.map((network) => (
-          <SelectItem key={network.id} value={network.id} disabled={network.disabled} className="text-[#222]">
+          <SelectItem key={network.id} value={network.id} disabled={network.disabled} className="py-3 text-[#222]">
             <div className="flex items-center gap-2">
               {network.icon && (
                 <Image
