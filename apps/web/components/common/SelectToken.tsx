@@ -13,16 +13,20 @@ interface Props {
 const SelectToken: FunctionComponent<Props> = () => {
   const { t } = useT('common')
   const { tokens } = useAllToken()
-  const tokenList = useMemo(
-    () =>
-      tokens?.map((token) => ({
-        id: token.id,
-        icon: token.icon,
-        name: token.tokenName,
-        fullName: token.tokenFullName,
-      })),
-    [tokens]
-  )
+  const tokenList = useMemo(() => {
+    const allToken = { id: '', icon: '', name: t('common:all') }
+
+    if (!tokens) {
+      return [allToken]
+    }
+
+    const list = tokens?.map((token) => ({
+      id: token.id,
+      icon: token.icon,
+      name: token.tokenName,
+    }))
+    return [allToken, ...list]
+  }, [tokens])
 
   return (
     <Select>
