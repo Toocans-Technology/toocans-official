@@ -11,5 +11,7 @@
   "status": "Status",
   "failed": "Failed",
   "transferring": "Transferring",
-  "sent": "Sent"
+  "sent": "Sent",
+  "date": "Date",
+  "all": "All"
 }

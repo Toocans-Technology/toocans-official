@@ -40,5 +40,12 @@
     "uploadSuccess": "Upload successfully",
     "imageSizeLimit": "Please upload a JPG/PNG image no larger than 10MB.",
     "uploadTips": "Supports JPG, PNG. Maximum upload file size:10 MB"
-  }
+  },
+  "7Days": "7 Days",
+  "30Days": "30 Days",
+  "90Days": "90 Days",
+  "startDate": "Start date",
+  "endDate": "End date",
+  "selectToken": "Select token",
+  "all": "All"
 }

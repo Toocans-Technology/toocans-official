@@ -1,8 +1,8 @@
 'use client'
 
 import dayjs from 'dayjs'
-import { CalendarIcon } from 'lucide-react'
-import { FunctionComponent, useCallback, useMemo, useState } from 'react'
+import { CalendarIcon, XIcon } from 'lucide-react'
+import { FunctionComponent, MouseEvent, useCallback, useMemo, useState } from 'react'
 import { type DateRange } from 'react-day-picker'
 import {
   Calendar as CalendarComponent,
@@ -17,7 +17,7 @@ import { useT } from '@/i18n'
 const format = 'YYYY-MM-DD'
 
 interface CalendarProps {
-  onConfirm?: (dateRange: DateRange) => void
+  onConfirm?: (dateRange?: DateRange) => void
 }
 
 const Calendar: FunctionComponent<CalendarProps> = ({ onConfirm }) => {
@@ -49,6 +49,13 @@ const Calendar: FunctionComponent<CalendarProps> = ({ onConfirm }) => {
     onConfirm?.(dateRange)
   }, [dateRange])
 
+  const clearDateRange = useCallback((e: MouseEvent<HTMLSpanElement>) => {
+    e.stopPropagation()
+    setSelectedDateRange(undefined)
+    setDateRange(undefined)
+    onConfirm?.(undefined)
+  }, [])
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger>
@@ -58,7 +65,13 @@ const Calendar: FunctionComponent<CalendarProps> = ({ onConfirm }) => {
               ? `${dayjs(selectedDateRange.from).format(format)} - ${dayjs(selectedDateRange.to).format(format)}`
               : `${t('common:startDate')} - ${t('common:endDate')}`}
           </span>
-          <CalendarIcon className="size-3.5" color="#666" />
+          {selectedDateRange?.from && selectedDateRange?.to ? (
+            <span onClick={clearDateRange}>
+              <XIcon className="size-3.5" color="#666" />
+            </span>
+          ) : (
+            <CalendarIcon className="size-3.5" color="#666" />
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="flex w-auto overflow-hidden p-0" align="start">

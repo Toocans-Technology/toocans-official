@@ -4,24 +4,23 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { useAllToken } from '@/hooks'
 import { useT } from '@/i18n'
 import { SYMBOL_ICON_PLACEHOLDER } from '@/lib/utils'
-import { Token } from '@/services/basicConfig'
 
 interface Props {
-  onSelect?: (token: Token) => void
+  onSelect?: (value: string) => void
 }
 
-const SelectToken: FunctionComponent<Props> = () => {
+const SelectToken: FunctionComponent<Props> = ({ onSelect }) => {
   const { t } = useT('common')
   const { tokens } = useAllToken()
-  const tokenList = useMemo(() => {
-    const allToken = { id: '', icon: '', name: t('common:all') }
+  const allToken = { id: 'all', icon: '', name: t('common:all') }
 
+  const tokenList = useMemo(() => {
     if (!tokens) {
       return [allToken]
     }
 
     const list = tokens?.map((token) => ({
-      id: token.id,
+      id: token.tokenId,
       icon: token.icon,
       name: token.tokenName,
     }))
@@ -29,7 +28,7 @@ const SelectToken: FunctionComponent<Props> = () => {
   }, [tokens])
 
   return (
-    <Select>
+    <Select defaultValue={allToken.id} onValueChange={onSelect}>
       <SelectTrigger size="sm" className="w-40">
         <SelectValue placeholder={t('common:selectToken')} />
       </SelectTrigger>
@@ -37,7 +36,7 @@ const SelectToken: FunctionComponent<Props> = () => {
         <SelectGroup>
           {tokenList?.map((token) => {
             return (
-              <SelectItem key={token.id} value={token.name}>
+              <SelectItem key={token.id} value={token.id}>
                 <Image
                   alt={token.name}
                   width={16}

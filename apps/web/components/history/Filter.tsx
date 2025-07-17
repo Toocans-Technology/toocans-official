@@ -4,11 +4,10 @@ import { FunctionComponent, useCallback, useState } from 'react'
 import { DateRange } from 'react-day-picker'
 import { Label } from '@workspace/ui/components'
 import { useT } from '@/i18n'
-import { Token } from '@/services/basicConfig'
 import { Calendar, SelectToken } from '../common'
 
-interface FilterParams {
-  token: string
+export interface FilterParams {
+  tokenId: string
   beginTime: number | undefined
   endTime: number | undefined
 }
@@ -20,24 +19,30 @@ interface FilterProps {
 const Filter: FunctionComponent<FilterProps> = ({ onChange }) => {
   const { t } = useT('history')
   const [filterParams, setFilterParams] = useState<FilterParams>({
-    token: '',
+    tokenId: '',
     beginTime: undefined,
     endTime: undefined,
   })
 
-  const handleTokenChange = useCallback((token: Token) => {
-    setFilterParams((prev) => ({ ...prev, token: token.tokenId }))
-    onChange?.({ ...filterParams, token: token.tokenId })
-  }, [])
+  const handleTokenChange = useCallback(
+    (value: string) => {
+      setFilterParams((prev) => ({ ...prev, tokenId: value === 'all' ? '' : value }))
+      onChange?.({ ...filterParams, tokenId: value === 'all' ? '' : value })
+    },
+    [filterParams]
+  )
 
-  const handleDateRangeChange = useCallback((dateRange: DateRange) => {
-    const params = {
-      beginTime: dateRange.from?.getTime() || undefined,
-      endTime: dateRange.to?.getTime() || undefined,
-    }
-    setFilterParams((prev) => ({ ...prev, ...params }))
-    onChange?.({ ...filterParams, ...params })
-  }, [])
+  const handleDateRangeChange = useCallback(
+    (dateRange?: DateRange) => {
+      const params = {
+        beginTime: dateRange?.from?.getTime() || undefined,
+        endTime: dateRange?.to?.getTime() || undefined,
+      }
+      setFilterParams((prev) => ({ ...prev, ...params }))
+      onChange?.({ ...filterParams, ...params })
+    },
+    [filterParams]
+  )
 
   return (
     <div className="flex items-center gap-10">
