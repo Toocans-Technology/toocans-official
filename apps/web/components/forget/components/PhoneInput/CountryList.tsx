@@ -3,14 +3,14 @@ import { Dropdown, Input, Form, Spin } from 'antd'
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
-import { getCountrys } from '@/services/login'
+import { getCountryList } from '@/services/login'
 import { matchPhoneNum } from '@/utils'
 import { useForgetContext } from '../../ForgetContext'
 import styles from '../../assets/style.module.scss'
 
 const CountryList = () => {
   const { t } = useT('login')
-  const { data: countrys, isLoading } = getCountrys()
+  const { data: countrys, isLoading } = getCountryList()
   const { formData, cuntrysVisible, setCuntrysVisible } = useForgetContext()
 
   const [nationalCode, setNationalCode] = useState<string | undefined | null>(undefined)
