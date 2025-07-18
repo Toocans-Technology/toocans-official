@@ -11,7 +11,7 @@ import styles from '../assets/style.module.scss'
 const VerificationCode = () => {
   const { t } = useT('login')
 
-  const { grantType, setStep, formData } = useForgetContext()
+  const { grantType, setStep, formData, setUserToken } = useForgetContext()
 
   let timer: ReturnType<typeof setInterval> | null = null
 
@@ -86,7 +86,8 @@ const VerificationCode = () => {
     }
 
     try {
-      await handleLogin(resultParams)
+      const { access_token } = await handleLogin(resultParams)
+      setUserToken(access_token)
       setStep(2)
     } catch (error) {
       openToast((error as Error).message, 'error')

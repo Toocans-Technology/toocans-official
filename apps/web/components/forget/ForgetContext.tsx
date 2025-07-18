@@ -4,6 +4,8 @@ import { GrantType } from '@/components/login/data'
 export interface ForgetContextProps {
   formData: any
   grantType: GrantType
+  userToken: string | null
+  setUserToken: React.Dispatch<React.SetStateAction<string | null>>
   setGrantType: React.Dispatch<React.SetStateAction<GrantType>>
   seconds?: number
   step: number
