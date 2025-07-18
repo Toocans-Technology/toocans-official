@@ -44,8 +44,8 @@ const CheckComp = (_props: any, ref: any) => {
               i18nKey="login:privacyPolicyAgreement"
               values={{ name: t('name') }}
               components={{
-                UserAgreement: <Link href="https://www.toocans.com/terms" />,
-                PrivacyPolicy: <Link href="https://www.toocans.com/privacy" />,
+                UserAgreement: <Link href="https://www.toocans.com/terms" target="_blank" />,
+                PrivacyPolicy: <Link href="https://www.toocans.com/privacy" target="_blank" />,
               }}
             ></Trans>
           </p>

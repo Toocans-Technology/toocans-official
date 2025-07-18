@@ -35,5 +35,7 @@
     "number": "At least one number",
     "length": "8 to 32 characters"
   },
-  "privacyPolicyAgreement": "I have read and agreed to the <UserAgreement>{{name}} User Agreement</UserAgreement> and <PrivacyPolicy>Privacy Policy</PrivacyPolicy>"
+  "privacyPolicyAgreement": "I have read and agreed to the <UserAgreement>{{name}} User Agreement</UserAgreement> and <PrivacyPolicy>Privacy Policy</PrivacyPolicy>",
+  "title": "Login",
+  "description": "Login"
 }

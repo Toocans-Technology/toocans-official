@@ -4,9 +4,11 @@ import { ChangeEvent, FunctionComponent, useCallback, useMemo, useState } from '
 import { Input, Label } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
 import SelectNetwork from '@/components/deposit/DepositSteps/SelectNetwork'
-import SelectToken, { iconPlaceholder } from '@/components/deposit/DepositSteps/SelectToken'
+import SelectToken from '@/components/deposit/DepositSteps/SelectToken'
+import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { validateAddress } from '@/lib/utils'
+import { SYMBOL_ICON_PLACEHOLDER } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { AllowDeposit } from '@/types/token'
 import RecentWithdraw from '../RecentWithdraw'
@@ -25,6 +27,8 @@ const WithdrawSteps: FunctionComponent = () => {
   const [selectedNetwork, setSelectedNetwork] = useState<Token>()
   const [address, setAddress] = useState<string>('')
 
+  useRedirectIfNotLogin()
+
   const networkList = useMemo(() => {
     if (!selectedToken) {
       return []
@@ -33,7 +37,7 @@ const WithdrawSteps: FunctionComponent = () => {
     return selectedToken.subTokenList.map((item) => ({
       id: item.id,
       name: item.chainName,
-      icon: item.chainIcon || iconPlaceholder,
+      icon: item.chainIcon || SYMBOL_ICON_PLACEHOLDER,
       protocolName: item.protocolName,
       disabled: item.tokenSetting?.allowDeposit === AllowDeposit.disabled,
     }))
@@ -121,6 +125,7 @@ const WithdrawSteps: FunctionComponent = () => {
                 <Input
                   placeholder={t('withdrawal:addressPlaceholder')}
                   value={address}
+                  className="rounded"
                   onChange={handleAddressChange}
                 />
               </div>

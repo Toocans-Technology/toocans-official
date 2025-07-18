@@ -19,8 +19,8 @@ import { typedStorage } from '@/lib/utils'
 import { getQueryClient } from '@/lib/utils'
 import { useUserInfo } from '@/services/user/info'
 import { KycLevel } from '@/types/user'
-import { ChangeAvatarModal } from '../account/modals'
-import { Link } from '../common'
+import { ChangeAvatarModal } from '../../account/modals'
+import { Link } from '../../common'
 
 const UserDropdown: FunctionComponent = () => {
   const { t } = useT('common')

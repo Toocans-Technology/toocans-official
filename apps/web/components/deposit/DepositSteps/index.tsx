@@ -6,13 +6,15 @@ import { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Button, toast } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
+import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
+import { SYMBOL_ICON_PLACEHOLDER } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { getAddress } from '@/services/wallet'
 import { AllowDeposit } from '@/types/token'
 import RecentDeposits from './RecentDeposits'
 import SelectNetwork from './SelectNetwork'
-import SelectToken, { iconPlaceholder } from './SelectToken'
+import SelectToken from './SelectToken'
 
 enum DepositStep {
   ChooseToken,
@@ -27,6 +29,8 @@ const DepositSteps: FunctionComponent = () => {
   const [selectedNetwork, setSelectedNetwork] = useState<Token>()
   const { data: address } = getAddress({ tokenId: selectedNetwork?.tokenId })
 
+  useRedirectIfNotLogin()
+
   const handleCopy = useCallback(() => {
     toast(t('deposit:copySuccess'))
   }, [])
@@ -39,7 +43,7 @@ const DepositSteps: FunctionComponent = () => {
     return selectedToken.subTokenList.map((item) => ({
       id: item.id,
       name: item.chainName,
-      icon: item.chainIcon || iconPlaceholder,
+      icon: item.chainIcon || SYMBOL_ICON_PLACEHOLDER,
       protocolName: item.protocolName,
       disabled: item.tokenSetting?.allowDeposit === AllowDeposit.disabled,
     }))
