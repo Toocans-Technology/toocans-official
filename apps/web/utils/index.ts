@@ -1,4 +1,4 @@
-import { isValidNumber } from 'libphonenumber-js'
+import { isValidPhoneNumber } from 'libphonenumber-js/mobile'
 import { EmailReg, PasswordReg } from '@/data'
 import { openToast } from './toast'
 
@@ -7,7 +7,7 @@ const matchEmail = (val: string) => {
 }
 
 const matchPhoneNum = (nationalCode: string, val: string) => {
-  return isValidNumber(`+${nationalCode}${val}`)
+  return isValidPhoneNumber(`+${nationalCode}${val}`)
 }
 
 export enum PasswordErrorType {
