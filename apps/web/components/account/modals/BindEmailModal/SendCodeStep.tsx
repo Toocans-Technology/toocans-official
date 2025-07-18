@@ -102,7 +102,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
           name="code"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('account:emailVerificationCode')}</FormLabel>
+              <FormLabel>{t('account:phoneVerificationCode')}</FormLabel>
               <div
                 aria-invalid={formState.errors.code ? true : false}
                 className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
@@ -111,7 +111,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
                   <Input
                     {...field}
                     autoComplete="off"
-                    placeholder={t('account:emailVerificationCode')}
+                    placeholder={t('account:phoneVerificationCode')}
                     className="focus-visible:ring-0"
                   />
                 </FormControl>
@@ -129,9 +129,9 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
             name="googleCode"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t('withdrawal:googleAuth')}</FormLabel>
+                <FormLabel>{t('account:google2FA')}</FormLabel>
                 <FormControl>
-                  <Input {...field} autoComplete="off" placeholder={t('withdrawal:googleAuthPlaceholder')} />
+                  <Input {...field} autoComplete="off" placeholder={t('account:google2FAPlaceholder')} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
