@@ -29,7 +29,7 @@ const AccountInfo: FunctionComponent = () => {
   return (
     <div className="mt-5 w-full rounded-[10px] bg-white p-6">
       {!data?.hasGaKey && (
-        <div className="rounded-md bg-[#FFF3A5] p-4">
+        <div className="mb-5 rounded-md bg-[#FFF3A5] p-4">
           <p className="text-xs">{t('account:lowSecurityDescription')}</p>
           <Link href="/authapp" className="mt-2 inline-flex cursor-pointer items-center gap-2">
             <span className="text-sm">{t('account:google2fa')}</span>
@@ -37,7 +37,7 @@ const AccountInfo: FunctionComponent = () => {
           </Link>
         </div>
       )}
-      <div className="mt-5 grid grid-cols-3 py-3 text-xs">
+      <div className="grid grid-cols-3 py-3 text-xs">
         <div className="flex items-center gap-2">
           <div className="relative cursor-pointer overflow-hidden" onClick={() => setOpenChangeAvatarModal(true)}>
             <Image
