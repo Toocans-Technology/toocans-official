@@ -37,7 +37,8 @@ const TokenTable = () => {
     return undefined
   }
 
-  const getTokenPrecision = (tokenId: string): number => {
+  const getTokenPrecision = (tokenId: string, hasAsset: boolean = true): number => {
+    if (!hasAsset) return 2;
     const found = allTokenData.find((item) => item.tokenId === tokenId)
     return typeof found?.minPrecision === 'number' ? found.minPrecision : 4
   }
@@ -92,15 +93,17 @@ const TokenTable = () => {
                     {asset.tokenId}
                   </div>
                   <div className="font-din text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
-                    ${asset.tokenId === 'USDT' ? '1' : formatAmount(asset.marketPrice ?? 0, 4)}
+                    ${asset.tokenId === 'USDT' ? '1' : formatAmount(asset.marketPrice ?? 0, 2)}
                   </div>
                 </div>
                 <div className="min-w-[80px] text-right">
                   <div className="font-din text-right text-[14px] font-bold leading-[22px] text-[#0d0d0d]">
-                    {formatAmount(
-                      asset.total ?? 0,
-                      getTokenPrecision(typeof asset.tokenId === 'string' ? asset.tokenId : '')
-                    )}
+                    {assets.length === 0
+                      ? '0.00'
+                      : formatAmount(
+                          asset.total ?? 0,
+                          getTokenPrecision(typeof asset.tokenId === 'string' ? asset.tokenId : '', !!asset.total && asset.total !== '0')
+                        )}
                   </div>
                   <div className="font-din text-right text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
                     $
