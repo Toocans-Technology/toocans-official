@@ -25,7 +25,7 @@ function safeMul(a: string | number | null | undefined, b: string | number | nul
 
 const TokenTable = () => {
   const { t } = useT('overview')
-  const { data, isLoading } = useAssetAll()
+  const { data } = useAssetAll()
   const { tokens: allTokenResp } = useAllToken()
   const allTokenData = allTokenResp || []
   const assets = data || []
