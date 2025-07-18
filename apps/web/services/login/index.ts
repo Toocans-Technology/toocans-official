@@ -35,14 +35,16 @@ export const useLogin = () => {
   )
 }
 
-const SetPasswordReqParams = z.object({ password: z.string(), userToken: z.string().nullable() })
+const SetPasswordReqParams = z.object({ password: z.string(), userToken: z.string().nullable().optional() })
 
 export const useSetPassword = () => {
   return useMutation(
     getMutation((params: z.infer<typeof SetPasswordReqParams>) => ({
       method: 'POST',
       url: getUrl('/uc/user/addPassword'),
-      body: SetPasswordReqParams.parse(params.password),
+      body: SetPasswordReqParams.parse({
+        password: params.password,
+      }),
       transfer: (data) => data,
       headers: {
         Authorization: `Bearer ${params.userToken}`,

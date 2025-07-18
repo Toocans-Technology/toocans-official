@@ -14,7 +14,7 @@ import { useForgetContext } from '../ForgetContext'
 const ChangePassword = () => {
   const { t } = useT('login')
   const router = useRouter()
-  const { formData, userToken } = useForgetContext()
+  const { formData, userToken, grantType } = useForgetContext()
 
   const [isDisabled, setIsDisabled] = useState(true)
   const { mutateAsync: handleSetPassword } = useSetPassword()
@@ -33,7 +33,7 @@ const ChangePassword = () => {
         openToast((error as Error).message, 'error')
       }
     }, 1000),
-    []
+    [grantType]
   )
 
   useEffect(() => {

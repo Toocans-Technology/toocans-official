@@ -102,7 +102,7 @@ const LoginBox: FunctionComponent = () => {
         openToast((error as Error).message, 'error')
       }
     }, 1000),
-    []
+    [loginType, grantType]
   )
 
   return (
