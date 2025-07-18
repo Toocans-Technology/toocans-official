@@ -25,8 +25,7 @@ const SwitchTabs = () => {
         )}
         key={item}
         onClick={() => {
-          if (!isLogin) return
-          if (grantType != item && seconds == 60) {
+          if (grantType != item && (seconds == 60 || !isLogin)) {
             setGrantType(item)
             stateReset()
           }

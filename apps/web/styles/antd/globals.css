@@ -8,6 +8,7 @@ input::-webkit-input-placeholder {
 .ant-otp-input,
 .ant-input-affix-wrapper,
 .ant-input-number-affix-wrapper,
+.ant-form-item-control-input input,
 .ant-input-number-input-wrap input {
   background-color: #f8f8f8 !important;
 }
