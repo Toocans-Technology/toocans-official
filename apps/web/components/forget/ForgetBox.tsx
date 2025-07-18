@@ -1,9 +1,8 @@
 'use client'
 
-import { Form, Button } from 'antd'
-import { throttle } from 'es-toolkit'
+import { Form } from 'antd'
 import { FunctionComponent } from 'react'
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import { SwitchTabs } from '@/components/login/components'
 import { GrantType } from '@/components/login/data'
 import { useT } from '@/i18n'
@@ -27,11 +26,15 @@ const ForgetBox: FunctionComponent = () => {
 
   const stateReset = () => form.resetFields()
 
+  const [userToken, setUserToken] = useState<string | null>(null)
+
   return (
     <ForgetContext.Provider
       value={{
         formData: form,
         grantType,
+        userToken,
+        setUserToken,
         setGrantType,
         cuntrysVisible,
         setCuntrysVisible,
