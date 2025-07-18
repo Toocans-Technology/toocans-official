@@ -95,9 +95,9 @@ export default function AuthAppPage() {
           </div>
           <div className="mb-2 flex items-center">
             <div className="w-5" />
-            <div className="pl-5 font-normal text-[#666]">Download Google Authenticator Android/iOS</div>
+            <div className="pl-2 font-normal text-[#666]">Download Google Authenticator Android/iOS</div>
           </div>
-          <div className="mb-4 ml-6 mt-8 flex gap-12">
+          <div className="mb-4 ml-6 mt-8 flex gap-12" style={{ paddingLeft: '10px' }}>
             <div className="font-inter flex flex-col items-center text-center text-[14px] font-normal leading-[22px] text-[#666]">
               <Image src="/images/authapp/qr.png" alt="iOS" width={72} height={72} />
               <div>iOS</div>
@@ -123,9 +123,18 @@ export default function AuthAppPage() {
               device — please make sure to keep the key phrase safe before setting up Google Authenticator。
             </div>
           </div>
-          <div className="mt-9 flex items-center gap-6 pl-6">
+          <div className="mt-9 flex items-center gap-6 pl-7">
             {generateGoogleAuthRes?.qrCodeUrl ? (
-              <QRCodeSVG value={generateGoogleAuthRes.qrCodeUrl} size={72} />
+              <div
+                style={{
+                  borderRadius: '6px',
+                  padding: '6px',
+                  background: '#FFF',
+                  boxShadow: '0px 6.75px 21px 6px rgba(0, 0, 0, 0.10)',
+                }}
+              >
+                <QRCodeSVG value={generateGoogleAuthRes.qrCodeUrl} size={72} />
+              </div>
             ) : (
               <Image src="/images/authapp/qr.png" alt="QR Code" width={72} height={72} />
             )}
