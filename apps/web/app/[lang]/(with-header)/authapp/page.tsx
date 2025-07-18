@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { QRCodeSVG } from 'qrcode.react'
 import React, { useState, useCallback } from 'react'
 import { Input } from '@workspace/ui/components'
+import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { GOOGLE_CODE_REGEXP } from '@/lib/regexp'
 import { useGenerateGoogleAuth } from '@/services/user/generateGoogleAuth'
@@ -14,10 +15,13 @@ import { openToast } from '@/utils'
 
 export default function AuthAppPage() {
   const { t } = useT('authapp')
-  const { data: userInfoRes } = useUserInfo()
+  const { data: userInfoRes, refetch } = useUserInfo()
   const { mutateAsync: mutateVerifyGoogleAuth, isPending } = useVerifyGoogleAuth()
   const [googleCode, setGoogleCode] = useState('')
   const [bindSuccess, setBindSuccess] = useState(true)
+
+  useRedirectIfNotLogin()
+
   React.useEffect(() => {
     if (userInfoRes && userInfoRes.hasGaKey) {
       setGoogleCode('')
@@ -46,6 +50,7 @@ export default function AuthAppPage() {
         code: googleCode ?? '',
         secretKey: generateGoogleAuthRes?.secretKey ?? '',
       })
+      refetch()
       openToast(t('authapp:VerificationSuccess'))
       setGoogleCode('')
       setBindSuccess(true)
@@ -56,7 +61,7 @@ export default function AuthAppPage() {
       setBindSuccess(false)
       openToast((error as HttpError).message, 'error')
     }
-  }, [mutateVerifyGoogleAuth, googleCode, generateGoogleAuthRes, t])
+  }, [mutateVerifyGoogleAuth, googleCode, generateGoogleAuthRes, t, refetch])
 
   const handleVerifyGoogleAuth = () => {
     if (!googleCode || !generateGoogleAuthRes?.secretKey) {

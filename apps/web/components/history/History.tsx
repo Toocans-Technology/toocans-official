@@ -2,12 +2,15 @@
 
 import { FunctionComponent } from 'react'
 import { Separator, Tabs, TabsContent, TabsList, TabsTrigger } from '@workspace/ui/components'
+import { useRedirectIfNotLogin } from '@/hooks/useRedirectIfNotLogin'
 import { useT } from '@/i18n'
 import DepositHistory from './DepositHistory'
 import WithdrawHistory from './WithdrawHistory'
 
 const History: FunctionComponent = () => {
   const { t } = useT('history')
+
+  useRedirectIfNotLogin()
 
   return (
     <div className="mt-6 rounded-[10px] bg-white p-6">
