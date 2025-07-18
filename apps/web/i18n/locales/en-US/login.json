@@ -9,7 +9,7 @@
   "set": "set",
   "confirmPassword": "Confirm Password",
   "forgotPassword": "Forgot Password",
-  "inconsistent": "The {{ password }} is inconsistent",
+  "inconsistent": "The {{ name }} is inconsistent",
   "verificationCode": "Verification Code",
   "login": "Login",
   "please": "Please {{name}}",
