@@ -30,7 +30,7 @@ const SwitchTabs = () => {
           }
         }}
       >
-        {t(item)}
+        {t('tabs', { name: t(item) })}
       </span>
     )
   })

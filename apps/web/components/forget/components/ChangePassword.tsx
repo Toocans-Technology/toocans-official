@@ -14,7 +14,7 @@ import { useForgetContext } from '../ForgetContext'
 const ChangePassword = () => {
   const { t } = useT('login')
   const router = useRouter()
-  const { formData } = useForgetContext()
+  const { formData, userToken } = useForgetContext()
 
   const [isDisabled, setIsDisabled] = useState(true)
   const { mutateAsync: handleSetPassword } = useSetPassword()
@@ -26,7 +26,7 @@ const ChangePassword = () => {
   const onSubmit = useCallback(
     throttle(async () => {
       try {
-        await handleSetPassword({ password: formData.getFieldValue('password') })
+        await handleSetPassword({ password: formData.getFieldValue('password'), userToken })
         openToast(t('successfully', { name: t('set') }))
         router.replace('/login')
       } catch (error) {

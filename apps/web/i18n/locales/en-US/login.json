@@ -17,6 +17,8 @@
   "enter": "Enter {{name }}",
   "address": "address",
   "number": "number",
+  "tabs": "{{name, capitalize}}",
+  "loginType": "{{name, capitalize}}",
   "formatErr": "{{name, capitalize}} format error",
   "switchTo": "Switch to {{ type }} login",
   "search": "search",

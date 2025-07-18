@@ -138,7 +138,9 @@ const LoginBox: FunctionComponent = () => {
               {/* phone input */}
               {grantType == GrantType.SMS && <PhoneInput />}
 
-              <p className={'mt-4 select-none'}>{t(loginType == LoginType.CODE ? 'verificationCode' : 'password')}</p>
+              <p className={'mt-4 select-none'}>
+                {t('loginType', { name: loginType == LoginType.CODE ? t('verificationCode') : t('password') })}
+              </p>
 
               {/* Verification Code input */}
               {loginType == LoginType.CODE && <VerificationCode />}
