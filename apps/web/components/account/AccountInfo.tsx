@@ -6,7 +6,7 @@ import { FunctionComponent, useCallback, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Button, toast } from '@workspace/ui/components'
 import { Separator } from '@workspace/ui/components'
-import { useSecurityLevel } from '@/hooks'
+import { useRedirectIfNotLogin, useSecurityLevel } from '@/hooks'
 import { useT } from '@/i18n'
 import { useUserInfo } from '@/services/user/info'
 import { KycLevel } from '@/types/user'
@@ -19,6 +19,8 @@ const AccountInfo: FunctionComponent = () => {
   const [openChangeAvatarModal, setOpenChangeAvatarModal] = useState(false)
   const { data } = useUserInfo()
   const securityLevel = useSecurityLevel(data?.kycLevel)
+
+  useRedirectIfNotLogin()
 
   const handleCopy = useCallback(() => {
     toast.success(t('common:copySuccess'))

@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { QRCodeSVG } from 'qrcode.react'
 import React, { useState, useCallback } from 'react'
 import { Input } from '@workspace/ui/components'
+import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { GOOGLE_CODE_REGEXP } from '@/lib/regexp'
 import { useGenerateGoogleAuth } from '@/services/user/generateGoogleAuth'
@@ -18,6 +19,9 @@ export default function AuthAppPage() {
   const { mutateAsync: mutateVerifyGoogleAuth, isPending } = useVerifyGoogleAuth()
   const [googleCode, setGoogleCode] = useState('')
   const [bindSuccess, setBindSuccess] = useState(true)
+
+  useRedirectIfNotLogin()
+
   React.useEffect(() => {
     if (userInfoRes && userInfoRes.hasGaKey) {
       setGoogleCode('')
