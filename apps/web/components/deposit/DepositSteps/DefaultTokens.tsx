@@ -3,9 +3,8 @@
 import Image from 'next/image'
 import { FunctionComponent, useMemo } from 'react'
 import { Button } from '@workspace/ui/components'
+import { SYMBOL_ICON_PLACEHOLDER } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
-
-const iconPlaceholder = 'https://dummyimage.com/18x18/999999/0011ff'
 
 interface Props {
   tokens?: Token[]
@@ -37,7 +36,7 @@ const DefaultTokens: FunctionComponent<Props> = ({ onSelect, tokens }) => {
         onClick={() => onSelect(usdtToken?.name || 'USDT')}
       >
         <Image
-          src={usdtToken?.icon || iconPlaceholder}
+          src={usdtToken?.icon || SYMBOL_ICON_PLACEHOLDER}
           alt={usdtToken?.name || ''}
           width={16}
           height={16}
@@ -52,7 +51,7 @@ const DefaultTokens: FunctionComponent<Props> = ({ onSelect, tokens }) => {
         onClick={() => onSelect(btcToken?.name || 'BTC')}
       >
         <Image
-          src={btcToken?.icon || iconPlaceholder}
+          src={btcToken?.icon || SYMBOL_ICON_PLACEHOLDER}
           alt={btcToken?.name || ''}
           width={16}
           height={16}
@@ -67,7 +66,7 @@ const DefaultTokens: FunctionComponent<Props> = ({ onSelect, tokens }) => {
         onClick={() => onSelect(ethToken?.name || 'ETH')}
       >
         <Image
-          src={ethToken?.icon || iconPlaceholder}
+          src={ethToken?.icon || SYMBOL_ICON_PLACEHOLDER}
           alt={ethToken?.name || ''}
           width={16}
           height={16}

@@ -21,7 +21,7 @@ const SelectLanguage: FunctionComponent = () => {
 
   return (
     <Select defaultValue={currentLang} onValueChange={(value: string) => changeLanguagePath(value as Locale)}>
-      <SelectTrigger className="bg-transparent p-0 hover:ring-0 focus:ring-0">
+      <SelectTrigger className="border-none bg-transparent p-0 hover:ring-0 focus:ring-0">
         <Image src="/icons/intl.svg" alt="Intl" width={24} height={24} className="cursor-pointer hover:opacity-80" />
       </SelectTrigger>
       <SelectContent>

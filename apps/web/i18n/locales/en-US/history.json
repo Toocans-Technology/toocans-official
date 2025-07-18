@@ -1,0 +1,17 @@
+{
+  "title": "History",
+  "description": "History",
+  "deposit": "Deposit",
+  "withdraw": "Withdraw",
+  "noData": "No Data",
+  "token": "Token",
+  "amount": "Amount",
+  "time": "Time",
+  "address": "Address",
+  "status": "Status",
+  "failed": "Failed",
+  "transferring": "Transferring",
+  "sent": "Sent",
+  "date": "Date",
+  "all": "All"
+}
