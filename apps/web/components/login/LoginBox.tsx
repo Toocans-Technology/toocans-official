@@ -3,14 +3,14 @@
 import { Button, Form } from 'antd'
 import { throttle } from 'es-toolkit'
 import dynamic from 'next/dynamic'
+import { useSearchParams } from 'next/navigation'
 import { FunctionComponent, useState, useRef, useCallback } from 'react'
-import { useContext } from 'react'
-import { RouterContext } from '@/components/providers'
+import Link from '@/components/common/Link'
+import { useRouter } from '@/hooks'
 import { useT } from '@/i18n'
 import { typedStorage } from '@/lib/utils'
 import { useLogin } from '@/services/login'
 import { openToast } from '@/utils'
-import { matchEmail, matchPhoneNum } from '@/utils'
 import { LoginContext } from './LoginContext'
 import { SwitchTabs, EmailInput, VerificationCode, PasswordInput, NotCode, CheckComp } from './components/index'
 import { GrantType, LoginType } from './data'
@@ -19,15 +19,17 @@ const PhoneInput = dynamic(() => import('./components/PhoneInput'))
 
 const LoginBox: FunctionComponent = () => {
   const { t } = useT('login')
-  const router = useContext(RouterContext)
 
+  const router = useRouter()
+
+  const routerParams = useSearchParams()
   const [form] = Form.useForm()
   const checkBoxRef: any = useRef(null)
 
   // 验证类型
   const [grantType, setGrantType] = useState<GrantType>(GrantType.EMAIL)
   // 登录类型
-  const [loginType, setLoginType] = useState<LoginType>(LoginType.CODE)
+  const [loginType, setLoginType] = useState<LoginType>((routerParams.get('LoginType') as LoginType) || LoginType.CODE)
   // 国家选择框展示
   const [cuntrysVisible, setCuntrysVisible] = useState(false)
   // 选取问题, 选中后开启手机号blur校验
@@ -42,43 +44,6 @@ const LoginBox: FunctionComponent = () => {
     setCuntrysVisible(false)
     setPhoneCheckState(false)
   }
-
-  const handleForget = useCallback(() => {
-    const phone = form.getFieldValue('phone')
-    const email = form.getFieldValue('email')
-    const nationalCode = form.getFieldValue('nationalCode')
-    let query = {}
-
-    if (grantType == GrantType.EMAIL) {
-      if (!email) {
-        form.setFields([{ name: 'email', value: '', errors: [t('please', { name: t('enter', { name: 'email' }) })] }])
-        return
-      }
-      if (!matchEmail(email)) {
-        form.setFields([
-          { name: 'email', value: email, errors: [t('formatErr', { name: `${t('email')} ${t('address')}` })] },
-        ])
-        return
-      }
-      query = { email }
-    }
-
-    if (grantType == GrantType.SMS) {
-      if (!phone) {
-        form.setFields([
-          { name: 'phone', value: phone, errors: [t('please', { name: t('enter', { name: 'phone' }) })] },
-        ])
-        return
-      }
-      if (!matchPhoneNum(nationalCode, phone)) {
-        form.setFields([{ name: 'phone', value: phone, errors: [t('formatErr', { name: 'phone' })] }])
-        return
-      }
-      query = { phone, nationalCode }
-    }
-
-    router.push('/forget', { query })
-  }, [grantType])
 
   const onSubmit = useCallback(
     throttle(async (values: { [key: string]: string }) => {
@@ -125,11 +90,11 @@ const LoginBox: FunctionComponent = () => {
       }
 
       try {
-        const { accessToken, refreshToken, expiresIn } = await handleLogin(resultParams)
+        const { access_token, refresh_token, expires_in } = await handleLogin(resultParams)
 
-        typedStorage.accessToken = accessToken
-        typedStorage.refreshToken = refreshToken
-        typedStorage.expireIn = expiresIn
+        typedStorage.accessToken = access_token
+        typedStorage.refreshToken = refresh_token
+        typedStorage.expireIn = expires_in
 
         openToast(t('successfully', { name: t('login') }))
         router.replace('/overview')
@@ -166,7 +131,7 @@ const LoginBox: FunctionComponent = () => {
           >
             <SwitchTabs />
 
-            <Form form={form} initialValues={{ unregisteredTip: true, userAgreement: true }} onFinish={onSubmit}>
+            <Form form={form} initialValues={{ unregisteredTip: false, userAgreement: false }} onFinish={onSubmit}>
               {/* email input */}
               {grantType == GrantType.EMAIL && <EmailInput />}
 
@@ -184,19 +149,21 @@ const LoginBox: FunctionComponent = () => {
               <div className="mt-4 flex select-none">
                 {seconds == 60 ? (
                   <>
-                    <p
+                    <Link
+                      href={`/login?LoginType=${loginType == LoginType.CODE ? LoginType.PASSWORD : LoginType.CODE}`}
+                      replace
                       className="cursor-pointer text-xs text-[#3C7BF4]"
                       onClick={() => {
                         setLoginType(loginType == LoginType.CODE ? LoginType.PASSWORD : LoginType.CODE)
                         form.resetFields(loginType == LoginType.CODE ? ['password'] : ['code'])
                       }}
                     >
-                      {t('switchTo', { type: loginType })}
-                    </p>
+                      {t('switchTo', { type: loginType == LoginType.CODE ? LoginType.PASSWORD : LoginType.CODE })}
+                    </Link>
                     {loginType == LoginType.PASSWORD && (
-                      <a onClick={handleForget} className="ml-auto text-xs text-[#3C7BF4]">
+                      <Link href="/forget" className="ml-auto text-xs text-[#3C7BF4]">
                         {t('forgotPassword')}
-                      </a>
+                      </Link>
                     )}
                   </>
                 ) : (

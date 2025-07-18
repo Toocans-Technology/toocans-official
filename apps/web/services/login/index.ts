@@ -4,7 +4,7 @@ import { getMutation } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
 
 export * from './getCode'
-export * from './getCountrys'
+export * from './getCountryList'
 
 const LoginReqParams = z.object({
   clientId: z.string(),
@@ -28,7 +28,7 @@ export const useLogin = () => {
   return useMutation(
     getMutation((params: z.infer<typeof LoginReqParams>) => ({
       method: 'POST',
-      url: getUrl('/auth/login'),
+      url: getUrl('/index/auth/login'),
       body: LoginReqParams.parse(params),
       transfer: (data) => data,
     }))
@@ -41,7 +41,7 @@ export const useSetPassword = () => {
   return useMutation(
     getMutation((params: z.infer<typeof SetPasswordReqParams>) => ({
       method: 'POST',
-      url: getUrl('/user/addPassword'),
+      url: getUrl('/uc/user/addPassword'),
       body: SetPasswordReqParams.parse(params),
       transfer: (data) => data,
     }))

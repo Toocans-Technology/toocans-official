@@ -7,7 +7,7 @@ export const getWithdrawInfo = (id?: string) => {
   return useQuery({
     ...getQuery({
       method: 'GET',
-      url: getUrl(`/wallet/withdrawInfo/${id}`),
+      url: getUrl(`/dw/wallet/withdrawInfo/${id}`),
       transfer: WithdrawalSchema.nullable().parse,
     }),
     enabled: !!id,
