@@ -6,6 +6,7 @@ import { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Button, toast } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
+import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { SYMBOL_ICON_PLACEHOLDER } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
@@ -27,6 +28,8 @@ const DepositSteps: FunctionComponent = () => {
   const [selectedToken, setSelectedToken] = useState<Token>()
   const [selectedNetwork, setSelectedNetwork] = useState<Token>()
   const { data: address } = getAddress({ tokenId: selectedNetwork?.tokenId })
+
+  useRedirectIfNotLogin()
 
   const handleCopy = useCallback(() => {
     toast(t('deposit:copySuccess'))

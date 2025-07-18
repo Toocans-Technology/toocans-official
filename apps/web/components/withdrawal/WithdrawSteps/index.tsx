@@ -5,6 +5,7 @@ import { Input, Label } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
 import SelectNetwork from '@/components/deposit/DepositSteps/SelectNetwork'
 import SelectToken from '@/components/deposit/DepositSteps/SelectToken'
+import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { validateAddress } from '@/lib/utils'
 import { SYMBOL_ICON_PLACEHOLDER } from '@/lib/utils'
@@ -25,6 +26,8 @@ const WithdrawSteps: FunctionComponent = () => {
   const [selectedToken, setSelectedToken] = useState<Token>()
   const [selectedNetwork, setSelectedNetwork] = useState<Token>()
   const [address, setAddress] = useState<string>('')
+
+  useRedirectIfNotLogin()
 
   const networkList = useMemo(() => {
     if (!selectedToken) {
