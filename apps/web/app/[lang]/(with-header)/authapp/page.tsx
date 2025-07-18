@@ -22,7 +22,6 @@ export default function AuthAppPage() {
     if (userInfoRes && userInfoRes.hasGaKey) {
       setGoogleCode('')
       setBindSuccess(true)
-      openToast(t('authapp:AlreadyBinded'), 'error')
       setTimeout(() => {
         window.history.back()
       }, 2000)
