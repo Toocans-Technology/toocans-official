@@ -18,7 +18,7 @@ const AccountInfo: FunctionComponent = () => {
   const { t } = useT(['account', 'common'])
   const [openChangeAvatarModal, setOpenChangeAvatarModal] = useState(false)
   const { data } = useUserInfo()
-  const securityLevel = useSecurityLevel(data?.kycLevel)
+  const securityLevel = useSecurityLevel(data?.kycLevel, data?.hasGaKey)
 
   useRedirectIfNotLogin()
 

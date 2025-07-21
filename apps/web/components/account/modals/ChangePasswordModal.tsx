@@ -82,6 +82,7 @@ const ChangePasswordModal: FunctionComponent = () => {
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    mode: 'all',
     defaultValues: {
       oldPassword: '',
       password: '',
