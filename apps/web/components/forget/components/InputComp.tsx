@@ -1,9 +1,9 @@
 import { Form, Button, Input } from 'antd'
 import Link from '@/components/common/Link'
 import { GrantType, LoginType } from '@/components/login/data'
-import { EmailReg } from '@/data'
 import { useRouter } from '@/hooks'
 import { useT } from '@/i18n'
+import { EMAIL_REGEX } from '@/lib/utils/constants'
 import { useForgetContext } from '../ForgetContext'
 import PhoneInput from './PhoneInput'
 
@@ -26,7 +26,7 @@ const InputComp = () => {
           rules={[
             { required: true, message: '' },
             {
-              pattern: EmailReg,
+              pattern: EMAIL_REGEX,
               message: t('formatErr', { name: `${t('email')} ${t('address')}` }),
             },
           ]}
