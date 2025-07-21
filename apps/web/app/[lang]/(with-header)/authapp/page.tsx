@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { QRCodeSVG } from 'qrcode.react'
 import React, { useState, useCallback } from 'react'
 import { Input } from '@workspace/ui/components'
@@ -18,6 +19,8 @@ export default function AuthAppPage() {
   const { mutateAsync: mutateVerifyGoogleAuth, isPending } = useVerifyGoogleAuth()
   const [googleCode, setGoogleCode] = useState('')
   const [bindSuccess, setBindSuccess] = useState(true)
+  const router = useRouter()
+
   React.useEffect(() => {
     if (userInfoRes && userInfoRes.hasGaKey) {
       setGoogleCode('')
@@ -49,7 +52,7 @@ export default function AuthAppPage() {
       setGoogleCode('')
       setBindSuccess(true)
       setTimeout(() => {
-        window.history.back()
+        router.push(`/account`)
       }, 2000)
     } catch (error) {
       setBindSuccess(false)
@@ -77,29 +80,31 @@ export default function AuthAppPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#fafbfc]">
       <div className="mx-auto w-full max-w-[942px] rounded-xl bg-white p-[60px_32px_24px_32px] shadow-[0_2px_16px_0_rgba(0,0,0,0.04)]">
-        <div className="font-inter pb-10 text-[32px] font-medium leading-[30px] text-black">Authenticator app</div>
+        <div className="font-inter pb-10 text-[32px] font-medium leading-[30px] text-black">
+          {t('authapp:AuthenticatorApp')}
+        </div>
         <div className="mb-8">
           <div className="font-inter pb-8 text-[16px] font-medium leading-[26px] text-[#222]">
-            Set Up Two-Factor Authentication
+            {t('authapp:SetUpTwoFactorAuthentication')}
           </div>
           <div className="mb-2 flex items-center">
             <div className="font-inter flex h-5 w-5 items-center justify-center gap-2 rounded-full bg-[#222] p-2 text-center text-[12px] font-medium leading-5 text-white">
               1
             </div>
-            <div className="ml-2">Download authenticator</div>
+            <div className="ml-2">{t('authapp:DownloadAuthenticator')}</div>
           </div>
           <div className="mb-2 flex items-center">
             <div className="w-5" />
-            <div className="pl-2 font-normal text-[#666]">Download Google Authenticator Android/iOS</div>
+            <div className="pl-2 font-normal text-[#666]">{t('authapp:DownloadGoogleAuthenticator')}</div>
           </div>
           <div className="mb-4 ml-6 mt-8 flex gap-12" style={{ paddingLeft: '10px' }}>
             <div className="font-inter flex flex-col items-center text-center text-[14px] font-normal leading-[22px] text-[#666]">
               <Image src="/images/authapp/qr.png" alt="iOS" width={72} height={72} />
-              <div>iOS</div>
+              <div>{t('authapp:iOS')}</div>
             </div>
             <div className="font-inter flex flex-col items-center text-center text-[14px] font-normal leading-[22px] text-[#666]">
               <Image src="/images/authapp/Googlepay.png" alt="Android" width={72} height={72} />
-              <div>Android</div>
+              <div>{t('authapp:Android')}</div>
             </div>
           </div>
         </div>
@@ -108,15 +113,11 @@ export default function AuthAppPage() {
             <div className="font-inter flex h-5 w-5 items-center justify-center gap-2 rounded-full bg-[#222] p-2 text-center text-[12px] font-medium leading-5 text-white">
               2
             </div>
-            <div className="ml-2">Scan QR code</div>
+            <div className="ml-2">{t('authapp:ScanQRCode')}</div>
           </div>
           <div className="mb-2 flex items-center">
             <div className="w-5" />
-            <div className="pl-5 font-normal text-[#666]">
-              Open Google Authenticator, scan the QR code below or manually enter the key phrase to activate the
-              verification token. Key phrase is used to recover Google Authenticator in the event of a loss or change of
-              device — please make sure to keep the key phrase safe before setting up Google Authenticator。
-            </div>
+            <div className="pl-5 font-normal text-[#666]">{t('authapp:ScanQRCodeDesc')}</div>
           </div>
           <div className="mt-9 flex items-center gap-6 pl-7">
             {generateGoogleAuthRes?.qrCodeUrl ? (
@@ -135,7 +136,7 @@ export default function AuthAppPage() {
             )}
             <div>
               <div className="font-inter mb-1 text-[14px] font-normal leading-[22px] text-[#666]">
-                Or manually enter the code below
+                {t('authapp:ManualEnterCode')}
               </div>
               <div className="font-inter flex w-fit items-center gap-2 text-[14px] font-medium leading-[22px] text-[#222]">
                 {generateGoogleAuthRes?.secretKey || '--'}
@@ -151,14 +152,14 @@ export default function AuthAppPage() {
             <div className="font-inter flex h-5 w-5 items-center justify-center gap-2 rounded-full bg-[#222] p-2 text-center text-[12px] font-medium leading-5 text-white">
               3
             </div>
-            <div className="ml-2">Security authentication</div>
+            <div className="ml-2">{t('authapp:SecurityAuthentication')}</div>
           </div>
           <div className="mb-6">
             {!bindSuccess && (
               <Input
                 maxLength={6}
                 className="mb-7 ml-7 flex h-11 w-[456px] items-center rounded-md border-none bg-[#f5f5f5] px-3 text-black"
-                placeholder="Please enter the Authenticator code"
+                placeholder={t('authapp:PleaseEnterAuthenticatorCode')}
                 value={googleCode}
                 onChange={(e) => setGoogleCode(e.target.value)}
               />
