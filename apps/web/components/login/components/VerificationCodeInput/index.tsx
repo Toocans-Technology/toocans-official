@@ -1,6 +1,6 @@
 'use client'
 
-import { Form, InputNumber } from 'antd'
+import { Form, Input } from 'antd'
 import { useT } from '@/i18n'
 import { useLoginContext } from '../../LoginContext'
 import SendAndCountDown from './SendAndCountDown'
@@ -17,20 +17,30 @@ const VerificationCode = () => {
           { required: true, message: '' },
           {
             pattern: /^\d{6}$/,
-            message: t('formatErr.code'),
+            message: t('formatErr', { name: 'code' }),
           },
         ]}
         validateTrigger="onBlur"
         style={{ marginTop: '8px' }}
         className="relative"
       >
-        <InputNumber
+        <Input
           maxLength={6}
-          placeholder={t('login:enter.code')}
-          controls={false}
+          type="text"
+          placeholder={t('enter', { name: t('verificationCode') })}
+          onChange={(e) => {
+            // 只允许输入数字
+            const value = e.target.value.replace(/\D/g, '').slice(0, 6)
+            formData.setFieldsValue({ code: value })
+          }}
           onFocus={() => {
             if (formData.getFieldError('code')) {
-              formData.setFieldValue('code', formData.getFieldValue('code'))
+              formData.setFields([
+                {
+                  name: ['code'],
+                  errors: [],
+                },
+              ])
             }
           }}
         />

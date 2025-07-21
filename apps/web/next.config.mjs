@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production'
+
 const nextConfig = {
   env: {
     generateStatic: process.env.GENERATE_STATIC || 'false',
@@ -6,6 +8,9 @@ const nextConfig = {
   transpilePackages: ['@workspace/ui'],
   reactStrictMode: true,
   output: 'standalone',
+  compiler: {
+    removeConsole: isProd,
+  },
   images: {
     remotePatterns: [
       {
@@ -16,6 +21,9 @@ const nextConfig = {
       },
       {
         hostname: 'dummyimage.com',
+      },
+      {
+        hostname: 'flagcdn.com',
       },
     ],
   },

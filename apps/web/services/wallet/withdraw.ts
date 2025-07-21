@@ -22,7 +22,7 @@ export const useWithdraw = () => {
   return useMutation(
     getMutation((params: WithdrawReq) => ({
       method: 'POST',
-      url: getUrl('/wallet/withdraw'),
+      url: getUrl('/dw/wallet/withdraw'),
       body: WithdrawReqSchema.parse(params),
       transfer: WithdrawalSchema.parse,
     }))

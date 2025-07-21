@@ -4,6 +4,7 @@ import { default as NextLink } from 'next/link'
 import type { LinkProps } from 'next/link'
 import { useParams } from 'next/navigation'
 import type { HTMLAttributeAnchorTarget, ReactNode, Ref } from 'react'
+import { cn } from '@workspace/ui/lib/utils'
 import { defaultLocale } from '@/i18n/config'
 import { isAbsoluteUrl } from '@/lib/utils'
 
@@ -26,7 +27,7 @@ const Link = ({
   const newHref = isAbsoluteUrl(href as string) ? href : `/${lang}${href}`
 
   return (
-    <NextLink href={newHref} {...props} ref={ref} target={target} className={className}>
+    <NextLink href={newHref} {...props} ref={ref} target={target} className={cn('text-link', className)}>
       {children}
     </NextLink>
   )

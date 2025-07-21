@@ -1,6 +1,15 @@
 {
   "loginIn": "Login In",
   "signUp": "Sign Up",
+  "overview": "Overview",
+  "deposit": "Deposit",
+  "withdraw": "Withdraw",
+  "account": "Account",
+  "logout": "Logout",
+  "copy": "Copy",
+  "change": "Change",
+  "settings": "Settings",
+  "copySuccess": "Copy Success",
   "header": {
     "home": "Home",
     "market": "Market",
@@ -16,5 +25,29 @@
   },
   "next": "Next",
   "send": "Send",
-  "ok": "OK"
+  "ok": "OK",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "search": "Search",
+  "disable": "Disable",
+  "enterPhone": "Enter Phone",
+  "noNationalCode": "No national code found",
+  "changeAvatarModal": {
+    "title": "Change profile picture",
+    "description": "Upload a photo or drag and drop",
+    "uploadPhone": "Upload photo",
+    "uploading": "Uploading...",
+    "uploadSuccess": "Upload successfully",
+    "imageSizeLimit": "Please upload a JPG/PNG image no larger than 10MB.",
+    "uploadTips": "Supports JPG, PNG. Maximum upload file size:10 MB"
+  },
+  "7Days": "7 Days",
+  "30Days": "30 Days",
+  "90Days": "90 Days",
+  "startDate": "Start date",
+  "endDate": "End date",
+  "selectToken": "Select token",
+  "searchToken": "Search token",
+  "noData": "No Data",
+  "all": "All"
 }

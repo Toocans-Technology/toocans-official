@@ -33,6 +33,8 @@ const themeConfig = {
       defaultActiveColor: '#222222',
       defaultBg: '#f4f4f4',
       defaultActiveBg: '#f9f9f9',
+      colorTextDisabled: '#ffffff',
+      colorBgContainerDisabled: '#d5d5d5',
     },
     Checkbox: {
       colorWhite: '#222222',

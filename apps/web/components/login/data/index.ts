@@ -5,5 +5,5 @@ export const enum GrantType {
 
 export const enum LoginType {
   CODE = 'code',
-  PWD = 'pwd',
+  PASSWORD = 'password',
 }

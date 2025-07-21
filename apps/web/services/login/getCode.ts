@@ -1,6 +1,7 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 import { getQuery } from '@/lib/api'
+import { getMutation } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
 
 const GetCodeReqParams = z
@@ -31,7 +32,7 @@ export const useCodeByMobile = (params?: z.infer<typeof GetCodeReqParams>) => {
   return useQuery({
     ...getQuery({
       method: 'GET',
-      url: getUrl('/resource/email/code'),
+      url: getUrl('/resource/sms/code'),
       query: GetCodeReqParams.parse(params),
       transfer: ResponseSchema.parse,
     }),

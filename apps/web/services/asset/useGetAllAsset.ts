@@ -38,7 +38,7 @@ export const useGetAllAsset = (params?: GetAllAssetParams) => {
   return useQuery({
     ...getQuery({
       method: 'GET',
-      url: getUrl('/balance/getAllAsset'),
+      url: getUrl('/uc/balance/getAllAsset'),
       query: GetAllAssetParamsSchema.parse(params),
       transfer: GetAllAssetResponseSchema.parse,
     }),

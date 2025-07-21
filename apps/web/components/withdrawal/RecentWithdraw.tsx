@@ -9,7 +9,7 @@ import { getWithdrawOrder } from '@/services/wallet'
 import { getStatus } from './utils'
 
 interface Props {
-  tokenId: string
+  tokenId?: string
 }
 
 const RecentWithdraw: FunctionComponent<Props> = ({ tokenId }) => {

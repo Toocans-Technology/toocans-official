@@ -5,12 +5,18 @@ input {
 input::-webkit-input-placeholder {
   color: #999 !important;
 }
+.ant-otp-input,
 .ant-input-affix-wrapper,
 .ant-input-number-affix-wrapper,
+.ant-form-item-control-input input,
 .ant-input-number-input-wrap input {
   background-color: #f8f8f8 !important;
 }
 .ant-input-number,
 .ant-input-number-affix-wrapper {
   width: 100% !important;
+}
+
+.ant-btn-link:disabled {
+  color: #999 !important;
 }

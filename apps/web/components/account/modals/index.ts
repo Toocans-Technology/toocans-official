@@ -1,0 +1,6 @@
+export { default as ChangeNicknameModal } from './ChangeNicknameModal'
+export { default as ChangePasswordModal } from './ChangePasswordModal'
+export { default as BindPhoneModal } from './BindPhoneModal'
+export { default as BindEmailModal } from './BindEmailModal'
+export { default as UnbindGAModal } from './UnbindGAModal'
+export { default as ChangeAvatarModal } from './ChangeAvatarModal'

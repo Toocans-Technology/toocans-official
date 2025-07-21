@@ -6,6 +6,7 @@ import React from 'react'
 import { useAssetAll } from '@/hooks/asset'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
+import { Link } from '../common'
 
 function formatAmount(val: string | number | null | undefined, precision: number = 4) {
   const num = new BigNumber(val ?? 0)
@@ -24,7 +25,7 @@ function safeMul(a: string | number | null | undefined, b: string | number | nul
 
 const TokenTable = () => {
   const { t } = useT('overview')
-  const { data, isLoading } = useAssetAll()
+  const { data } = useAssetAll()
   const { tokens: allTokenResp } = useAllToken()
   const allTokenData = allTokenResp || []
   const assets = data || []
@@ -36,7 +37,8 @@ const TokenTable = () => {
     return undefined
   }
 
-  const getTokenPrecision = (tokenId: string): number => {
+  const getTokenPrecision = (tokenId: string, hasAsset: boolean = true): number => {
+    if (!hasAsset) return 2;
     const found = allTokenData.find((item) => item.tokenId === tokenId)
     return typeof found?.minPrecision === 'number' ? found.minPrecision : 4
   }
@@ -60,12 +62,10 @@ const TokenTable = () => {
   return (
     <div className="mt-6 overflow-hidden rounded-2xl bg-white p-0">
       <div className="flex items-center justify-between px-6 pb-2 pt-6">
-        <span className="font-inter text-[16px] font-medium leading-[26px] text-[#222]">
-          {t('overview:Token')}
-        </span>
-        <span className="flex cursor-pointer items-center">
+        <span className="font-inter text-[16px] font-medium leading-[26px] text-[#222]">{t('overview:Token')}</span>
+        <Link href="/history" className="cursor-pointer">
           <Image src="/images/overview/Navigation-order.svg" alt="Assets" width={20} height={20} />
-        </span>
+        </Link>
       </div>
       <div>
         {filteredSortedAssets.length === 0
@@ -93,15 +93,17 @@ const TokenTable = () => {
                     {asset.tokenId}
                   </div>
                   <div className="font-din text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
-                    ${asset.tokenId === 'USDT' ? '1' : formatAmount(asset.marketPrice ?? 0, 4)}
+                    ${asset.tokenId === 'USDT' ? '1' : formatAmount(asset.marketPrice ?? 0, 2)}
                   </div>
                 </div>
                 <div className="min-w-[80px] text-right">
                   <div className="font-din text-right text-[14px] font-bold leading-[22px] text-[#0d0d0d]">
-                    {formatAmount(
-                      asset.total ?? 0,
-                      getTokenPrecision(typeof asset.tokenId === 'string' ? asset.tokenId : '')
-                    )}
+                    {assets.length === 0
+                      ? '0.00'
+                      : formatAmount(
+                          asset.total ?? 0,
+                          getTokenPrecision(typeof asset.tokenId === 'string' ? asset.tokenId : '', !!asset.total && asset.total !== '0')
+                        )}
                   </div>
                   <div className="font-din text-right text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
                     $

@@ -1,13 +1,21 @@
 'use client'
 
 import { Form, Input } from 'antd'
-import { emailReg } from '@/data'
+import { useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
+import { EmailReg } from '@/data'
 import { useT } from '@/i18n'
 import { useLoginContext } from '../LoginContext'
 
 const EmailInput = () => {
   const { t } = useT('login')
   const { seconds, formData } = useLoginContext()
+  const routerParams = useSearchParams()
+  const urlEmail = routerParams.get('email') || ''
+
+  useEffect(() => {
+    urlEmail && formData.setFieldsValue({ email: urlEmail })
+  }, [])
 
   return (
     <Form.Item
@@ -15,8 +23,8 @@ const EmailInput = () => {
       rules={[
         { required: true, message: '' },
         {
-          pattern: emailReg,
-          message: t('formatErr.email'),
+          pattern: EmailReg,
+          message: t('login:formatErr', { name: `${t('login:email')} ${t('login:address')}` }),
         },
       ]}
       validateTrigger="onBlur"
@@ -26,11 +34,16 @@ const EmailInput = () => {
         disabled={seconds < 60}
         maxLength={50}
         type="text"
-        placeholder={t(`login:enter.email`)}
+        placeholder={t('login:enter', { name: t('login:email') })}
         allowClear
         onFocus={() => {
           if (formData.getFieldError('email')) {
-            formData.setFieldValue('email', formData.getFieldValue('email'))
+            formData.setFields([
+              {
+                name: ['email'],
+                errors: [],
+              },
+            ])
           }
         }}
       />

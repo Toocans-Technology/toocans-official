@@ -16,12 +16,13 @@ export const useVerifyGoogleAuth = () => {
   return useMutation(
     getMutation((params: VerifyGoogleAuthParams) => {
       const formData = new FormData()
-      formData.append('code', params.code ?? '')
-      formData.append('secretKey', params.secretKey ?? '')
+      if (params.code) formData.append('code', params.code)
+      if (params.secretKey) formData.append('secretKey', params.secretKey)
+
       return {
         method: 'POST',
-        url: getUrl('/user/verifyGoogleAuth'),
-        body: formData,
+        url: getUrl('/uc/user/verifyGoogleAuth'),
+        body: formData as any, // FIXME: formData type error
         transfer: VerifyGoogleAuthResponseSchema.parse,
       }
     })
