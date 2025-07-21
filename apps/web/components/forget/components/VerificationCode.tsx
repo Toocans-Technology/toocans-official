@@ -1,17 +1,28 @@
 import { Form, Button, Input } from 'antd'
-import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { useState, useEffect, useContext } from 'react'
 import { GrantType } from '@/components/login/data'
+import { RouterContext } from '@/components/providers'
 import { useT } from '@/i18n'
 import { useCodeByEmail, useCodeByMobile } from '@/services/login'
 import { useLogin } from '@/services/login'
 import { openToast } from '@/utils'
+import { matchEmail, matchPhoneNum } from '@/utils'
 import { useForgetContext } from '../ForgetContext'
 import styles from '../assets/style.module.scss'
 
 const VerificationCode = () => {
   const { t } = useT('login')
 
-  const { grantType, setStep, formData, setUserToken } = useForgetContext()
+  const router = useContext(RouterContext)
+
+  const routerParams = useSearchParams()
+
+  const urlEmail = routerParams.get('email') || ''
+  const urlPhone = routerParams.get('phone') || ''
+  const urlNationalCode = routerParams.get('nationalCode') || ''
+
+  const { grantType, setStep, setUserToken } = useForgetContext()
 
   let timer: ReturnType<typeof setInterval> | null = null
 
@@ -33,11 +44,11 @@ const VerificationCode = () => {
     try {
       // 上线前放开
       if (grantType == GrantType.EMAIL) {
-        setSelfEmail(formData.getFieldValue('email'))
+        setSelfEmail(urlEmail)
       } else {
         setSelfPhoneData({
-          mobile: formData.getFieldValue('phone'),
-          nationalCode: formData.getFieldValue('nationalCode'),
+          mobile: urlPhone,
+          nationalCode: urlNationalCode,
         })
       }
 
@@ -73,14 +84,14 @@ const VerificationCode = () => {
     if (grantType == GrantType.EMAIL) {
       Object.assign(resultParams, {
         grantType,
-        email: selfEmail,
+        email: urlEmail,
         emailCode: value,
       })
     } else {
       Object.assign(resultParams, {
         grantType,
-        nationalCode: selfPhoneData.nationalCode,
-        phonenumber: selfPhoneData.mobile,
+        nationalCode: urlNationalCode,
+        phonenumber: urlPhone,
         smsCode: value,
       })
     }
@@ -88,13 +99,25 @@ const VerificationCode = () => {
     try {
       const { access_token } = await handleLogin(resultParams)
       setUserToken(access_token)
-      setStep(2)
+      setStep(1)
     } catch (error) {
       openToast((error as Error).message, 'error')
     }
   }
 
   useEffect(() => {
+    if (
+      (grantType == GrantType.EMAIL && !matchEmail(urlEmail)) ||
+      (grantType == GrantType.SMS && !matchPhoneNum(urlNationalCode, urlPhone))
+    ) {
+      grantType == GrantType.EMAIL
+        ? openToast(t('formatErr', { name: `${t('email')} ${t('address')}` }), 'error')
+        : openToast(t('formatErr', { name: `${t('phone')} ${t('number')}` }), 'error')
+
+      router.replace('/login')
+      return
+    }
+
     handleSendCode()
     return () => {
       timer && clearInterval(timer)

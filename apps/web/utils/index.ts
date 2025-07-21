@@ -20,28 +20,28 @@ export enum PasswordErrorType {
 const matchPassword = (val: string) => {
   if (!/[a-z]/.test(val)) {
     return {
-      errotype: PasswordErrorType.lowercase,
+      errorType: PasswordErrorType.lowercase,
       status: false,
     }
   }
 
   if (!/[A-Z]/.test(val)) {
     return {
-      errotype: PasswordErrorType.uppercase,
+      errorType: PasswordErrorType.uppercase,
       status: false,
     }
   }
 
   if (!/[0-9]/.test(val)) {
     return {
-      errotype: PasswordErrorType.number,
+      errorType: PasswordErrorType.number,
       status: false,
     }
   }
 
   if (val.length < 8 || val.length > 32) {
     return {
-      errotype: PasswordErrorType.length,
+      errorType: PasswordErrorType.length,
       status: false,
     }
   }

@@ -19,11 +19,10 @@ const PasswordInput = () => {
           required: true,
           message: '',
           validator: (_rule, value) => {
-            if (value?.length > 8 && value?.length < 32) {
-              return Promise.resolve()
-            } else {
+            if (value?.length < 8 || value?.length > 32) {
               return Promise.reject(t('formatErr', { name: t('password') }))
             }
+            return Promise.resolve()
           },
         },
       ]}
