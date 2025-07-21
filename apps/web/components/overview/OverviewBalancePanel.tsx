@@ -5,6 +5,7 @@ import { sumBy } from 'es-toolkit'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
+import { useRedirectIfNotLogin } from '@/hooks'
 import { useAssetAll } from '@/hooks/asset'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
@@ -15,6 +16,8 @@ export default function OverviewBalancePanel() {
   const { data: data } = useAssetAll()
   const { tokens: allTokenData } = useAllToken()
   const [show, setShow] = useState(true)
+
+  useRedirectIfNotLogin()
 
   const formatAmount = (val: number | string | BigNumber) => {
     try {

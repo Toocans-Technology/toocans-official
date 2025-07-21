@@ -18,8 +18,7 @@ const SwitchTabs = () => {
     return (
       <span
         className={cn(
-          'select-none',
-          'cursor-pointer',
+          'cursor-pointer select-none capitalize',
           grantType == item ? 'font-medium text-[#222]' : 'text-[#666]',
           item == GrantType.SMS && 'ml-4'
         )}
@@ -31,7 +30,7 @@ const SwitchTabs = () => {
           }
         }}
       >
-        {t(item)}
+        {t('tabs', { name: t(item) })}
       </span>
     )
   })

@@ -16,13 +16,15 @@ import { openToast } from '@/utils'
 
 export default function AuthAppPage() {
   const { t } = useT('authapp')
-  const { data: userInfoRes } = useUserInfo()
+  const { data: userInfoRes, refetch } = useUserInfo()
   const { mutateAsync: mutateVerifyGoogleAuth, isPending } = useVerifyGoogleAuth()
   const [googleCode, setGoogleCode] = useState('')
   const [bindSuccess, setBindSuccess] = useState(true)
 
   useRedirectIfNotLogin()
+
   const router = useRouter()
+
 
   React.useEffect(() => {
     if (userInfoRes && userInfoRes.hasGaKey) {
@@ -51,6 +53,7 @@ export default function AuthAppPage() {
         code: googleCode ?? '',
         secretKey: generateGoogleAuthRes?.secretKey ?? '',
       })
+      refetch()
       openToast(t('authapp:VerificationSuccess'))
       setGoogleCode('')
       setBindSuccess(true)
@@ -61,7 +64,7 @@ export default function AuthAppPage() {
       setBindSuccess(false)
       openToast((error as HttpError).message, 'error')
     }
-  }, [mutateVerifyGoogleAuth, googleCode, generateGoogleAuthRes, t])
+  }, [mutateVerifyGoogleAuth, googleCode, generateGoogleAuthRes, t, refetch])
 
   const handleVerifyGoogleAuth = () => {
     if (!googleCode || !generateGoogleAuthRes?.secretKey) {

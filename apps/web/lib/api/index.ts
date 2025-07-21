@@ -26,6 +26,7 @@ export const getMutation = <TRequest, TOutput>(args: (req: TRequest) => CscFetch
         const options = args(req)
         return await handleData(options, false)
       } catch (e) {
+        console.log(e)
         if (cscFetcherConfig.exposeError) console.error('mutation error with', req)
         throw e
       }
