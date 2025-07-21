@@ -1,9 +1,9 @@
 import { isValidNumber } from 'libphonenumber-js'
-import { EmailReg, PasswordReg } from '@/data'
+import { EMAIL_REGEX } from '@/lib/utils/constants'
 import { openToast } from './toast'
 
 const matchEmail = (val: string) => {
-  return EmailReg.test(val)
+  return EMAIL_REGEX.test(val)
 }
 
 const matchPhoneNum = (nationalCode: string, val: string) => {
