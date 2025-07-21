@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { QRCodeSVG } from 'qrcode.react'
 import React, { useState, useCallback } from 'react'
 import { Input } from '@workspace/ui/components'
+import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { GOOGLE_CODE_REGEXP } from '@/lib/regexp'
 import { useGenerateGoogleAuth } from '@/services/user/generateGoogleAuth'
@@ -19,6 +20,8 @@ export default function AuthAppPage() {
   const { mutateAsync: mutateVerifyGoogleAuth, isPending } = useVerifyGoogleAuth()
   const [googleCode, setGoogleCode] = useState('')
   const [bindSuccess, setBindSuccess] = useState(true)
+
+  useRedirectIfNotLogin()
   const router = useRouter()
 
   React.useEffect(() => {
@@ -77,7 +80,7 @@ export default function AuthAppPage() {
       console.log('5:', generateGoogleAuthRes)
     }
   }, [generateGoogleAuthRes])
-  return (
+ return (
     <div className="flex min-h-screen items-center justify-center bg-[#fafbfc]">
       <div className="mx-auto w-full max-w-[942px] rounded-xl bg-white p-[60px_32px_24px_32px] shadow-[0_2px_16px_0_rgba(0,0,0,0.04)]">
         <div className="font-inter pb-10 text-[32px] font-medium leading-[30px] text-black">
