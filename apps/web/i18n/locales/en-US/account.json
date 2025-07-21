@@ -29,7 +29,7 @@
   "password": "Password",
   "newPassword": "Confirm new password",
   "passwordPlaceholder": "Please enter a new password",
-  "newPasswordPlaceholder": "Please enter a new password again",
+  "newPasswordPlaceholder": "Please enter new password again",
   "passwordError": "The two passwords do not match",
   "verificationCode": "Verification Code",
   "verificationCodeError": "Verification code format error",
@@ -49,5 +49,11 @@
   "unbindGoogleAuth": "Disable Authentication App",
   "google2FA": "Google 2FA code",
   "google2FAPlaceholder": "Please enter the Google Authenticator code",
-  "unbindGoogleAuthSuccess": "Disable Authentication App successfully"
+  "unbindGoogleAuthSuccess": "Disable Authentication App successfully",
+  "passwordRuleTips": {
+    "lowercase": "At least one lowercase character",
+    "uppercase": "At least one uppercase character",
+    "number": "At least one number",
+    "length": "8 to 32 characters"
+  }
 }
