@@ -3,6 +3,7 @@
 import { EyeFilled, EyeInvisibleFilled } from '@ant-design/icons'
 import { Form, Input } from 'antd'
 import { useT } from '@/i18n'
+import { matchPassword, PasswordErrorType } from '@/utils'
 import { useLoginContext } from '../LoginContext'
 
 const PasswordInput = () => {
@@ -17,19 +18,32 @@ const PasswordInput = () => {
       rules={[
         {
           required: true,
-          message: '',
           validator: (_rule, value) => {
-            if (value?.length < 8 || value?.length > 32) {
-              return Promise.reject(t('formatErr', { name: t('password') }))
+            const matchResult = matchPassword(value)
+
+            if (matchResult === true) {
+              return Promise.resolve()
+            } else {
+              let msg = ''
+              if (matchResult?.errorType == PasswordErrorType.lowercase) {
+                msg = t('ruleTip.lowercase')
+              }
+              if (matchResult?.errorType == PasswordErrorType.uppercase) {
+                msg = t('ruleTip.uppercase')
+              }
+              if (matchResult?.errorType == PasswordErrorType.number) {
+                msg = t('ruleTip.number')
+              }
+              if (matchResult?.errorType == PasswordErrorType.length) {
+                msg = t('ruleTip.length')
+              }
+              return Promise.reject(new Error(msg))
             }
-            return Promise.resolve()
           },
         },
       ]}
     >
       <Input.Password
-        maxLength={32}
-        minLength={8}
         allowClear
         placeholder={t('enter', { name: t('password') })}
         autoComplete="off"
