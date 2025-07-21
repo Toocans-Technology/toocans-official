@@ -2,10 +2,11 @@
 
 import { Form, Checkbox } from 'antd'
 import { forwardRef, useImperativeHandle, useState } from 'react'
+import { Trans } from 'react-i18next'
 import { cn } from '@workspace/ui/lib/utils'
+import Link from '@/components/common/Link'
 import { useT } from '@/i18n'
-import { useLoginContext } from '../LoginContext'
-import styles from '../assets/style.module.css'
+import styles from '../assets/style.module.scss'
 
 const CheckComp = (_props: any, ref: any) => {
   const { t } = useT('login')
@@ -39,16 +40,14 @@ const CheckComp = (_props: any, ref: any) => {
             <Checkbox />
           </Form.Item>
           <p className="ml-2 w-[85%] cursor-pointer leading-[18px] text-[#666]">
-            {t('agreedTip')}
-            <a type="link" href="#" className="text-[#3c7bf4]">
-              {' '}
-              {t('name')} {t('userAgreement')}{' '}
-            </a>
-            {t('and')}
-            <a type="link" href="#" className="text-[#3c7bf4]">
-              {' '}
-              {t('privacyPolicy')}
-            </a>
+            <Trans
+              i18nKey="login:privacyPolicyAgreement"
+              values={{ name: t('name') }}
+              components={{
+                UserAgreement: <Link href="https://www.toocans.com/terms" target="_blank" />,
+                PrivacyPolicy: <Link href="https://www.toocans.com/privacy" target="_blank" />,
+              }}
+            ></Trans>
           </p>
         </label>
       </div>

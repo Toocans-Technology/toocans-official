@@ -4,19 +4,19 @@ import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
 
 const DepositOrderSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   notifyId: z.nullable(z.string()),
   depositMethod: z.number(),
-  accountId: z.nullable(z.number()),
+  accountId: z.nullable(z.string()),
   tokenId: z.string(),
   chainTokenId: z.string(),
-  quantity: z.nullable(z.number()),
-  fromAddress: z.string(),
-  walletAddress: z.string(),
-  walletAddressTag: z.string(),
-  txId: z.string(),
+  quantity: z.nullable(z.string()),
+  fromAddress: z.nullable(z.string()),
+  walletAddress: z.nullable(z.string()),
+  walletAddressTag: z.nullable(z.string()),
+  txId: z.nullable(z.string()),
   status: z.nullable(z.number()),
-  createdAt: z.nullable(z.number()),
+  createdAt: z.nullable(z.string()),
   updatedAt: z.nullable(z.number()),
   blockTime: z.nullable(z.number()),
   walletHandleTime: z.nullable(z.number()),
@@ -25,7 +25,7 @@ const DepositOrderSchema = z.object({
   txIdUrl: z.nullable(z.string()),
   depositReceiptType: z.nullable(z.number()),
   cannotReceiptReason: z.nullable(z.number()),
-  userId: z.nullable(z.number()),
+  userId: z.nullable(z.string()),
   tokenName: z.nullable(z.string()),
 })
 
@@ -49,7 +49,7 @@ export const getDepositOrder = (params?: DepositOrderParams) => {
   return useQuery({
     ...getQuery({
       method: 'GET',
-      url: getUrl('/wallet/pageDepositOrder'),
+      url: getUrl('/dw/wallet/pageDepositOrder'),
       query: DepositOrderParamsSchema.parse(params),
       transfer: DepositOrderListSchema.parse,
     }),

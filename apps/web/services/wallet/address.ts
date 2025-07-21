@@ -37,7 +37,7 @@ export const getAddress = (params?: AddressParams) => {
   return useQuery({
     ...getQuery({
       method: 'GET',
-      url: getUrl('/wallet/address'),
+      url: getUrl('/dw/wallet/address'),
       query: AddressParamsSchema.parse(params),
       transfer: AddressSchema.parse,
     }),

@@ -7,6 +7,7 @@ export enum StorageKeys {
   RefreshToken = 'refreshToken',
   ExpireIn = 'expireIn',
   ClientId = 'clientId',
+  i18nextLng = 'i18nextLng',
 }
 
 class LocalStorage extends BasicStorage<StorageKeys> {

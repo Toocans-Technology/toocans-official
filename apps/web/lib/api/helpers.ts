@@ -45,7 +45,7 @@ export async function extractWrapData<T>(res: Response, args: CscFetcherOptions<
 
 export type CscFetcherOptions<T> = FetchDataOptions & {
   transfer: (data: any) => T
-  body?: Record<string, unknown>
+  body?: Record<string, unknown> | FormData
 }
 
 export async function handleData<T>(args: CscFetcherOptions<T>, skipTokenError: boolean): Promise<T | undefined> {

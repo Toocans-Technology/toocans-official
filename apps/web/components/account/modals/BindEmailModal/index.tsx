@@ -1,0 +1,54 @@
+'use client'
+
+import { FunctionComponent, useCallback, useEffect, useState } from 'react'
+import { Button, Separator } from '@workspace/ui/components'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@workspace/ui/components'
+import { useT } from '@/i18n'
+import { useUserInfo } from '@/services/user'
+import BindStep from './BindStep'
+import SendCodeStep from './SendCodeStep'
+
+enum BindSteps {
+  sendCode,
+  bind,
+}
+
+const BindEmailModal: FunctionComponent = () => {
+  const { t } = useT(['account', 'common'])
+  const [open, setOpen] = useState(false)
+  const [step, setStep] = useState<BindSteps>(BindSteps.sendCode)
+  const { data: userInfo, refetch } = useUserInfo()
+
+  useEffect(() => {
+    setStep(BindSteps.sendCode)
+  }, [open])
+
+  const handleSuccess = useCallback(() => {
+    refetch()
+    setOpen(false)
+  }, [refetch])
+
+  const handleCancel = useCallback(() => {
+    setOpen(false)
+  }, [])
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button rounded="full" variant="secondary">
+          {t('common:settings')}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>{t('account:bindEmailAddress')}</DialogTitle>
+          <Separator />
+        </DialogHeader>
+        {step === BindSteps.sendCode && <SendCodeStep userInfo={userInfo} onSuccess={() => setStep(BindSteps.bind)} />}
+        {step === BindSteps.bind && <BindStep userInfo={userInfo} onSuccess={handleSuccess} onCancel={handleCancel} />}
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+export default BindEmailModal
