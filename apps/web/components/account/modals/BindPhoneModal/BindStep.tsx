@@ -71,13 +71,17 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
     }
   }, [])
 
-  const handleSendCode = useCallback(() => {
+  const handleSendCode = useCallback(async () => {
     if (countdown) {
       return
     }
 
-    mutateSendCode({ countryCode: nationalCode, phone: phoneNumber })
-    setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
+    try {
+      await mutateSendCode({ countryCode: nationalCode, phone: phoneNumber })
+      setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
+    } catch (error) {
+      toast.error((error as HttpError).message)
+    }
   }, [mutateSendCode, countdown, nationalCode, phoneNumber])
 
   const onSubmit = useCallback(

@@ -69,15 +69,19 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
     }
   }, [])
 
-  const handleSendCode = useCallback(() => {
+  const handleSendCode = useCallback(async () => {
     trigger('email')
 
     if (countdown || !!formState.errors.email) {
       return
     }
 
-    mutateSendCode({ email })
-    setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
+    try {
+      await mutateSendCode({ email })
+      setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
+    } catch (error) {
+      toast.error((error as HttpError).message)
+    }
   }, [mutateSendCode, countdown, email, formState.errors.email])
 
   const onSubmit = useCallback(
