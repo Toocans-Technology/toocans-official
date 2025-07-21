@@ -10,7 +10,7 @@ import CountryList from './CountryList'
 
 const PhoneInput = () => {
   const { t } = useT('login')
-  const { formData, phoneCheckState, setPhoneCheckState } = useLoginContext()
+  const { formData, phoneCheckState, setPhoneCheckState, seconds } = useLoginContext()
 
   const phoneInputRef: any = useRef(null)
 
@@ -39,6 +39,7 @@ const PhoneInput = () => {
         <Input
           style={{ paddingLeft: '64px' }}
           allowClear
+          disabled={seconds < 60}
           maxLength={11}
           placeholder={t('enter', { name: t('phone') })}
           onFocus={() => {
