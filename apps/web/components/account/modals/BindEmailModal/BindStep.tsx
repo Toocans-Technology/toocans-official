@@ -78,7 +78,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
 
     mutateSendCode({ email })
     setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
-  }, [mutateSendCode, email, formState.errors.email])
+  }, [mutateSendCode, countdown, email, formState.errors.email])
 
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {

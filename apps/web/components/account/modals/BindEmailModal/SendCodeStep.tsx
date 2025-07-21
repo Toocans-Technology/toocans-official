@@ -76,7 +76,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
 
     mutateSendCode({})
     setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
-  }, [mutateSendCode])
+  }, [mutateSendCode, countdown])
 
   const onSubmitCode = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
