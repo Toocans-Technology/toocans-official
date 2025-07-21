@@ -46,7 +46,8 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
   )
 
   const form = useForm<z.infer<typeof FormSchema>>({
-    mode: 'onChange',
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
     resolver: zodResolver(FormSchema),
     defaultValues: {
       email: '',
@@ -114,7 +115,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
                   {...field}
                   autoComplete="off"
                   placeholder={t('account:newEmailPlaceholder')}
-                  className="focus-visible:ring-0"
+                  className="aria-invalid:ring-0 focus-visible:ring-0"
                 />
               </FormControl>
               <FormMessage />
@@ -129,14 +130,14 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
               <FormLabel>{t('account:emailVerificationCode')}</FormLabel>
               <div
                 aria-invalid={formState.errors.verificationCode ? true : false}
-                className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
+                className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded-md bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
               >
                 <FormControl>
                   <Input
                     {...field}
                     autoComplete="off"
                     placeholder={t('account:emailVerificationCode')}
-                    className="focus-visible:ring-0"
+                    className="aria-invalid:ring-0 focus-visible:ring-0"
                   />
                 </FormControl>
                 <span className={cn('text-link', !countdown && 'cursor-pointer')} onClick={handleSendCode}>

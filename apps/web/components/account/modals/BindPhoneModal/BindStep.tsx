@@ -41,13 +41,15 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
     () =>
       z.object({
         nationalCode: z.string(),
-        phoneNumber: z.string(),
+        phoneNumber: z.string({ message: t('account:newPhoneRequired') }),
         verificationCode: z.string().regex(VERIFICATION_CODE_REGEX, t('account:verificationCodeError')).length(6),
       }),
     [t]
   )
 
   const form = useForm<z.infer<typeof FormSchema>>({
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
     resolver: zodResolver(FormSchema),
     defaultValues: {
       nationalCode: '86',
@@ -128,14 +130,14 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
               <FormLabel>{t('account:phoneVerificationCode')}</FormLabel>
               <div
                 aria-invalid={formState.errors.verificationCode ? true : false}
-                className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
+                className="focus-within:border-ring focus-within:ring-primary aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
               >
                 <FormControl>
                   <Input
                     {...field}
                     autoComplete="off"
                     placeholder={t('account:phoneVerificationCode')}
-                    className="focus-visible:ring-0"
+                    className="aria-invalid:ring-0 focus-visible:ring-0"
                   />
                 </FormControl>
                 <span className={cn('text-link', !countdown && 'cursor-pointer')} onClick={handleSendCode}>

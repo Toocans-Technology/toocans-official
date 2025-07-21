@@ -18,7 +18,7 @@ const AccountInfo: FunctionComponent = () => {
   const { t } = useT(['account', 'common'])
   const [openChangeAvatarModal, setOpenChangeAvatarModal] = useState(false)
   const { data } = useUserInfo()
-  const securityLevel = useSecurityLevel(data?.kycLevel)
+  const securityLevel = useSecurityLevel(data?.kycLevel, data?.hasGaKey)
 
   useRedirectIfNotLogin()
 
@@ -120,7 +120,7 @@ const AccountInfo: FunctionComponent = () => {
         </div>
         <div className="text-xs">{data?.mobile ? `+${data?.nationalCode}${data?.mobile}` : '-'}</div>
         <div className="flex justify-end">
-          {!data?.mobile ? (
+          {data?.mobile ? (
             <CopyToClipboard text={data?.mobile || ''} onCopy={handleCopy}>
               <Button rounded="full" variant="secondary">
                 {t('common:copy')}

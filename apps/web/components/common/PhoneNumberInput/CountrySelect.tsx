@@ -15,7 +15,9 @@ import {
   PopoverTrigger,
 } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
+import { useLang } from '@/hooks'
 import { useT } from '@/i18n'
+import { Locale } from '@/i18n/config'
 import { getCountryList } from '@/services/login'
 
 interface Props {
@@ -24,6 +26,7 @@ interface Props {
 
 const CountrySelect: FunctionComponent<Props> = ({ onChange }) => {
   const { t } = useT(['common'])
+  const lang = useLang()
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState('86')
   const { data: countryList } = getCountryList()
@@ -71,8 +74,15 @@ const CountrySelect: FunctionComponent<Props> = ({ onChange }) => {
                 keywords={[`+${country.nationalCode}`, country.countryName, country.countryEnName ?? '']}
                 className={cn('py-3', value === country.nationalCode && 'data-[selected=true]:bg-[#f4f4f4]')}
               >
-                <Image src={country.flagUrls[0]?.url ?? ''} width={20} height={20} alt={country.countryName ?? ''} />
-                <div className="flex-1 text-sm text-[#0D0D0D]">{country.countryName}</div>
+                <Image
+                  src={country.flagUrls[0]?.url ?? ''}
+                  width={20}
+                  height={20}
+                  alt={lang === Locale.ZH_CN ? country.countryName : (country.countryEnName ?? '')}
+                />
+                <div className="flex-1 text-sm text-[#0D0D0D]">
+                  {lang === Locale.ZH_CN ? country.countryName : country.countryEnName}
+                </div>
                 <span className="font-medium">+{country.nationalCode}</span>
               </CommandItem>
             ))}

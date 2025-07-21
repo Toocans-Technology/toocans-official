@@ -41,6 +41,7 @@
   "phoneVerificationCode": "Phone Verification Code",
   "emailVerificationCode": "Email Verification Code",
   "newPhone": "New Phone Number",
+  "newPhoneRequired": "Phone number is required",
   "newEmail": "New Email",
   "newEmailPlaceholder": "Enter new email address",
   "newEmailError": "Email format error",
