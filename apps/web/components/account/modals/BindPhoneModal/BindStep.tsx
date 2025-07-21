@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCountDown } from 'ahooks'
+import { CountryCode, isValidNumber } from 'libphonenumber-js'
 import { Loader2Icon } from 'lucide-react'
 import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -22,6 +23,7 @@ import { cn } from '@workspace/ui/lib/utils'
 import { PhoneNumberInput } from '@/components/common'
 import { useT } from '@/i18n'
 import { ONE_MINUTE_COUNT_DOWN, VERIFICATION_CODE_REGEX } from '@/lib/utils'
+import { Country } from '@/services/login'
 import { useBindPhone, UserInfo, useSendBindCode } from '@/services/user'
 import { HttpError } from '@/types/http'
 
@@ -34,6 +36,7 @@ interface Props {
 const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) => {
   const { t } = useT(['account', 'common'])
   const [targetDate, setTargetDate] = useState<number>()
+  const [countryCode, setCountryCode] = useState<CountryCode>()
   const { mutateAsync: mutateSendCode } = useSendBindCode()
   const { mutateAsync: mutateBindPhone, isPending } = useBindPhone()
 
@@ -41,10 +44,14 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
     () =>
       z.object({
         nationalCode: z.string(),
-        phoneNumber: z.string({ message: t('account:newPhoneRequired') }),
+        phoneNumber: z
+          .string({ message: t('account:newPhoneRequired') })
+          .refine((val) => isValidNumber(val, countryCode), {
+            message: t('account:newPhoneError'),
+          }),
         verificationCode: z.string().regex(VERIFICATION_CODE_REGEX, t('account:verificationCodeError')).length(6),
       }),
-    [t]
+    [countryCode, t]
   )
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -71,6 +78,11 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
     return () => {
       reset()
     }
+  }, [])
+
+  const handleCountryChange = useCallback((country: Country) => {
+    setValue('nationalCode', country.nationalCode)
+    setCountryCode(country.domainShortName as CountryCode)
   }, [])
 
   const handleSendCode = useCallback(async () => {
@@ -115,7 +127,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
                 <PhoneNumberInput
                   {...field}
                   invalid={!!formState.errors.phoneNumber}
-                  onCountryChange={(nationalCode) => setValue('nationalCode', nationalCode)}
+                  onCountryChange={handleCountryChange}
                 />
               </FormControl>
               <FormMessage />

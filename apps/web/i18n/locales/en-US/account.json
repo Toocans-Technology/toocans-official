@@ -42,6 +42,7 @@
   "emailVerificationCode": "Email Verification Code",
   "newPhone": "New Phone Number",
   "newPhoneRequired": "Phone number is required",
+  "newPhoneError": "Please enter a right phone number",
   "newEmail": "New Email",
   "newEmailPlaceholder": "Enter new email address",
   "newEmailError": "Email format error",
