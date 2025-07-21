@@ -1,15 +1,17 @@
 'use client'
 
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { QRCodeSVG } from 'qrcode.react'
 import React, { useState, useCallback } from 'react'
-import { openToast } from '@/utils'
+import { Input } from '@workspace/ui/components'
 import { useT } from '@/i18n'
 import { GOOGLE_CODE_REGEXP } from '@/lib/regexp'
 import { useGenerateGoogleAuth } from '@/services/user/generateGoogleAuth'
 import { useUserInfo } from '@/services/user/info'
 import { useVerifyGoogleAuth } from '@/services/user/verifyGoogleAuth'
 import { HttpError } from '@/types/http'
+import { openToast } from '@/utils'
 
 export default function AuthAppPage() {
   const { t } = useT('authapp')
@@ -17,11 +19,11 @@ export default function AuthAppPage() {
   const { mutateAsync: mutateVerifyGoogleAuth, isPending } = useVerifyGoogleAuth()
   const [googleCode, setGoogleCode] = useState('')
   const [bindSuccess, setBindSuccess] = useState(true)
+  const router = useRouter()
   React.useEffect(() => {
     if (userInfoRes && userInfoRes.hasGaKey) {
       setGoogleCode('')
       setBindSuccess(true)
-      openToast(t('authapp:AlreadyBinded'), 'error');
       setTimeout(() => {
         window.history.back()
       }, 2000)
@@ -49,26 +51,25 @@ export default function AuthAppPage() {
       setGoogleCode('')
       setBindSuccess(true)
       setTimeout(() => {
-        window.history.back()
+        router.push(`/account`)
       }, 2000)
     } catch (error) {
       setBindSuccess(false)
-      openToast((error as HttpError).message, 'error');
+      openToast((error as HttpError).message, 'error')
     }
   }, [mutateVerifyGoogleAuth, googleCode, generateGoogleAuthRes, t])
 
   const handleVerifyGoogleAuth = () => {
     if (!googleCode || !generateGoogleAuthRes?.secretKey) {
-      openToast(t('authapp:PleaseEnterCodeAndSecretKey'), 'error');
+      openToast(t('authapp:PleaseEnterCodeAndSecretKey'), 'error')
       return
     }
     if (!GOOGLE_CODE_REGEXP.test(googleCode)) {
-      openToast(t('authapp:GoogleCode6Digits'), 'error');
+      openToast(t('authapp:GoogleCode6Digits'), 'error')
       return
     }
     handleVerifyGoogleAuthSubmit()
   }
-  
   React.useEffect(() => {
     if (generateGoogleAuthRes) {
       console.log('5:', generateGoogleAuthRes)
@@ -77,29 +78,31 @@ export default function AuthAppPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#fafbfc]">
       <div className="mx-auto w-full max-w-[942px] rounded-xl bg-white p-[60px_32px_24px_32px] shadow-[0_2px_16px_0_rgba(0,0,0,0.04)]">
-        <div className="font-inter pb-10 text-[32px] font-medium leading-[30px] text-black">Authenticator app</div>
+        <div className="font-inter pb-10 text-[32px] font-medium leading-[30px] text-black">
+          {t('authapp:AuthenticatorApp')}
+        </div>
         <div className="mb-8">
           <div className="font-inter pb-8 text-[16px] font-medium leading-[26px] text-[#222]">
-            Set Up Two-Factor Authentication
+            {t('authapp:SetUpTwoFactorAuthentication')}
           </div>
           <div className="mb-2 flex items-center">
             <div className="font-inter flex h-5 w-5 items-center justify-center gap-2 rounded-full bg-[#222] p-2 text-center text-[12px] font-medium leading-5 text-white">
               1
             </div>
-            <div className="ml-2">Download authenticator</div>
+            <div className="ml-2">{t('authapp:DownloadAuthenticator')}</div>
           </div>
           <div className="mb-2 flex items-center">
             <div className="w-5" />
-            <div className="pl-5 font-normal text-[#666]">Download Google Authenticator Android/iOS</div>
+            <div className="pl-2 font-normal text-[#666]">{t('authapp:DownloadGoogleAuthenticator')}</div>
           </div>
-          <div className="mb-4 ml-6 mt-8 flex gap-12">
+          <div className="mb-4 ml-6 mt-8 flex gap-12" style={{ paddingLeft: '10px' }}>
             <div className="font-inter flex flex-col items-center text-center text-[14px] font-normal leading-[22px] text-[#666]">
               <Image src="/images/authapp/qr.png" alt="iOS" width={72} height={72} />
-              <div>iOS</div>
+              <div>{t('authapp:iOS')}</div>
             </div>
             <div className="font-inter flex flex-col items-center text-center text-[14px] font-normal leading-[22px] text-[#666]">
               <Image src="/images/authapp/Googlepay.png" alt="Android" width={72} height={72} />
-              <div>Android</div>
+              <div>{t('authapp:Android')}</div>
             </div>
           </div>
         </div>
@@ -108,25 +111,30 @@ export default function AuthAppPage() {
             <div className="font-inter flex h-5 w-5 items-center justify-center gap-2 rounded-full bg-[#222] p-2 text-center text-[12px] font-medium leading-5 text-white">
               2
             </div>
-            <div className="ml-2">Scan QR code</div>
+            <div className="ml-2">{t('authapp:ScanQRCode')}</div>
           </div>
           <div className="mb-2 flex items-center">
             <div className="w-5" />
-            <div className="pl-5 font-normal text-[#666]">
-              Open Google Authenticator, scan the QR code below or manually enter the key phrase to activate the
-              verification token. Key phrase is used to recover Google Authenticator in the event of a loss or change of
-              device — please make sure to keep the key phrase safe before setting up Google Authenticator。
-            </div>
+            <div className="pl-5 font-normal text-[#666]">{t('authapp:ScanQRCodeDesc')}</div>
           </div>
-          <div className="mt-9 flex items-center gap-6 pl-6">
+          <div className="mt-9 flex items-center gap-6 pl-7">
             {generateGoogleAuthRes?.qrCodeUrl ? (
-              <QRCodeSVG value={generateGoogleAuthRes.qrCodeUrl} size={72} />
+              <div
+                style={{
+                  borderRadius: '6px',
+                  padding: '6px',
+                  background: '#FFF',
+                  boxShadow: '0px 6.75px 21px 6px rgba(0, 0, 0, 0.10)',
+                }}
+              >
+                <QRCodeSVG value={generateGoogleAuthRes.qrCodeUrl} size={72} />
+              </div>
             ) : (
               <Image src="/images/authapp/qr.png" alt="QR Code" width={72} height={72} />
             )}
             <div>
               <div className="font-inter mb-1 text-[14px] font-normal leading-[22px] text-[#666]">
-                Or manually enter the code below
+                {t('authapp:ManualEnterCode')}
               </div>
               <div className="font-inter flex w-fit items-center gap-2 text-[14px] font-medium leading-[22px] text-[#222]">
                 {generateGoogleAuthRes?.secretKey || '--'}
@@ -142,39 +150,19 @@ export default function AuthAppPage() {
             <div className="font-inter flex h-5 w-5 items-center justify-center gap-2 rounded-full bg-[#222] p-2 text-center text-[12px] font-medium leading-5 text-white">
               3
             </div>
-            <div className="ml-2">Security authentication</div>
+            <div className="ml-2">{t('authapp:SecurityAuthentication')}</div>
           </div>
-          {/* {verifyType === 'email' ? (
-            <div className="mb-6 ml-8">
-              <div className="mb-2 text-[14px] font-medium text-[#222]">Email authentication</div>
-              <div className="flex items-center gap-3">
-                <input
-                  maxLength={6}
-                  className="mb-7 ml-8 flex h-11 w-[456px] items-center rounded-md border-none bg-[#f5f5f5] px-3 text-black"
-                  placeholder="Enter 6-digit generated code from your app"
-                />
-                <button
-                  className="h-9 cursor-pointer rounded-[20px] bg-[#86fc70] px-5 text-[14px] font-medium text-[#222] transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-                  onClick={handleSendCode}
-                  disabled={emailCountdown > 0}
-                >
-                  {emailCountdown > 0 ? `${emailCountdown}s` : 'Send'}
-                </button>
-              </div>
-            </div>
-          ) : ( */}
-          <div className="mb-6 ml-8">
+          <div className="mb-6">
             {!bindSuccess && (
-              <input
+              <Input
                 maxLength={6}
-                className="mb-7 ml-8 flex h-11 w-[456px] items-center rounded-md border-none bg-[#f5f5f5] px-3 text-black"
-                placeholder="Please enter the Authenticator code"
+                className="mb-7 ml-7 flex h-11 w-[456px] items-center rounded-md border-none bg-[#f5f5f5] px-3 text-black"
+                placeholder={t('authapp:PleaseEnterAuthenticatorCode')}
                 value={googleCode}
                 onChange={(e) => setGoogleCode(e.target.value)}
               />
             )}
           </div>
-          {/* )} */}
           {!bindSuccess && (
             <button
               disabled={isPending}
