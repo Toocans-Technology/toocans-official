@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { QRCodeSVG } from 'qrcode.react'
 import React, { useState, useCallback } from 'react'
 import { Input } from '@workspace/ui/components'
+import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { GOOGLE_CODE_REGEXP } from '@/lib/regexp'
 import { useGenerateGoogleAuth } from '@/services/user/generateGoogleAuth'
@@ -19,6 +20,8 @@ export default function AuthAppPage() {
   const { mutateAsync: mutateVerifyGoogleAuth, isPending } = useVerifyGoogleAuth()
   const [googleCode, setGoogleCode] = useState('')
   const [bindSuccess, setBindSuccess] = useState(true)
+  useRedirectIfNotLogin()
+
   const router = useRouter()
   React.useEffect(() => {
     if (userInfoRes && userInfoRes.hasGaKey) {
@@ -51,8 +54,9 @@ export default function AuthAppPage() {
       setGoogleCode('')
       setBindSuccess(true)
       setTimeout(() => {
-        router.push(`/account`)
-      }, 2000)
+        router.replace(`/account`)
+        window.location.reload()
+      }, 1500)
     } catch (error) {
       setBindSuccess(false)
       openToast((error as HttpError).message, 'error')

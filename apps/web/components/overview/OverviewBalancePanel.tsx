@@ -16,7 +16,6 @@ export default function OverviewBalancePanel() {
   const { data: data } = useAssetAll()
   const { tokens: allTokenData } = useAllToken()
   const [show, setShow] = useState(true)
-
   useRedirectIfNotLogin()
 
   const formatAmount = (val: number | string | BigNumber) => {
