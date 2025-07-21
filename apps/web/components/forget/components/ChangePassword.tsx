@@ -59,7 +59,7 @@ const ChangePassword = () => {
               if (matchResult === true) {
                 return Promise.resolve()
               } else {
-                setErrType(matchResult?.errorType)
+                setErrType(matchResult?.errotype)
                 return Promise.reject()
               }
             },
