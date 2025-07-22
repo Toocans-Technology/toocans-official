@@ -26,6 +26,6 @@ export const getWithdrawOrder = (params?: WithdrawOrderParams) => {
       query: WithdrawOrderParamsSchema.parse(params),
       transfer: WithdrawOrderListSchema.parse,
     }),
-    enabled: !!params?.tokenId,
+    // enabled: !!params?.tokenId,
   })
 }
