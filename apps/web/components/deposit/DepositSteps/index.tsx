@@ -146,7 +146,7 @@ const DepositSteps: FunctionComponent = () => {
           </div>
         </div>
       </div>
-      <RecentDeposits tokenId={selectedNetwork?.tokenId || ''} />
+      <RecentDeposits />
       <VerifyModal />
     </>
   )
