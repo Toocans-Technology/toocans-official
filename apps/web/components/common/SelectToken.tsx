@@ -1,3 +1,4 @@
+import { sortBy } from 'es-toolkit'
 import Image from 'next/image'
 import { FunctionComponent, useMemo } from 'react'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@workspace/ui/components'
@@ -24,7 +25,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect }) => {
       icon: token.icon,
       name: token.tokenName,
     }))
-    return [allToken, ...list]
+    return [allToken, ...sortBy(list, ['name'])]
   }, [tokens])
 
   return (

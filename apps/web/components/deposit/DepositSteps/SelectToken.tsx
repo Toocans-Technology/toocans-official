@@ -1,5 +1,6 @@
 'use client'
 
+import { sortBy } from 'es-toolkit'
 import { ChevronDown } from 'lucide-react'
 import Image from 'next/image'
 import { FunctionComponent, useCallback, useMemo, useState } from 'react'
@@ -32,16 +33,20 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
   const [open, setOpen] = useState(false)
   const [selectedToken, setSelectedToken] = useState<Token>()
 
-  const tokenList = useMemo(
-    () =>
-      tokens?.map((token) => ({
-        id: token.id,
-        icon: token.icon,
-        name: token.tokenName,
-        fullName: token.tokenFullName,
-      })),
-    [tokens]
-  )
+  const tokenList = useMemo(() => {
+    if (!tokens) {
+      return []
+    }
+
+    const list = tokens?.map((token) => ({
+      id: token.id,
+      icon: token.icon,
+      name: token.tokenName,
+      fullName: token.tokenFullName,
+    }))
+
+    return sortBy(list, ['name'])
+  }, [tokens])
 
   const handleSelectToken = useCallback(
     (value: string) => {

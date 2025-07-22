@@ -65,12 +65,14 @@ const WithdrawHistory: FunctionComponent = () => {
           )}
         </TableBody>
       </Table>
-      <PaginationControls
-        className="py-2"
-        totalPages={orderData?.pages || 0}
-        currentPage={Number(orderData?.pageNum) || 0}
-        onPageChange={(page: number) => params && setParams({ ...params, pageNo: page })}
-      />
+      {orderData?.pages ? (
+        <PaginationControls
+          className="py-2"
+          totalPages={orderData?.pages}
+          currentPage={Number(orderData?.pageNum) || 0}
+          onPageChange={(page: number) => params && setParams({ ...params, pageNo: page })}
+        />
+      ) : null}
     </>
   )
 }

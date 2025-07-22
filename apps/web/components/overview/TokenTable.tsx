@@ -38,7 +38,7 @@ const TokenTable = () => {
   }
 
   const getTokenPrecision = (tokenId: string, hasAsset: boolean = true): number => {
-    if (!hasAsset) return 2;
+    if (!hasAsset) return 2
     const found = allTokenData.find((item) => item.tokenId === tokenId)
     return typeof found?.minPrecision === 'number' ? found.minPrecision : 4
   }
@@ -102,7 +102,10 @@ const TokenTable = () => {
                       ? '0.00'
                       : formatAmount(
                           asset.total ?? 0,
-                          getTokenPrecision(typeof asset.tokenId === 'string' ? asset.tokenId : '', !!asset.total && asset.total !== '0')
+                          getTokenPrecision(
+                            typeof asset.tokenId === 'string' ? asset.tokenId : '',
+                            !!asset.total && asset.total !== '0'
+                          )
                         )}
                   </div>
                   <div className="font-din text-right text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
