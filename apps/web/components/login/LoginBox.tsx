@@ -79,6 +79,15 @@ const LoginBox: FunctionComponent = () => {
       query = { phone, nationalCode }
     }
 
+    if (!form.getFieldValue('unregisteredTip') && checkBoxRef.current) {
+      checkBoxRef.current.openShak1()
+      return
+    }
+    if (!form.getFieldValue('userAgreement') && checkBoxRef.current) {
+      checkBoxRef.current.openShak2()
+      return
+    }
+
     router.push('/forget', { query })
   }, [grantType])
 
@@ -90,6 +99,11 @@ const LoginBox: FunctionComponent = () => {
       }
       if (!values.userAgreement && checkBoxRef.current) {
         checkBoxRef.current.openShak2()
+        return
+      }
+
+      if (grantType == GrantType.SMS && (!values.phone || !matchPhoneNum(values.nationalCode, values.phone))) {
+        form.setFields([{ name: 'phone', errors: [t('formatErr', { name: `${t('phone')} ${t('number')}` })] }])
         return
       }
 
@@ -117,11 +131,6 @@ const LoginBox: FunctionComponent = () => {
             emailCode: values.code,
           })
         } else {
-          if (!values.phone || !matchPhoneNum(values.nationalCode, values.phone)) {
-            form.setFields([{ name: 'phone', errors: [t('formatErr', { name: `${t('phone')} ${t('number')}` })] }])
-            return
-          }
-
           Object.assign(resultParams, {
             grantType,
             nationalCode: values.nationalCode,
