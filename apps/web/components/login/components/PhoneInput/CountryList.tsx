@@ -21,7 +21,8 @@ const CountryList = () => {
   const filterCountrys = useMemo(
     () =>
       countrys?.filter(
-        (item: any) => item.countryEnName.toLowerCase().includes(searchVal) || item.nationalCode.includes(searchVal)
+        (item: any) =>
+          item.countryEnName.toLowerCase().includes(searchVal.toLowerCase()) || item.nationalCode.includes(searchVal)
       ),
     [countrys, searchVal]
   )
