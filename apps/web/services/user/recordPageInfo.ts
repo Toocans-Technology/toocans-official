@@ -5,16 +5,16 @@ import { getUrl } from '@/lib/api/getUrl'
 import { businessTypeSchema } from '@/types/user'
 
 const RecordSchema = z.object({
-  id: z.number(),
-  balanceId: z.number(),
-  businessType: businessTypeSchema,
-  businessId: z.number(),
-  accountId: z.number(),
+  id: z.string(),
+  balanceId: z.string(),
+  businessType: z.number(),
+  businessId: z.string(),
+  accountId: z.string(),
   tokenId: z.string().nullable(),
   tokenName: z.string().nullable(),
-  amount: z.number(),
-  beforeAmount: z.number(),
-  createDate: z.number(),
+  amount: z.string(),
+  beforeAmount: z.string(),
+  createDate: z.string(),
 })
 
 export type Record = z.infer<typeof RecordSchema>

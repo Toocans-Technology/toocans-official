@@ -87,7 +87,7 @@ export default function OverviewBalancePanel() {
           </Link>
           <Link
             href="/withdrawal"
-            className="font-pingfang flex h-10 cursor-pointer items-center justify-center gap-2 rounded-[40px] bg-[#f4f4f4] px-7 text-[16px] font-normal leading-[22px] tracking-[-0.408px] text-[#222]"
+            className="flex h-10 cursor-pointer items-center justify-center gap-2 rounded-[40px] bg-[#f4f4f4] px-7 text-[16px] font-normal leading-[22px] tracking-[-0.408px] text-[#222]"
           >
             {t('overview:Withdraw')}
           </Link>

@@ -8,7 +8,7 @@ import { refreshToken } from './refreshToken'
 import { responseSchema } from './schemas'
 
 export const successCode = '200'
-export const authErrorCodes = ['10002'] // TODO: 定义认证错误码
+export const authErrorCodes = ['401100000'] // TODO: 定义认证错误码
 
 const isJsonContentType = (res: Response) => {
   const contentType = res.headers.get('content-type')
