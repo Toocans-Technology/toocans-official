@@ -30,6 +30,8 @@
   "cancel": "Cancel",
   "search": "Search",
   "disable": "Disable",
+  "verified": "Verified",
+  "unverified": "Unverified",
   "enterPhone": "Enter Phone",
   "noNationalCode": "No national code found",
   "changeAvatarModal": {

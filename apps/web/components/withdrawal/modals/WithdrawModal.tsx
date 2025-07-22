@@ -63,6 +63,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    mode: 'all',
     defaultValues: {
       code: '',
       gaCode: '',
@@ -184,14 +185,14 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
                   <FormLabel>{formLabel}</FormLabel>
                   <div
                     aria-invalid={formState.errors.code ? true : false}
-                    className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded-md bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
+                    className="focus-within:border-ring focus-within:ring-primary aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-4 overflow-hidden rounded-md bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
                   >
                     <FormControl>
                       <Input
                         {...field}
                         autoComplete="off"
                         placeholder={t('withdrawal:emailAuthPlaceholder')}
-                        className="focus-visible:ring-0"
+                        className="aria-invalid:ring-0 focus-visible:ring-0"
                       />
                     </FormControl>
                     <span className={cn('text-link', !countdown && 'cursor-pointer')} onClick={handleSendCode}>
