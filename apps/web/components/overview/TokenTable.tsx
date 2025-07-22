@@ -18,6 +18,15 @@ const formatAmount = (val: number | string | BigNumber, precision: number = 4) =
   }
 }
 
+function formatRateAmount(val: string | number | null | undefined, precision: number = 4) {
+  const num = new BigNumber(val ?? 0)
+  if (!num.isFinite()) return '--'
+  return num.toFormat(precision, {
+    groupSeparator: ',',
+    decimalSeparator: '.',
+  })
+}
+
 function safeMul(a: string | number | null | undefined, b: string | number | null | undefined) {
   const n1 = new BigNumber(a ?? 0)
   const n2 = new BigNumber(b ?? 0)
@@ -134,7 +143,7 @@ const TokenTable = () => {
                     {assets.length === 0
                       ? '0.00'
                       : formatTrailingZeros(
-                          formatAmount(
+                          formatRateAmount(
                             asset.total ?? 0,
                             getTokenPrecision(
                               typeof asset.tokenId === 'string' ? asset.tokenId : '',
