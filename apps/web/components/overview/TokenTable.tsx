@@ -8,13 +8,14 @@ import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
 import { Link } from '../common'
 
-function formatAmount(val: string | number | null | undefined, precision: number = 4) {
-  const num = new BigNumber(val ?? 0)
-  if (!num.isFinite()) return '--'
-  return num.toFormat(precision, {
-    groupSeparator: ',',
-    decimalSeparator: '.',
-  })
+const formatAmount = (val: number | string | BigNumber, precision: number = 4) => {
+  try {
+    const num = new BigNumber(val)
+    if (!num.isFinite()) return '--'
+    return num.toFormat(precision)
+  } catch {
+    return '--'
+  }
 }
 
 function safeMul(a: string | number | null | undefined, b: string | number | null | undefined) {
@@ -31,9 +32,7 @@ function formatTrailingZeros(val: string | number | null | undefined): string {
 
   if (decimalPart) {
     const trimmedDecimal = decimalPart.replace(/0+$/, '')
-    return trimmedDecimal.length > 0
-      ? `${integerPart}.${trimmedDecimal}`
-      : `${integerPart}.00`
+    return trimmedDecimal.length > 0 ? `${integerPart}.${trimmedDecimal}` : `${integerPart}.00`
   }
 
   return `${integerPart}`
@@ -116,20 +115,17 @@ const TokenTable = () => {
                     {asset.tokenId}
                   </div>
                   <div className="font-din text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
-                    ${asset.tokenId === 'USDT' ? '1' : formatAmount(asset.marketPrice ?? 0, 2)}
+                    ${asset.tokenId === 'USDT' ? '1' : formatAmount(Number(asset.marketPrice), 2)}
                     <span
-                      className={`font-inter ml-2 items-center justify-center gap-2 rounded px-3 py-1 text-right text-sm font-normal leading-5 
-                        ${asset.marketPriceChange != null && parseFloat(asset.marketPriceChange) < 0
-                        ? 'bg-[rgba(253,99,132,0.20)] text-[#FD6384]'
-                        : asset.marketPriceChange != null
-                        ? `bg-[rgba(26,202,117,0.20)] text-[#1ACA75]`
-                        : ''}`}
+                      className={`font-inter ml-2 items-center justify-center gap-2 rounded px-3 py-1 text-right text-sm font-normal leading-5 ${
+                        asset.marketPriceChange != null && parseFloat(asset.marketPriceChange) < 0
+                          ? 'bg-[rgba(253,99,132,0.20)] text-[#FD6384]'
+                          : asset.marketPriceChange != null
+                            ? `bg-[rgba(26,202,117,0.20)] text-[#1ACA75]`
+                            : ''
+                      }`}
                     >
-                      {asset.marketPriceChange == null
-                        ? ''
-                        : parseFloat(asset.marketPriceChange).toFixed(2)
-                      }
-                      %
+                      {asset.marketPriceChange == null ? '' : parseFloat(asset.marketPriceChange).toFixed(2)}%
                     </span>
                   </div>
                 </div>
