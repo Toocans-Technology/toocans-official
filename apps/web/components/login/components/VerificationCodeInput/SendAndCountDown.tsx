@@ -61,7 +61,7 @@ const SendAndCountDown = () => {
       }
       style={{ position: 'absolute' }}
     >
-      {seconds == 60 ? t('send') : seconds}
+      {seconds == 60 ? t('send') : `${seconds} s`}
     </Button>
   )
 }
