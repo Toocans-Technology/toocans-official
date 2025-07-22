@@ -11,20 +11,20 @@ import Filter, { FilterParams } from './Filter'
 
 const pageSize = 20
 
-const WithdrawHistory: FunctionComponent = () => {
+const TransferIn: FunctionComponent = () => {
   const { t } = useT('history')
   const [params, setParams] = useState<RecordParams>({
     pageNo: 1,
     pageSize,
     tokenId: '',
-    businessType: BusinessType.withdraw,
+    businessType: BusinessType.internal,
     beginTime: dayjs().subtract(30, 'day').toDate().getTime(),
     endTime: dayjs().toDate().getTime(),
   })
   const { data: recordData } = getRecordList(params)
 
   const handleChange = useCallback((filterParams: FilterParams) => {
-    setParams({ ...filterParams, businessType: BusinessType.withdraw, pageNo: 1, pageSize })
+    setParams({ ...filterParams, businessType: BusinessType.transfer, pageNo: 1, pageSize })
   }, [])
 
   return (
@@ -44,7 +44,7 @@ const WithdrawHistory: FunctionComponent = () => {
             recordData.list.map((record) => (
               <TableRow key={record.id} className="border-none">
                 <TableCell className="p-3 font-medium text-[#222]">{record.tokenName}</TableCell>
-                <TableCell className="text-destructive p-3">-{record.amount}</TableCell>
+                <TableCell className="text-brand p-3">+{record.amount}</TableCell>
                 <TableCell className="p-3">{record.accountId}</TableCell>
                 <TableCell className="p-3">{dayjs(Number(record.createDate)).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
               </TableRow>
@@ -70,4 +70,4 @@ const WithdrawHistory: FunctionComponent = () => {
   )
 }
 
-export default WithdrawHistory
+export default TransferIn

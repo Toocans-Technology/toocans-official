@@ -1,5 +1,6 @@
 'use client'
 
+import dayjs from 'dayjs'
 import { FunctionComponent, useCallback, useState } from 'react'
 import { DateRange } from 'react-day-picker'
 import { Label } from '@workspace/ui/components'
@@ -8,8 +9,8 @@ import { Calendar, SelectToken } from '../common'
 
 export interface FilterParams {
   tokenId: string
-  beginTime: number | undefined
-  endTime: number | undefined
+  beginTime?: number
+  endTime?: number
 }
 
 interface FilterProps {

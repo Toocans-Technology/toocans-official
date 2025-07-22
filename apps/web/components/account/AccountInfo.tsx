@@ -6,6 +6,7 @@ import { FunctionComponent, useCallback, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Button, toast } from '@workspace/ui/components'
 import { Separator } from '@workspace/ui/components'
+import { cn } from '@workspace/ui/lib/utils'
 import { useRedirectIfNotLogin, useSecurityLevel } from '@/hooks'
 import { useT } from '@/i18n'
 import { useUserVerifyInfo } from '@/services/user'
@@ -68,8 +69,15 @@ const AccountInfo: FunctionComponent = () => {
         <div className="flex flex-col gap-1">
           <p className="text-[#666]">{t('account:identityVerification')}</p>
           <div>
-            <span className="bg-destructive/20 text-destructive inline-block rounded px-2 py-0.5 text-sm">
-              {verifyInfo?.kycLevel === KycLevel.unverified ? t('account:unverified') : t('account:verified')}
+            <span
+              className={cn(
+                'inline-block rounded px-2 py-0.5 text-xs',
+                verifyInfo?.kycLevel === KycLevel.low
+                  ? 'bg-primary/20 text-primary'
+                  : 'bg-destructive/20 text-destructive'
+              )}
+            >
+              {verifyInfo?.kycLevel === KycLevel.low ? t('common:verified') : t('common:unverified')}
             </span>
           </div>
         </div>

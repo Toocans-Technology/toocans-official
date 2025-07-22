@@ -11,20 +11,20 @@ import Filter, { FilterParams } from './Filter'
 
 const pageSize = 20
 
-const WithdrawHistory: FunctionComponent = () => {
+const TransferOut: FunctionComponent = () => {
   const { t } = useT('history')
   const [params, setParams] = useState<RecordParams>({
     pageNo: 1,
     pageSize,
     tokenId: '',
-    businessType: BusinessType.withdraw,
+    businessType: BusinessType.transfer,
     beginTime: dayjs().subtract(30, 'day').toDate().getTime(),
     endTime: dayjs().toDate().getTime(),
   })
   const { data: recordData } = getRecordList(params)
 
   const handleChange = useCallback((filterParams: FilterParams) => {
-    setParams({ ...filterParams, businessType: BusinessType.withdraw, pageNo: 1, pageSize })
+    setParams({ ...filterParams, businessType: BusinessType.transfer, pageNo: 1, pageSize })
   }, [])
 
   return (
@@ -70,4 +70,4 @@ const WithdrawHistory: FunctionComponent = () => {
   )
 }
 
-export default WithdrawHistory
+export default TransferOut
