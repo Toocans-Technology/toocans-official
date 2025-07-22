@@ -6,8 +6,13 @@ import * as React from 'react'
 import i18next from '@/i18n'
 import { initCscFetcher } from '@/lib/api'
 import { UrlQueryObject } from '@/lib/api/types'
-import { isTestingEnvironment, trimmedSearchParams, typedStorage } from '@/lib/utils'
-import { getQueryClient } from '@/lib/utils/queryClient'
+import {
+  isTestingEnvironment,
+  trimmedSearchParams,
+  typedStorage,
+  getQueryClient,
+  handleUnauthorized,
+} from '@/lib/utils'
 
 initCscFetcher({
   base: {
@@ -27,6 +32,7 @@ initCscFetcher({
   },
   csc: {
     exposeError: isTestingEnvironment(),
+    handleUnauthorized,
   },
 })
 
