@@ -116,6 +116,11 @@ const TokenTable = () => {
                   </div>
                   <div className="font-din text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
                     ${asset.tokenId === 'USDT' ? '1' : formatAmount(asset.marketPrice ?? 0, 2)}
+                    <span
+                      className={`ml-2 px-3 py-1 justify-center items-center gap-2 rounded text-right font-inter text-sm font-normal leading-5 ${asset.marketPriceChange < 0 ? 'bg-[rgba(253,99,132,0.20)] text-[#FD6384]' : 'bg-[rgba(26,202,117,0.20)] text-[#1ACA75]'}`}
+                    >
+                      {typeof asset.marketPriceChange === 'number' ? (asset.marketPriceChange === 0 ? asset.marketPriceChange : (asset.marketPriceChange % 1 === 0 ? asset.marketPriceChange : parseFloat(asset.marketPriceChange.toFixed(2)))) : (parseFloat(asset.marketPriceChange) === 0 ? '0' : parseFloat(asset.marketPriceChange).toFixed(2))}%
+                    </span>
                   </div>
                 </div>
                 <div className="min-w-[80px] text-right">
