@@ -149,7 +149,7 @@ const WithdrawSteps: FunctionComponent = () => {
           {step >= WithdrawStep.WithdrawAmount && <ReceivedAmount token={selectedNetwork} address={address} />}
         </div>
       </div>
-      <RecentWithdraw tokenId={selectedNetwork?.tokenId} />
+      <RecentWithdraw />
     </>
   )
 }
