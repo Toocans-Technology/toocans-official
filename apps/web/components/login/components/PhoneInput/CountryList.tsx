@@ -20,10 +20,10 @@ const CountryList = () => {
 
   const filterCountrys = useMemo(
     () =>
-      countrys?.filter(
-        (item: any) =>
-          item.countryEnName.toLowerCase().includes(searchVal.toLowerCase()) || item.nationalCode.includes(searchVal)
-      ),
+      countrys?.filter((item: any) => {
+        const name = i18next.language.includes('zh') ? item.countryName : item.countryEnName
+        return name.toLowerCase().includes(searchVal.toLowerCase()) || item.nationalCode.includes(searchVal)
+      }),
     [countrys, searchVal]
   )
 
@@ -87,7 +87,7 @@ const CountryList = () => {
                       onClick={() => handleCuntryClick(item)}
                     >
                       <div className="flex items-center">
-                        <img src={item.flagUrls?.[0].url} alt={item.countryEnName} width={20} className="mr-2" />
+                        <img src={item.flagUrls?.[0].url} width={20} className="mr-2" />
                         {i18next.language.includes('zh') ? item.countryName : item.countryEnName}
                       </div>
                       <div>+{item.nationalCode}</div>
