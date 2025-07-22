@@ -101,13 +101,14 @@ const TokenTable = () => {
                         width={30}
                         height={30}
                       />
-                    ) :   
-                    <Image
+                    ) : (
+                      <Image
                         src={'/images/overview/default.svg'}
                         alt={typeof asset.tokenId === 'string' ? asset.tokenId : ''}
                         width={30}
                         height={30}
                       />
+                    )
                   })()}
                 </span>
                 <div className="flex h-[49px] min-w-0 flex-1 flex-col justify-between">
@@ -117,13 +118,18 @@ const TokenTable = () => {
                   <div className="font-din text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
                     ${asset.tokenId === 'USDT' ? '1' : formatAmount(asset.marketPrice ?? 0, 2)}
                     <span
-                      className={`ml-2 px-3 py-1 justify-center items-center gap-2 rounded text-right font-inter text-sm font-normal leading-5 ${asset.marketPriceChange < 0 ? 'bg-[rgba(253,99,132,0.20)] text-[#FD6384]' : 'bg-[rgba(26,202,117,0.20)] text-[#1ACA75]'}`}
+                      className={`font-inter ml-2 items-center justify-center gap-2 rounded px-3 py-1 text-right text-sm font-normal leading-5 
+                        ${asset.marketPriceChange != null && parseFloat(asset.marketPriceChange) < 0
+                        ? 'bg-[rgba(253,99,132,0.20)] text-[#FD6384]'
+                        : asset.marketPriceChange != null
+                        ? `bg-[rgba(26,202,117,0.20)] text-[#1ACA75]`
+                        : ''}`}
                     >
-                       {asset.marketPriceChange == null
+                      {asset.marketPriceChange == null
                         ? ''
                         : parseFloat(asset.marketPriceChange).toFixed(2) === '0.00'
-                        ? '0'
-                        : parseFloat(asset.marketPriceChange).toFixed(2)}
+                          ? '0'
+                          : parseFloat(asset.marketPriceChange).toFixed(2)}
                       %
                     </span>
                   </div>
@@ -132,13 +138,15 @@ const TokenTable = () => {
                   <div className="font-din text-right text-[14px] font-bold leading-[22px] text-[#0d0d0d]">
                     {assets.length === 0
                       ? '0.00'
-                      : formatTrailingZeros(formatAmount(
-                          asset.total ?? 0,
-                          getTokenPrecision(
-                            typeof asset.tokenId === 'string' ? asset.tokenId : '',
-                            !!asset.total && asset.total !== '0'
+                      : formatTrailingZeros(
+                          formatAmount(
+                            asset.total ?? 0,
+                            getTokenPrecision(
+                              typeof asset.tokenId === 'string' ? asset.tokenId : '',
+                              !!asset.total && asset.total !== '0'
+                            )
                           )
-                        ))}
+                        )}
                   </div>
                   <div className="font-din text-right text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
                     $
