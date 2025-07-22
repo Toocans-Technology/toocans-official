@@ -117,6 +117,11 @@ const LoginBox: FunctionComponent = () => {
             emailCode: values.code,
           })
         } else {
+          if (!values.phone || !matchPhoneNum(values.nationalCode, values.phone)) {
+            form.setFields([{ name: 'phone', errors: [t('formatErr', { name: `${t('phone')} ${t('number')}` })] }])
+            return
+          }
+
           Object.assign(resultParams, {
             grantType,
             nationalCode: values.nationalCode,

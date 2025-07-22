@@ -6,7 +6,7 @@ const matchEmail = (val: string) => {
   return EmailReg.test(val)
 }
 
-const matchPhoneNum = (nationalCode: string, val: string) => {
+const matchPhoneNum = (nationalCode: any, val: any) => {
   return isValidPhoneNumber(`+${nationalCode}${val}`)
 }
 
