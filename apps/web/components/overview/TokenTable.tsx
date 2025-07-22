@@ -36,7 +36,7 @@ function formatTrailingZeros(val: string | number | null | undefined): string {
       : `${integerPart}.00`
   }
 
-  return `${integerPart}.00`
+  return `${integerPart}`
 }
 
 const TokenTable = () => {
@@ -127,9 +127,8 @@ const TokenTable = () => {
                     >
                       {asset.marketPriceChange == null
                         ? ''
-                        : parseFloat(asset.marketPriceChange).toFixed(2) === '0.00'
-                          ? '0'
-                          : parseFloat(asset.marketPriceChange).toFixed(2)}
+                        : parseFloat(asset.marketPriceChange).toFixed(2)
+                      }
                       %
                     </span>
                   </div>

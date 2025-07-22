@@ -41,12 +41,13 @@ export default function OverviewBalancePanel() {
   }
 
   const total = useMemo(() => {
-    if (!Array.isArray(data) || !Array.isArray(allTokenData)) return '--'
-    return sumBy(
-      (data as GetAllAssetResponse).filter((item) => allTokenData.some((token) => token.tokenId === item.tokenId)),
-      (item) => new BigNumber(item.total ?? 0).toNumber()
-    )
-  }, [data, allTokenData])
+    if (!Array.isArray(data)) return '--'
+    return sumBy(data, (item) => {
+      const total = new BigNumber(item.total ?? 0)
+      const price = new BigNumber(item.marketPrice ?? 0)
+      return total.multipliedBy(price).toNumber()
+    })
+  }, [data])
 
   const availableTotal = useMemo(() => {
     if (!Array.isArray(data) || !Array.isArray(allTokenData)) return '--'
