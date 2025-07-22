@@ -18,10 +18,10 @@ import { cn } from '@workspace/ui/lib/utils'
 import { useLang } from '@/hooks'
 import { useT } from '@/i18n'
 import { Locale } from '@/i18n/config'
-import { getCountryList } from '@/services/login'
+import { Country, getCountryList } from '@/services/login'
 
 interface Props {
-  onChange?: (nationalCode: string) => void
+  onChange?: (country: Country) => void
 }
 
 const CountrySelect: FunctionComponent<Props> = ({ onChange }) => {
@@ -33,17 +33,23 @@ const CountrySelect: FunctionComponent<Props> = ({ onChange }) => {
 
   useEffect(() => {
     if (countryList?.length && countryList[0]) {
-      const defaultValue = countryList[0].nationalCode
-      setValue(defaultValue)
+      const defaultValue = countryList[0]
+      setValue(defaultValue.nationalCode)
       onChange?.(defaultValue)
     }
   }, [countryList])
 
   const handleSelect = useCallback(
     (nationalCode: string) => {
+      const selectedCountry = countryList?.find((country) => country.nationalCode === nationalCode)
+
+      if (!selectedCountry) {
+        return
+      }
+
       setValue(nationalCode)
       setOpen(false)
-      onChange?.(nationalCode)
+      onChange?.(selectedCountry)
     },
     [setOpen, setValue, onChange]
   )
