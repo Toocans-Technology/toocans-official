@@ -14,9 +14,11 @@ import {
   DropdownMenuTrigger,
   toast,
 } from '@workspace/ui/components'
+import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
 import { typedStorage } from '@/lib/utils'
 import { getQueryClient } from '@/lib/utils'
+import { useUserVerifyInfo } from '@/services/user'
 import { useUserInfo } from '@/services/user/info'
 import { KycLevel } from '@/types/user'
 import { ChangeAvatarModal } from '../../account/modals'
@@ -25,6 +27,7 @@ import { Link } from '../../common'
 const UserDropdown: FunctionComponent = () => {
   const { t } = useT('common')
   const { data } = useUserInfo()
+  const { data: verifyInfo } = useUserVerifyInfo()
   const router = useRouter()
   const queryClient = getQueryClient()
   const [openChangeAvatarModal, setOpenChangeAvatarModal] = useState(false)
@@ -70,8 +73,15 @@ const UserDropdown: FunctionComponent = () => {
                 </CopyToClipboard>
               </div>
               <div>
-                <span className="bg-destructive inline-block rounded px-2 py-0.5 text-xs text-white">
-                  {data?.kycLevel === KycLevel.unverified ? t('account:unverified') : t('account:verified')}
+                <span
+                  className={cn(
+                    'inline-block rounded px-2 py-0.5 text-xs',
+                    verifyInfo?.kycLevel === KycLevel.low
+                      ? 'bg-primary/20 text-primary'
+                      : 'bg-destructive/20 text-destructive'
+                  )}
+                >
+                  {verifyInfo?.kycLevel === KycLevel.low ? t('common:verified') : t('common:unverified')}
                 </span>
               </div>
             </div>
