@@ -4,24 +4,25 @@ import dayjs from 'dayjs'
 import { FunctionComponent, useCallback, useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@workspace/ui/components'
 import { useT } from '@/i18n'
-import { getDepositOrderList } from '@/services/wallet'
-import { DepositOrderParams } from '@/services/wallet'
+import { getRecordList, RecordParams } from '@/services/user'
+import { BusinessType } from '@/types/user'
 import { PaginationControls } from '../common'
 import Filter, { FilterParams } from './Filter'
 
 const DepositHistory: FunctionComponent = () => {
   const { t } = useT('history')
-  const [params, setParams] = useState<DepositOrderParams>({
+  const [params, setParams] = useState<RecordParams>({
     pageNo: 1,
     pageSize: 20,
     tokenId: '',
-    beginTime: undefined,
-    endTime: undefined,
+    businessType: BusinessType.deposit,
+    beginTime: dayjs().subtract(30, 'day').toDate().getTime(),
+    endTime: dayjs().toDate().getTime(),
   })
-  const { data: orderData } = getDepositOrderList(params)
+  const { data: recordData } = getRecordList(params)
 
   const handleChange = useCallback((filterParams: FilterParams) => {
-    setParams({ ...filterParams, pageNo: 1, pageSize: 20 })
+    setParams({ ...filterParams, businessType: BusinessType.deposit, pageNo: 1, pageSize: 20 })
   }, [])
 
   return (
@@ -36,15 +37,13 @@ const DepositHistory: FunctionComponent = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {orderData?.list.length ? (
-            orderData.list?.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell className="py-3 font-medium">{order.tokenName}</TableCell>
-                <TableCell className="text-brand py-3">
-                  {Number(order.quantity) >= 0 ? `+${order.quantity}` : `-${order.quantity}`}
-                </TableCell>
+          {recordData?.list.length ? (
+            recordData.list?.map((record) => (
+              <TableRow key={record.id}>
+                <TableCell className="py-3 font-medium">{record.tokenName}</TableCell>
+                <TableCell className="text-brand py-3">+{record.amount}</TableCell>
                 <TableCell className="py-3 text-right">
-                  {dayjs(Number(order.createdAt)).format('YYYY-MM-DD HH:mm:ss')}
+                  {dayjs(Number(record.createDate)).format('YYYY-MM-DD HH:mm:ss')}
                 </TableCell>
               </TableRow>
             ))
@@ -57,11 +56,11 @@ const DepositHistory: FunctionComponent = () => {
           )}
         </TableBody>
       </Table>
-      {orderData?.pages ? (
+      {recordData?.pages ? (
         <PaginationControls
           className="py-2"
-          totalPages={orderData?.pages}
-          currentPage={Number(orderData?.pageNum) || 0}
+          totalPages={recordData?.pages}
+          currentPage={Number(recordData?.pageNum) || 0}
           onPageChange={(page: number) => params && setParams({ ...params, pageNo: page })}
         />
       ) : null}

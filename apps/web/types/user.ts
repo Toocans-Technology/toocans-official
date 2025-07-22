@@ -7,3 +7,14 @@ export enum KycLevel {
 }
 
 export const kycLevelSchema = z.nativeEnum(KycLevel)
+
+export enum BusinessType {
+  invalid = 'INVALID',
+  deposit = 'DEPOSIT',
+  withdraw = 'WITHDRAW',
+  transfer = 'TRANSFER',
+  internal = 'INTERNAL',
+  convert = 'CONVERT',
+}
+
+export const businessTypeSchema = z.nativeEnum(BusinessType)
