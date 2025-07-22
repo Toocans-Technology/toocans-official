@@ -61,7 +61,7 @@ const VerificationCode = () => {
 
   const changInput = async (value: string) => {
     const resultParams = {
-      clientId: '24b5d2a7f4714409b4cc60bafc1dd2f6',
+      clientId: 'c247a83b04de19a955f9899a485fd330',
       code: null,
       uuid: null,
       channel: null,
