@@ -21,13 +21,6 @@ const Header: FunctionComponent<Props> = () => {
       </div>
       <div className="flex items-center gap-6">
         <LoginButton />
-        <Image
-          src="/icons/download.svg"
-          alt="Download"
-          width={24}
-          height={24}
-          className="cursor-pointer hover:opacity-80"
-        />
         <SelectLanguage />
       </div>
     </div>
