@@ -23,6 +23,22 @@ function safeMul(a: string | number | null | undefined, b: string | number | nul
   return n1.multipliedBy(n2)
 }
 
+function formatTrailingZeros(val: string | number | null | undefined): string {
+  const num = new BigNumber(val ?? 0)
+  if (!num.isFinite()) return '--'
+  const formatted = num.toFixed()
+  const [integerPart, decimalPart] = formatted.split('.')
+
+  if (decimalPart) {
+    const trimmedDecimal = decimalPart.replace(/0+$/, '')
+    return trimmedDecimal.length > 0
+      ? `${integerPart}.${trimmedDecimal}`
+      : `${integerPart}.00`
+  }
+
+  return `${integerPart}.00`
+}
+
 const TokenTable = () => {
   const { t } = useT('overview')
   const { data } = useAssetAll()
@@ -38,7 +54,7 @@ const TokenTable = () => {
   }
 
   const getTokenPrecision = (tokenId: string, hasAsset: boolean = true): number => {
-    if (!hasAsset) return 2;
+    if (!hasAsset) return 2
     const found = allTokenData.find((item) => item.tokenId === tokenId)
     return typeof found?.minPrecision === 'number' ? found.minPrecision : 4
   }
@@ -85,7 +101,13 @@ const TokenTable = () => {
                         width={30}
                         height={30}
                       />
-                    ) : null
+                    ) :   
+                    <Image
+                        src={'/images/overview/default.svg'}
+                        alt={typeof asset.tokenId === 'string' ? asset.tokenId : ''}
+                        width={30}
+                        height={30}
+                      />
                   })()}
                 </span>
                 <div className="flex h-[49px] min-w-0 flex-1 flex-col justify-between">
@@ -100,10 +122,13 @@ const TokenTable = () => {
                   <div className="font-din text-right text-[14px] font-bold leading-[22px] text-[#0d0d0d]">
                     {assets.length === 0
                       ? '0.00'
-                      : formatAmount(
+                      : formatTrailingZeros(formatAmount(
                           asset.total ?? 0,
-                          getTokenPrecision(typeof asset.tokenId === 'string' ? asset.tokenId : '', !!asset.total && asset.total !== '0')
-                        )}
+                          getTokenPrecision(
+                            typeof asset.tokenId === 'string' ? asset.tokenId : '',
+                            !!asset.total && asset.total !== '0'
+                          )
+                        ))}
                   </div>
                   <div className="font-din text-right text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
                     $

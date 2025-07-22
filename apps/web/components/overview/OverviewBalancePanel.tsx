@@ -69,9 +69,9 @@ export default function OverviewBalancePanel() {
             {show && total !== '--' ? formatAmount(total) : !show && total !== '--' ? '****' : ''}
           </div>
           <div className="font-inter text-[14px] font-normal leading-[22px] text-[#666]">
-            USDT ≈{' '}
+            USDT ≈ {' '}
             {show && availableTotal !== '--'
-              ? formatAmount(availableTotal)
+              ? '$' + formatAmount(availableTotal)
               : !show && availableTotal !== '--'
                 ? '****'
                 : ''}
