@@ -33,7 +33,7 @@ const DepositHistory: FunctionComponent = () => {
           <TableRow className="border-none">
             <TableHead className="text-[#666]">{t('history:token')}</TableHead>
             <TableHead className="text-[#666]">{t('history:amount')}</TableHead>
-            <TableHead className="text-[#666]">{t('history:time')}</TableHead>
+            <TableHead className="text-right text-[#666]">{t('history:time')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
