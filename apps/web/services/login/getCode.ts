@@ -1,6 +1,5 @@
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
-import { getQuery } from '@/lib/api'
 import { getMutation } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
 
@@ -16,26 +15,24 @@ const ResponseSchema = z.object({ code: z.string() }).nullable()
 
 export type CodeParams = z.infer<typeof GetCodeReqParams>
 
-export const useCodeByEmail = (params?: z.infer<typeof GetCodeReqParams>) => {
-  return useQuery({
-    ...getQuery({
+export const useCodeByEmail = () => {
+  return useMutation(
+    getMutation((params: z.infer<typeof GetCodeReqParams>) => ({
       method: 'GET',
       url: getUrl('/resource/email/code'),
       query: GetCodeReqParams.parse(params),
       transfer: ResponseSchema.parse,
-    }),
-    enabled: !!params?.email,
-  })
+    }))
+  )
 }
 
-export const useCodeByMobile = (params?: z.infer<typeof GetCodeReqParams>) => {
-  return useQuery({
-    ...getQuery({
+export const useCodeByMobile = () => {
+  return useMutation(
+    getMutation((params: z.infer<typeof GetCodeReqParams>) => ({
       method: 'GET',
       url: getUrl('/resource/sms/code'),
       query: GetCodeReqParams.parse(params),
       transfer: ResponseSchema.parse,
-    }),
-    enabled: !!params?.mobile && !!params?.nationalCode,
-  })
+    }))
+  )
 }

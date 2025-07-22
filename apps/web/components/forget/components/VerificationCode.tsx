@@ -4,8 +4,7 @@ import { useState, useEffect, useContext } from 'react'
 import { GrantType } from '@/components/login/data'
 import { RouterContext } from '@/components/providers'
 import { useT } from '@/i18n'
-import { useCodeByEmail, useCodeByMobile } from '@/services/login'
-import { useLogin } from '@/services/login'
+import { useCodeByEmail, useCodeByMobile, useLogin } from '@/services/login'
 import { openToast } from '@/utils'
 import { matchEmail, matchPhoneNum } from '@/utils'
 import { useForgetContext } from '../ForgetContext'
@@ -23,18 +22,11 @@ const VerificationCode = () => {
   const urlNationalCode = routerParams.get('nationalCode') || ''
 
   const { grantType, setStep, setUserToken } = useForgetContext()
-
-  let timer: ReturnType<typeof setInterval> | null = null
-
-  const [selfEmail, setSelfEmail] = useState('')
-  const [selfPhoneData, setSelfPhoneData] = useState({ mobile: '', nationalCode: '' })
+  const { mutateAsync: fetchCodeByEmail } = useCodeByEmail()
+  const { mutateAsync: fetchCodeByMobile } = useCodeByMobile()
   const { mutateAsync: handleLogin } = useLogin()
 
-  useCodeByEmail({ email: selfEmail })
-  useCodeByMobile({
-    mobile: selfPhoneData.mobile,
-    nationalCode: selfPhoneData.nationalCode,
-  })
+  let timer: ReturnType<typeof setInterval> | null = null
 
   // 倒计时
   const [seconds, setSeconds] = useState(60)
@@ -42,11 +34,10 @@ const VerificationCode = () => {
   const handleSendCode = () => {
     if (seconds < 60) return
     try {
-      // 上线前放开
       if (grantType == GrantType.EMAIL) {
-        setSelfEmail(urlEmail)
+        fetchCodeByEmail({ email: urlEmail })
       } else {
-        setSelfPhoneData({
+        fetchCodeByMobile({
           mobile: urlPhone,
           nationalCode: urlNationalCode,
         })
@@ -127,6 +118,12 @@ const VerificationCode = () => {
 
   return (
     <>
+      <p className="mt-4 text-[12px]">
+        {t('verificationCodeTip', {
+          type: grantType == GrantType.EMAIL ? 'email' : 'phone',
+          address: grantType == GrantType.EMAIL ? urlEmail : `${urlNationalCode} ${urlPhone}`,
+        })}
+      </p>
       <Form.Item name="code" className={styles.otpParent}>
         <Input.OTP type="text" formatter={(value) => value.replace(/[^\d]/g, '')} onChange={changInput} />
       </Form.Item>
