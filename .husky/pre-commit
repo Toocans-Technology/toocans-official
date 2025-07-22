@@ -1,1 +1,2 @@
+npx pnpm format:check
 npx pnpm lint-staged
