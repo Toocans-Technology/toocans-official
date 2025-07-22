@@ -19,6 +19,7 @@ import {
 } from '@workspace/ui/components'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@workspace/ui/components'
 import { useT } from '@/i18n'
+import { PASSWORD_REGEX, validatePassword } from '@/lib/utils'
 import { useAddPassword, useUserInfo } from '@/services/user'
 import { HttpError } from '@/types/http'
 
@@ -70,8 +71,15 @@ const ChangePasswordModal: FunctionComponent = () => {
     () =>
       z
         .object({
-          password: z.string().nonempty(t('account:newPasswordPlaceholder')).min(8).max(32),
-          oldPassword: z.string().nonempty(t('account:passwordPlaceholder')).min(8).max(32),
+          password: z.string({ message: t('account:newPasswordPlaceholder') }),
+          oldPassword: z.string({ message: t('account:passwordPlaceholder') }).refine(
+            (val) => validatePassword(val).status,
+            (val) => {
+              return {
+                message: t(`account:passwordRuleTips.${validatePassword(val).errorType}`),
+              }
+            }
+          ),
         })
         .refine((data) => data.password === data.oldPassword, {
           message: t('account:passwordError'),

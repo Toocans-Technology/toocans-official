@@ -4,13 +4,14 @@ import { XIcon } from 'lucide-react'
 import { FunctionComponent } from 'react'
 import { Input, Separator } from '@workspace/ui/components'
 import { useT } from '@/i18n'
+import { Country } from '@/services/login'
 import CountrySelect from './CountrySelect'
 
 interface Props {
   invalid?: boolean
   value?: string
   onChange?: (value: string) => void
-  onCountryChange?: (nationalCode: string) => void
+  onCountryChange?: (country: Country) => void
 }
 
 const PhoneNumberInput: FunctionComponent<Props> = ({ invalid, value, onChange, onCountryChange, ...props }) => {

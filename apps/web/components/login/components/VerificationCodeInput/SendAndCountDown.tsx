@@ -1,7 +1,6 @@
 'use client'
 
 import { Button, Form } from 'antd'
-import { useState } from 'react'
 import { useT } from '@/i18n'
 import { useCodeByEmail, useCodeByMobile } from '@/services/login'
 import { openToast } from '@/utils'
@@ -18,20 +17,17 @@ const SendAndCountDown = () => {
   const phone = Form.useWatch('phone', formData)
   const nationalCode = Form.useWatch('nationalCode', formData)
 
-  const [selfEmail, setSelfEmail] = useState('')
-  const [selfPhoneData, setSelfPhoneData] = useState({ mobile: '', nationalCode: '' })
-
-  useCodeByEmail({ email: selfEmail })
-  useCodeByMobile({ mobile: selfPhoneData.mobile, nationalCode: selfPhoneData.nationalCode })
+  const { mutateAsync: fetchCodeByEmail } = useCodeByEmail()
+  const { mutateAsync: fetchCodeByMobile } = useCodeByMobile()
 
   const handleSendCode = () => {
     if (seconds < 60) return
 
     try {
       if (grantType == GrantType.EMAIL) {
-        setSelfEmail(email)
+        fetchCodeByEmail({ email })
       } else {
-        setSelfPhoneData({ mobile: phone, nationalCode })
+        fetchCodeByMobile({ mobile: phone, nationalCode })
       }
 
       const timer = setInterval(() => {
@@ -61,7 +57,7 @@ const SendAndCountDown = () => {
       }
       style={{ position: 'absolute' }}
     >
-      {seconds == 60 ? t('send') : seconds}
+      {seconds == 60 ? t('send') : `${seconds} s`}
     </Button>
   )
 }

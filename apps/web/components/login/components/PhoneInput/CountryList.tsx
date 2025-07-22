@@ -2,6 +2,7 @@ import { SearchOutlined } from '@ant-design/icons'
 import { Dropdown, Input, Form, Spin } from 'antd'
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { cn } from '@workspace/ui/lib/utils'
+import i18next from '@/i18n'
 import { useT } from '@/i18n'
 import { getCountryList } from '@/services/login'
 import { matchPhoneNum } from '@/utils'
@@ -10,6 +11,7 @@ import styles from '../../assets/style.module.scss'
 
 const CountryList = () => {
   const { t } = useT('login')
+
   const { data: countrys, isLoading } = getCountryList()
   const { seconds, formData, cuntrysVisible, setCuntrysVisible } = useLoginContext()
 
@@ -85,7 +87,7 @@ const CountryList = () => {
                     >
                       <div className="flex items-center">
                         <img src={item.flagUrls?.[0].url} alt={item.countryEnName} width={20} className="mr-2" />
-                        {item.countryEnName}
+                        {i18next.language.includes('zh') ? item.countryName : item.countryEnName}
                       </div>
                       <div>+{item.nationalCode}</div>
                     </div>

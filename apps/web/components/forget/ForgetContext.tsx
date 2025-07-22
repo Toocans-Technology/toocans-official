@@ -9,8 +9,6 @@ export interface ForgetContextProps {
   setGrantType: React.Dispatch<React.SetStateAction<GrantType>>
   seconds?: number
   step: number
-  cuntrysVisible: boolean
-  setCuntrysVisible: React.Dispatch<React.SetStateAction<boolean>>
   setStep: React.Dispatch<React.SetStateAction<number>>
   stateReset: () => void
 }

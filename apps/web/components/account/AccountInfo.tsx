@@ -8,6 +8,7 @@ import { Button, toast } from '@workspace/ui/components'
 import { Separator } from '@workspace/ui/components'
 import { useRedirectIfNotLogin, useSecurityLevel } from '@/hooks'
 import { useT } from '@/i18n'
+import { useUserVerifyInfo } from '@/services/user'
 import { useUserInfo } from '@/services/user/info'
 import { KycLevel } from '@/types/user'
 import Link from '../common/Link'
@@ -18,7 +19,8 @@ const AccountInfo: FunctionComponent = () => {
   const { t } = useT(['account', 'common'])
   const [openChangeAvatarModal, setOpenChangeAvatarModal] = useState(false)
   const { data } = useUserInfo()
-  const securityLevel = useSecurityLevel(data?.kycLevel, data?.hasGaKey)
+  const { data: verifyInfo } = useUserVerifyInfo()
+  const securityLevel = useSecurityLevel(verifyInfo?.kycLevel, data?.hasGaKey)
 
   useRedirectIfNotLogin()
 
@@ -67,7 +69,7 @@ const AccountInfo: FunctionComponent = () => {
           <p className="text-[#666]">{t('account:identityVerification')}</p>
           <div>
             <span className="bg-destructive/20 text-destructive inline-block rounded px-2 py-0.5 text-sm">
-              {data?.kycLevel === KycLevel.unverified ? t('account:unverified') : t('account:verified')}
+              {verifyInfo?.kycLevel === KycLevel.unverified ? t('account:unverified') : t('account:verified')}
             </span>
           </div>
         </div>

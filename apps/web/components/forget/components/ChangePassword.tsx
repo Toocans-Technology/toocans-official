@@ -37,7 +37,7 @@ const ChangePassword = () => {
   )
 
   useEffect(() => {
-    setIsDisabled(!(matchPassword(password) && confirmPassword === password && !!password))
+    setIsDisabled(matchPassword(password) != true || confirmPassword != password || !password || !confirmPassword)
   }, [password, confirmPassword])
 
   return (
@@ -59,7 +59,7 @@ const ChangePassword = () => {
               if (matchResult === true) {
                 return Promise.resolve()
               } else {
-                setErrType(matchResult?.errotype)
+                setErrType(matchResult?.errorType)
                 return Promise.reject()
               }
             },
@@ -79,6 +79,17 @@ const ChangePassword = () => {
               },
             ])
             setErrType(null)
+          }}
+          onBlur={() => {
+            const confirmPassword = formData.getFieldValue('confirmPassword')
+            if (confirmPassword && confirmPassword !== formData.getFieldValue('password')) {
+              formData.setFields([
+                {
+                  name: ['confirmPassword'],
+                  errors: [t('inconsistent', { name: t('password') })],
+                },
+              ])
+            }
           }}
           allowClear
           iconRender={(visible: boolean) => (visible ? <EyeFilled /> : <EyeInvisibleFilled />)}
