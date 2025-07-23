@@ -1,5 +1,6 @@
 'use client'
 
+import { sortBy } from 'es-toolkit'
 import { ChangeEvent, FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { Input, Label } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
@@ -35,13 +36,15 @@ const WithdrawSteps: FunctionComponent = () => {
       return []
     }
 
-    return selectedToken.subTokenList.map((item) => ({
+    const list = selectedToken.subTokenList.map((item) => ({
       id: item.id,
       name: item.chainName,
       icon: item.chainIcon || SYMBOL_ICON_PLACEHOLDER,
       protocolName: item.protocolName,
       disabled: item.tokenSetting?.allowDeposit === AllowDeposit.disabled,
     }))
+
+    return sortBy(list, ['name'])
   }, [selectedToken])
 
   const handleSelectToken = useCallback((token: Token) => {

@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCountDown } from 'ahooks'
 import { Loader2Icon } from 'lucide-react'
-import { FunctionComponent, useCallback, useMemo, useState } from 'react'
+import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import {
@@ -61,6 +61,21 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
     [hasGaKey]
   )
 
+  useEffect(() => {
+    if (userInfo?.email) {
+      setVerifyType(VerifyType.email)
+    } else {
+      setVerifyType(VerifyType.sms)
+    }
+  }, [open, userInfo])
+
+  const showSwitchVerifyType = useMemo(() => {
+    if (!userInfo) {
+      return false
+    }
+    return userInfo.email && userInfo.mobile
+  }, [userInfo])
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     mode: 'onChange',
@@ -102,6 +117,11 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
     }
     return countdown ? t('withdrawal:phoneVerification', { phone: userInfo?.concatMobile }) : t('withdrawal:phoneAuth')
   }, [verifyType, countdown])
+
+  const handleSwitchVerifyType = useCallback(() => {
+    setVerifyType(verifyType === VerifyType.email ? VerifyType.sms : VerifyType.email)
+    setTargetDate(undefined)
+  }, [verifyType])
 
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
@@ -201,12 +221,11 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
                     </span>
                   </div>
                   <FormMessage />
-                  <span
-                    className="text-link cursor-pointer text-sm"
-                    onClick={() => setVerifyType(verifyType === VerifyType.email ? VerifyType.sms : VerifyType.email)}
-                  >
-                    {verifyType === VerifyType.email ? t('withdrawal:switchPhone') : t('withdrawal:switchEmail')}
-                  </span>
+                  {showSwitchVerifyType && (
+                    <span className="text-link cursor-pointer text-sm" onClick={handleSwitchVerifyType}>
+                      {verifyType === VerifyType.email ? t('withdrawal:switchPhone') : t('withdrawal:switchEmail')}
+                    </span>
+                  )}
                 </FormItem>
               )}
             />
