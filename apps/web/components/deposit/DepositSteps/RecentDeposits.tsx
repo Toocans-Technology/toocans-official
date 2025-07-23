@@ -6,13 +6,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useT } from '@/i18n'
 import { getDepositOrder } from '@/services/wallet'
 
-interface Props {
-  tokenId: string
-}
-
-const RecentDeposits: FunctionComponent<Props> = ({ tokenId }) => {
+const RecentDeposits: FunctionComponent = () => {
   const { t } = useT('deposit')
-  const { data: orderList } = getDepositOrder({ pageNo: 1, pageSize: 10, tokenId })
+  const { data: orderList } = getDepositOrder({ pageNo: 1, pageSize: 10 })
 
   return (
     <div className="mt-6 rounded-[10px] bg-white p-6">
