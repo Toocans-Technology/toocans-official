@@ -20,14 +20,14 @@ const SendAndCountDown = () => {
   const { mutateAsync: fetchCodeByEmail } = useCodeByEmail()
   const { mutateAsync: fetchCodeByMobile } = useCodeByMobile()
 
-  const handleSendCode = () => {
+  const handleSendCode = async () => {
     if (seconds < 60) return
 
     try {
       if (grantType == GrantType.EMAIL) {
-        fetchCodeByEmail({ email })
+        await fetchCodeByEmail({ email })
       } else {
-        fetchCodeByMobile({ mobile: phone, nationalCode })
+        await fetchCodeByMobile({ mobile: phone, nationalCode })
       }
 
       const timer = setInterval(() => {
