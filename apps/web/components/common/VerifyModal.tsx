@@ -10,12 +10,15 @@ import { KycLevel } from '@/types/user'
 const VerifyModal: FunctionComponent = () => {
   const { t } = useT(['common'])
   const [open, setOpen] = useState(false)
-  const { data: verifyInfo } = useUserVerifyInfo()
+  const { data: verifyInfo, isLoading } = useUserVerifyInfo()
 
   useEffect(() => {
+    if (isLoading) {
+      return
+    }
     const opened = verifyInfo?.kycLevel === KycLevel.unverified || !verifyInfo
     setOpen(opened)
-  }, [verifyInfo])
+  }, [verifyInfo, isLoading])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

@@ -10,9 +10,8 @@ import SelectToken from '@/components/deposit/DepositSteps/SelectToken'
 import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { validateAddress } from '@/lib/utils'
-import { SYMBOL_ICON_PLACEHOLDER } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
-import { AllowDeposit } from '@/types/token'
+import { AllowWithdraw } from '@/types/token'
 import RecentWithdraw from '../RecentWithdraw'
 import ReceivedAmount from './ReceivedAmount'
 
@@ -29,6 +28,8 @@ const WithdrawSteps: FunctionComponent = () => {
   const [selectedNetwork, setSelectedNetwork] = useState<Token>()
   const [address, setAddress] = useState<string>('')
 
+  console.log('selectedToken', selectedToken)
+
   useRedirectIfNotLogin()
 
   const networkList = useMemo(() => {
@@ -39,9 +40,9 @@ const WithdrawSteps: FunctionComponent = () => {
     const list = selectedToken.subTokenList.map((item) => ({
       id: item.id,
       name: item.chainName,
-      icon: item.chainIcon || SYMBOL_ICON_PLACEHOLDER,
+      icon: item.chainIcon || '/images/symbol-placeholder.png',
       protocolName: item.protocolName,
-      disabled: item.tokenSetting?.allowDeposit === AllowDeposit.disabled,
+      disabled: item.tokenSetting?.allowWithdraw === AllowWithdraw.disabled,
     }))
 
     return sortBy(list, ['name'])
