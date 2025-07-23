@@ -31,13 +31,13 @@ const VerificationCode = () => {
   // 倒计时
   const [seconds, setSeconds] = useState(60)
 
-  const handleSendCode = () => {
+  const handleSendCode = async () => {
     if (seconds < 60) return
     try {
       if (grantType == GrantType.EMAIL) {
-        fetchCodeByEmail({ email: urlEmail })
+        await fetchCodeByEmail({ email: urlEmail })
       } else {
-        fetchCodeByMobile({
+        await fetchCodeByMobile({
           mobile: urlPhone,
           nationalCode: urlNationalCode,
         })
@@ -57,6 +57,7 @@ const VerificationCode = () => {
 
       openToast(t('successfully', { name: t('send') }))
     } catch (error) {
+      console.log(error, 123123)
       openToast((error as Error).message, 'error')
     }
   }
