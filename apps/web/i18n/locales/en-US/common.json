@@ -51,5 +51,13 @@
   "selectToken": "Select token",
   "searchToken": "Search token",
   "noData": "No Data",
-  "all": "All"
+  "all": "All",
+  "verifyModal": {
+    "title": "Please Verify Your Account",
+    "description": "Please complete Identity Verification to enable deposit, and withdraw.",
+    "verify": "Complete Verification in app",
+    "requirements": "Requirements",
+    "documents": "Government-issued documents",
+    "personalInformation": "Personal Information"
+  }
 }

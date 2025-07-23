@@ -35,8 +35,7 @@ const WithdrawHistory: FunctionComponent = () => {
           <TableRow className="border-none">
             <TableHead className="text-[#666]">{t('history:token')}</TableHead>
             <TableHead className="text-[#666]">{t('history:amount')}</TableHead>
-            <TableHead className="text-[#666]">{t('history:address')}</TableHead>
-            <TableHead className="text-[#666]">{t('history:time')}</TableHead>
+            <TableHead className="text-right text-[#666]">{t('history:time')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -45,8 +44,9 @@ const WithdrawHistory: FunctionComponent = () => {
               <TableRow key={record.id} className="border-none">
                 <TableCell className="p-3 font-medium text-[#222]">{record.tokenName}</TableCell>
                 <TableCell className="text-destructive p-3">-{record.amount}</TableCell>
-                <TableCell className="p-3">{record.accountId}</TableCell>
-                <TableCell className="p-3">{dayjs(Number(record.createDate)).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
+                <TableCell className="p-3 text-right">
+                  {dayjs(Number(record.createDate)).format('YYYY-MM-DD HH:mm:ss')}
+                </TableCell>
               </TableRow>
             ))
           ) : (

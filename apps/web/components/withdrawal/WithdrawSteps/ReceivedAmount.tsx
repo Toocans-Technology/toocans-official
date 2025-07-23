@@ -18,12 +18,13 @@ type InputValueType = {
 
 interface Props {
   token?: Token
+  network?: Token
   address?: string
 }
 
-const ReceivedAmount: FunctionComponent<Props> = ({ token, address }) => {
+const ReceivedAmount: FunctionComponent<Props> = ({ token, network, address }) => {
   const { t } = useT('withdrawal')
-  const minAmount = token?.tokenSetting?.withdrawMinQuantity || 0
+  const minAmount = network?.tokenSetting?.withdrawMinQuantity || 0
   const [transferId, setTransferId] = useState<string | undefined>(undefined)
   const [open, setOpen] = useState(false)
   const [amount, setAmount] = useState<InputValueType>({ value: '', error: '', isInvalid: false })

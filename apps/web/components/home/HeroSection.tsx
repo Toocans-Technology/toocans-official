@@ -4,7 +4,6 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { FunctionComponent, useCallback, useState } from 'react'
 import { Button, Input } from '@workspace/ui/components'
-import { useRedirectIfLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { EMAIL_REGEX } from '@/lib/utils/constants'
 import Link from '../common/Link'
@@ -14,8 +13,6 @@ const HeroSection: FunctionComponent = () => {
   const router = useRouter()
   const [isValid, setIsValid] = useState(false)
   const [email, setEmail] = useState('')
-
-  useRedirectIfLogin()
 
   const validateEmail = useCallback((email: string) => {
     const isValid = EMAIL_REGEX.test(email)

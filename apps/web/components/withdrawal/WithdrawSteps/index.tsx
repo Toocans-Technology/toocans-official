@@ -3,6 +3,7 @@
 import { ChangeEvent, FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { Input, Label } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
+import { VerifyModal } from '@/components/common'
 import SelectNetwork from '@/components/deposit/DepositSteps/SelectNetwork'
 import SelectToken from '@/components/deposit/DepositSteps/SelectToken'
 import { useRedirectIfNotLogin } from '@/hooks'
@@ -146,10 +147,13 @@ const WithdrawSteps: FunctionComponent = () => {
               {t('withdrawal:setAmount')}
             </span>
           </div>
-          {step >= WithdrawStep.WithdrawAmount && <ReceivedAmount token={selectedNetwork} address={address} />}
+          {step >= WithdrawStep.WithdrawAmount && (
+            <ReceivedAmount token={selectedToken} network={selectedNetwork} address={address} />
+          )}
         </div>
       </div>
-      <RecentWithdraw tokenId={selectedNetwork?.tokenId} />
+      <RecentWithdraw />
+      <VerifyModal />
     </>
   )
 }

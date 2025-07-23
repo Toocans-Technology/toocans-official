@@ -8,7 +8,17 @@ import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
 import { Link } from '../common'
 
-function formatAmount(val: string | number | null | undefined, precision: number = 4) {
+const formatAmount = (val: number | string | BigNumber, precision: number = 4) => {
+  try {
+    const num = new BigNumber(val)
+    if (!num.isFinite()) return '--'
+    return num.toFormat(precision)
+  } catch {
+    return '--'
+  }
+}
+
+function formatRateAmount(val: string | number | null | undefined, precision: number = 4) {
   const num = new BigNumber(val ?? 0)
   if (!num.isFinite()) return '--'
   return num.toFormat(precision, {
@@ -31,12 +41,10 @@ function formatTrailingZeros(val: string | number | null | undefined): string {
 
   if (decimalPart) {
     const trimmedDecimal = decimalPart.replace(/0+$/, '')
-    return trimmedDecimal.length > 0
-      ? `${integerPart}.${trimmedDecimal}`
-      : `${integerPart}.00`
+    return trimmedDecimal.length > 0 ? `${integerPart}.${trimmedDecimal}` : `${integerPart}.00`
   }
 
-  return `${integerPart}.00`
+  return `${integerPart}`
 }
 
 const TokenTable = () => {
@@ -101,13 +109,14 @@ const TokenTable = () => {
                         width={30}
                         height={30}
                       />
-                    ) :   
-                    <Image
+                    ) : (
+                      <Image
                         src={'/images/overview/default.svg'}
                         alt={typeof asset.tokenId === 'string' ? asset.tokenId : ''}
                         width={30}
                         height={30}
                       />
+                    )
                   })()}
                 </span>
                 <div className="flex h-[49px] min-w-0 flex-1 flex-col justify-between">
@@ -115,20 +124,33 @@ const TokenTable = () => {
                     {asset.tokenId}
                   </div>
                   <div className="font-din text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
-                    ${asset.tokenId === 'USDT' ? '1' : formatAmount(asset.marketPrice ?? 0, 2)}
+                    ${asset.tokenId === 'USDT' ? '1' : formatAmount(Number(asset.marketPrice), 2)}
+                    <span
+                      className={`font-inter ml-2 items-center justify-center gap-2 rounded px-3 py-1 text-right text-sm font-normal leading-5 ${
+                        asset.marketPriceChange != null && parseFloat(asset.marketPriceChange) < 0
+                          ? 'bg-[rgba(253,99,132,0.20)] text-[#FD6384]'
+                          : asset.marketPriceChange != null
+                            ? `bg-[rgba(26,202,117,0.20)] text-[#1ACA75]`
+                            : ''
+                      }`}
+                    >
+                      {asset.marketPriceChange == null ? '' : parseFloat(asset.marketPriceChange).toFixed(2)}%
+                    </span>
                   </div>
                 </div>
                 <div className="min-w-[80px] text-right">
                   <div className="font-din text-right text-[14px] font-bold leading-[22px] text-[#0d0d0d]">
                     {assets.length === 0
                       ? '0.00'
-                      : formatTrailingZeros(formatAmount(
-                          asset.total ?? 0,
-                          getTokenPrecision(
-                            typeof asset.tokenId === 'string' ? asset.tokenId : '',
-                            !!asset.total && asset.total !== '0'
+                      : formatTrailingZeros(
+                          formatRateAmount(
+                            asset.total ?? 0,
+                            getTokenPrecision(
+                              typeof asset.tokenId === 'string' ? asset.tokenId : '',
+                              !!asset.total && asset.total !== '0'
+                            )
                           )
-                        ))}
+                        )}
                   </div>
                   <div className="font-din text-right text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
                     $

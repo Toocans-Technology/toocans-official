@@ -6,6 +6,7 @@ import { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Button, toast } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
+import { VerifyModal } from '@/components/common'
 import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { SYMBOL_ICON_PLACEHOLDER } from '@/lib/utils'
@@ -145,7 +146,8 @@ const DepositSteps: FunctionComponent = () => {
           </div>
         </div>
       </div>
-      <RecentDeposits tokenId={selectedNetwork?.tokenId || ''} />
+      <RecentDeposits />
+      <VerifyModal />
     </>
   )
 }

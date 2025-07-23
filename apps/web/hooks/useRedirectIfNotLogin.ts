@@ -1,11 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { PATHNAMES } from '@/lib/utils/pathnames'
 import { useLogin } from './useLogin'
 import { useNoLocalePathname } from './useNoLocalePathname'
 import { useRouter } from './useRouter'
-
-const LOGIN_PATHNAME = '/login'
 
 export const useRedirectIfNotLogin = () => {
   const { isLoggedIn } = useLogin()
@@ -19,8 +18,8 @@ export const useRedirectIfNotLogin = () => {
 
   if (!mounted) return null
 
-  if (!isLoggedIn && pathname !== LOGIN_PATHNAME) {
-    router.replace(LOGIN_PATHNAME, {
+  if (!isLoggedIn && pathname !== PATHNAMES.login) {
+    router.replace(PATHNAMES.login, {
       query: {
         from: pathname,
       },
