@@ -1,5 +1,6 @@
 'use client'
 
+import { sortBy } from 'es-toolkit'
 import Image from 'next/image'
 import { QRCodeSVG } from 'qrcode.react'
 import { FunctionComponent, useCallback, useMemo, useState } from 'react'
@@ -9,7 +10,6 @@ import { cn } from '@workspace/ui/lib/utils'
 import { VerifyModal } from '@/components/common'
 import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
-import { SYMBOL_ICON_PLACEHOLDER } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { getAddress } from '@/services/wallet'
 import { AllowDeposit } from '@/types/token'
@@ -41,13 +41,15 @@ const DepositSteps: FunctionComponent = () => {
       return []
     }
 
-    return selectedToken.subTokenList.map((item) => ({
+    const list = selectedToken.subTokenList.map((item) => ({
       id: item.id,
       name: item.chainName,
-      icon: item.chainIcon || SYMBOL_ICON_PLACEHOLDER,
+      icon: item.chainIcon || '/images/symbol-placeholder.png',
       protocolName: item.protocolName,
       disabled: item.tokenSetting?.allowDeposit === AllowDeposit.disabled,
     }))
+
+    return sortBy(list, ['name'])
   }, [selectedToken])
 
   const handleSelectToken = useCallback((token: Token) => {

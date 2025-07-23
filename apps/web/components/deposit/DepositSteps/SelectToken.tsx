@@ -18,16 +18,16 @@ import {
 import { cn } from '@workspace/ui/lib/utils'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
-import { SYMBOL_ICON_PLACEHOLDER } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import DefaultTokens from './DefaultTokens'
 
 interface Props {
+  showAvailable?: boolean
   showDefaultTokens?: boolean
   onSelect?: (token: Token) => void
 }
 
-const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = true }) => {
+const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = true, showAvailable = false }) => {
   const { t } = useT('common')
   const { tokens } = useAllToken()
   const [open, setOpen] = useState(false)
@@ -78,7 +78,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
               {selectedToken ? (
                 <>
                   <Image
-                    src={selectedToken?.icon || SYMBOL_ICON_PLACEHOLDER}
+                    src={selectedToken?.icon || '/images/symbol-placeholder.png'}
                     width={16}
                     height={16}
                     alt={selectedToken?.tokenName ?? ''}
@@ -109,7 +109,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
                     width={16}
                     height={16}
                     alt={token.name ?? ''}
-                    src={token.icon || SYMBOL_ICON_PLACEHOLDER}
+                    src={token.icon || '/images/symbol-placeholder.png'}
                     className="max-h-4 rounded-full"
                   />
                   <div className="text-sm text-[#333]">{token.name}</div>

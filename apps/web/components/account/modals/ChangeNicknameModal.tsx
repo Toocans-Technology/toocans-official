@@ -94,6 +94,7 @@ const ChangeNicknameModal: FunctionComponent = () => {
                   <FormControl>
                     <Input
                       {...field}
+                      maxLength={20}
                       autoCapitalize="off"
                       className="rounded-sm"
                       placeholder={t('account:changeNicknamePlaceholder')}

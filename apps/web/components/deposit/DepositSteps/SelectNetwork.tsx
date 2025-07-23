@@ -35,7 +35,7 @@ const SelectNetwork: React.FC<SelectNetworkProps> = ({ value, networks, onValueC
                   alt={network.name || ''}
                   width={16}
                   height={16}
-                  className="overflow-hidden rounded-full"
+                  className="max-h-4 overflow-hidden rounded-full"
                 />
               )}
               <span>{network.name}</span>

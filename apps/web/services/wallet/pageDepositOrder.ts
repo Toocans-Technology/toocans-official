@@ -18,7 +18,7 @@ const DepositOrderSchema = z.object({
   status: z.nullable(z.number()),
   createdAt: z.nullable(z.string()),
   updatedAt: z.nullable(z.number()),
-  blockTime: z.nullable(z.number()),
+  blockTime: z.nullable(z.string()),
   walletHandleTime: z.nullable(z.number()),
   targetConfirmNum: z.nullable(z.number()),
   confirmNum: z.nullable(z.number()),

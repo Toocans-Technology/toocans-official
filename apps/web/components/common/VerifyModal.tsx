@@ -12,8 +12,6 @@ const VerifyModal: FunctionComponent = () => {
   const [open, setOpen] = useState(false)
   const { data: verifyInfo } = useUserVerifyInfo()
 
-  console.log('verifyInfo', verifyInfo)
-
   useEffect(() => {
     const opened = verifyInfo?.kycLevel === KycLevel.unverified || !verifyInfo
     setOpen(opened)

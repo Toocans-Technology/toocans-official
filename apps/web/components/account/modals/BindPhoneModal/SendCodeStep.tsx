@@ -98,7 +98,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
       }
 
       try {
-        // await mutateBindVerificationCode(data)
+        await mutateBindVerificationCode(data)
         onSuccess?.()
       } catch (error) {
         toast.error((error as HttpError).message)
@@ -124,6 +124,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
                   <Input
                     {...field}
                     autoComplete="off"
+                    maxLength={6}
                     placeholder={t('account:emailVerificationCode')}
                     className="aria-invalid:ring-0 focus-visible:ring-0"
                   />
@@ -144,7 +145,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
               <FormItem>
                 <FormLabel>{t('account:google2FA')}</FormLabel>
                 <FormControl>
-                  <Input {...field} autoComplete="off" placeholder={t('account:google2FAPlaceholder')} />
+                  <Input {...field} autoComplete="off" maxLength={6} placeholder={t('account:google2FAPlaceholder')} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
