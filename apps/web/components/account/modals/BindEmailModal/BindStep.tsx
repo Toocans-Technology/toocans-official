@@ -136,6 +136,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
                   <Input
                     {...field}
                     autoComplete="off"
+                    maxLength={6}
                     placeholder={t('account:emailVerificationCode')}
                     className="aria-invalid:ring-0 focus-visible:ring-0"
                   />

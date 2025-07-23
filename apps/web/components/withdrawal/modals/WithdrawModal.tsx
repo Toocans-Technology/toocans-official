@@ -63,7 +63,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    mode: 'all',
+    mode: 'onChange',
     defaultValues: {
       code: '',
       gaCode: '',
@@ -190,6 +190,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
                     <FormControl>
                       <Input
                         {...field}
+                        maxLength={6}
                         autoComplete="off"
                         placeholder={t('withdrawal:emailAuthPlaceholder')}
                         className="aria-invalid:ring-0 focus-visible:ring-0"
@@ -217,7 +218,12 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
                   <FormItem>
                     <FormLabel>{t('withdrawal:googleAuth')}</FormLabel>
                     <FormControl>
-                      <Input {...field} autoComplete="off" placeholder={t('withdrawal:googleAuthPlaceholder')} />
+                      <Input
+                        {...field}
+                        maxLength={6}
+                        autoComplete="off"
+                        placeholder={t('withdrawal:googleAuthPlaceholder')}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

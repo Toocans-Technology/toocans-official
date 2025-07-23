@@ -117,6 +117,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
                   <Input
                     {...field}
                     autoComplete="off"
+                    maxLength={6}
                     placeholder={t('account:phoneVerificationCode')}
                     className="aria-invalid:ring-0 focus-visible:ring-0"
                   />
@@ -137,7 +138,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
               <FormItem>
                 <FormLabel>{t('account:google2FA')}</FormLabel>
                 <FormControl>
-                  <Input {...field} autoComplete="off" placeholder={t('account:google2FAPlaceholder')} />
+                  <Input {...field} maxLength={6} autoComplete="off" placeholder={t('account:google2FAPlaceholder')} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -112,7 +112,7 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, network, address }) =
         </span>
       </div>
       <div className="flex justify-between text-sm">
-        <span className="text-[#999]">{t('withdrawal:receivedAmount')}</span>
+        <span className="text-[#999]">{t('withdrawal:withdrawAmount')}</span>
         <span>
           {receivedAmount} {token?.tokenName}
         </span>

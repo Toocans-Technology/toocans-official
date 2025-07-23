@@ -9,6 +9,7 @@
   "addressPlaceholder": "Please enter",
   "setAmount": "Set withdrawal amount",
   "receivedAmount": "Received amount",
+  "withdrawAmount": "Withdraw amount",
   "min": "Minimum",
   "all": "All",
   "availableBalance": "Available balance",

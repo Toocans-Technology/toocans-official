@@ -109,7 +109,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
                     width={16}
                     height={16}
                     alt={token.name ?? ''}
-                    src={token.icon || SYMBOL_ICON_PLACEHOLDER}
+                    src={token.icon || '/images/symbol-placeholder.png'}
                     className="max-h-4 rounded-full"
                   />
                   <div className="text-sm text-[#333]">{token.name}</div>

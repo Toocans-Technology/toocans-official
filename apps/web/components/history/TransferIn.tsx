@@ -1,6 +1,7 @@
 'use client'
 
 import dayjs from 'dayjs'
+import { Loader2Icon } from 'lucide-react'
 import { FunctionComponent, useCallback, useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@workspace/ui/components'
 import { useT } from '@/i18n'
@@ -21,7 +22,7 @@ const TransferIn: FunctionComponent = () => {
     beginTime: dayjs().subtract(30, 'day').toDate().getTime(),
     endTime: dayjs().toDate().getTime(),
   })
-  const { data: recordData } = getRecordList(params)
+  const { data: recordData, isLoading } = getRecordList(params)
 
   const handleChange = useCallback((filterParams: FilterParams) => {
     setParams({ ...filterParams, businessType: BusinessType.transfer, pageNo: 1, pageSize })
@@ -52,7 +53,13 @@ const TransferIn: FunctionComponent = () => {
           ) : (
             <TableRow className="hover:bg-transparent">
               <TableCell colSpan={5} className="py-8 text-center">
-                {t('deposit:noData')}
+                {isLoading ? (
+                  <div className="flex w-full justify-center">
+                    <Loader2Icon className="animate-spin" color="#86FC70" />
+                  </div>
+                ) : (
+                  t('history:noData')
+                )}
               </TableCell>
             </TableRow>
           )}
