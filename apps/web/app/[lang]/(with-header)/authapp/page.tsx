@@ -82,8 +82,18 @@ export default function AuthAppPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#fafbfc]">
       <div className="mx-auto w-full max-w-[942px] rounded-xl bg-white p-[60px_32px_24px_32px] shadow-[0_2px_16px_0_rgba(0,0,0,0.04)]">
-        <div className="font-inter pb-10 text-[32px] font-medium leading-[30px] text-black">
-          {t('authapp:AuthenticatorApp')}
+        <div className="font-inter flex items-center gap-[20px] pb-10 text-[32px] font-medium leading-[30px] text-black">
+          <div style={{ width: '21px', height: '21px' }}>
+            <Image
+              src={'/images/authapp/Left.png'}
+              alt="Back"
+              width={21}
+              height={15}
+              onClick={() => router.push('/account')}
+              className="cursor-pointer"
+            />
+          </div>
+          <div>{t('authapp:AuthenticatorApp')}</div>
         </div>
         <div className="mb-8">
           <div className="font-inter pb-8 text-[16px] font-medium leading-[26px] text-[#222]">

@@ -84,13 +84,14 @@ const TokenTable = () => {
   }, [assets, allTokenData])
 
   return (
-    <div className="mt-6 overflow-hidden rounded-2xl bg-white p-0">
+    <div className="overflow-hidden rounded-2xl bg-white p-0 mt-[24px]">
       <div className="flex items-center justify-between px-6 pb-2 pt-6">
         <span className="font-inter text-[16px] font-medium leading-[26px] text-[#222]">{t('overview:Token')}</span>
         <Link href="/history" className="cursor-pointer">
           <Image src="/images/overview/Navigation-order.svg" alt="Assets" width={20} height={20} />
         </Link>
       </div>
+      <hr style={{ strokeWidth: '1px', stroke: 'var(--light-divider, #F4F4F4)' }} />
       <div>
         {filteredSortedAssets.length === 0
           ? null

@@ -65,9 +65,12 @@ export default function OverviewBalancePanel() {
   }, [data, allTokenData])
 
   return (
-    <div className="flex h-[154px] flex-col justify-center gap-[10px] rounded-xl bg-white p-[30px_24px_10px_24px]">
+    <div
+      className="flex flex-col justify-center gap-[24px] rounded-xl bg-white p-[30px_24px_30px_24px]"
+      style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+    >
       <div className="flex flex-row flex-nowrap justify-between">
-        <div className="font-inter mb-2 flex items-center gap-2 text-[20px] font-normal leading-[30px] text-[#666]">
+        <div className="font-inter flex items-center gap-2 text-[20px] font-normal leading-[30px] text-[#666]">
           {t('overview:TotalBalance')}
           <span onClick={handleToggleShow} className="cursor-pointer">
             <Image
