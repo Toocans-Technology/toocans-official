@@ -1,5 +1,6 @@
 'use client'
 
+import { BigNumber } from 'bignumber.js'
 import { sortBy } from 'es-toolkit'
 import { ChevronDown } from 'lucide-react'
 import Image from 'next/image'
@@ -41,28 +42,40 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
     }
 
     let list = []
-    const availableTokens = data?.map((item) => item.tokenId)
+    const availableTokens = data?.filter((item) => BigNumber(item.assetTotal || 0).gt(0)).map((item) => item.tokenId)
+
+    console.log('tokens', tokens)
 
     if (showAvailable) {
       list = tokens
         ?.filter((token) => availableTokens?.includes(token.tokenId))
-        .map((token) => ({
-          id: token.id,
-          icon: token.icon,
-          name: token.tokenName,
-          fullName: token.tokenFullName,
-        }))
+        .map((token) => {
+          const asset = data?.find((item) => item.tokenId === token.tokenId)
+          return {
+            id: token.id,
+            icon: token.icon,
+            name: token.tokenName,
+            fullName: token.tokenFullName,
+            availableBalance: BigNumber(asset?.availableAssetTotal || 0)
+              .times(asset?.marketPrice || 0)
+              .toFixed(token?.minPrecision)
+              .toLocaleLowerCase(),
+          }
+        })
+
+      return sortBy(list, ['availableBalance'])
     } else {
       list = tokens?.map((token) => ({
         id: token.id,
         icon: token.icon,
         name: token.tokenName,
         fullName: token.tokenFullName,
+        availableBalance: '',
       }))
-    }
 
-    return sortBy(list, ['name'])
-  }, [tokens])
+      return sortBy(list, ['name'])
+    }
+  }, [tokens, data])
 
   const handleSelectToken = useCallback(
     (value: string) => {
@@ -119,17 +132,27 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
                   value={token.name}
                   onSelect={handleSelectToken}
                   keywords={[token.name]}
-                  className={cn('py-3', selectedToken?.tokenName === token.name && 'data-[selected=true]:bg-[#f4f4f4]')}
+                  className={cn(
+                    'flex justify-between py-3',
+                    selectedToken?.tokenName === token.name && 'data-[selected=true]:bg-[#f4f4f4]'
+                  )}
                 >
-                  <Image
-                    width={16}
-                    height={16}
-                    alt={token.name ?? ''}
-                    src={token.icon || '/images/symbol-placeholder.png'}
-                    className="max-h-4 rounded-full"
-                  />
-                  <div className="text-sm text-[#333]">{token.name}</div>
-                  <span className="ml-3 text-[#999]">{token.fullName}</span>
+                  <div className="flex flex-1 items-center gap-2">
+                    <Image
+                      width={16}
+                      height={16}
+                      alt={token.name ?? ''}
+                      src={token.icon || '/images/symbol-placeholder.png'}
+                      className="max-h-4 rounded-full"
+                    />
+                    <div className="text-sm text-[#333]">{token.name}</div>
+                    <span className="text-[#999]">{token.fullName}</span>
+                  </div>
+                  {showAvailable && (
+                    <>
+                      <span className="text-[#999]">{token.availableBalance}</span>
+                    </>
+                  )}
                 </CommandItem>
               ))}
             </CommandList>

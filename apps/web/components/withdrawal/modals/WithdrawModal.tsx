@@ -183,7 +183,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
             <div className="overflow-hidden break-words text-right font-medium">{address}</div>
           </div>
           <div className="grid grid-cols-2 items-center py-1.5 text-sm">
-            <div className="text-[#999]">{t('withdrawal:amount')}</div>
+            <div className="text-[#999]">{t('withdrawal:withdrawAmount')}</div>
             <div className="text-right font-medium">
               {amount} {token?.tokenName}
             </div>
