@@ -20,8 +20,6 @@ interface SelectNetworkProps {
 const SelectNetwork: React.FC<SelectNetworkProps> = ({ value, networks, onValueChange, placeholder }) => {
   const { t } = useT('deposit')
 
-  console.log('networks', networks)
-
   return (
     <Select onValueChange={onValueChange} value={value}>
       <SelectTrigger className="hover:border-primary focus:border-primary w-[456px] rounded border-[#f8f8f8] bg-[#f8f8f8] px-3 py-2 data-[size=default]:h-11">
