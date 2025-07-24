@@ -42,12 +42,26 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
       return []
     }
 
-    const list = tokens?.map((token) => ({
-      id: token.id,
-      icon: token.icon,
-      name: token.tokenName,
-      fullName: token.tokenFullName,
-    }))
+    let list = []
+    const availableTokens = data?.map((item) => item.tokenId)
+
+    if (showAvailable) {
+      list = tokens
+        ?.filter((token) => availableTokens?.includes(token.tokenId))
+        .map((token) => ({
+          id: token.id,
+          icon: token.icon,
+          name: token.tokenName,
+          fullName: token.tokenFullName,
+        }))
+    } else {
+      list = tokens?.map((token) => ({
+        id: token.id,
+        icon: token.icon,
+        name: token.tokenName,
+        fullName: token.tokenFullName,
+      }))
+    }
 
     return sortBy(list, ['name'])
   }, [tokens])

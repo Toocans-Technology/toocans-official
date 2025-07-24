@@ -97,7 +97,7 @@ const WithdrawSteps: FunctionComponent = () => {
             </span>
             <span className="ml-2 text-sm">{t('withdrawal:selectToken')}</span>
           </div>
-          <SelectToken onSelect={handleSelectToken} showDefaultTokens={false} />
+          <SelectToken showAvailable onSelect={handleSelectToken} showDefaultTokens={false} />
         </div>
         <div className="flex flex-col gap-2">
           <div>

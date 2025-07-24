@@ -4,7 +4,6 @@ import { FunctionComponent, useMemo } from 'react'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@workspace/ui/components'
 import { useAllToken } from '@/hooks'
 import { useT } from '@/i18n'
-import { SYMBOL_ICON_PLACEHOLDER } from '@/lib/utils'
 
 interface Props {
   onSelect?: (value: string) => void
@@ -42,7 +41,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect }) => {
                   alt={token.name}
                   width={16}
                   height={16}
-                  src={token.icon || SYMBOL_ICON_PLACEHOLDER}
+                  src={token.icon || '/images/symbol-placeholder.png'}
                   className="overflow-hidden rounded-full"
                 />
                 <span>{token.name}</span>
