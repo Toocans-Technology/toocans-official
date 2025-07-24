@@ -1,7 +1,6 @@
+import { Select } from 'antd'
 import { sortBy } from 'es-toolkit'
-import Image from 'next/image'
 import { FunctionComponent, useMemo } from 'react'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@workspace/ui/components'
 import { useAllToken } from '@/hooks'
 import { useT } from '@/i18n'
 
@@ -28,29 +27,19 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect }) => {
   }, [tokens])
 
   return (
-    <Select defaultValue={allToken.id} onValueChange={onSelect}>
-      <SelectTrigger size="sm" className="w-40">
-        <SelectValue placeholder={t('common:selectToken')} />
-      </SelectTrigger>
-      <SelectContent className="max-h-96">
-        <SelectGroup>
-          {tokenList?.map((token) => {
-            return (
-              <SelectItem key={token.id} value={token.id}>
-                <Image
-                  alt={token.name}
-                  width={16}
-                  height={16}
-                  src={token.icon || '/images/symbol-placeholder.png'}
-                  className="overflow-hidden rounded-full"
-                />
-                <span>{token.name}</span>
-              </SelectItem>
-            )
-          })}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+    <Select
+      className="w-40"
+      showSearch
+      optionFilterProp="label"
+      placeholder={t('common:selectToken')}
+      defaultValue={allToken.id}
+      onChange={onSelect}
+      options={tokenList?.map((token) => ({
+        value: token.id,
+        label: token.name,
+        icon: token.icon,
+      }))}
+    />
   )
 }
 
