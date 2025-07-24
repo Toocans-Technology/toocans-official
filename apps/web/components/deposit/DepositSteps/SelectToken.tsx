@@ -102,7 +102,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
                   key={token.id}
                   value={token.name}
                   onSelect={handleSelectToken}
-                  keywords={[token.name, token.fullName]}
+                  keywords={[token.name]}
                   className={cn('py-3', selectedToken?.tokenName === token.name && 'data-[selected=true]:bg-[#f4f4f4]')}
                 >
                   <Image
