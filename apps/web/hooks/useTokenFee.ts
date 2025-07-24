@@ -20,7 +20,9 @@ export const useTokenFee = (token?: Token) => {
         return 0
       }
 
-      return BigNumber(amount).times(chargeValue).toNumber()
+      return BigNumber(amount)
+        .times(chargeValue)
+        .toFixed(token?.minPrecision || 4)
     },
     [chargeType, chargeValue]
   )
@@ -34,10 +36,14 @@ export const useTokenFee = (token?: Token) => {
         if (BigNumber(balance).lt(chargeValue)) {
           return 0
         }
-        return BigNumber(balance).minus(chargeValue).toNumber()
+        return BigNumber(balance)
+          .minus(chargeValue)
+          .toFixed(token?.minPrecision || 4)
       }
 
-      return BigNumber(balance).div(BigNumber(1).plus(chargeValue)).toNumber()
+      return BigNumber(balance)
+        .div(BigNumber(1).plus(chargeValue))
+        .toFixed(token?.minPrecision || 4)
     },
     [chargeType, chargeValue]
   )
