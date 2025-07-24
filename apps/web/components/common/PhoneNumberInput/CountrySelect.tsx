@@ -28,7 +28,7 @@ const CountrySelect: FunctionComponent<Props> = ({ onChange }) => {
   const { t } = useT(['common'])
   const lang = useLang()
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState('86')
+  const [value, setValue] = useState('1')
   const { data: countryList } = getCountryList()
 
   useEffect(() => {

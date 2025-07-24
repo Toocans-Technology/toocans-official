@@ -8,9 +8,13 @@ import { useT } from '@/i18n'
 import { getWithdrawOrder } from '@/services/wallet'
 import { getStatus } from './utils'
 
-const RecentWithdraw: FunctionComponent = () => {
+interface Props {
+  tokenId?: string
+}
+
+const RecentWithdraw: FunctionComponent<Props> = ({ tokenId }) => {
   const { t } = useT('withdrawal')
-  const { data: orderList } = getWithdrawOrder({ pageNo: 1, pageSize: 10 })
+  const { data: orderList } = getWithdrawOrder({ pageNo: 1, pageSize: 10, tokenId })
 
   return (
     <div className="mt-6 rounded-[10px] bg-white p-6">

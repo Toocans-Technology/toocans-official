@@ -137,7 +137,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
           tokenFee: Number(tokenFee),
           tokenId: token.tokenId,
           accountId: userInfo.accountId,
-          chargeType: token.tokenSetting?.withdrawChargeType,
+          chargeType: 1,
         })
 
         if (!res) {
