@@ -15,7 +15,7 @@ const CountryList = () => {
   const { data: countrys, isLoading } = getCountryList()
   const { seconds, formData, cuntrysVisible, setCuntrysVisible } = useLoginContext()
 
-  const [nationalCode, setNationalCode] = useState<string | undefined | null>(undefined)
+  const [nationalCode, setNationalCode] = useState<string>('1')
   const [searchVal, setSearchVal] = useState<string>('')
 
   const filterCountrys = useMemo(
@@ -26,10 +26,6 @@ const CountryList = () => {
       }),
     [countrys, searchVal]
   )
-
-  useEffect(() => {
-    setNationalCode(countrys?.[0]?.nationalCode)
-  }, [countrys])
 
   useEffect(() => {
     formData.setFieldValue('nationalCode', nationalCode)
@@ -101,7 +97,7 @@ const CountryList = () => {
       >
         <div className={cn('flex items-center', seconds < 60 ? 'cursor-not-allowed' : 'cursor-pointer')}>
           <Form.Item name="nationalCode" label={null} style={{ display: 'none' }}></Form.Item>
-          {isLoading ? <Spin /> : <div>+{nationalCode}</div>}
+          {isLoading ? <Spin /> : <div className="min-w-[35px] text-center">+{nationalCode}</div>}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
