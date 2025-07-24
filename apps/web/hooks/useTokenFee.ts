@@ -31,12 +31,15 @@ export const useTokenFee = (token?: Token) => {
   const getMaxOrderAmount = useCallback(
     (balance: BigNumber.Value) => {
       if (chargeType === WithdrawChargeType.fixed) {
+        if (BigNumber(balance).lt(chargeValue)) {
+          return 0
+        }
         return BigNumber(balance).minus(chargeValue).toNumber()
       }
 
       return BigNumber(balance).div(BigNumber(1).plus(chargeValue)).toNumber()
     },
-    [chargeValue]
+    [chargeType, chargeValue]
   )
 
   return { getTokenFee, getMaxOrderAmount }
