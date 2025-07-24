@@ -28,7 +28,7 @@ const WithdrawDetailModal: FunctionComponent<Props> = ({ id, open, onOpenChange 
         </DialogHeader>
         <div className="grid gap-2">
           <div className="flex flex-col items-center gap-4 py-8 text-sm">
-            <div className="text-[#999]">{t('withdrawal:amount')}</div>
+            <div className="text-[#999]">{t('withdrawal:receivedAmount')}</div>
             <div className="flex items-center text-right font-medium">
               <span className="text-4xl">{data?.arriveQuantity}</span>
               <span className="ml-1">{data?.tokenName}</span>
@@ -49,9 +49,9 @@ const WithdrawDetailModal: FunctionComponent<Props> = ({ id, open, onOpenChange 
             <div className="overflow-hidden break-words text-right font-medium">{data?.address ?? '-'}</div>
           </div>
           <div className="grid grid-cols-2 items-center py-1.5 text-sm">
-            <div className="text-[#999]">{t('withdrawal:amount')}</div>
+            <div className="text-[#999]">{t('withdrawal:withdrawAmount')}</div>
             <div className="text-right font-medium">
-              {data?.arriveQuantity} {data?.tokenName}
+              {data?.totalQuantity} {data?.tokenName}
             </div>
           </div>
           <div className="grid grid-cols-2 items-center py-1.5 text-sm">

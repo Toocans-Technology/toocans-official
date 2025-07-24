@@ -27,29 +27,34 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect }) => {
     return [allToken, ...sortBy(list, ['name'])]
   }, [tokens])
 
+  const options = useMemo(() => {
+    return tokenList.map((token) => ({
+      value: token.id,
+      name: token.name,
+      label: (
+        <div className="flex items-center gap-2">
+          <Image
+            src={token.icon || '/images/symbol-placeholder.png'}
+            width={16}
+            height={16}
+            alt={token.name}
+            className="overflow-hidden rounded-full"
+          />
+          <span>{token.name}</span>
+        </div>
+      ),
+    }))
+  }, [tokenList])
+
   return (
     <Select
       className="w-40"
       showSearch
-      optionFilterProp="label"
+      optionFilterProp="name"
       placeholder={t('common:selectToken')}
       defaultValue={allToken.id}
       onChange={onSelect}
-      options={tokenList?.map((token) => ({
-        value: token.id,
-        label: (
-          <div className="flex items-center gap-2">
-            <Image
-              src={token.icon || '/images/symbol-placeholder.png'}
-              width={16}
-              height={16}
-              alt={token.name}
-              className="overflow-hidden rounded-full"
-            />
-            <span>{token.name}</span>
-          </div>
-        ),
-      }))}
+      options={options}
     />
   )
 }
