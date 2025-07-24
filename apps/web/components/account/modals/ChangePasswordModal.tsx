@@ -137,6 +137,15 @@ const ChangePasswordModal: FunctionComponent = () => {
             <FormField
               control={form.control}
               name="oldPassword"
+              rules={{
+                deps: ['password'],
+                validate: (val) => {
+                  if (val !== form.getValues('password')) {
+                    return t('account:passwordError')
+                  }
+                  return true
+                },
+              }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('account:password')}</FormLabel>
