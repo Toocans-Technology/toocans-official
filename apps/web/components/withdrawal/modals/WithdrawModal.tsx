@@ -34,8 +34,8 @@ interface Props {
   token: Token
   address: string
   amount: number
-  tokenFee: number
   disabled?: boolean
+  tokenFee: string | number
   openDetail?: (open: boolean, data: Withdrawal) => void
 }
 
@@ -134,7 +134,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
           ...data,
           address,
           amount,
-          tokenFee,
+          tokenFee: Number(tokenFee),
           tokenId: token.tokenId,
           accountId: userInfo.accountId,
           chargeType: token.tokenSetting?.withdrawChargeType,
