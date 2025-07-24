@@ -1,5 +1,6 @@
 import { Select } from 'antd'
 import { sortBy } from 'es-toolkit'
+import Image from 'next/image'
 import { FunctionComponent, useMemo } from 'react'
 import { useAllToken } from '@/hooks'
 import { useT } from '@/i18n'
@@ -36,8 +37,18 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect }) => {
       onChange={onSelect}
       options={tokenList?.map((token) => ({
         value: token.id,
-        label: token.name,
-        icon: token.icon,
+        label: (
+          <div className="flex items-center gap-2">
+            <Image
+              src={token.icon || '/images/symbol-placeholder.png'}
+              width={16}
+              height={16}
+              alt={token.name}
+              className="overflow-hidden rounded-full"
+            />
+            <span>{token.name}</span>
+          </div>
+        ),
       }))}
     />
   )
