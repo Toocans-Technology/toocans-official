@@ -29,7 +29,7 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, network, address }) =
   const [transferId, setTransferId] = useState<string | undefined>(undefined)
   const [open, setOpen] = useState(false)
   const [amount, setAmount] = useState<InputValueType>({ value: '', error: '', isInvalid: false })
-  const { getTokenFee, getMaxOrderAmount } = useTokenFee(token)
+  const { getTokenFee, getMaxOrderAmount } = useTokenFee(network)
   const tokenFee = useMemo(() => getTokenFee(amount.value), [getTokenFee, amount.value])
 
   const userAsset = useMemo(() => {
