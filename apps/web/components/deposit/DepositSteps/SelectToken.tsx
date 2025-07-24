@@ -44,8 +44,6 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
     let list = []
     const availableTokens = data?.filter((item) => BigNumber(item.assetTotal || 0).gt(0)).map((item) => item.tokenId)
 
-    console.log('tokens', tokens)
-
     if (showAvailable) {
       list = tokens
         ?.filter((token) => availableTokens?.includes(token.tokenId))
