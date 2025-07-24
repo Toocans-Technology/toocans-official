@@ -35,8 +35,6 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
   const [open, setOpen] = useState(false)
   const [selectedToken, setSelectedToken] = useState<Token>()
 
-  console.log('data', data)
-
   const tokenList = useMemo(() => {
     if (!tokens) {
       return []

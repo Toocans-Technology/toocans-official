@@ -154,7 +154,7 @@ const WithdrawSteps: FunctionComponent = () => {
           )}
         </div>
       </div>
-      <RecentWithdraw />
+      <RecentWithdraw tokenId={selectedNetwork?.tokenId} />
       <VerifyModal />
     </>
   )
