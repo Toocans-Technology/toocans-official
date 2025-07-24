@@ -132,9 +132,9 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, network, address }) =
           {withdrawAmount} {token?.tokenName}
         </span>
       </div>
-      {token && address && (
+      {network && address && (
         <WithdrawModal
-          token={token}
+          token={network}
           address={address}
           disabled={disabled}
           tokenFee={tokenFee}

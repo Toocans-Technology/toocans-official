@@ -16,6 +16,7 @@ import {
   PopoverTrigger,
 } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
+import { useAssetAll } from '@/hooks'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
 import { Token } from '@/services/basicConfig'
@@ -30,8 +31,11 @@ interface Props {
 const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = true, showAvailable = false }) => {
   const { t } = useT('common')
   const { tokens } = useAllToken()
+  const { data } = useAssetAll()
   const [open, setOpen] = useState(false)
   const [selectedToken, setSelectedToken] = useState<Token>()
+
+  console.log('data', data)
 
   const tokenList = useMemo(() => {
     if (!tokens) {
