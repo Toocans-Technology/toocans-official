@@ -28,8 +28,6 @@ const WithdrawSteps: FunctionComponent = () => {
   const [selectedNetwork, setSelectedNetwork] = useState<Token>()
   const [address, setAddress] = useState<string>('')
 
-  console.log('selectedToken', selectedToken)
-
   useRedirectIfNotLogin()
 
   const networkList = useMemo(() => {
