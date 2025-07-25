@@ -1,10 +1,13 @@
 'use client'
 
+import dayjs from 'dayjs'
 import { ArrowUpFromDot } from 'lucide-react'
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useCallback } from 'react'
 import { Button, Separator } from '@workspace/ui/components'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@workspace/ui/components'
+import { useRouter } from '@/hooks'
 import { useT } from '@/i18n'
+import { PATHNAMES } from '@/lib/utils'
 import { getWithdrawInfo } from '@/services/wallet'
 import { getStatus } from '../utils'
 
@@ -17,7 +20,13 @@ interface Props {
 const WithdrawDetailModal: FunctionComponent<Props> = ({ id, open, onOpenChange }) => {
   const { t } = useT(['withdrawal', 'common'])
   const { data } = getWithdrawInfo(id)
+  const router = useRouter()
   const status = getStatus(data?.status)
+
+  const handleConfirm = useCallback(() => {
+    onOpenChange?.(false)
+    router.push(PATHNAMES.overview)
+  }, [onOpenChange, router])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -60,9 +69,13 @@ const WithdrawDetailModal: FunctionComponent<Props> = ({ id, open, onOpenChange 
               {data?.platformFee} {data?.tokenName}
             </div>
           </div>
+          <div className="grid grid-cols-2 items-center py-1.5 text-sm">
+            <div className="text-[#999]">{t('withdrawal:time')}</div>
+            <div className="text-right font-medium">{dayjs(Number(data?.createdAt)).format('YYYY-MM-DD HH:mm:ss')}</div>
+          </div>
         </div>
         <DialogFooter>
-          <Button rounded="full" onClick={() => onOpenChange?.(false)}>
+          <Button rounded="full" onClick={handleConfirm}>
             {t('common:ok')}
           </Button>
         </DialogFooter>
