@@ -18,5 +18,6 @@
   "ScanQRCodeDesc": "Open Google Authenticator, scan the QR code below or manually enter the key phrase to activate the verification token. Key phrase is used to recover Google Authenticator in the event of a loss or change of device — please make sure to keep the key phrase safe before setting up Google Authenticator。",
   "ManualEnterCode": "Or manually enter the code below",
   "SecurityAuthentication": "Security authentication",
-  "PleaseEnterAuthenticatorCode": "Please enter the Authenticator code"
+  "PleaseEnterAuthenticatorCode": "Please enter the Authenticator code",
+  "OnlyNumbersAllowed": "Only numbers are allowed"
 }
