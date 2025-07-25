@@ -171,7 +171,14 @@ export default function AuthAppPage() {
                 className="mb-7 ml-7 flex h-11 w-[456px] items-center rounded-md border-none bg-[#f5f5f5] px-3 text-black"
                 placeholder={t('authapp:PleaseEnterAuthenticatorCode')}
                 value={googleCode}
-                onChange={(e) => setGoogleCode(e.target.value)}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  if (/\D/.test(inputValue)) {
+                    openToast(t('authapp:OnlyNumbersAllowed'), 'error');
+                  } else {
+                    setGoogleCode(inputValue);
+                  }
+                }}
               />
             )}
           </div>
