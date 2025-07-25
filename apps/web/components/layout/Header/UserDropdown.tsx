@@ -63,7 +63,7 @@ const UserDropdown: FunctionComponent = () => {
               </div>
             </div>
             <div className="flex flex-col gap-1">
-              <h2>{data?.loginName}</h2>
+              <h2>{data?.nickname}</h2>
               <div className="flex items-center gap-2 text-xs text-[#666]">
                 <span>UID: {data?.userId}</span>
                 <CopyToClipboard text={data?.userId || ''} onCopy={handleCopy}>
