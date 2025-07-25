@@ -6,8 +6,8 @@ import { kycLevelSchema } from '@/types/user'
 
 export const UserVerifyInfoSchema = z
   .object({
-    id: z.number(),
-    userId: z.number(),
+    id: z.string(),
+    userId: z.string(),
     nationality: z.number(),
     countryCode: z.string().nullable(),
     kycLevel: kycLevelSchema,
@@ -27,11 +27,11 @@ export const UserVerifyInfoSchema = z
     dataSecret: z.string().nullable(),
     passedIdCheck: z.number(),
     verifyStatus: z.number(),
-    created: z.number(),
-    updated: z.number(),
+    created: z.string(),
+    updated: z.string(),
     verifyReason: z.string().nullable(),
     fullName: z.string().nullable(),
-    submissionTime: z.number(),
+    submissionTime: z.string(),
     displayFailedReason: z.string().nullable(),
   })
   .nullable()

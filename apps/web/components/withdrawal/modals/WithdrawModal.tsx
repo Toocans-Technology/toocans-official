@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCountDown } from 'ahooks'
 import { Loader2Icon } from 'lucide-react'
-import { FunctionComponent, useCallback, useMemo, useState } from 'react'
+import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import {
@@ -34,8 +34,8 @@ interface Props {
   token: Token
   address: string
   amount: number
-  tokenFee: number
   disabled?: boolean
+  tokenFee: string | number
   openDetail?: (open: boolean, data: Withdrawal) => void
 }
 
@@ -61,8 +61,24 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
     [hasGaKey]
   )
 
+  useEffect(() => {
+    if (userInfo?.email) {
+      setVerifyType(VerifyType.email)
+    } else {
+      setVerifyType(VerifyType.sms)
+    }
+  }, [open, userInfo])
+
+  const showSwitchVerifyType = useMemo(() => {
+    if (!userInfo) {
+      return false
+    }
+    return userInfo.email && userInfo.mobile
+  }, [userInfo])
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    mode: 'onChange',
     defaultValues: {
       code: '',
       gaCode: '',
@@ -102,6 +118,11 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
     return countdown ? t('withdrawal:phoneVerification', { phone: userInfo?.concatMobile }) : t('withdrawal:phoneAuth')
   }, [verifyType, countdown])
 
+  const handleSwitchVerifyType = useCallback(() => {
+    setVerifyType(verifyType === VerifyType.email ? VerifyType.sms : VerifyType.email)
+    setTargetDate(undefined)
+  }, [verifyType])
+
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
       if (!userInfo) {
@@ -113,10 +134,10 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
           ...data,
           address,
           amount,
-          tokenFee,
+          tokenFee: Number(tokenFee),
           tokenId: token.tokenId,
           accountId: userInfo.accountId,
-          chargeType: token.tokenSetting?.withdrawChargeType,
+          chargeType: 1,
         })
 
         if (!res) {
@@ -162,7 +183,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
             <div className="overflow-hidden break-words text-right font-medium">{address}</div>
           </div>
           <div className="grid grid-cols-2 items-center py-1.5 text-sm">
-            <div className="text-[#999]">{t('withdrawal:amount')}</div>
+            <div className="text-[#999]">{t('withdrawal:withdrawAmount')}</div>
             <div className="text-right font-medium">
               {amount} {token?.tokenName}
             </div>
@@ -184,14 +205,15 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
                   <FormLabel>{formLabel}</FormLabel>
                   <div
                     aria-invalid={formState.errors.code ? true : false}
-                    className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded-md bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
+                    className="focus-within:border-ring focus-within:ring-primary aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-4 overflow-hidden rounded-md bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
                   >
                     <FormControl>
                       <Input
                         {...field}
+                        maxLength={6}
                         autoComplete="off"
                         placeholder={t('withdrawal:emailAuthPlaceholder')}
-                        className="focus-visible:ring-0"
+                        className="aria-invalid:ring-0 focus-visible:ring-0"
                       />
                     </FormControl>
                     <span className={cn('text-link', !countdown && 'cursor-pointer')} onClick={handleSendCode}>
@@ -199,12 +221,11 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
                     </span>
                   </div>
                   <FormMessage />
-                  <span
-                    className="text-link cursor-pointer text-sm"
-                    onClick={() => setVerifyType(verifyType === VerifyType.email ? VerifyType.sms : VerifyType.email)}
-                  >
-                    {verifyType === VerifyType.email ? t('withdrawal:switchPhone') : t('withdrawal:switchEmail')}
-                  </span>
+                  {showSwitchVerifyType && (
+                    <span className="text-link cursor-pointer text-sm" onClick={handleSwitchVerifyType}>
+                      {verifyType === VerifyType.email ? t('withdrawal:switchPhone') : t('withdrawal:switchEmail')}
+                    </span>
+                  )}
                 </FormItem>
               )}
             />
@@ -216,7 +237,12 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
                   <FormItem>
                     <FormLabel>{t('withdrawal:googleAuth')}</FormLabel>
                     <FormControl>
-                      <Input {...field} autoComplete="off" placeholder={t('withdrawal:googleAuthPlaceholder')} />
+                      <Input
+                        {...field}
+                        maxLength={6}
+                        autoComplete="off"
+                        placeholder={t('withdrawal:googleAuthPlaceholder')}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -10,20 +10,22 @@ import { BusinessType } from '@/types/user'
 import { PaginationControls } from '../common'
 import Filter, { FilterParams } from './Filter'
 
-const DepositHistory: FunctionComponent = () => {
+const pageSize = 20
+
+const TransferOut: FunctionComponent = () => {
   const { t } = useT('history')
   const [params, setParams] = useState<RecordParams>({
     pageNo: 1,
-    pageSize: 20,
+    pageSize,
     tokenId: '',
-    businessType: BusinessType.deposit,
+    businessType: BusinessType.transfer,
     beginTime: dayjs().subtract(30, 'day').toDate().getTime(),
     endTime: dayjs().toDate().getTime(),
   })
   const { data: recordData, isLoading } = getRecordList(params)
 
   const handleChange = useCallback((filterParams: FilterParams) => {
-    setParams({ ...filterParams, businessType: BusinessType.deposit, pageNo: 1, pageSize: 20 })
+    setParams({ ...filterParams, businessType: BusinessType.transfer, pageNo: 1, pageSize })
   }, [])
 
   return (
@@ -38,19 +40,19 @@ const DepositHistory: FunctionComponent = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {recordData?.list.length ? (
-            recordData.list?.map((record) => (
-              <TableRow key={record.id}>
-                <TableCell className="py-3 font-medium">{record.tokenName}</TableCell>
-                <TableCell className="text-brand py-3">+{record.amount}</TableCell>
-                <TableCell className="py-3 text-right">
+          {recordData?.list?.length ? (
+            recordData.list.map((record) => (
+              <TableRow key={record.id} className="border-none">
+                <TableCell className="p-3 font-medium text-[#222]">{record.tokenName}</TableCell>
+                <TableCell className="text-destructive p-3">-{record.amount}</TableCell>
+                <TableCell className="p-3 text-right">
                   {dayjs(Number(record.createDate)).format('YYYY-MM-DD HH:mm:ss')}
                 </TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow className="hover:bg-transparent">
-              <TableCell colSpan={3} className="py-8 text-center">
+              <TableCell colSpan={5} className="py-8 text-center">
                 {isLoading ? (
                   <div className="flex w-full justify-center">
                     <Loader2Icon className="animate-spin" color="#86FC70" />
@@ -75,4 +77,4 @@ const DepositHistory: FunctionComponent = () => {
   )
 }
 
-export default DepositHistory
+export default TransferOut

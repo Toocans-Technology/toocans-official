@@ -1,22 +1,52 @@
 import BigNumber from 'bignumber.js'
-import { useMemo } from 'react'
+import { useCallback } from 'react'
 import { Token } from '@/services/basicConfig'
 import { WithdrawChargeType } from '@/types/token'
 
-export const useTokenFee = (token?: Token, amount?: BigNumber.Value) => {
+export const useTokenFee = (token?: Token) => {
   const chargeType = token?.tokenSetting?.withdrawChargeType || WithdrawChargeType.fixed
   const chargeValue = token?.tokenSetting?.withdrawChargeValue || 0
 
-  const tokenFee = useMemo(() => {
-    if (!amount || !token) {
-      return 0
-    }
+  /**
+   * 获取提现手续费
+   */
+  const getTokenFee = useCallback(
+    (amount: BigNumber.Value) => {
+      if (chargeType === WithdrawChargeType.fixed) {
+        return BigNumber(chargeValue).toNumber()
+      }
 
-    if (chargeType === WithdrawChargeType.fixed) {
-      return BigNumber(chargeValue).toNumber()
-    }
-    return BigNumber(amount).times(chargeValue).toNumber()
-  }, [chargeType, chargeValue, amount, token])
+      if (!amount) {
+        return 0
+      }
 
-  return tokenFee
+      return BigNumber(amount)
+        .times(chargeValue)
+        .toFixed(token?.minPrecision || 4)
+    },
+    [chargeType, chargeValue]
+  )
+
+  /**
+   * 获取最大提现金额
+   */
+  const getMaxOrderAmount = useCallback(
+    (balance: BigNumber.Value) => {
+      if (chargeType === WithdrawChargeType.fixed) {
+        if (BigNumber(balance).lt(chargeValue)) {
+          return 0
+        }
+        return BigNumber(balance)
+          .minus(chargeValue)
+          .toFixed(token?.minPrecision || 4)
+      }
+
+      return BigNumber(balance)
+        .div(BigNumber(1).plus(chargeValue))
+        .toFixed(token?.minPrecision || 4)
+    },
+    [chargeType, chargeValue]
+  )
+
+  return { getTokenFee, getMaxOrderAmount }
 }

@@ -13,5 +13,7 @@
   "transferring": "Transferring",
   "sent": "Sent",
   "date": "Date",
-  "all": "All"
+  "all": "All",
+  "transferIn": "Transfer In",
+  "transferOut": "Transfer Out"
 }

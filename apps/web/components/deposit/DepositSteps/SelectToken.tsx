@@ -1,5 +1,6 @@
 'use client'
 
+import { BigNumber } from 'bignumber.js'
 import { sortBy } from 'es-toolkit'
 import { ChevronDown } from 'lucide-react'
 import Image from 'next/image'
@@ -16,20 +17,22 @@ import {
   PopoverTrigger,
 } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
+import { useAssetAll } from '@/hooks'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
-import { SYMBOL_ICON_PLACEHOLDER } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import DefaultTokens from './DefaultTokens'
 
 interface Props {
+  showAvailable?: boolean
   showDefaultTokens?: boolean
   onSelect?: (token: Token) => void
 }
 
-const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = true }) => {
+const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = true, showAvailable = false }) => {
   const { t } = useT('common')
   const { tokens } = useAllToken()
+  const { data } = useAssetAll()
   const [open, setOpen] = useState(false)
   const [selectedToken, setSelectedToken] = useState<Token>()
 
@@ -38,15 +41,39 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
       return []
     }
 
-    const list = tokens?.map((token) => ({
-      id: token.id,
-      icon: token.icon,
-      name: token.tokenName,
-      fullName: token.tokenFullName,
-    }))
+    let list = []
+    const availableTokens = data?.filter((item) => BigNumber(item.assetTotal || 0).gt(0)).map((item) => item.tokenId)
 
-    return sortBy(list, ['name'])
-  }, [tokens])
+    if (showAvailable) {
+      list = tokens
+        ?.filter((token) => availableTokens?.includes(token.tokenId))
+        .map((token) => {
+          const asset = data?.find((item) => item.tokenId === token.tokenId)
+          return {
+            id: token.id,
+            icon: token.icon,
+            name: token.tokenName,
+            fullName: token.tokenFullName,
+            availableBalance: BigNumber(asset?.availableAssetTotal || 0)
+              .times(asset?.marketPrice || 0)
+              .toFixed(token?.minPrecision)
+              .toLocaleLowerCase(),
+          }
+        })
+
+      return sortBy(list, ['availableBalance'])
+    } else {
+      list = tokens?.map((token) => ({
+        id: token.id,
+        icon: token.icon,
+        name: token.tokenName,
+        fullName: token.tokenFullName,
+        availableBalance: '',
+      }))
+
+      return sortBy(list, ['name'])
+    }
+  }, [tokens, data])
 
   const handleSelectToken = useCallback(
     (value: string) => {
@@ -78,7 +105,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
               {selectedToken ? (
                 <>
                   <Image
-                    src={selectedToken?.icon || SYMBOL_ICON_PLACEHOLDER}
+                    src={selectedToken?.icon || '/images/symbol-placeholder.png'}
                     width={16}
                     height={16}
                     alt={selectedToken?.tokenName ?? ''}
@@ -102,18 +129,28 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
                   key={token.id}
                   value={token.name}
                   onSelect={handleSelectToken}
-                  keywords={[token.name, token.fullName]}
-                  className={cn('py-3', selectedToken?.tokenName === token.name && 'data-[selected=true]:bg-[#f4f4f4]')}
+                  keywords={[token.name]}
+                  className={cn(
+                    'flex justify-between py-3',
+                    selectedToken?.tokenName === token.name && 'data-[selected=true]:bg-[#f4f4f4]'
+                  )}
                 >
-                  <Image
-                    width={16}
-                    height={16}
-                    alt={token.name ?? ''}
-                    src={token.icon || SYMBOL_ICON_PLACEHOLDER}
-                    className="max-h-4 rounded-full"
-                  />
-                  <div className="text-sm text-[#333]">{token.name}</div>
-                  <span className="ml-3 text-[#999]">{token.fullName}</span>
+                  <div className="flex flex-1 items-center gap-2">
+                    <Image
+                      width={16}
+                      height={16}
+                      alt={token.name ?? ''}
+                      src={token.icon || '/images/symbol-placeholder.png'}
+                      className="max-h-4 rounded-full"
+                    />
+                    <div className="text-sm text-[#333]">{token.name}</div>
+                    <span className="text-[#999]">{token.fullName}</span>
+                  </div>
+                  {showAvailable && (
+                    <>
+                      <span className="text-[#999]">{token.availableBalance}</span>
+                    </>
+                  )}
                 </CommandItem>
               ))}
             </CommandList>

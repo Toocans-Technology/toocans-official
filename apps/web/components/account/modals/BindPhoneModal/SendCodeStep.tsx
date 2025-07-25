@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCountDown } from 'ahooks'
 import { Loader2Icon } from 'lucide-react'
-import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
+import { FunctionComponent, MouseEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import {
@@ -48,7 +48,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
   )
 
   const form = useForm<z.infer<typeof FormSchema>>({
-    mode: 'onBlur',
+    mode: 'onChange',
     reValidateMode: 'onChange',
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -71,18 +71,25 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
     }
   }, [])
 
-  const handleSendCode = useCallback(async () => {
-    if (countdown) {
-      return
-    }
+  const handleSendCode = useCallback(
+    async (e: MouseEvent<HTMLSpanElement>) => {
+      e.stopPropagation()
 
-    try {
-      await mutateSendCode({})
-      setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
-    } catch (error) {
-      toast.error((error as HttpError).message)
-    }
-  }, [mutateSendCode, countdown])
+      console.log('点击发送按钮')
+
+      if (countdown) {
+        return
+      }
+
+      try {
+        await mutateSendCode({})
+        setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
+      } catch (error) {
+        toast.error((error as HttpError).message)
+      }
+    },
+    [mutateSendCode, countdown]
+  )
 
   const onSubmitCode = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
@@ -91,7 +98,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
       }
 
       try {
-        // await mutateBindVerificationCode(data)
+        await mutateBindVerificationCode(data)
         onSuccess?.()
       } catch (error) {
         toast.error((error as HttpError).message)
@@ -117,6 +124,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
                   <Input
                     {...field}
                     autoComplete="off"
+                    maxLength={6}
                     placeholder={t('account:emailVerificationCode')}
                     className="aria-invalid:ring-0 focus-visible:ring-0"
                   />
@@ -137,7 +145,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
               <FormItem>
                 <FormLabel>{t('account:google2FA')}</FormLabel>
                 <FormControl>
-                  <Input {...field} autoComplete="off" placeholder={t('account:google2FAPlaceholder')} />
+                  <Input {...field} autoComplete="off" maxLength={6} placeholder={t('account:google2FAPlaceholder')} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

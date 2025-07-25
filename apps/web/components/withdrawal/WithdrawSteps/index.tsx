@@ -1,16 +1,17 @@
 'use client'
 
+import { sortBy } from 'es-toolkit'
 import { ChangeEvent, FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { Input, Label } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
+import { VerifyModal } from '@/components/common'
 import SelectNetwork from '@/components/deposit/DepositSteps/SelectNetwork'
 import SelectToken from '@/components/deposit/DepositSteps/SelectToken'
 import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { validateAddress } from '@/lib/utils'
-import { SYMBOL_ICON_PLACEHOLDER } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
-import { AllowDeposit } from '@/types/token'
+import { AllowWithdraw } from '@/types/token'
 import RecentWithdraw from '../RecentWithdraw'
 import ReceivedAmount from './ReceivedAmount'
 
@@ -34,13 +35,15 @@ const WithdrawSteps: FunctionComponent = () => {
       return []
     }
 
-    return selectedToken.subTokenList.map((item) => ({
+    const list = selectedToken.subTokenList.map((item) => ({
       id: item.id,
       name: item.chainName,
-      icon: item.chainIcon || SYMBOL_ICON_PLACEHOLDER,
+      icon: item.chainIcon || '/images/symbol-placeholder.png',
       protocolName: item.protocolName,
-      disabled: item.tokenSetting?.allowDeposit === AllowDeposit.disabled,
+      disabled: item.tokenSetting?.allowWithdraw === AllowWithdraw.disabled,
     }))
+
+    return sortBy(list, ['name'])
   }, [selectedToken])
 
   const handleSelectToken = useCallback((token: Token) => {
@@ -94,7 +97,7 @@ const WithdrawSteps: FunctionComponent = () => {
             </span>
             <span className="ml-2 text-sm">{t('withdrawal:selectToken')}</span>
           </div>
-          <SelectToken onSelect={handleSelectToken} showDefaultTokens={false} />
+          <SelectToken showAvailable onSelect={handleSelectToken} showDefaultTokens={false} />
         </div>
         <div className="flex flex-col gap-2">
           <div>
@@ -146,10 +149,13 @@ const WithdrawSteps: FunctionComponent = () => {
               {t('withdrawal:setAmount')}
             </span>
           </div>
-          {step >= WithdrawStep.WithdrawAmount && <ReceivedAmount token={selectedNetwork} address={address} />}
+          {step >= WithdrawStep.WithdrawAmount && (
+            <ReceivedAmount token={selectedToken} network={selectedNetwork} address={address} />
+          )}
         </div>
       </div>
-      <RecentWithdraw tokenId={selectedNetwork?.tokenId} />
+      <RecentWithdraw />
+      <VerifyModal />
     </>
   )
 }

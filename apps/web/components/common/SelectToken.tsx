@@ -1,10 +1,9 @@
+import { Select } from 'antd'
 import { sortBy } from 'es-toolkit'
 import Image from 'next/image'
 import { FunctionComponent, useMemo } from 'react'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@workspace/ui/components'
 import { useAllToken } from '@/hooks'
 import { useT } from '@/i18n'
-import { SYMBOL_ICON_PLACEHOLDER } from '@/lib/utils'
 
 interface Props {
   onSelect?: (value: string) => void
@@ -28,30 +27,35 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect }) => {
     return [allToken, ...sortBy(list, ['name'])]
   }, [tokens])
 
+  const options = useMemo(() => {
+    return tokenList.map((token) => ({
+      value: token.id,
+      name: token.name,
+      label: (
+        <div className="flex items-center gap-2">
+          <Image
+            src={token.icon || '/images/symbol-placeholder.png'}
+            width={16}
+            height={16}
+            alt={token.name}
+            className="overflow-hidden rounded-full"
+          />
+          <span>{token.name}</span>
+        </div>
+      ),
+    }))
+  }, [tokenList])
+
   return (
-    <Select defaultValue={allToken.id} onValueChange={onSelect}>
-      <SelectTrigger size="sm" className="w-40">
-        <SelectValue placeholder={t('common:selectToken')} />
-      </SelectTrigger>
-      <SelectContent className="max-h-96">
-        <SelectGroup>
-          {tokenList?.map((token) => {
-            return (
-              <SelectItem key={token.id} value={token.id}>
-                <Image
-                  alt={token.name}
-                  width={16}
-                  height={16}
-                  src={token.icon || SYMBOL_ICON_PLACEHOLDER}
-                  className="overflow-hidden rounded-full"
-                />
-                <span>{token.name}</span>
-              </SelectItem>
-            )
-          })}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+    <Select
+      className="w-40"
+      showSearch
+      optionFilterProp="name"
+      placeholder={t('common:selectToken')}
+      defaultValue={allToken.id}
+      onChange={onSelect}
+      options={options}
+    />
   )
 }
 

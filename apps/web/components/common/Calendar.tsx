@@ -32,13 +32,13 @@ const Calendar: FunctionComponent<CalendarProps> = ({ onConfirm }) => {
     [t]
   )
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from: undefined,
-    to: undefined,
+    from: dayjs().subtract(30, 'day').toDate(),
+    to: dayjs().toDate(),
   })
 
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange | undefined>({
-    from: undefined,
-    to: undefined,
+    from: dayjs().subtract(30, 'day').toDate(),
+    to: dayjs().toDate(),
   })
 
   const handleConfirm = useCallback(() => {
