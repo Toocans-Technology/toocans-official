@@ -36,7 +36,7 @@ export default function AuthAppPage() {
       }
     }
   }, [userInfoRes])
-  const { data: generateGoogleAuthRes } = useGenerateGoogleAuth()
+  const { data: generateGoogleAuthRes,refetch } = useGenerateGoogleAuth()
   const handleCopySecretKey = async () => {
     if (generateGoogleAuthRes?.secretKey) {
       await navigator.clipboard.writeText(generateGoogleAuthRes.secretKey)
@@ -75,10 +75,8 @@ export default function AuthAppPage() {
     handleVerifyGoogleAuthSubmit()
   }
   React.useEffect(() => {
-    if (generateGoogleAuthRes) {
-      console.log('5:', generateGoogleAuthRes)
-    }
-  }, [generateGoogleAuthRes])
+      refetch()
+  }, [])
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#fafbfc]">
       <div className="mx-auto w-full max-w-[942px] rounded-xl bg-white p-[60px_32px_24px_32px] shadow-[0_2px_16px_0_rgba(0,0,0,0.04)]">
