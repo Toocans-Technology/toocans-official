@@ -122,7 +122,13 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[518px] border-none p-0 shadow-lg" align="start">
-          <Command className="p-3">
+          <Command
+            className="p-3"
+            filter={(value, search) => {
+              if (value.toLowerCase().includes(search.toLowerCase())) return 1
+              return 0
+            }}
+          >
             <CommandInput placeholder={t('common:search')} />
             <CommandList className="pt-2">
               <CommandEmpty>{t('common:noData')}</CommandEmpty>
