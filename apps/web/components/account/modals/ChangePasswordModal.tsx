@@ -19,7 +19,7 @@ import {
 } from '@workspace/ui/components'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@workspace/ui/components'
 import { useT } from '@/i18n'
-import { PASSWORD_REGEX, validatePassword } from '@/lib/utils'
+import { validatePassword } from '@/lib/utils'
 import { useAddPassword, useUserInfo } from '@/services/user'
 import { HttpError } from '@/types/http'
 

@@ -59,7 +59,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
     reValidateMode: 'onChange',
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      nationalCode: '86',
+      nationalCode: '1',
       verificationCode: '',
     },
   })

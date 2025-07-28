@@ -33,7 +33,12 @@ const CountrySelect: FunctionComponent<Props> = ({ onChange }) => {
 
   useEffect(() => {
     if (countryList?.length && countryList[0]) {
-      const defaultValue = countryList[0]
+      const defaultValue = countryList.find((country) => country.nationalCode === '1')
+
+      if (!defaultValue) {
+        return
+      }
+
       setValue(defaultValue.nationalCode)
       onChange?.(defaultValue)
     }
