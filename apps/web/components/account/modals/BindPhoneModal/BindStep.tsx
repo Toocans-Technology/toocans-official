@@ -2,7 +2,8 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCountDown } from 'ahooks'
-import { CountryCode, isValidNumber } from 'libphonenumber-js'
+import { CountryCode } from 'libphonenumber-js'
+import { isValidPhoneNumber } from 'libphonenumber-js/mobile'
 import { Loader2Icon } from 'lucide-react'
 import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -46,7 +47,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
         nationalCode: z.string(),
         phoneNumber: z
           .string({ message: t('account:newPhoneRequired') })
-          .refine((val) => isValidNumber(val, countryCode), {
+          .refine((val) => isValidPhoneNumber(val, countryCode), {
             message: t('account:newPhoneError'),
           }),
         verificationCode: z.string().regex(VERIFICATION_CODE_REGEX, t('account:verificationCodeError')).length(6),
