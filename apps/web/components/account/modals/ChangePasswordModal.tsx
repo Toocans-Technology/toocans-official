@@ -44,7 +44,7 @@ const PasswordInput = ({ formState, field, placeholder }: PasswordInputProps) =>
   return (
     <div
       aria-invalid={formState.errors.password ? true : false}
-      className="aria-invalid:border-destructive aria-invalid:ring-destructive aria-invalid:ring-[1px] focus-within:border-ring focus-within:ring-primary flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-3 focus-within:ring-[1px]"
+      className="aria-invalid:border-destructive aria-invalid:ring-destructive aria-invalid:ring-[1px] focus-within:border-ring focus-within:ring-brand flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-3 focus-within:ring-[1px]"
     >
       <Input
         {...field}

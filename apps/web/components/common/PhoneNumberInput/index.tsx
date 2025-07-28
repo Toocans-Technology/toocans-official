@@ -20,7 +20,7 @@ const PhoneNumberInput: FunctionComponent<Props> = ({ invalid, value, onChange, 
   return (
     <div
       aria-invalid={invalid}
-      className="focus-within:border-ring focus-within:ring-primary aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-2 overflow-hidden rounded bg-[#f8f8f8] px-3 focus-within:ring-[1px]"
+      className="focus-within:border-ring focus-within:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-2 overflow-hidden rounded bg-[#f8f8f8] px-3 focus-within:ring-[1px]"
     >
       <CountrySelect onChange={onCountryChange} />
       <Separator orientation="vertical" className="max-h-2.5 bg-[#999]" />

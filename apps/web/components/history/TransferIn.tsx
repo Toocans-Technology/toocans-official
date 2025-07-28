@@ -4,10 +4,10 @@ import dayjs from 'dayjs'
 import { Loader2Icon } from 'lucide-react'
 import { FunctionComponent, useCallback, useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@workspace/ui/components'
+import { Empty, PaginationControls } from '@/components/common'
 import { useT } from '@/i18n'
 import { getRecordList, RecordParams } from '@/services/user'
 import { BusinessType } from '@/types/user'
-import { PaginationControls } from '../common'
 import Filter, { FilterParams } from './Filter'
 
 const pageSize = 20
@@ -58,7 +58,7 @@ const TransferIn: FunctionComponent = () => {
                     <Loader2Icon className="animate-spin" color="#86FC70" />
                   </div>
                 ) : (
-                  t('history:noData')
+                  <Empty />
                 )}
               </TableCell>
             </TableRow>
