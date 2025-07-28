@@ -7,7 +7,7 @@ import '@workspace/ui/globals.css'
 import { WebVitals } from '@/app/_components'
 import { BaseProviders, RouterProvider } from '@/components/providers'
 import { locales } from '@/i18n/config'
-import '@/styles/antd/globals.css'
+import '@/styles/antd/globals.scss'
 import themeConfig from '@/styles/themeConfig'
 import Fix from '@/utils/fix'
 
