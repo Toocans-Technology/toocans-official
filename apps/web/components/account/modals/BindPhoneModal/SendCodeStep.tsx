@@ -98,7 +98,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
       }
 
       try {
-        // await mutateBindVerificationCode(data)
+        await mutateBindVerificationCode(data)
         onSuccess?.()
       } catch (error) {
         toast.error((error as HttpError).message)
