@@ -56,7 +56,7 @@ const CountrySelect: FunctionComponent<Props> = ({ onChange }) => {
       setOpen(false)
       onChange?.(selectedCountry)
     },
-    [setOpen, setValue, onChange]
+    [countryList, setOpen, setValue, onChange]
   )
 
   return (
