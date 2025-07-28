@@ -77,7 +77,7 @@ const UserDropdown: FunctionComponent = () => {
                   className={cn(
                     'inline-block rounded px-2 py-0.5 text-xs',
                     verifyInfo?.kycLevel === KycLevel.low
-                      ? 'bg-primary/20 text-primary'
+                      ? 'bg-brand/20 text-brand'
                       : 'bg-destructive/20 text-destructive'
                   )}
                 >
