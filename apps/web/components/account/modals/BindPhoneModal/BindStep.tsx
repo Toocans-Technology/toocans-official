@@ -64,7 +64,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
       verificationCode: '',
     },
   })
-  const { handleSubmit, formState, watch, reset, setValue } = form
+  const { handleSubmit, formState, watch, reset, setValue, trigger } = form
   const nationalCode = watch('nationalCode')
   const phoneNumber = watch('phoneNumber')
 
@@ -87,7 +87,9 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
   }, [])
 
   const handleSendCode = useCallback(async () => {
-    if (countdown) {
+    await trigger('phoneNumber')
+
+    if (formState.errors.phoneNumber || countdown || !nationalCode || !phoneNumber) {
       return
     }
 
@@ -97,7 +99,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
     } catch (error) {
       toast.error((error as HttpError).message)
     }
-  }, [mutateSendCode, countdown, nationalCode, phoneNumber])
+  }, [mutateSendCode, trigger, countdown, nationalCode, phoneNumber, formState.errors.phoneNumber])
 
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
@@ -143,7 +145,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
               <FormLabel>{t('account:phoneVerificationCode')}</FormLabel>
               <div
                 aria-invalid={formState.errors.verificationCode ? true : false}
-                className="focus-within:border-ring focus-within:ring-primary aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
+                className="focus-within:border-ring focus-within:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
               >
                 <FormControl>
                   <Input

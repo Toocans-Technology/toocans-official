@@ -205,7 +205,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
                   <FormLabel>{formLabel}</FormLabel>
                   <div
                     aria-invalid={formState.errors.code ? true : false}
-                    className="focus-within:border-ring focus-within:ring-primary aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-4 overflow-hidden rounded-md bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
+                    className="focus-within:border-ring focus-within:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-4 overflow-hidden rounded-md bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
                   >
                     <FormControl>
                       <Input
