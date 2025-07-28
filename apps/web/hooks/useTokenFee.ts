@@ -38,7 +38,7 @@ export const useTokenFee = (token?: Token) => {
         }
         return BigNumber(balance)
           .minus(chargeValue)
-          .toFixed(token?.minPrecision || 4)
+          .toFixed(token?.minPrecision || 4, BigNumber.ROUND_FLOOR)
       }
 
       return BigNumber(balance)
