@@ -75,8 +75,6 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
     async (e: MouseEvent<HTMLSpanElement>) => {
       e.stopPropagation()
 
-      console.log('点击发送按钮')
-
       if (countdown) {
         return
       }
