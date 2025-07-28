@@ -54,6 +54,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
             icon: token.icon,
             name: token.tokenName,
             fullName: token.tokenFullName,
+            amount: asset?.availableAssetTotal,
             availableBalance: BigNumber(asset?.availableAssetTotal || 0)
               .times(asset?.marketPrice || 0)
               .toFixed(token?.minPrecision)
@@ -68,6 +69,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
         icon: token.icon,
         name: token.tokenName,
         fullName: token.tokenFullName,
+        amount: '',
         availableBalance: '',
       }))
 
@@ -148,7 +150,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
                   </div>
                   {showAvailable && (
                     <>
-                      <span className="text-[#999]">{token.availableBalance}</span>
+                      <span className="text-[#999]">{token.amount}</span>
                     </>
                   )}
                 </CommandItem>
