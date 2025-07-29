@@ -9,6 +9,7 @@
   "addressPlaceholder": "请输入",
   "setAmount": "设置提币数量",
   "receivedAmount": "到账金额",
+  "withdrawAmount": "提币数量",
   "min": "最小",
   "all": "全部",
   "availableBalance": "可用余额",
