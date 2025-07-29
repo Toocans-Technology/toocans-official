@@ -35,6 +35,7 @@
     "number": "至少包含一个数字",
     "length": "8到32个字符"
   },
+  "verificationCodeTip": "输入通过您的{{type}}({{address}})收到的验证码",
   "privacyPolicyAgreement": "我已阅读并同意 <UserAgreement>{{name}} 用户协议</UserAgreement> 和 <PrivacyPolicy>隐私政策</PrivacyPolicy>",
   "title": "登录",
   "description": "登录"

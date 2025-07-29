@@ -1,10 +1,12 @@
 'use client'
 
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useState } from 'react'
 import { Button } from '@workspace/ui/components'
+import { Link, VerifyModal } from '@/components/common'
 import { useLogin } from '@/hooks/useLogin'
 import { useT } from '@/i18n'
-import { Link } from '../../common'
+import { useUserVerifyInfo } from '@/services/user'
+import { KycLevel } from '@/types/user'
 import UserDropdown from './UserDropdown'
 
 interface Props {}
@@ -12,15 +14,25 @@ interface Props {}
 const LoginButton: FunctionComponent<Props> = () => {
   const { t } = useT('common')
   const { isLoggedIn } = useLogin()
+  const { data: verifyInfo } = useUserVerifyInfo()
+  const [openVerifyModal, setOpenVerifyModal] = useState(false)
+  const isUnverified = verifyInfo?.kycLevel === KycLevel.unverified || !verifyInfo
 
   return isLoggedIn ? (
     <>
-      <Link href="/deposit" className="hover:opacity-80">
-        <Button rounded="full" className="text-[#222]">
+      {isUnverified ? (
+        <Button rounded="full" className="text-[#222]" onClick={() => setOpenVerifyModal(true)}>
           {t('common:deposit')}
         </Button>
-      </Link>
-      <UserDropdown />
+      ) : (
+        <Link href="/deposit" className="hover:opacity-80">
+          <Button rounded="full" className="text-[#222]">
+            {t('common:deposit')}
+          </Button>
+        </Link>
+      )}
+      <UserDropdown verifyInfo={verifyInfo} isUnverified={isUnverified} onVerifyModalOpen={setOpenVerifyModal} />
+      <VerifyModal open={openVerifyModal} onOpenChange={setOpenVerifyModal} />
     </>
   ) : (
     <>
