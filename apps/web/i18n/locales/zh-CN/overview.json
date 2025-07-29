@@ -3,5 +3,6 @@
   "AvailableBalance": "可用余额：",
   "Deposit": "充币",
   "Withdraw": "提币",
-  "Token": "币种"
+  "Token": "币种",
+  "AssetOverview": "资产总览"
 }
