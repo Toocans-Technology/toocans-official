@@ -15,19 +15,24 @@ import {
   toast,
 } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
+import { Link, VerifyModal } from '@/components/common'
 import { useT } from '@/i18n'
 import { typedStorage } from '@/lib/utils'
 import { getQueryClient } from '@/lib/utils'
-import { useUserVerifyInfo } from '@/services/user'
+import { UserVerifyInfo } from '@/services/user'
 import { useUserInfo } from '@/services/user/info'
 import { KycLevel } from '@/types/user'
 import { ChangeAvatarModal } from '../../account/modals'
-import { Link } from '../../common'
 
-const UserDropdown: FunctionComponent = () => {
+interface Props {
+  verifyInfo?: UserVerifyInfo
+  isUnverified?: boolean
+  onVerifyModalOpen?: (open: boolean) => void
+}
+
+const UserDropdown: FunctionComponent<Props> = ({ verifyInfo, isUnverified, onVerifyModalOpen }) => {
   const { t } = useT('common')
   const { data } = useUserInfo()
-  const { data: verifyInfo } = useUserVerifyInfo()
   const router = useRouter()
   const queryClient = getQueryClient()
   const [openChangeAvatarModal, setOpenChangeAvatarModal] = useState(false)
@@ -93,18 +98,33 @@ const UserDropdown: FunctionComponent = () => {
                 {t('common:overview')}
               </DropdownMenuItem>
             </Link>
-            <Link href="/deposit">
-              <DropdownMenuItem className="text-foreground py-2.5">
-                <CircleArrowDown color="#222" />
-                {t('common:deposit')}
-              </DropdownMenuItem>
-            </Link>
-            <Link href="/withdrawal">
-              <DropdownMenuItem className="text-foreground py-2.5">
-                <CircleArrowUp color="#222" />
-                {t('common:withdraw')}
-              </DropdownMenuItem>
-            </Link>
+            {isUnverified ? (
+              <>
+                <DropdownMenuItem className="text-foreground py-2.5" onClick={() => onVerifyModalOpen?.(true)}>
+                  <CircleArrowDown color="#222" />
+                  {t('common:deposit')}
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-foreground py-2.5" onClick={() => onVerifyModalOpen?.(true)}>
+                  <CircleArrowUp color="#222" />
+                  {t('common:withdraw')}
+                </DropdownMenuItem>
+              </>
+            ) : (
+              <>
+                <Link href="/deposit">
+                  <DropdownMenuItem className="text-foreground py-2.5">
+                    <CircleArrowDown color="#222" />
+                    {t('common:deposit')}
+                  </DropdownMenuItem>
+                </Link>
+                <Link href="/withdrawal">
+                  <DropdownMenuItem className="text-foreground py-2.5">
+                    <CircleArrowUp color="#222" />
+                    {t('common:withdraw')}
+                  </DropdownMenuItem>
+                </Link>
+              </>
+            )}
             <Link href="/account">
               <DropdownMenuItem className="text-foreground py-2.5">
                 <Settings color="#222" />

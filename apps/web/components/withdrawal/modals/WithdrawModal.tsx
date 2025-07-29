@@ -216,7 +216,10 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
                         className="aria-invalid:ring-0 focus-visible:ring-0"
                       />
                     </FormControl>
-                    <span className={cn('text-link', !countdown && 'cursor-pointer')} onClick={handleSendCode}>
+                    <span
+                      className={cn('text-link text-nowrap', !countdown && 'cursor-pointer')}
+                      onClick={handleSendCode}
+                    >
                       {countdown ? `${Math.round(countdown / 1000)}s` : t('common:send')}
                     </span>
                   </div>

@@ -5,17 +5,24 @@ import { sumBy } from 'es-toolkit'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
+import { Button } from '@workspace/ui/components'
 import { useRedirectIfNotLogin } from '@/hooks'
 import { useAssetAll } from '@/hooks/asset'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
 import { typedStorage } from '@/lib/utils/typedStorage/index'
 import type { GetAllAssetResponse } from '@/services/asset/useGetAllAsset'
+import { useUserVerifyInfo } from '@/services/user'
+import { KycLevel } from '@/types/user'
+import { VerifyModal } from '../common'
 
 export default function OverviewBalancePanel() {
   const { t } = useT('overview')
   const { data: data } = useAssetAll()
   const { tokens: allTokenData } = useAllToken()
+  const { data: verifyInfo } = useUserVerifyInfo()
+  const [openVerifyModal, setOpenVerifyModal] = useState(false)
+  const isUnverified = verifyInfo?.kycLevel === KycLevel.unverified || !verifyInfo
 
   const [show, setShow] = useState<boolean>(() => {
     return typedStorage.hideAssets
@@ -97,20 +104,45 @@ export default function OverviewBalancePanel() {
           </div>
         </div>
         <div className="flex gap-3">
-          <Link
-            href="/deposit"
-            className="font-inter flex h-10 cursor-pointer items-center justify-center gap-2 rounded-[20px] bg-[#9cff1f] px-7 text-[16px] font-normal leading-[22px] text-[#222]"
-          >
-            {t('overview:Deposit')}
-          </Link>
-          <Link
-            href="/withdrawal"
-            className="flex h-10 cursor-pointer items-center justify-center gap-2 rounded-[40px] bg-[#f4f4f4] px-7 text-[16px] font-normal leading-[22px] tracking-[-0.408px] text-[#222]"
-          >
-            {t('overview:Withdraw')}
-          </Link>
+          {isUnverified ? (
+            <>
+              <Button
+                rounded="full"
+                size="lg"
+                className="px-7 text-[16px] font-normal leading-[22px]"
+                onClick={() => setOpenVerifyModal(true)}
+              >
+                {t('overview:Deposit')}
+              </Button>
+              <Button
+                rounded="full"
+                size="lg"
+                variant="secondary"
+                className="px-7 text-[16px] font-normal leading-[22px]"
+                onClick={() => setOpenVerifyModal(true)}
+              >
+                {t('overview:Withdraw')}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/deposit"
+                className="font-inter flex h-10 cursor-pointer items-center justify-center gap-2 rounded-[20px] bg-[#9cff1f] px-7 text-[16px] font-normal leading-[22px] text-[#222]"
+              >
+                {t('overview:Deposit')}
+              </Link>
+              <Link
+                href="/withdrawal"
+                className="flex h-10 cursor-pointer items-center justify-center gap-2 rounded-[40px] bg-[#f4f4f4] px-7 text-[16px] font-normal leading-[22px] tracking-[-0.408px] text-[#222]"
+              >
+                {t('overview:Withdraw')}
+              </Link>
+            </>
+          )}
         </div>
       </div>
+      {isUnverified && <VerifyModal open={openVerifyModal} onOpenChange={setOpenVerifyModal} />}
     </div>
   )
 }

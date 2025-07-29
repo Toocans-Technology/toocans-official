@@ -1,27 +1,20 @@
 'use client'
 
-import { FunctionComponent, useEffect, useState } from 'react'
+import { FunctionComponent } from 'react'
 import { Button, Label, Separator } from '@workspace/ui/components'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@workspace/ui/components'
 import { useT } from '@/i18n'
-import { useUserVerifyInfo } from '@/services/user'
-import { KycLevel } from '@/types/user'
 
-const VerifyModal: FunctionComponent = () => {
+interface Props {
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+
+const VerifyModal: FunctionComponent<Props> = ({ open, onOpenChange }) => {
   const { t } = useT(['common'])
-  const [open, setOpen] = useState(false)
-  const { data: verifyInfo, isLoading } = useUserVerifyInfo()
-
-  useEffect(() => {
-    if (isLoading) {
-      return
-    }
-    const opened = verifyInfo?.kycLevel === KycLevel.unverified || !verifyInfo
-    setOpen(opened)
-  }, [verifyInfo, isLoading])
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{t('common:verifyModal.title')}</DialogTitle>
@@ -40,7 +33,7 @@ const VerifyModal: FunctionComponent = () => {
           </div>
         </div>
         <DialogFooter>
-          <Button rounded="full" onClick={() => setOpen(false)}>
+          <Button rounded="full" onClick={() => onOpenChange?.(false)}>
             {t('common:verifyModal.verify')}
           </Button>
         </DialogFooter>
