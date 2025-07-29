@@ -8,7 +8,7 @@ const AssetsAndMarkets: FunctionComponent<{ lang: string }> = async ({ lang }) =
   return (
     <div className="w-full bg-black">
       <div className="mx-auto flex max-w-[1200px] flex-col items-center px-8 pb-6 text-white">
-        <div className="flex justify-between gap-10">
+        <div className="flex w-full justify-between gap-10">
           <div className="hover:border-primary flex flex-1 gap-6 rounded-[12px] border border-transparent bg-[#0f0f0f] px-7 pt-8">
             <div className="flex-1">
               <h2 className="text-[32px]">{t('home:assetsAndMarkets.section1.title')}</h2>
