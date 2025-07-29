@@ -1,0 +1,11 @@
+{
+  "title": "复制成功！",
+  "VerificationCodeSent": "验证码已发送",
+  "AlreadyBinded": "谷歌验证器已绑定，请勿重复绑定。",
+  "CopySuccess": "复制成功！",
+  "VerificationSuccess": "绑定成功！",
+  "VerificationFailed": "验证失败，请重试。",
+  "PleaseEnterCodeAndSecretKey": "请输入验证码，并确保密钥存在",
+  "GoogleCode6Digits": "谷歌验证码必须为6位数字",
+  "Confirm": "确认"
+}

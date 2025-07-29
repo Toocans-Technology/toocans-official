@@ -1,0 +1,18 @@
+{
+  "title": "充币",
+  "description": "充币",
+  "chooseToken": "选择要充币的币种",
+  "selectToken": "选择币种",
+  "selectNetwork": "选择网络",
+  "chooseNetwork": "选择充值网络",
+  "depositDetails": "充币详情",
+  "depositAddress": "充值地址",
+  "minDeposit": "最小充值金额",
+  "searchToken": "搜索币种",
+  "copySuccess": "充值地址已复制到剪贴板",
+  "recentDeposits": "最近充值记录",
+  "token": "资产",
+  "amount": "到账金额",
+  "time": "时间",
+  "noData": "暂无数据"
+}
