@@ -8,6 +8,7 @@ export enum StorageKeys {
   ExpireIn = 'expireIn',
   ClientId = 'clientId',
   i18nextLng = 'i18nextLng',
+  HideAssets = 'hideAssets',
 }
 
 class LocalStorage extends BasicStorage<StorageKeys> {
@@ -45,6 +46,15 @@ class LocalStorage extends BasicStorage<StorageKeys> {
 
   set clientId(value: string) {
     this.set(StorageKeys.ClientId, value)
+  }
+
+  // 是否隐藏资产
+  get hideAssets() {
+    return this.get(StorageKeys.HideAssets) === 'true'
+  }
+
+  set hideAssets(value: boolean) {
+    this.set(StorageKeys.HideAssets, value.toString())
   }
 
   // 清除所有存储

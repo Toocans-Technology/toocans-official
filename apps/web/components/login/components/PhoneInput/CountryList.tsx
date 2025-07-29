@@ -2,6 +2,7 @@ import { SearchOutlined } from '@ant-design/icons'
 import { Dropdown, Input, Form, Spin } from 'antd'
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { cn } from '@workspace/ui/lib/utils'
+import i18next from '@/i18n'
 import { useT } from '@/i18n'
 import { getCountryList } from '@/services/login'
 import { matchPhoneNum } from '@/utils'
@@ -10,23 +11,21 @@ import styles from '../../assets/style.module.scss'
 
 const CountryList = () => {
   const { t } = useT('login')
+
   const { data: countrys, isLoading } = getCountryList()
   const { seconds, formData, cuntrysVisible, setCuntrysVisible } = useLoginContext()
 
-  const [nationalCode, setNationalCode] = useState<string | undefined | null>(undefined)
+  const [nationalCode, setNationalCode] = useState<string>('1')
   const [searchVal, setSearchVal] = useState<string>('')
 
   const filterCountrys = useMemo(
     () =>
-      countrys?.filter(
-        (item: any) => item.countryEnName.toLowerCase().includes(searchVal) || item.nationalCode.includes(searchVal)
-      ),
+      countrys?.filter((item: any) => {
+        const name = i18next.language.includes('zh') ? item.countryName : item.countryEnName
+        return name.toLowerCase().includes(searchVal.toLowerCase()) || item.nationalCode.includes(searchVal)
+      }),
     [countrys, searchVal]
   )
-
-  useEffect(() => {
-    setNationalCode(countrys?.[0]?.nationalCode)
-  }, [countrys])
 
   useEffect(() => {
     formData.setFieldValue('nationalCode', nationalCode)
@@ -84,8 +83,8 @@ const CountryList = () => {
                       onClick={() => handleCuntryClick(item)}
                     >
                       <div className="flex items-center">
-                        <img src={item.flagUrls?.[0].url} alt={item.countryEnName} width={20} className="mr-2" />
-                        {item.countryEnName}
+                        <img src={item.flagUrls?.[0].url} width={20} className="mr-2" />
+                        {i18next.language.includes('zh') ? item.countryName : item.countryEnName}
                       </div>
                       <div>+{item.nationalCode}</div>
                     </div>
@@ -98,7 +97,7 @@ const CountryList = () => {
       >
         <div className={cn('flex items-center', seconds < 60 ? 'cursor-not-allowed' : 'cursor-pointer')}>
           <Form.Item name="nationalCode" label={null} style={{ display: 'none' }}></Form.Item>
-          {isLoading ? <Spin /> : <div>+{nationalCode}</div>}
+          {isLoading ? <Spin /> : <div className="min-w-[35px] text-center">+{nationalCode}</div>}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"

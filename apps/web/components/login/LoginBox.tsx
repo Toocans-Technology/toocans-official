@@ -5,12 +5,12 @@ import { throttle } from 'es-toolkit'
 import dynamic from 'next/dynamic'
 import { useSearchParams } from 'next/navigation'
 import { FunctionComponent, useState, useRef, useCallback } from 'react'
-import Link from '@/components/common/Link'
 import { useRouter } from '@/hooks'
 import { useT } from '@/i18n'
 import { typedStorage } from '@/lib/utils'
 import { useLogin } from '@/services/login'
 import { openToast } from '@/utils'
+import { matchEmail, matchPhoneNum } from '@/utils'
 import { LoginContext } from './LoginContext'
 import { SwitchTabs, EmailInput, VerificationCode, PasswordInput, NotCode, CheckComp } from './components/index'
 import { GrantType, LoginType } from './data'
@@ -45,6 +45,52 @@ const LoginBox: FunctionComponent = () => {
     setPhoneCheckState(false)
   }
 
+  const handleForget = useCallback(() => {
+    const phone = form.getFieldValue('phone')
+    const email = form.getFieldValue('email')
+    const nationalCode = form.getFieldValue('nationalCode')
+    let query = {}
+
+    if (grantType == GrantType.EMAIL) {
+      if (!email) {
+        form.setFields([{ name: 'email', value: '', errors: [t('please', { name: t('enter', { name: 'email' }) })] }])
+        return
+      }
+      if (!matchEmail(email)) {
+        form.setFields([
+          { name: 'email', value: email, errors: [t('formatErr', { name: `${t('email')} ${t('address')}` })] },
+        ])
+        return
+      }
+      query = { email }
+    }
+
+    if (grantType == GrantType.SMS) {
+      if (!phone) {
+        form.setFields([
+          { name: 'phone', value: phone, errors: [t('please', { name: t('enter', { name: 'phone' }) })] },
+        ])
+        return
+      }
+      if (!matchPhoneNum(nationalCode, phone)) {
+        form.setFields([{ name: 'phone', value: phone, errors: [t('formatErr', { name: 'phone' })] }])
+        return
+      }
+      query = { phone, nationalCode }
+    }
+
+    if (!form.getFieldValue('unregisteredTip') && checkBoxRef.current) {
+      checkBoxRef.current.openShak1()
+      return
+    }
+    if (!form.getFieldValue('userAgreement') && checkBoxRef.current) {
+      checkBoxRef.current.openShak2()
+      return
+    }
+
+    router.push('/forget', { query })
+  }, [grantType])
+
   const onSubmit = useCallback(
     throttle(async (values: { [key: string]: string }) => {
       if (!values.unregisteredTip && checkBoxRef.current) {
@@ -56,8 +102,13 @@ const LoginBox: FunctionComponent = () => {
         return
       }
 
+      if (grantType == GrantType.SMS && (!values.phone || !matchPhoneNum(values.nationalCode, values.phone))) {
+        form.setFields([{ name: 'phone', errors: [t('formatErr', { name: `${t('phone')} ${t('number')}` })] }])
+        return
+      }
+
       const resultParams = {
-        clientId: '24b5d2a7f4714409b4cc60bafc1dd2f6',
+        clientId: 'c247a83b04de19a955f9899a485fd330',
         code: null,
         uuid: null,
         channel: null,
@@ -151,9 +202,7 @@ const LoginBox: FunctionComponent = () => {
               <div className="mt-4 flex select-none">
                 {seconds == 60 ? (
                   <>
-                    <Link
-                      href={`/login?LoginType=${loginType == LoginType.CODE ? LoginType.PASSWORD : LoginType.CODE}`}
-                      replace
+                    <p
                       className="cursor-pointer text-xs text-[#3C7BF4]"
                       onClick={() => {
                         setLoginType(loginType == LoginType.CODE ? LoginType.PASSWORD : LoginType.CODE)
@@ -161,11 +210,11 @@ const LoginBox: FunctionComponent = () => {
                       }}
                     >
                       {t('switchTo', { type: loginType == LoginType.CODE ? LoginType.PASSWORD : LoginType.CODE })}
-                    </Link>
+                    </p>
                     {loginType == LoginType.PASSWORD && (
-                      <Link href="/forget" className="ml-auto text-xs text-[#3C7BF4]">
+                      <a onClick={handleForget} className="ml-auto text-xs text-[#3C7BF4]">
                         {t('forgotPassword')}
-                      </Link>
+                      </a>
                     )}
                   </>
                 ) : (

@@ -1,43 +1,45 @@
 import { Form, Button, Input } from 'antd'
-import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { useState, useEffect, useContext } from 'react'
 import { GrantType } from '@/components/login/data'
+import { RouterContext } from '@/components/providers'
 import { useT } from '@/i18n'
-import { useCodeByEmail, useCodeByMobile } from '@/services/login'
-import { useLogin } from '@/services/login'
+import { useCodeByEmail, useCodeByMobile, useLogin } from '@/services/login'
 import { openToast } from '@/utils'
+import { matchEmail, matchPhoneNum } from '@/utils'
 import { useForgetContext } from '../ForgetContext'
 import styles from '../assets/style.module.scss'
 
 const VerificationCode = () => {
   const { t } = useT('login')
 
-  const { grantType, setStep, formData, setUserToken } = useForgetContext()
+  const router = useContext(RouterContext)
 
-  let timer: ReturnType<typeof setInterval> | null = null
+  const routerParams = useSearchParams()
 
-  const [selfEmail, setSelfEmail] = useState('')
-  const [selfPhoneData, setSelfPhoneData] = useState({ mobile: '', nationalCode: '' })
+  const urlEmail = routerParams.get('email') || ''
+  const urlPhone = routerParams.get('phone') || ''
+  const urlNationalCode = routerParams.get('nationalCode') || ''
+
+  const { grantType, setStep, setUserToken } = useForgetContext()
+  const { mutateAsync: fetchCodeByEmail } = useCodeByEmail()
+  const { mutateAsync: fetchCodeByMobile } = useCodeByMobile()
   const { mutateAsync: handleLogin } = useLogin()
 
-  useCodeByEmail({ email: selfEmail })
-  useCodeByMobile({
-    mobile: selfPhoneData.mobile,
-    nationalCode: selfPhoneData.nationalCode,
-  })
+  let timer: ReturnType<typeof setInterval> | null = null
 
   // 倒计时
   const [seconds, setSeconds] = useState(60)
 
-  const handleSendCode = () => {
+  const handleSendCode = async () => {
     if (seconds < 60) return
     try {
-      // 上线前放开
       if (grantType == GrantType.EMAIL) {
-        setSelfEmail(formData.getFieldValue('email'))
+        await fetchCodeByEmail({ email: urlEmail })
       } else {
-        setSelfPhoneData({
-          mobile: formData.getFieldValue('phone'),
-          nationalCode: formData.getFieldValue('nationalCode'),
+        await fetchCodeByMobile({
+          mobile: urlPhone,
+          nationalCode: urlNationalCode,
         })
       }
 
@@ -55,13 +57,14 @@ const VerificationCode = () => {
 
       openToast(t('successfully', { name: t('send') }))
     } catch (error) {
+      console.log(error, 123123)
       openToast((error as Error).message, 'error')
     }
   }
 
   const changInput = async (value: string) => {
     const resultParams = {
-      clientId: '24b5d2a7f4714409b4cc60bafc1dd2f6',
+      clientId: 'c247a83b04de19a955f9899a485fd330',
       code: null,
       uuid: null,
       channel: null,
@@ -73,14 +76,14 @@ const VerificationCode = () => {
     if (grantType == GrantType.EMAIL) {
       Object.assign(resultParams, {
         grantType,
-        email: selfEmail,
+        email: urlEmail,
         emailCode: value,
       })
     } else {
       Object.assign(resultParams, {
         grantType,
-        nationalCode: selfPhoneData.nationalCode,
-        phonenumber: selfPhoneData.mobile,
+        nationalCode: urlNationalCode,
+        phonenumber: urlPhone,
         smsCode: value,
       })
     }
@@ -88,13 +91,25 @@ const VerificationCode = () => {
     try {
       const { access_token } = await handleLogin(resultParams)
       setUserToken(access_token)
-      setStep(2)
+      setStep(1)
     } catch (error) {
       openToast((error as Error).message, 'error')
     }
   }
 
   useEffect(() => {
+    if (
+      (grantType == GrantType.EMAIL && !matchEmail(urlEmail)) ||
+      (grantType == GrantType.SMS && !matchPhoneNum(urlNationalCode, urlPhone))
+    ) {
+      grantType == GrantType.EMAIL
+        ? openToast(t('formatErr', { name: `${t('email')} ${t('address')}` }), 'error')
+        : openToast(t('formatErr', { name: `${t('phone')} ${t('number')}` }), 'error')
+
+      router.replace('/login')
+      return
+    }
+
     handleSendCode()
     return () => {
       timer && clearInterval(timer)
@@ -104,6 +119,12 @@ const VerificationCode = () => {
 
   return (
     <>
+      <p className="mt-4 text-[12px]">
+        {t('verificationCodeTip', {
+          type: grantType == GrantType.EMAIL ? 'email' : 'phone',
+          address: grantType == GrantType.EMAIL ? urlEmail : `${urlNationalCode} ${urlPhone}`,
+        })}
+      </p>
       <Form.Item name="code" className={styles.otpParent}>
         <Input.OTP type="text" formatter={(value) => value.replace(/[^\d]/g, '')} onChange={changInput} />
       </Form.Item>

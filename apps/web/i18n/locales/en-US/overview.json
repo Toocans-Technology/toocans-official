@@ -3,5 +3,6 @@
   "AvailableBalance": "Available Balance:",
   "Deposit": "Deposit",
   "Withdraw": "Withdraw",
-  "Token": "Token"
+  "Token": "Token",
+  "AssetOverview": "Asset Overview"
 }
