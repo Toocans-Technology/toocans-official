@@ -17,7 +17,7 @@ const VerificationCode = () => {
           { required: true, message: '' },
           {
             pattern: /^\d{6}$/,
-            message: t('formatErr', { name: 'code' }),
+            message: t('login:formatErr', { name: t('login:verificationCode') }),
           },
         ]}
         validateTrigger="onBlur"
@@ -27,7 +27,7 @@ const VerificationCode = () => {
         <Input
           maxLength={6}
           type="text"
-          placeholder={t('enter', { name: t('verificationCode') })}
+          placeholder={t('login:enter', { name: t('login:verificationCode') })}
           onChange={(e) => {
             // 只允许输入数字
             const value = e.target.value.replace(/\D/g, '').slice(0, 6)

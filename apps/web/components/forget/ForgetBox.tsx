@@ -43,7 +43,7 @@ const ForgetBox: FunctionComponent = () => {
     >
       <div className="flex flex-1 content-center bg-[#f1f1f1]">
         <div className="mt-45 ml-35">
-          <p className="title text-2xl font-medium">{t('forgotPassword')}</p>
+          <p className="title text-2xl font-medium">{t('login:forgotPassword')}</p>
           <div
             className="w-108 min-h-50 mt-4 rounded-2xl bg-white p-6"
             style={{ boxShadow: '10px 19px 250px 0px rgba(0, 0, 0, 0.22)' }}

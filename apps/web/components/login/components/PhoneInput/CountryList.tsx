@@ -67,7 +67,7 @@ const CountryList = () => {
                 prefix={<SearchOutlined />}
                 value={searchVal}
                 onChange={(e) => setSearchVal(e.target.value)}
-                placeholder={t('search')}
+                placeholder={t('login:search')}
               />
               <div className="mt-2 max-h-[200px] overflow-y-scroll">
                 {filterCountrys?.map((item: any) => {

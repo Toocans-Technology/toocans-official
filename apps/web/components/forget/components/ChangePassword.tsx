@@ -27,7 +27,7 @@ const ChangePassword = () => {
     throttle(async () => {
       try {
         await handleSetPassword({ password: formData.getFieldValue('password'), userToken })
-        openToast(t('successfully', { name: t('set') }))
+        openToast(t('login:successfully', { name: t('login:set') }))
         router.replace('/login')
       } catch (error) {
         openToast((error as Error).message, 'error')
@@ -69,7 +69,7 @@ const ChangePassword = () => {
         <Input.Password
           maxLength={32}
           minLength={8}
-          placeholder={t('enter', { name: 'password' })}
+          placeholder={t('login:enter', { name: t('login:password') })}
           autoComplete="off"
           onFocus={() => {
             formData.setFields([
@@ -86,7 +86,7 @@ const ChangePassword = () => {
               formData.setFields([
                 {
                   name: ['confirmPassword'],
-                  errors: [t('inconsistent', { name: t('password') })],
+                  errors: [t('login:inconsistent', { name: t('login:password') })],
                 },
               ])
             }
@@ -98,23 +98,23 @@ const ChangePassword = () => {
       <div className="text-[#666] [&>p]:mt-2 [&_.anticon-close-circle]:mr-2">
         <p className={errType == PasswordErrorType.lowercase ? 'text-destructive' : ''}>
           <CloseCircleFilled />
-          {t('ruleTip.lowercase')}
+          {t('login:ruleTip.lowercase')}
         </p>
         <p className={errType == PasswordErrorType.uppercase ? 'text-destructive' : ''}>
           <CloseCircleFilled />
-          {t('ruleTip.uppercase')}
+          {t('login:ruleTip.uppercase')}
         </p>
         <p className={errType == PasswordErrorType.number ? 'text-destructive' : ''}>
           <CloseCircleFilled />
-          {t('ruleTip.number')}
+          {t('login:ruleTip.number')}
         </p>
         <p className={errType == PasswordErrorType.length ? 'text-destructive' : ''}>
           <CloseCircleFilled />
-          {t('ruleTip.length')}
+          {t('login:ruleTip.length')}
         </p>
       </div>
 
-      <p className={'mt-4 select-none'}>{t('confirmPassword')}</p>
+      <p className={'mt-4 select-none'}>{t('login:confirmPassword')}</p>
 
       <Form.Item
         name="confirmPassword"
@@ -130,7 +130,7 @@ const ChangePassword = () => {
               if (value === formData.getFieldValue('password')) {
                 return Promise.resolve()
               } else {
-                return Promise.reject(t('inconsistent', { name: t('password') }))
+                return Promise.reject(t('login:inconsistent', { name: t('login:password') }))
               }
             },
           },
@@ -140,7 +140,7 @@ const ChangePassword = () => {
           maxLength={32}
           allowClear
           minLength={8}
-          placeholder={t('enter', { name: 'password' })}
+          placeholder={t('login:enter', { name: t('login:password') })}
           onFocus={() => {
             if (formData.getFieldError('confirmPassword')?.length) {
               formData.setFields([
@@ -157,7 +157,7 @@ const ChangePassword = () => {
       </Form.Item>
 
       <Button disabled={isDisabled} className="mt-6 w-full" type="primary" onClick={onSubmit}>
-        {t('next')}
+        {t('login:next')}
       </Button>
     </>
   )
