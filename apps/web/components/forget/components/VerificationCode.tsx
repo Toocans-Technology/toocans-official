@@ -121,7 +121,7 @@ const VerificationCode = () => {
     <>
       <p className="mt-4 text-[12px]">
         {t('verificationCodeTip', {
-          type: grantType == GrantType.EMAIL ? 'email' : 'phone',
+          type: t(grantType == GrantType.EMAIL ? GrantType.EMAIL : GrantType.SMS),
           address: grantType == GrantType.EMAIL ? urlEmail : `${urlNationalCode} ${urlPhone}`,
         })}
       </p>

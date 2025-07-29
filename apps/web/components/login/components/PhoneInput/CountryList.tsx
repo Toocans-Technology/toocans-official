@@ -5,7 +5,6 @@ import { cn } from '@workspace/ui/lib/utils'
 import i18next from '@/i18n'
 import { useT } from '@/i18n'
 import { getCountryList } from '@/services/login'
-import { matchPhoneNum } from '@/utils'
 import { useLoginContext } from '../../LoginContext'
 import styles from '../../assets/style.module.scss'
 
@@ -42,7 +41,7 @@ const CountryList = () => {
         menu={{ items: countrys as any }}
         overlayStyle={{
           left: '-8px',
-          top: '40px',
+          top: '30px',
         }}
         open={cuntrysVisible}
         trigger={['click']}
@@ -52,10 +51,6 @@ const CountryList = () => {
           if (value) {
             formData.setFieldValue('phone', phoneVal)
             setSearchVal('')
-          } else if (!matchPhoneNum(nationalCode as string, phoneVal)) {
-            formData.setFields([
-              { name: 'phone', value: phoneVal, errors: [t('formatErr', { name: `${t('phone')} ${t('number')}` })] },
-            ])
           }
           setCuntrysVisible(value)
         }}
@@ -96,7 +91,7 @@ const CountryList = () => {
         }}
       >
         <div className={cn('flex items-center', seconds < 60 ? 'cursor-not-allowed' : 'cursor-pointer')}>
-          <Form.Item name="nationalCode" label={null} style={{ display: 'none' }}></Form.Item>
+          <Form.Item label={null} style={{ display: 'none' }}></Form.Item>
           {isLoading ? <Spin /> : <div className="min-w-[35px] text-center">+{nationalCode}</div>}
           <svg
             xmlns="http://www.w3.org/2000/svg"

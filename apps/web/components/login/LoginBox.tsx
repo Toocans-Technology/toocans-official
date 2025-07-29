@@ -2,7 +2,6 @@
 
 import { Button, Form } from 'antd'
 import { throttle } from 'es-toolkit'
-import dynamic from 'next/dynamic'
 import { useSearchParams } from 'next/navigation'
 import { FunctionComponent, useState, useRef, useCallback } from 'react'
 import { useRouter } from '@/hooks'
@@ -12,10 +11,9 @@ import { useLogin } from '@/services/login'
 import { openToast } from '@/utils'
 import { matchEmail, matchPhoneNum } from '@/utils'
 import { LoginContext } from './LoginContext'
+import PhoneInput from './components/PhoneInput'
 import { SwitchTabs, EmailInput, VerificationCode, PasswordInput, NotCode, CheckComp } from './components/index'
 import { GrantType, LoginType } from './data'
-
-const PhoneInput = dynamic(() => import('./components/PhoneInput'))
 
 const LoginBox: FunctionComponent = () => {
   const { t } = useT('login')
@@ -32,8 +30,6 @@ const LoginBox: FunctionComponent = () => {
   const [loginType, setLoginType] = useState<LoginType>((routerParams.get('LoginType') as LoginType) || LoginType.CODE)
   // 国家选择框展示
   const [cuntrysVisible, setCuntrysVisible] = useState(false)
-  // 选取问题, 选中后开启手机号blur校验
-  const [phoneCheckState, setPhoneCheckState] = useState(false)
   // 倒计时
   const [seconds, setSeconds] = useState(60)
 
@@ -42,7 +38,6 @@ const LoginBox: FunctionComponent = () => {
   const stateReset = () => {
     form.resetFields()
     setCuntrysVisible(false)
-    setPhoneCheckState(false)
   }
 
   const handleForget = useCallback(() => {
@@ -168,8 +163,6 @@ const LoginBox: FunctionComponent = () => {
         setSeconds,
         cuntrysVisible,
         setCuntrysVisible,
-        phoneCheckState,
-        setPhoneCheckState,
         stateReset,
       }}
     >
@@ -209,7 +202,7 @@ const LoginBox: FunctionComponent = () => {
                         form.resetFields(loginType == LoginType.CODE ? ['password'] : ['code'])
                       }}
                     >
-                      {t('switchTo', { type: loginType == LoginType.CODE ? LoginType.PASSWORD : LoginType.CODE })}
+                      {t('switchTo', { type: t(loginType == LoginType.CODE ? LoginType.PASSWORD : LoginType.CODE) })}
                     </p>
                     {loginType == LoginType.PASSWORD && (
                       <a onClick={handleForget} className="ml-auto text-xs text-[#3C7BF4]">

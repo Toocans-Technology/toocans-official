@@ -142,7 +142,7 @@ const ChangePassword = () => {
           minLength={8}
           placeholder={t('enter', { name: 'password' })}
           onFocus={() => {
-            if (formData.getFieldError('confirmPassword')) {
+            if (formData.getFieldError('confirmPassword')?.length) {
               formData.setFields([
                 {
                   name: ['confirmPassword'],
