@@ -1,0 +1,38 @@
+{
+  "title": "Toocans",
+  "startNow": "立即开始",
+  "continueWith": "继续使用",
+  "hero": {
+    "description": "由交易专家驱动的金融未来",
+    "inputPlaceholder": "请输入邮箱"
+  },
+  "safeAndTrust": {
+    "title": "您安全可信的加密钱包",
+    "section1": {
+      "title": "资产安全存储",
+      "description": "我们采用顶级加密和存储技术，确保您的资产始终受到全面保护。"
+    },
+    "section2": {
+      "title": "可靠的平台",
+      "description": "以安全为首要原则构建的平台，能够快速高效地检测并响应网络威胁。"
+    },
+    "section3": {
+      "title": "多设备访问",
+      "description": "无论是桌面端还是移动端，您都可随时随地访问钱包，功能齐全，操作便捷。"
+    }
+  },
+  "assetsAndMarkets": {
+    "section1": {
+      "title": "资产",
+      "description": "清晰展示钱包资产信息"
+    },
+    "section2": {
+      "title": "行情",
+      "description": "洞察市场机会，追踪市场动态"
+    }
+  },
+  "chainTransfer": "链上转账，平台内免费转账，随时随地",
+  "signUpNow": "立即注册",
+  "signUpNowDescription": "开启您的加密资产安全管理之旅",
+  "invalidEmail": "请输入有效的邮箱地址"
+}
