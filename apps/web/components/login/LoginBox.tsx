@@ -48,12 +48,22 @@ const LoginBox: FunctionComponent = () => {
 
     if (grantType == GrantType.EMAIL) {
       if (!email) {
-        form.setFields([{ name: 'email', value: '', errors: [t('please', { name: t('enter', { name: 'email' }) })] }])
+        form.setFields([
+          {
+            name: 'email',
+            value: '',
+            errors: [t('login:please', { name: t('login:enter', { name: t('login:email') }) })],
+          },
+        ])
         return
       }
       if (!matchEmail(email)) {
         form.setFields([
-          { name: 'email', value: email, errors: [t('formatErr', { name: `${t('email')} ${t('address')}` })] },
+          {
+            name: 'email',
+            value: email,
+            errors: [t('login:formatErr', { name: `${t('login:email')} ${t('login:address')}` })],
+          },
         ])
         return
       }
@@ -63,12 +73,22 @@ const LoginBox: FunctionComponent = () => {
     if (grantType == GrantType.SMS) {
       if (!phone) {
         form.setFields([
-          { name: 'phone', value: phone, errors: [t('please', { name: t('enter', { name: 'phone' }) })] },
+          {
+            name: 'phone',
+            value: phone,
+            errors: [t('login:please', { name: t('login:enter', { name: t('login:phone') }) })],
+          },
         ])
         return
       }
       if (!matchPhoneNum(nationalCode, phone)) {
-        form.setFields([{ name: 'phone', value: phone, errors: [t('formatErr', { name: 'phone' })] }])
+        form.setFields([
+          {
+            name: 'phone',
+            value: phone,
+            errors: [t('login:formatErr', { name: t('login:phone') })],
+          },
+        ])
         return
       }
       query = { phone, nationalCode }
@@ -98,7 +118,12 @@ const LoginBox: FunctionComponent = () => {
       }
 
       if (grantType == GrantType.SMS && (!values.phone || !matchPhoneNum(values.nationalCode, values.phone))) {
-        form.setFields([{ name: 'phone', errors: [t('formatErr', { name: `${t('phone')} ${t('number')}` })] }])
+        form.setFields([
+          {
+            name: 'phone',
+            errors: [t('login:formatErr', { name: t('login:phone') })],
+          },
+        ])
         return
       }
 
@@ -142,7 +167,7 @@ const LoginBox: FunctionComponent = () => {
         typedStorage.refreshToken = refresh_token
         typedStorage.expireIn = expires_in
 
-        openToast(t('successfully', { name: t('login') }))
+        openToast(t('login:successfully', { name: t('login:name') }))
         router.replace('/overview')
       } catch (error) {
         openToast((error as Error).message, 'error')
@@ -168,7 +193,7 @@ const LoginBox: FunctionComponent = () => {
     >
       <div className="flex flex-1 content-center bg-[#f1f1f1]">
         <div className="mt-35 ml-35">
-          <p className="title text-2xl font-medium">{t('welcome', { name: t('name') })}</p>
+          <p className="title text-2xl font-medium">{t('login:welcome', { name: t('login:name') })}</p>
           <div
             className="w-108 min-h-100 mt-4 rounded-2xl bg-white p-6"
             style={{ boxShadow: '10px 19px 250px 0px rgba(0, 0, 0, 0.22)' }}
@@ -183,7 +208,9 @@ const LoginBox: FunctionComponent = () => {
               {grantType == GrantType.SMS && <PhoneInput />}
 
               <p className={'mt-4 select-none'}>
-                {t('loginType', { name: loginType == LoginType.CODE ? t('verificationCode') : t('password') })}
+                {t('login:loginType', {
+                  name: loginType == LoginType.CODE ? t('login:verificationCode') : t('login:password'),
+                })}
               </p>
 
               {/* Verification Code input */}
@@ -202,11 +229,13 @@ const LoginBox: FunctionComponent = () => {
                         form.resetFields(loginType == LoginType.CODE ? ['password'] : ['code'])
                       }}
                     >
-                      {t('switchTo', { type: t(loginType == LoginType.CODE ? LoginType.PASSWORD : LoginType.CODE) })}
+                      {t('login:switchTo', {
+                        type: loginType == LoginType.CODE ? t('login:password') : t('login:verificationCode'),
+                      })}
                     </p>
                     {loginType == LoginType.PASSWORD && (
                       <a onClick={handleForget} className="ml-auto text-xs text-[#3C7BF4]">
-                        {t('forgotPassword')}
+                        {t('login:forgotPassword')}
                       </a>
                     )}
                   </>
@@ -217,7 +246,7 @@ const LoginBox: FunctionComponent = () => {
 
               <Form.Item>
                 <Button type="primary" htmlType="submit" className="mt-[36px] w-full" style={{ fontWeight: 500 }}>
-                  {t('login')}
+                  {t('login:login')}
                 </Button>
               </Form.Item>
 

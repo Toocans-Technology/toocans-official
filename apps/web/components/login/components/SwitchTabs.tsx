@@ -31,7 +31,7 @@ const SwitchTabs = () => {
           }
         }}
       >
-        {t('tabs', { name: t(item) })}
+        {t('login:tabs', { name: t(item) })}
       </span>
     )
   })

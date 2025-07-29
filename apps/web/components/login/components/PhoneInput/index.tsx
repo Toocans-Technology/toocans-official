@@ -22,7 +22,7 @@ const PhoneInput = () => {
           {
             validator: (_rule, value) => {
               if (!matchPhoneNum(nationalCode, value)) {
-                return Promise.reject(new Error(t('formatErr', { name: `${t('phone')}` })))
+                return Promise.reject(new Error(t('login:formatErr', { name: t('login:phone') })))
               } else {
                 return Promise.resolve()
               }
@@ -39,7 +39,7 @@ const PhoneInput = () => {
           allowClear
           disabled={seconds < 60}
           maxLength={11}
-          placeholder={t('enter', { name: t('phone') })}
+          placeholder={t('login:enter', { name: t('login:phone') })}
           onFocus={() => {
             if (formData.getFieldError('phone')?.length) {
               formData.setFields([
