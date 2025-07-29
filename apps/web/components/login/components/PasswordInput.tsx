@@ -48,7 +48,7 @@ const PasswordInput = () => {
         placeholder={t('enter', { name: t('password') })}
         autoComplete="off"
         onFocus={() => {
-          if (formData.getFieldError('password')) {
+          if (formData.getFieldError('password')?.length) {
             formData.setFields([
               {
                 name: ['password'],
