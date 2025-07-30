@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
+import { useLogin } from '@/hooks'
 import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
 import { kycLevelSchema } from '@/types/user'
@@ -39,11 +40,14 @@ export const UserVerifyInfoSchema = z
 export type UserVerifyInfo = z.infer<typeof UserVerifyInfoSchema>
 
 export const useUserVerifyInfo = () => {
-  return useQuery(
-    getQuery({
+  const { isLoggedIn } = useLogin()
+
+  return useQuery({
+    ...getQuery({
       method: 'GET',
       url: getUrl('/uc/userVerify/info'),
       transfer: UserVerifyInfoSchema.parse,
-    })
-  )
+    }),
+    enabled: isLoggedIn,
+  })
 }
