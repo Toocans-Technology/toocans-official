@@ -47,7 +47,7 @@ const CheckComp = (_props: any, ref: any) => {
                 UserAgreement: <Link href="https://www.toocans.com/terms" target="_blank" />,
                 PrivacyPolicy: <Link href="https://www.toocans.com/privacy" target="_blank" />,
               }}
-            ></Trans>
+            />
           </p>
         </label>
       </div>
