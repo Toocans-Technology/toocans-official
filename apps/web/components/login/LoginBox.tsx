@@ -167,7 +167,7 @@ const LoginBox: FunctionComponent = () => {
         typedStorage.refreshToken = refresh_token
         typedStorage.expireIn = expires_in
 
-        openToast(t('login:successfully', { name: t('login:name') }))
+        openToast(t('login:successfully', { name: t('login:login') }))
         router.replace('/overview')
       } catch (error) {
         openToast((error as Error).message, 'error')
