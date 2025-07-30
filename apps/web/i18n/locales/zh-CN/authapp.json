@@ -1,0 +1,23 @@
+{
+  "title": "复制成功！",
+  "VerificationCodeSent": "验证码已发送",
+  "AlreadyBinded": "谷歌验证器已绑定，请勿重复绑定。",
+  "CopySuccess": "复制成功！",
+  "VerificationSuccess": "绑定成功！",
+  "VerificationFailed": "验证失败，请重试。",
+  "PleaseEnterCodeAndSecretKey": "请输入验证码，并确保密钥存在",
+  "GoogleCode6Digits": "谷歌验证码必须为6位数字",
+  "Confirm": "确认",
+  "AuthenticatorApp": "身份验证器应用",
+  "SetUpTwoFactorAuthentication": "设置双重验证",
+  "DownloadAuthenticator": "下载身份验证器",
+  "DownloadGoogleAuthenticator": "下载 Google Authenticator（适用于 Android/iOS）",
+  "iOS": "iOS",
+  "Android": "安卓",
+  "ScanQRCode": "扫描二维码",
+  "ScanQRCodeDesc": "打开 Google Authenticator，扫描下方二维码或手动输入密钥短语以激活验证码。密钥短语用于设备丢失或更换时恢复验证器，请务必在设置前妥善保存。",
+  "ManualEnterCode": "或手动输入下方密钥",
+  "SecurityAuthentication": "安全验证",
+  "PleaseEnterAuthenticatorCode": "请输入身份验证器验证码",
+  "OnlyNumbersAllowed": "仅支持数字输入"
+}
