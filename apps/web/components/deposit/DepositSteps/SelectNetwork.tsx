@@ -22,7 +22,7 @@ const SelectNetwork: React.FC<SelectNetworkProps> = ({ value, networks, onValueC
 
   return (
     <Select onValueChange={onValueChange} value={value}>
-      <SelectTrigger className="hover:border-primary focus:border-primary w-[456px] rounded border-[#f8f8f8] bg-[#f8f8f8] px-3 py-2 data-[size=default]:h-11">
+      <SelectTrigger className="hover:border-brand focus:border-brand w-[518px] rounded border-[#f8f8f8] bg-[#f8f8f8] px-3 py-2 data-[size=default]:h-11">
         <SelectValue placeholder={placeholder || t('deposit:selectNetwork')} />
       </SelectTrigger>
       <SelectContent>

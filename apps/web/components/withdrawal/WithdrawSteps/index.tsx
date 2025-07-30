@@ -114,7 +114,7 @@ const WithdrawSteps: FunctionComponent = () => {
           </div>
           {step >= WithdrawStep.ChooseNetwork && (
             <>
-              <div className="flex flex-col gap-2">
+              <div className="mt-2 flex flex-col gap-2">
                 <Label className="text-sm text-[#222]">{t('withdrawal:onChainType')}</Label>
                 <SelectNetwork
                   value={selectedNetwork?.id || ''}
@@ -122,7 +122,7 @@ const WithdrawSteps: FunctionComponent = () => {
                   onValueChange={handleSelectNetwork}
                 />
               </div>
-              <div className="mt-4 flex max-w-[456px] flex-col gap-2">
+              <div className="mt-4 flex max-w-[518px] flex-col gap-2">
                 <Label className="text-sm text-[#222]">{t('withdrawal:address')}</Label>
                 <Input
                   placeholder={t('withdrawal:addressPlaceholder')}
