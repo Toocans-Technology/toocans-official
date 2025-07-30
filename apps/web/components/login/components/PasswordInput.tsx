@@ -3,6 +3,7 @@
 import { EyeFilled, EyeInvisibleFilled } from '@ant-design/icons'
 import { Form, Input } from 'antd'
 import { useT } from '@/i18n'
+import { matchPassword, PasswordErrorType } from '@/utils'
 import { useLoginContext } from '../LoginContext'
 
 const PasswordInput = () => {
@@ -17,25 +18,37 @@ const PasswordInput = () => {
       rules={[
         {
           required: true,
-          message: '',
           validator: (_rule, value) => {
-            if (value?.length > 8 && value?.length < 32) {
+            const matchResult = matchPassword(value)
+
+            if (matchResult === true) {
               return Promise.resolve()
             } else {
-              return Promise.reject(t('formatErr', { name: t('password') }))
+              let msg = ''
+              if (matchResult?.errorType == PasswordErrorType.lowercase) {
+                msg = t('login:ruleTip.lowercase')
+              }
+              if (matchResult?.errorType == PasswordErrorType.uppercase) {
+                msg = t('login:ruleTip.uppercase')
+              }
+              if (matchResult?.errorType == PasswordErrorType.number) {
+                msg = t('login:ruleTip.number')
+              }
+              if (matchResult?.errorType == PasswordErrorType.length) {
+                msg = t('login:ruleTip.length')
+              }
+              return Promise.reject(new Error(msg))
             }
           },
         },
       ]}
     >
       <Input.Password
-        maxLength={32}
-        minLength={8}
         allowClear
-        placeholder={t('enter', { name: t('password') })}
+        placeholder={t('login:enter', { name: t('login:password') })}
         autoComplete="off"
         onFocus={() => {
-          if (formData.getFieldError('password')) {
+          if (formData.getFieldError('password')?.length) {
             formData.setFields([
               {
                 name: ['password'],

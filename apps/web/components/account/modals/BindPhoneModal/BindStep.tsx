@@ -2,6 +2,8 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCountDown } from 'ahooks'
+import { CountryCode } from 'libphonenumber-js'
+import { isValidPhoneNumber } from 'libphonenumber-js/mobile'
 import { Loader2Icon } from 'lucide-react'
 import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -22,6 +24,7 @@ import { cn } from '@workspace/ui/lib/utils'
 import { PhoneNumberInput } from '@/components/common'
 import { useT } from '@/i18n'
 import { ONE_MINUTE_COUNT_DOWN, VERIFICATION_CODE_REGEX } from '@/lib/utils'
+import { Country } from '@/services/login'
 import { useBindPhone, UserInfo, useSendBindCode } from '@/services/user'
 import { HttpError } from '@/types/http'
 
@@ -34,6 +37,7 @@ interface Props {
 const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) => {
   const { t } = useT(['account', 'common'])
   const [targetDate, setTargetDate] = useState<number>()
+  const [countryCode, setCountryCode] = useState<CountryCode>()
   const { mutateAsync: mutateSendCode } = useSendBindCode()
   const { mutateAsync: mutateBindPhone, isPending } = useBindPhone()
 
@@ -41,20 +45,26 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
     () =>
       z.object({
         nationalCode: z.string(),
-        phoneNumber: z.string(),
+        phoneNumber: z
+          .string({ message: t('account:newPhoneRequired') })
+          .refine((val) => isValidPhoneNumber(val, countryCode), {
+            message: t('account:newPhoneError'),
+          }),
         verificationCode: z.string().regex(VERIFICATION_CODE_REGEX, t('account:verificationCodeError')).length(6),
       }),
-    [t]
+    [countryCode, t]
   )
 
   const form = useForm<z.infer<typeof FormSchema>>({
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      nationalCode: '86',
+      nationalCode: '1',
       verificationCode: '',
     },
   })
-  const { handleSubmit, formState, watch, reset, setValue } = form
+  const { handleSubmit, formState, watch, reset, setValue, trigger } = form
   const nationalCode = watch('nationalCode')
   const phoneNumber = watch('phoneNumber')
 
@@ -71,14 +81,25 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
     }
   }, [])
 
-  const handleSendCode = useCallback(() => {
-    if (countdown) {
+  const handleCountryChange = useCallback((country: Country) => {
+    setValue('nationalCode', country.nationalCode)
+    setCountryCode(country.domainShortName as CountryCode)
+  }, [])
+
+  const handleSendCode = useCallback(async () => {
+    await trigger('phoneNumber')
+
+    if (formState.errors.phoneNumber || countdown || !nationalCode || !phoneNumber) {
       return
     }
 
-    mutateSendCode({ countryCode: nationalCode, phone: phoneNumber })
-    setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
-  }, [mutateSendCode, nationalCode, phoneNumber])
+    try {
+      await mutateSendCode({ countryCode: nationalCode, phone: phoneNumber })
+      setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
+    } catch (error) {
+      toast.error((error as HttpError).message)
+    }
+  }, [mutateSendCode, trigger, countdown, nationalCode, phoneNumber, formState.errors.phoneNumber])
 
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
@@ -109,7 +130,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
                 <PhoneNumberInput
                   {...field}
                   invalid={!!formState.errors.phoneNumber}
-                  onCountryChange={(nationalCode) => setValue('nationalCode', nationalCode)}
+                  onCountryChange={handleCountryChange}
                 />
               </FormControl>
               <FormMessage />
@@ -124,17 +145,18 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
               <FormLabel>{t('account:phoneVerificationCode')}</FormLabel>
               <div
                 aria-invalid={formState.errors.verificationCode ? true : false}
-                className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
+                className="focus-within:border-ring focus-within:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
               >
                 <FormControl>
                   <Input
                     {...field}
                     autoComplete="off"
+                    maxLength={6}
                     placeholder={t('account:phoneVerificationCode')}
-                    className="focus-visible:ring-0"
+                    className="aria-invalid:ring-0 focus-visible:ring-0"
                   />
                 </FormControl>
-                <span className={cn('text-link', !countdown && 'cursor-pointer')} onClick={handleSendCode}>
+                <span className={cn('text-link text-nowrap', !countdown && 'cursor-pointer')} onClick={handleSendCode}>
                   {countdown ? `${Math.round(countdown / 1000)}s` : t('common:send')}
                 </span>
               </div>

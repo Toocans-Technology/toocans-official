@@ -1,31 +1,31 @@
 'use client'
 
 import dayjs from 'dayjs'
+import { Loader2Icon } from 'lucide-react'
 import { FunctionComponent, useCallback, useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@workspace/ui/components'
-import { cn } from '@workspace/ui/lib/utils'
+import { Empty, PaginationControls } from '@/components/common'
 import { useT } from '@/i18n'
-import { getWithdrawOrderList } from '@/services/wallet'
-import { WithdrawOrderParams } from '@/services/wallet'
-import { PaginationControls } from '../common'
-import { getStatus } from '../withdrawal/utils'
+import { getRecordList, RecordParams } from '@/services/user'
+import { BusinessType } from '@/types/user'
 import Filter, { FilterParams } from './Filter'
 
 const pageSize = 20
 
 const WithdrawHistory: FunctionComponent = () => {
   const { t } = useT('history')
-  const [params, setParams] = useState<WithdrawOrderParams>({
+  const [params, setParams] = useState<RecordParams>({
     pageNo: 1,
     pageSize,
     tokenId: '',
-    beginTime: undefined,
-    endTime: undefined,
+    businessType: BusinessType.withdraw,
+    beginTime: dayjs().subtract(30, 'day').toDate().getTime(),
+    endTime: dayjs().toDate().getTime(),
   })
-  const { data: orderData } = getWithdrawOrderList(params)
+  const { data: recordData, isLoading } = getRecordList(params)
 
   const handleChange = useCallback((filterParams: FilterParams) => {
-    setParams({ ...filterParams, pageNo: 1, pageSize })
+    setParams({ ...filterParams, businessType: BusinessType.withdraw, pageNo: 1, pageSize })
   }, [])
 
   return (
@@ -36,41 +36,43 @@ const WithdrawHistory: FunctionComponent = () => {
           <TableRow className="border-none">
             <TableHead className="text-[#666]">{t('history:token')}</TableHead>
             <TableHead className="text-[#666]">{t('history:amount')}</TableHead>
-            <TableHead className="text-[#666]">{t('history:address')}</TableHead>
-            <TableHead className="text-[#666]">{t('history:time')}</TableHead>
-            <TableHead className="text-[#666]">{t('history:status')}</TableHead>
+            <TableHead className="text-right text-[#666]">{t('history:time')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {orderData?.list?.length ? (
-            orderData.list.map((order) => (
-              <TableRow key={order.id} className="border-none">
-                <TableCell className="p-3 font-medium text-[#222]">{order.tokenName}</TableCell>
-                <TableCell className="text-destructive p-3">-{order.totalQuantity}</TableCell>
-                <TableCell className="p-3">{order.address}</TableCell>
-                <TableCell className="p-3">{dayjs(Number(order.createdAt)).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
-                <TableCell className="p-3">
-                  <span className={cn('rounded px-2.5 py-1 text-[#222]', getStatus(order.status).color)}>
-                    {t(`history:${getStatus(order.status).text}`)}
-                  </span>
+          {recordData?.list?.length ? (
+            recordData.list.map((record) => (
+              <TableRow key={record.id} className="border-none">
+                <TableCell className="p-3 font-medium text-[#222]">{record.tokenName}</TableCell>
+                <TableCell className="text-destructive p-3">-{record.amount}</TableCell>
+                <TableCell className="p-3 text-right">
+                  {dayjs(Number(record.createDate)).format('YYYY-MM-DD HH:mm:ss')}
                 </TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow className="hover:bg-transparent">
               <TableCell colSpan={5} className="py-8 text-center">
-                {t('deposit:noData')}
+                {isLoading ? (
+                  <div className="flex w-full justify-center">
+                    <Loader2Icon className="animate-spin" color="#86FC70" />
+                  </div>
+                ) : (
+                  <Empty />
+                )}
               </TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
-      <PaginationControls
-        className="py-2"
-        totalPages={orderData?.pages || 0}
-        currentPage={Number(orderData?.pageNum) || 0}
-        onPageChange={(page: number) => params && setParams({ ...params, pageNo: page })}
-      />
+      {recordData?.pages ? (
+        <PaginationControls
+          className="py-2"
+          totalPages={recordData?.pages}
+          currentPage={Number(recordData?.pageNum) || 0}
+          onPageChange={(page: number) => params && setParams({ ...params, pageNo: page })}
+        />
+      ) : null}
     </>
   )
 }

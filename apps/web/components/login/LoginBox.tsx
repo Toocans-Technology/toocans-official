@@ -2,20 +2,18 @@
 
 import { Button, Form } from 'antd'
 import { throttle } from 'es-toolkit'
-import dynamic from 'next/dynamic'
 import { useSearchParams } from 'next/navigation'
 import { FunctionComponent, useState, useRef, useCallback } from 'react'
-import Link from '@/components/common/Link'
 import { useRouter } from '@/hooks'
 import { useT } from '@/i18n'
 import { typedStorage } from '@/lib/utils'
 import { useLogin } from '@/services/login'
 import { openToast } from '@/utils'
+import { matchEmail, matchPhoneNum } from '@/utils'
 import { LoginContext } from './LoginContext'
+import PhoneInput from './components/PhoneInput'
 import { SwitchTabs, EmailInput, VerificationCode, PasswordInput, NotCode, CheckComp } from './components/index'
 import { GrantType, LoginType } from './data'
-
-const PhoneInput = dynamic(() => import('./components/PhoneInput'))
 
 const LoginBox: FunctionComponent = () => {
   const { t } = useT('login')
@@ -32,8 +30,6 @@ const LoginBox: FunctionComponent = () => {
   const [loginType, setLoginType] = useState<LoginType>((routerParams.get('LoginType') as LoginType) || LoginType.CODE)
   // 国家选择框展示
   const [cuntrysVisible, setCuntrysVisible] = useState(false)
-  // 选取问题, 选中后开启手机号blur校验
-  const [phoneCheckState, setPhoneCheckState] = useState(false)
   // 倒计时
   const [seconds, setSeconds] = useState(60)
 
@@ -42,8 +38,73 @@ const LoginBox: FunctionComponent = () => {
   const stateReset = () => {
     form.resetFields()
     setCuntrysVisible(false)
-    setPhoneCheckState(false)
   }
+
+  const handleForget = useCallback(() => {
+    const phone = form.getFieldValue('phone')
+    const email = form.getFieldValue('email')
+    const nationalCode = form.getFieldValue('nationalCode')
+    let query = {}
+
+    if (grantType == GrantType.EMAIL) {
+      if (!email) {
+        form.setFields([
+          {
+            name: 'email',
+            value: '',
+            errors: [t('login:please', { name: t('login:enter', { name: t('login:email') }) })],
+          },
+        ])
+        return
+      }
+      if (!matchEmail(email)) {
+        form.setFields([
+          {
+            name: 'email',
+            value: email,
+            errors: [t('login:formatErr', { name: `${t('login:email')} ${t('login:address')}` })],
+          },
+        ])
+        return
+      }
+      query = { email }
+    }
+
+    if (grantType == GrantType.SMS) {
+      if (!phone) {
+        form.setFields([
+          {
+            name: 'phone',
+            value: phone,
+            errors: [t('login:please', { name: t('login:enter', { name: t('login:phone') }) })],
+          },
+        ])
+        return
+      }
+      if (!matchPhoneNum(nationalCode, phone)) {
+        form.setFields([
+          {
+            name: 'phone',
+            value: phone,
+            errors: [t('login:formatErr', { name: t('login:phone') })],
+          },
+        ])
+        return
+      }
+      query = { phone, nationalCode }
+    }
+
+    if (!form.getFieldValue('unregisteredTip') && checkBoxRef.current) {
+      checkBoxRef.current.openShak1()
+      return
+    }
+    if (!form.getFieldValue('userAgreement') && checkBoxRef.current) {
+      checkBoxRef.current.openShak2()
+      return
+    }
+
+    router.push('/forget', { query })
+  }, [grantType])
 
   const onSubmit = useCallback(
     throttle(async (values: { [key: string]: string }) => {
@@ -56,8 +117,18 @@ const LoginBox: FunctionComponent = () => {
         return
       }
 
+      if (grantType == GrantType.SMS && (!values.phone || !matchPhoneNum(values.nationalCode, values.phone))) {
+        form.setFields([
+          {
+            name: 'phone',
+            errors: [t('login:formatErr', { name: t('login:phone') })],
+          },
+        ])
+        return
+      }
+
       const resultParams = {
-        clientId: '24b5d2a7f4714409b4cc60bafc1dd2f6',
+        clientId: 'c247a83b04de19a955f9899a485fd330',
         code: null,
         uuid: null,
         channel: null,
@@ -96,7 +167,7 @@ const LoginBox: FunctionComponent = () => {
         typedStorage.refreshToken = refresh_token
         typedStorage.expireIn = expires_in
 
-        openToast(t('successfully', { name: t('login') }))
+        openToast(t('login:successfully', { name: t('login:name') }))
         router.replace('/overview')
       } catch (error) {
         openToast((error as Error).message, 'error')
@@ -117,14 +188,12 @@ const LoginBox: FunctionComponent = () => {
         setSeconds,
         cuntrysVisible,
         setCuntrysVisible,
-        phoneCheckState,
-        setPhoneCheckState,
         stateReset,
       }}
     >
       <div className="flex flex-1 content-center bg-[#f1f1f1]">
         <div className="mt-35 ml-35">
-          <p className="title text-2xl font-medium">{t('welcome', { name: t('name') })}</p>
+          <p className="title text-2xl font-medium">{t('login:welcome', { name: t('login:name') })}</p>
           <div
             className="w-108 min-h-100 mt-4 rounded-2xl bg-white p-6"
             style={{ boxShadow: '10px 19px 250px 0px rgba(0, 0, 0, 0.22)' }}
@@ -139,7 +208,9 @@ const LoginBox: FunctionComponent = () => {
               {grantType == GrantType.SMS && <PhoneInput />}
 
               <p className={'mt-4 select-none'}>
-                {t('loginType', { name: loginType == LoginType.CODE ? t('verificationCode') : t('password') })}
+                {t('login:loginType', {
+                  name: loginType == LoginType.CODE ? t('login:verificationCode') : t('login:password'),
+                })}
               </p>
 
               {/* Verification Code input */}
@@ -151,21 +222,21 @@ const LoginBox: FunctionComponent = () => {
               <div className="mt-4 flex select-none">
                 {seconds == 60 ? (
                   <>
-                    <Link
-                      href={`/login?LoginType=${loginType == LoginType.CODE ? LoginType.PASSWORD : LoginType.CODE}`}
-                      replace
+                    <p
                       className="cursor-pointer text-xs text-[#3C7BF4]"
                       onClick={() => {
                         setLoginType(loginType == LoginType.CODE ? LoginType.PASSWORD : LoginType.CODE)
                         form.resetFields(loginType == LoginType.CODE ? ['password'] : ['code'])
                       }}
                     >
-                      {t('switchTo', { type: loginType == LoginType.CODE ? LoginType.PASSWORD : LoginType.CODE })}
-                    </Link>
+                      {t('login:switchTo', {
+                        type: loginType == LoginType.CODE ? t('login:password') : t('login:verificationCode'),
+                      })}
+                    </p>
                     {loginType == LoginType.PASSWORD && (
-                      <Link href="/forget" className="ml-auto text-xs text-[#3C7BF4]">
-                        {t('forgotPassword')}
-                      </Link>
+                      <a onClick={handleForget} className="ml-auto text-xs text-[#3C7BF4]">
+                        {t('login:forgotPassword')}
+                      </a>
                     )}
                   </>
                 ) : (
@@ -175,7 +246,7 @@ const LoginBox: FunctionComponent = () => {
 
               <Form.Item>
                 <Button type="primary" htmlType="submit" className="mt-[36px] w-full" style={{ fontWeight: 500 }}>
-                  {t('login')}
+                  {t('login:login')}
                 </Button>
               </Form.Item>
 

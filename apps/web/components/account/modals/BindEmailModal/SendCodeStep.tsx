@@ -48,6 +48,8 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
   )
 
   const form = useForm<z.infer<typeof FormSchema>>({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
     resolver: zodResolver(FormSchema),
     defaultValues: {
       code: '',
@@ -69,14 +71,18 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
     }
   }, [])
 
-  const handleSendCode = useCallback(() => {
+  const handleSendCode = useCallback(async () => {
     if (countdown) {
       return
     }
 
-    mutateSendCode({})
-    setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
-  }, [mutateSendCode])
+    try {
+      await mutateSendCode({})
+      setTargetDate(Date.now() + ONE_MINUTE_COUNT_DOWN)
+    } catch (error) {
+      toast.error((error as HttpError).message)
+    }
+  }, [mutateSendCode, countdown])
 
   const onSubmitCode = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
@@ -105,17 +111,18 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
               <FormLabel>{t('account:phoneVerificationCode')}</FormLabel>
               <div
                 aria-invalid={formState.errors.code ? true : false}
-                className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
+                className="focus-within:border-ring focus-within:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-4 overflow-hidden rounded-md bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
               >
                 <FormControl>
                   <Input
                     {...field}
                     autoComplete="off"
+                    maxLength={6}
                     placeholder={t('account:phoneVerificationCode')}
-                    className="focus-visible:ring-0"
+                    className="aria-invalid:ring-0 focus-visible:ring-0"
                   />
                 </FormControl>
-                <span className={cn('text-link', !countdown && 'cursor-pointer')} onClick={handleSendCode}>
+                <span className={cn('text-link text-nowrap', !countdown && 'cursor-pointer')} onClick={handleSendCode}>
                   {countdown ? `${Math.round(countdown / 1000)}s` : t('common:send')}
                 </span>
               </div>
@@ -131,7 +138,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
               <FormItem>
                 <FormLabel>{t('account:google2FA')}</FormLabel>
                 <FormControl>
-                  <Input {...field} autoComplete="off" placeholder={t('account:google2FAPlaceholder')} />
+                  <Input {...field} maxLength={6} autoComplete="off" placeholder={t('account:google2FAPlaceholder')} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

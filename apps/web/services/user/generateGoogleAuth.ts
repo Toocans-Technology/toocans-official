@@ -11,11 +11,12 @@ export const GoogleAuthDTOSchema = z
   .nullable()
 
 export const useGenerateGoogleAuth = () => {
-  return useQuery(
-    getQuery({
+  return useQuery({
+    ...getQuery({
       method: 'GET',
       url: getUrl('/uc/user/generateGoogleAuth'),
       transfer: GoogleAuthDTOSchema.parse,
-    })
-  )
+    }),
+    enabled: false,
+  })
 }

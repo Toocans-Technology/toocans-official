@@ -24,13 +24,14 @@ const SwitchTabs = () => {
         )}
         key={item}
         onClick={() => {
-          if (grantType != item && (seconds == 60 || !isLogin)) {
+          if (!isLogin) return
+          if (grantType != item && seconds == 60) {
             setGrantType(item)
             stateReset()
           }
         }}
       >
-        {t('tabs', { name: t(item) })}
+        {t('login:tabs', { name: t(item) })}
       </span>
     )
   })

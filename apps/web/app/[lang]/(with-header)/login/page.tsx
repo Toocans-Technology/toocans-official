@@ -1,8 +1,7 @@
+import { Suspense } from 'react'
 import LoginBox from '@/components/login/LoginBox'
 import { LeftImg } from '@/components/login/components'
 import { getT } from '@/i18n/server'
-
-export const dynamic = 'force-dynamic'
 
 interface Props {
   params: Promise<{ lang: string }>
@@ -22,7 +21,9 @@ export default async function Page() {
   return (
     <div className="min-w-305 flex overflow-x-scroll" style={{ height: 'calc(100vh - 76px)' }}>
       <LeftImg />
-      <LoginBox />
+      <Suspense>
+        <LoginBox />
+      </Suspense>
     </div>
   )
 }

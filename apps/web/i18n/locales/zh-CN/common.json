@@ -1,0 +1,63 @@
+{
+  "loginIn": "登录",
+  "signUp": "注册",
+  "overview": "总览",
+  "deposit": "充币",
+  "withdraw": "提币",
+  "account": "我的",
+  "logout": "退出登录",
+  "copy": "复制",
+  "change": "修改",
+  "settings": "设置",
+  "copySuccess": "复制成功",
+  "header": {
+    "home": "首页",
+    "market": "行情",
+    "trade": "交易",
+    "about": "关于我们"
+  },
+  "footer": {
+    "toocans": "Toocans",
+    "userAgreement": "用户协议",
+    "privacyPolicy": "隐私政策",
+    "contactUs": "联系我们",
+    "copyright": "版权所有 © 2025 Toocans"
+  },
+  "next": "下一步",
+  "send": "发送",
+  "ok": "确定",
+  "confirm": "确定",
+  "cancel": "取消",
+  "search": "搜索",
+  "disable": "禁用",
+  "verified": "已认证",
+  "unverified": "未认证",
+  "enterPhone": "请输入手机号",
+  "noNationalCode": "未找到国家区号",
+  "changeAvatarModal": {
+    "title": "更换头像",
+    "description": "上传照片或拖拽至此",
+    "uploadPhone": "上传照片",
+    "uploading": "正在上传...",
+    "uploadSuccess": "上传成功",
+    "imageSizeLimit": "请上传不超过10MB的 JPG/PNG 图片。",
+    "uploadTips": "支持 JPG、PNG 格式。最大上传文件大小：10MB"
+  },
+  "7Days": "近7天",
+  "30Days": "近30天",
+  "90Days": "近90天",
+  "startDate": "开始日期",
+  "endDate": "结束日期",
+  "selectToken": "选择币种",
+  "searchToken": "搜索币种",
+  "noData": "暂无数据",
+  "all": "全部",
+  "verifyModal": {
+    "title": "请完成账户认证",
+    "description": "请完成身份认证以启用充币和提币功能。",
+    "verify": "前往APP完成认证",
+    "requirements": "认证要求",
+    "documents": "政府签发的身份证件",
+    "personalInformation": "个人信息"
+  }
+}

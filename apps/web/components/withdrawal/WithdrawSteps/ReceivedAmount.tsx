@@ -18,17 +18,19 @@ type InputValueType = {
 
 interface Props {
   token?: Token
+  network?: Token
   address?: string
 }
 
-const ReceivedAmount: FunctionComponent<Props> = ({ token, address }) => {
+const ReceivedAmount: FunctionComponent<Props> = ({ token, network, address }) => {
   const { t } = useT('withdrawal')
-  const minAmount = token?.tokenSetting?.withdrawMinQuantity || 0
+  const minAmount = network?.tokenSetting?.withdrawMinQuantity || 0
+  const { data } = useAssetAll(token?.tokenId)
   const [transferId, setTransferId] = useState<string | undefined>(undefined)
   const [open, setOpen] = useState(false)
   const [amount, setAmount] = useState<InputValueType>({ value: '', error: '', isInvalid: false })
-  const tokenFee = useTokenFee(token, Number(amount.value))
-  const { data } = useAssetAll(token?.tokenId)
+  const { getTokenFee, getMaxOrderAmount } = useTokenFee(network)
+  const tokenFee = useMemo(() => getTokenFee(amount.value), [getTokenFee, amount.value])
 
   const userAsset = useMemo(() => {
     if (!data?.length) {
@@ -44,37 +46,51 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address }) => {
     return false
   }, [amount])
 
-  const receivedAmount = useMemo(() => {
-    if (!userAsset) {
+  const withdrawAmount = useMemo(() => {
+    if (!userAsset || !amount.value) {
       return 0
     }
-    return amount.value ?? 0
-  }, [userAsset, amount])
+    return BigNumber(amount.value).plus(tokenFee).toNumber()
+  }, [userAsset, amount, tokenFee])
+
+  const validateAmount = useCallback(
+    (value: string, availableBalance: string | number = userAsset?.available || 0) => {
+      const tokenFee = getTokenFee(value)
+
+      if (BigNumber(value).lt(minAmount)) {
+        return {
+          value,
+          error: t('withdrawal:amountError.minAmount', { minAmount }),
+          isInvalid: true,
+        }
+      }
+
+      if (BigNumber(value).gt(BigNumber(availableBalance).minus(tokenFee))) {
+        return {
+          value,
+          error: t('withdrawal:amountError.insufficientBalance', { maxAmount: availableBalance }),
+          isInvalid: true,
+        }
+      }
+
+      return { value, error: '', isInvalid: false }
+    },
+    [getTokenFee, minAmount, t, userAsset?.available]
+  )
 
   const handleAll = useCallback(() => {
-    const allAmount = BigNumber(userAsset?.available || 0).minus(tokenFee)
-    setAmount({ value: allAmount.toString(), error: '', isInvalid: false })
-  }, [userAsset, tokenFee])
+    const maxAmount = getMaxOrderAmount(userAsset?.available || 0)
+    const validatedAmount = validateAmount(maxAmount.toString())
+    setAmount(validatedAmount)
+  }, [userAsset, getMaxOrderAmount])
 
   const handleAmountChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = formatInputAmount(e.target.value)
-
-      if (BigNumber(value).lt(minAmount)) {
-        setAmount({ value, error: t('withdrawal:amountError.minAmount', { minAmount }), isInvalid: true })
-        return
-      } else if (BigNumber(value).gt(BigNumber(userAsset?.available || 0).minus(tokenFee))) {
-        setAmount({
-          value,
-          error: t('withdrawal:amountError.insufficientBalance', { maxAmount: userAsset?.available }),
-          isInvalid: true,
-        })
-        return
-      } else {
-        setAmount({ value, error: '', isInvalid: false })
-      }
+      const newAmount = validateAmount(value)
+      setAmount(newAmount)
     },
-    [userAsset, minAmount, tokenFee]
+    [userAsset, minAmount]
   )
 
   const handleOpenDetail = useCallback((open: boolean, data: Withdrawal) => {
@@ -111,18 +127,18 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address }) => {
         </span>
       </div>
       <div className="flex justify-between text-sm">
-        <span className="text-[#999]">{t('withdrawal:receivedAmount')}</span>
+        <span className="text-[#999]">{t('withdrawal:withdrawAmount')}</span>
         <span>
-          {receivedAmount} {token?.tokenName}
+          {withdrawAmount} {token?.tokenName}
         </span>
       </div>
-      {token && address && (
+      {network && address && (
         <WithdrawModal
-          token={token}
-          amount={Number(amount.value)}
+          token={network}
           address={address}
           disabled={disabled}
           tokenFee={tokenFee}
+          amount={withdrawAmount}
           openDetail={handleOpenDetail}
         />
       )}

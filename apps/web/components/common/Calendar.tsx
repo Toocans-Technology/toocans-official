@@ -32,13 +32,13 @@ const Calendar: FunctionComponent<CalendarProps> = ({ onConfirm }) => {
     [t]
   )
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from: undefined,
-    to: undefined,
+    from: dayjs().subtract(30, 'day').toDate(),
+    to: dayjs().toDate(),
   })
 
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange | undefined>({
-    from: undefined,
-    to: undefined,
+    from: dayjs().subtract(30, 'day').toDate(),
+    to: dayjs().toDate(),
   })
 
   const handleConfirm = useCallback(() => {
@@ -99,7 +99,7 @@ const Calendar: FunctionComponent<CalendarProps> = ({ onConfirm }) => {
           />
           <Separator className="bg-[#e5e6eb]" />
           <div className="flex justify-end p-2">
-            <Button rounded="full" onClick={handleConfirm}>
+            <Button rounded="full" className="bg-brand" onClick={handleConfirm}>
               {t('common:confirm')}
             </Button>
           </div>

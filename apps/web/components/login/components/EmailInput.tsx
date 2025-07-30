@@ -3,8 +3,8 @@
 import { Form, Input } from 'antd'
 import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
-import { EmailReg } from '@/data'
 import { useT } from '@/i18n'
+import { EMAIL_REGEX } from '@/lib/utils/constants'
 import { useLoginContext } from '../LoginContext'
 
 const EmailInput = () => {
@@ -23,7 +23,7 @@ const EmailInput = () => {
       rules={[
         { required: true, message: '' },
         {
-          pattern: EmailReg,
+          pattern: EMAIL_REGEX,
           message: t('login:formatErr', { name: `${t('login:email')} ${t('login:address')}` }),
         },
       ]}
@@ -37,7 +37,7 @@ const EmailInput = () => {
         placeholder={t('login:enter', { name: t('login:email') })}
         allowClear
         onFocus={() => {
-          if (formData.getFieldError('email')) {
+          if (formData.getFieldError('email')?.length) {
             formData.setFields([
               {
                 name: ['email'],

@@ -1,13 +1,13 @@
-import { isValidNumber } from 'libphonenumber-js'
-import { EmailReg, PasswordReg } from '@/data'
+import { isValidPhoneNumber } from 'libphonenumber-js/mobile'
+import { EMAIL_REGEX } from '@/lib/utils/constants'
 import { openToast } from './toast'
 
 const matchEmail = (val: string) => {
-  return EmailReg.test(val)
+  return EMAIL_REGEX.test(val)
 }
 
-const matchPhoneNum = (nationalCode: string, val: string) => {
-  return isValidNumber(`+${nationalCode}${val}`)
+const matchPhoneNum = (nationalCode: any, val: any) => {
+  return isValidPhoneNumber(`+${nationalCode}${val}`)
 }
 
 export enum PasswordErrorType {
@@ -20,28 +20,28 @@ export enum PasswordErrorType {
 const matchPassword = (val: string) => {
   if (!/[a-z]/.test(val)) {
     return {
-      errotype: PasswordErrorType.lowercase,
+      errorType: PasswordErrorType.lowercase,
       status: false,
     }
   }
 
   if (!/[A-Z]/.test(val)) {
     return {
-      errotype: PasswordErrorType.uppercase,
+      errorType: PasswordErrorType.uppercase,
       status: false,
     }
   }
 
   if (!/[0-9]/.test(val)) {
     return {
-      errotype: PasswordErrorType.number,
+      errorType: PasswordErrorType.number,
       status: false,
     }
   }
 
   if (val.length < 8 || val.length > 32) {
     return {
-      errotype: PasswordErrorType.length,
+      errorType: PasswordErrorType.length,
       status: false,
     }
   }

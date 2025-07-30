@@ -1,0 +1,19 @@
+{
+  "title": "历史记录",
+  "description": "历史记录",
+  "deposit": "充币",
+  "withdraw": "提币",
+  "noData": "暂无数据",
+  "token": "资产",
+  "amount": "到账金额",
+  "time": "时间",
+  "address": "地址",
+  "status": "状态",
+  "failed": "提币失败",
+  "transferring": "提币中",
+  "sent": "已到账",
+  "date": "日期",
+  "all": "全部",
+  "transferIn": "转入",
+  "transferOut": "转出"
+}

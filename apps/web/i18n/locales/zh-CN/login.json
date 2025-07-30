@@ -1,0 +1,42 @@
+{
+  "name": "Toocans",
+  "welcome": "欢迎来到{{name}}",
+  "send": "发送",
+  "email": "邮箱",
+  "sms": "短信",
+  "phone": "手机号",
+  "password": "密码",
+  "set": "设置",
+  "confirmPassword": "确认密码",
+  "forgotPassword": "忘记密码",
+  "inconsistent": "{{ name }}输入不一致",
+  "verificationCode": "验证码",
+  "login": "登录",
+  "please": "请输入{{name}}",
+  "successfully": "{{name, capitalize}}成功",
+  "enter": "输入{{name}}",
+  "address": "地址",
+  "number": "数字",
+  "tabs": "{{name, capitalize}}",
+  "loginType": "{{name, capitalize}}",
+  "formatErr": "{{name, capitalize}}格式错误",
+  "switchTo": "切换至{{ type }}登录",
+  "search": "搜索",
+  "unregisteredTip": "未注册用户登录后将自动注册",
+  "notCode": {
+    "tip1": "未收到验证码？",
+    "tip2": "请尝试以下操作：",
+    "step1": "请检查您填写的邮箱地址是否正确，例如 abc***@gmail.com",
+    "step2": "如仍未收到，请检查垃圾邮件文件夹。"
+  },
+  "ruleTip": {
+    "lowercase": "至少包含一个小写字母",
+    "uppercase": "至少包含一个大写字母",
+    "number": "至少包含一个数字",
+    "length": "8到32个字符"
+  },
+  "verificationCodeTip": "请输入({{address}})收到的{{type}}验证码",
+  "privacyPolicyAgreement": "我已阅读并同意 <UserAgreement>{{name}} 用户协议</UserAgreement> 和 <PrivacyPolicy>隐私政策</PrivacyPolicy>",
+  "title": "登录",
+  "description": "登录"
+}

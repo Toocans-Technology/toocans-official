@@ -19,6 +19,7 @@ import {
 } from '@workspace/ui/components'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@workspace/ui/components'
 import { useT } from '@/i18n'
+import { validatePassword } from '@/lib/utils'
 import { useAddPassword, useUserInfo } from '@/services/user'
 import { HttpError } from '@/types/http'
 
@@ -43,7 +44,7 @@ const PasswordInput = ({ formState, field, placeholder }: PasswordInputProps) =>
   return (
     <div
       aria-invalid={formState.errors.password ? true : false}
-      className="aria-invalid:border-destructive aria-invalid:ring-destructive aria-invalid:ring-[1px] focus-within:border-ring focus-within:ring-primary flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-3 focus-within:ring-[1px]"
+      className="aria-invalid:border-destructive aria-invalid:ring-destructive aria-invalid:ring-[1px] focus-within:border-ring focus-within:ring-brand flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-3 focus-within:ring-[1px]"
     >
       <Input
         {...field}
@@ -70,8 +71,15 @@ const ChangePasswordModal: FunctionComponent = () => {
     () =>
       z
         .object({
-          password: z.string().nonempty(t('account:newPasswordPlaceholder')).min(8).max(32),
-          oldPassword: z.string().nonempty(t('account:passwordPlaceholder')).min(8).max(32),
+          password: z.string({ message: t('account:newPasswordPlaceholder') }),
+          oldPassword: z.string({ message: t('account:passwordPlaceholder') }).refine(
+            (val) => validatePassword(val).status,
+            (val) => {
+              return {
+                message: t(`account:passwordRuleTips.${validatePassword(val).errorType}`),
+              }
+            }
+          ),
         })
         .refine((data) => data.password === data.oldPassword, {
           message: t('account:passwordError'),
@@ -82,6 +90,7 @@ const ChangePasswordModal: FunctionComponent = () => {
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    mode: 'onChange',
     defaultValues: {
       oldPassword: '',
       password: '',
@@ -128,6 +137,15 @@ const ChangePasswordModal: FunctionComponent = () => {
             <FormField
               control={form.control}
               name="oldPassword"
+              rules={{
+                deps: ['password'],
+                validate: (val) => {
+                  if (val !== form.getValues('password')) {
+                    return t('account:passwordError')
+                  }
+                  return true
+                },
+              }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('account:password')}</FormLabel>
