@@ -25,8 +25,12 @@ input {
   color: #999 !important;
 }
 
-.ant-input-outlined:focus-within {
-  border-color: #1aca75 !important;
+.ant-input-outlined {
+  &:hover,
+  &:active,
+  &:focus-within {
+    border-color: #1aca75 !important;
+  }
 }
 
 .ant-input-prefix {
