@@ -3,7 +3,6 @@
 import BigNumber from 'bignumber.js'
 import { sumBy } from 'es-toolkit'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { Button } from '@workspace/ui/components'
 import { useRedirectIfNotLogin } from '@/hooks'
@@ -14,7 +13,7 @@ import { typedStorage } from '@/lib/utils/typedStorage/index'
 import type { GetAllAssetResponse } from '@/services/asset/useGetAllAsset'
 import { useUserVerifyInfo } from '@/services/user'
 import { KycLevel } from '@/types/user'
-import { VerifyModal } from '../common'
+import { Link, VerifyModal } from '../common'
 
 export default function OverviewBalancePanel() {
   const { t } = useT('overview')
