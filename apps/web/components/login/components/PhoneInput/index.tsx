@@ -10,6 +10,8 @@ const PhoneInput = () => {
   const { t } = useT('login')
   const { formData, seconds, cuntrysVisible } = useLoginContext()
 
+  const nationalCode = Form.useWatch('nationalCode', formData)
+
   return (
     <div className="relative">
       <CountryList />
@@ -19,7 +21,6 @@ const PhoneInput = () => {
           { required: true, message: '' },
           {
             validator: (_rule, value) => {
-              const nationalCode = formData.getFieldValue('nationalCode')
               if (!matchPhoneNum(nationalCode, value)) {
                 return Promise.reject(new Error(t('login:formatErr', { name: t('login:phone') })))
               } else {
