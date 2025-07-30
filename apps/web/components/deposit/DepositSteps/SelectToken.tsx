@@ -54,6 +54,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
             icon: token.icon,
             name: token.tokenName,
             fullName: token.tokenFullName,
+            amount: asset?.availableAssetTotal,
             availableBalance: BigNumber(asset?.availableAssetTotal || 0)
               .times(asset?.marketPrice || 0)
               .toFixed(token?.minPrecision)
@@ -68,6 +69,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
         icon: token.icon,
         name: token.tokenName,
         fullName: token.tokenFullName,
+        amount: '',
         availableBalance: '',
       }))
 
@@ -120,7 +122,13 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[518px] border-none p-0 shadow-lg" align="start">
-          <Command className="p-3">
+          <Command
+            className="p-3"
+            filter={(value, search) => {
+              if (value.toLowerCase().includes(search.toLowerCase())) return 1
+              return 0
+            }}
+          >
             <CommandInput placeholder={t('common:search')} />
             <CommandList className="pt-2">
               <CommandEmpty>{t('common:noData')}</CommandEmpty>
@@ -148,7 +156,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
                   </div>
                   {showAvailable && (
                     <>
-                      <span className="text-[#999]">{token.availableBalance}</span>
+                      <span className="text-[#999]">{token.amount}</span>
                     </>
                   )}
                 </CommandItem>

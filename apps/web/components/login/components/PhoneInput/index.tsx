@@ -1,8 +1,6 @@
 'use client'
 
 import { Form, Input } from 'antd'
-import { useRef, useEffect } from 'react'
-import '@workspace/ui/components'
 import { useT } from '@/i18n'
 import { matchPhoneNum } from '@/utils'
 import { useLoginContext } from '../../LoginContext'
@@ -10,41 +8,40 @@ import CountryList from './CountryList'
 
 const PhoneInput = () => {
   const { t } = useT('login')
-  const { formData, phoneCheckState, setPhoneCheckState, seconds } = useLoginContext()
+  const { formData, seconds, cuntrysVisible } = useLoginContext()
 
-  const phoneInputRef: any = useRef(null)
-
-  const phone = Form.useWatch('phone', formData)
   const nationalCode = Form.useWatch('nationalCode', formData)
 
-  useEffect(() => {
-    const handleClickOutside = (event: any) => {
-      if (!phoneInputRef?.current?.contains(event.target) && phoneCheckState && !matchPhoneNum(nationalCode, phone)) {
-        formData.setFields([{ name: 'phone', errors: [t('formatErr', { name: `${t('phone')} ${t('number')}` })] }])
-      }
-    }
-
-    phoneCheckState && document.addEventListener('click', handleClickOutside)
-
-    return () => {
-      document.removeEventListener('click', handleClickOutside)
-    }
-  }, [phoneCheckState, phone])
-
   return (
-    <div className="relative" ref={phoneInputRef}>
+    <div className="relative">
       <CountryList />
-
-      <Form.Item name="phone" style={{ marginTop: '8px' }} className="relative">
+      <Form.Item
+        name="phone"
+        rules={[
+          { required: true, message: '' },
+          {
+            validator: (_rule, value) => {
+              if (!matchPhoneNum(nationalCode, value)) {
+                return Promise.reject(new Error(t('login:formatErr', { name: t('login:phone') })))
+              } else {
+                return Promise.resolve()
+              }
+            },
+          },
+        ]}
+        validateTrigger="onBlur"
+        style={{ marginTop: '8px' }}
+        validateDebounce={300}
+        validateStatus={!cuntrysVisible && formData.getFieldError('phone')?.length ? 'error' : undefined}
+      >
         <Input
-          style={{ paddingLeft: '64px' }}
+          style={{ paddingLeft: '64px', borderColor: cuntrysVisible ? '#1aca75' : undefined }}
           allowClear
           disabled={seconds < 60}
           maxLength={11}
-          placeholder={t('enter', { name: t('phone') })}
+          placeholder={t('login:enter', { name: t('login:phone') })}
           onFocus={() => {
-            setPhoneCheckState(true)
-            if (formData.getFieldError('phone')) {
+            if (formData.getFieldError('phone')?.length) {
               formData.setFields([
                 {
                   name: ['phone'],

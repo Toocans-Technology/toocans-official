@@ -28,8 +28,19 @@ const WithdrawDetailModal: FunctionComponent<Props> = ({ id, open, onOpenChange 
     router.push(PATHNAMES.overview)
   }, [onOpenChange, router])
 
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      onOpenChange?.(open)
+
+      if (!open) {
+        router.push(PATHNAMES.overview)
+      }
+    },
+    [onOpenChange, router]
+  )
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{t('withdrawal:withdrawModal.title')}</DialogTitle>

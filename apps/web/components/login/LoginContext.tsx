@@ -11,8 +11,6 @@ export interface LoginContextProps {
   setSeconds: React.Dispatch<React.SetStateAction<number>>
   cuntrysVisible: boolean
   setCuntrysVisible: React.Dispatch<React.SetStateAction<boolean>>
-  phoneCheckState: boolean
-  setPhoneCheckState: React.Dispatch<React.SetStateAction<boolean>>
   stateReset: () => void
 }
 

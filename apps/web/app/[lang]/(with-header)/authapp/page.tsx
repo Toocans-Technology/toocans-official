@@ -36,7 +36,7 @@ export default function AuthAppPage() {
       }
     }
   }, [userInfoRes])
-  const { data: generateGoogleAuthRes,refetch } = useGenerateGoogleAuth()
+  const { data: generateGoogleAuthRes, refetch } = useGenerateGoogleAuth()
   const handleCopySecretKey = async () => {
     if (generateGoogleAuthRes?.secretKey) {
       await navigator.clipboard.writeText(generateGoogleAuthRes.secretKey)
@@ -75,7 +75,7 @@ export default function AuthAppPage() {
     handleVerifyGoogleAuthSubmit()
   }
   React.useEffect(() => {
-      refetch()
+    refetch()
   }, [])
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#fafbfc]">
@@ -172,11 +172,11 @@ export default function AuthAppPage() {
                 placeholder={t('authapp:PleaseEnterAuthenticatorCode')}
                 value={googleCode}
                 onChange={(e) => {
-                  const inputValue = e.target.value;
+                  const inputValue = e.target.value
                   if (/\D/.test(inputValue)) {
-                    openToast(t('authapp:OnlyNumbersAllowed'), 'error');
+                    openToast(t('authapp:OnlyNumbersAllowed'), 'error')
                   } else {
-                    setGoogleCode(inputValue);
+                    setGoogleCode(inputValue)
                   }
                 }}
               />

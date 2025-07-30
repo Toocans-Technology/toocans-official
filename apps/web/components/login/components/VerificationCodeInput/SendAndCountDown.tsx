@@ -39,7 +39,7 @@ const SendAndCountDown = () => {
           return prev - 1
         })
       }, 1000)
-      openToast(t('successfully', { name: t('send') }))
+      openToast(t('successfully', { name: t('login:send') }))
     } catch (error) {
       openToast((error as Error).message, 'error')
     }
@@ -57,7 +57,7 @@ const SendAndCountDown = () => {
       }
       style={{ position: 'absolute' }}
     >
-      {seconds == 60 ? t('send') : `${seconds} s`}
+      {seconds == 60 ? t('login:send') : `${seconds} s`}
     </Button>
   )
 }

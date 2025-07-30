@@ -37,7 +37,7 @@ const EmailInput = () => {
         placeholder={t('login:enter', { name: t('login:email') })}
         allowClear
         onFocus={() => {
-          if (formData.getFieldError('email')) {
+          if (formData.getFieldError('email')?.length) {
             formData.setFields([
               {
                 name: ['email'],

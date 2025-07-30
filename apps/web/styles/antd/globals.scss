@@ -1,0 +1,34 @@
+/* input */
+input {
+  caret-color: #1aca75 !important;
+  &::selection {
+    color: #222; /* 选中文本的文字颜色 */
+    background: #1aca75; /* 选中文本的背景颜色 */
+  }
+  &::-webkit-input-placeholder {
+    color: #999 !important;
+  }
+}
+.ant-otp-input,
+.ant-input-affix-wrapper,
+.ant-input-number-affix-wrapper,
+.ant-form-item-control-input input,
+.ant-input-number-input-wrap input {
+  background-color: #f8f8f8 !important;
+}
+.ant-input-number,
+.ant-input-number-affix-wrapper {
+  width: 100% !important;
+}
+
+.ant-btn-link:disabled {
+  color: #999 !important;
+}
+
+.ant-input-outlined:focus-within {
+  border-color: #1aca75 !important;
+}
+
+.ant-input-prefix {
+  color: #222 !important;
+}

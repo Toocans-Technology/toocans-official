@@ -10,12 +10,12 @@
 :root {
   --background:oklch(1 0 0);
   --foreground: oklch(from #222 l c h);
-  --card: oklch(1 0 0);
+  --card:oklch(1 0 0);
   --card-foreground: oklch(0 0 0);
-  --popover: oklch(1 0 0);
+  --popover:oklch(1 0 0);
   --popover-foreground: oklch(0 0 0);
   --primary: oklch(from #86FC70 l c h);
-  --primary-foreground: oklch(1 0 0);
+  --primary-foreground:oklch(1 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted:oklch(0.97 0 0);
@@ -94,4 +94,12 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+input::-webkit-contacts-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
 }

@@ -130,7 +130,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
               <FormLabel>{t('account:emailVerificationCode')}</FormLabel>
               <div
                 aria-invalid={formState.errors.verificationCode ? true : false}
-                className="focus-within:border-ring focus-within:ring-primary aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded-md bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
+                className="focus-within:border-ring focus-within:ring-brand aria-invalid:ring-destructive flex items-center gap-4 overflow-hidden rounded-md bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
               >
                 <FormControl>
                   <Input
@@ -141,7 +141,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
                     className="aria-invalid:ring-0 focus-visible:ring-0"
                   />
                 </FormControl>
-                <span className={cn('text-link', !countdown && 'cursor-pointer')} onClick={handleSendCode}>
+                <span className={cn('text-link text-nowrap', !countdown && 'cursor-pointer')} onClick={handleSendCode}>
                   {countdown ? `${Math.round(countdown / 1000)}s` : t('common:send')}
                 </span>
               </div>

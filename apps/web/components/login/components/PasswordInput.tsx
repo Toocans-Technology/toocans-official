@@ -26,16 +26,16 @@ const PasswordInput = () => {
             } else {
               let msg = ''
               if (matchResult?.errorType == PasswordErrorType.lowercase) {
-                msg = t('ruleTip.lowercase')
+                msg = t('login:ruleTip.lowercase')
               }
               if (matchResult?.errorType == PasswordErrorType.uppercase) {
-                msg = t('ruleTip.uppercase')
+                msg = t('login:ruleTip.uppercase')
               }
               if (matchResult?.errorType == PasswordErrorType.number) {
-                msg = t('ruleTip.number')
+                msg = t('login:ruleTip.number')
               }
               if (matchResult?.errorType == PasswordErrorType.length) {
-                msg = t('ruleTip.length')
+                msg = t('login:ruleTip.length')
               }
               return Promise.reject(new Error(msg))
             }
@@ -45,10 +45,10 @@ const PasswordInput = () => {
     >
       <Input.Password
         allowClear
-        placeholder={t('enter', { name: t('password') })}
+        placeholder={t('login:enter', { name: t('login:password') })}
         autoComplete="off"
         onFocus={() => {
-          if (formData.getFieldError('password')) {
+          if (formData.getFieldError('password')?.length) {
             formData.setFields([
               {
                 name: ['password'],

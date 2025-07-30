@@ -4,7 +4,6 @@ import { sortBy } from 'es-toolkit'
 import { ChangeEvent, FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { Input, Label } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
-import { VerifyModal } from '@/components/common'
 import SelectNetwork from '@/components/deposit/DepositSteps/SelectNetwork'
 import SelectToken from '@/components/deposit/DepositSteps/SelectToken'
 import { useRedirectIfNotLogin } from '@/hooks'
@@ -155,7 +154,6 @@ const WithdrawSteps: FunctionComponent = () => {
         </div>
       </div>
       <RecentWithdraw />
-      <VerifyModal />
     </>
   )
 }

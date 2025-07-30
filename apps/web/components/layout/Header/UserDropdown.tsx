@@ -15,19 +15,24 @@ import {
   toast,
 } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
+import { Link, VerifyModal } from '@/components/common'
 import { useT } from '@/i18n'
 import { typedStorage } from '@/lib/utils'
 import { getQueryClient } from '@/lib/utils'
-import { useUserVerifyInfo } from '@/services/user'
+import { UserVerifyInfo } from '@/services/user'
 import { useUserInfo } from '@/services/user/info'
 import { KycLevel } from '@/types/user'
 import { ChangeAvatarModal } from '../../account/modals'
-import { Link } from '../../common'
 
-const UserDropdown: FunctionComponent = () => {
+interface Props {
+  verifyInfo?: UserVerifyInfo
+  isUnverified?: boolean
+  onVerifyModalOpen?: (open: boolean) => void
+}
+
+const UserDropdown: FunctionComponent<Props> = ({ verifyInfo, isUnverified, onVerifyModalOpen }) => {
   const { t } = useT('common')
   const { data } = useUserInfo()
-  const { data: verifyInfo } = useUserVerifyInfo()
   const router = useRouter()
   const queryClient = getQueryClient()
   const [openChangeAvatarModal, setOpenChangeAvatarModal] = useState(false)
@@ -63,7 +68,7 @@ const UserDropdown: FunctionComponent = () => {
               </div>
             </div>
             <div className="flex flex-col gap-1">
-              <h2>{data?.loginName}</h2>
+              <h2>{data?.nickname}</h2>
               <div className="flex items-center gap-2 text-xs text-[#666]">
                 <span>UID: {data?.userId}</span>
                 <CopyToClipboard text={data?.userId || ''} onCopy={handleCopy}>
@@ -77,7 +82,7 @@ const UserDropdown: FunctionComponent = () => {
                   className={cn(
                     'inline-block rounded px-2 py-0.5 text-xs',
                     verifyInfo?.kycLevel === KycLevel.low
-                      ? 'bg-primary/20 text-primary'
+                      ? 'bg-brand/20 text-brand'
                       : 'bg-destructive/20 text-destructive'
                   )}
                 >
@@ -93,18 +98,33 @@ const UserDropdown: FunctionComponent = () => {
                 {t('common:overview')}
               </DropdownMenuItem>
             </Link>
-            <Link href="/deposit">
-              <DropdownMenuItem className="text-foreground py-2.5">
-                <CircleArrowDown color="#222" />
-                {t('common:deposit')}
-              </DropdownMenuItem>
-            </Link>
-            <Link href="/withdrawal">
-              <DropdownMenuItem className="text-foreground py-2.5">
-                <CircleArrowUp color="#222" />
-                {t('common:withdraw')}
-              </DropdownMenuItem>
-            </Link>
+            {isUnverified ? (
+              <>
+                <DropdownMenuItem className="text-foreground py-2.5" onClick={() => onVerifyModalOpen?.(true)}>
+                  <CircleArrowDown color="#222" />
+                  {t('common:deposit')}
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-foreground py-2.5" onClick={() => onVerifyModalOpen?.(true)}>
+                  <CircleArrowUp color="#222" />
+                  {t('common:withdraw')}
+                </DropdownMenuItem>
+              </>
+            ) : (
+              <>
+                <Link href="/deposit">
+                  <DropdownMenuItem className="text-foreground py-2.5">
+                    <CircleArrowDown color="#222" />
+                    {t('common:deposit')}
+                  </DropdownMenuItem>
+                </Link>
+                <Link href="/withdrawal">
+                  <DropdownMenuItem className="text-foreground py-2.5">
+                    <CircleArrowUp color="#222" />
+                    {t('common:withdraw')}
+                  </DropdownMenuItem>
+                </Link>
+              </>
+            )}
             <Link href="/account">
               <DropdownMenuItem className="text-foreground py-2.5">
                 <Settings color="#222" />
