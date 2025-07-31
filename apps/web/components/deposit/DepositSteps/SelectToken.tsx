@@ -55,7 +55,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
             icon: token.icon,
             name: token.tokenName,
             fullName: token.tokenFullName,
-            amount: asset?.available,
+            amount: asset?.assetTotal,
             availableBalance: Number(asset?.availableAssetTotal || 0),
           }
         })
