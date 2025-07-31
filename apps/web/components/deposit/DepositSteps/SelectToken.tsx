@@ -55,15 +55,12 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
             icon: token.icon,
             name: token.tokenName,
             fullName: token.tokenFullName,
-            amount: asset?.availableAssetTotal,
-            availableBalance: BigNumber(asset?.availableAssetTotal || 0)
-              .times(asset?.marketPrice || 0)
-              .toFixed(token?.minPrecision)
-              .toLocaleLowerCase(),
+            amount: asset?.available,
+            availableBalance: Number(asset?.availableAssetTotal || 0),
           }
         })
 
-      return sortBy(list, ['availableBalance'])
+      return sortBy(list, ['availableBalance']).reverse()
     } else {
       list = tokens?.map((token) => ({
         id: token.id,
