@@ -11,7 +11,7 @@ import {
   trimmedSearchParams,
   typedStorage,
   getQueryClient,
-  handleUnauthorized,
+  cleanUpAfterLogout,
 } from '@/lib/utils'
 
 initCscFetcher({
@@ -32,7 +32,9 @@ initCscFetcher({
   },
   csc: {
     exposeError: isTestingEnvironment(),
-    handleUnauthorized,
+    handleUnauthorized: () => {
+      cleanUpAfterLogout()
+    },
   },
 })
 

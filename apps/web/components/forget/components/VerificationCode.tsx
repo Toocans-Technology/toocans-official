@@ -55,9 +55,8 @@ const VerificationCode = () => {
         })
       }, 1000)
 
-      openToast(t('successfully', { name: t('send') }))
+      openToast(t('login:successfully', { name: t('login:send') }))
     } catch (error) {
-      console.log(error, 123123)
       openToast((error as Error).message, 'error')
     }
   }
@@ -103,8 +102,8 @@ const VerificationCode = () => {
       (grantType == GrantType.SMS && !matchPhoneNum(urlNationalCode, urlPhone))
     ) {
       grantType == GrantType.EMAIL
-        ? openToast(t('formatErr', { name: `${t('email')} ${t('address')}` }), 'error')
-        : openToast(t('formatErr', { name: `${t('phone')} ${t('number')}` }), 'error')
+        ? openToast(t('login:formatErr', { name: `${t('login:email')} ${t('login:address')}` }), 'error')
+        : openToast(t('login:formatErr', { name: `${t('login:phone')} ${t('login:number')}` }), 'error')
 
       router.replace('/login')
       return
@@ -120,8 +119,8 @@ const VerificationCode = () => {
   return (
     <>
       <p className="mt-4 text-[12px]">
-        {t('verificationCodeTip', {
-          type: grantType == GrantType.EMAIL ? 'email' : 'phone',
+        {t('login:verificationCodeTip', {
+          type: t(grantType == GrantType.EMAIL ? GrantType.EMAIL : GrantType.SMS),
           address: grantType == GrantType.EMAIL ? urlEmail : `${urlNationalCode} ${urlPhone}`,
         })}
       </p>
@@ -136,7 +135,7 @@ const VerificationCode = () => {
         disabled={seconds < 60}
         style={{ fontWeight: 500 }}
       >
-        {seconds == 60 ? t('send') : `${seconds}s`}
+        {seconds == 60 ? t('login:send') : `${seconds}s`}
       </Button>
     </>
   )

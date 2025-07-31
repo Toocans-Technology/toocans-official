@@ -18,5 +18,5 @@ export const useGenerateGoogleAuth = () => {
       transfer: GoogleAuthDTOSchema.parse,
     }),
     enabled: false,
-})
+  })
 }

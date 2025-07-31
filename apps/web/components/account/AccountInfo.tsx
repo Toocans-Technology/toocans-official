@@ -72,9 +72,7 @@ const AccountInfo: FunctionComponent = () => {
             <span
               className={cn(
                 'inline-block rounded px-2 py-0.5 text-xs',
-                verifyInfo?.kycLevel === KycLevel.low
-                  ? 'bg-primary/20 text-primary'
-                  : 'bg-destructive/20 text-destructive'
+                verifyInfo?.kycLevel === KycLevel.low ? 'bg-brand/20 text-brand' : 'bg-destructive/20 text-destructive'
               )}
             >
               {verifyInfo?.kycLevel === KycLevel.low ? t('common:verified') : t('common:unverified')}

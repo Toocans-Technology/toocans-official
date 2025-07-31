@@ -30,7 +30,7 @@ const CheckComp = (_props: any, ref: any) => {
           <Form.Item name="unregisteredTip" valuePropName="checked">
             <Checkbox />
           </Form.Item>
-          <p className="ml-2 w-[85%] cursor-pointer leading-[18px] text-[#666]">{t('unregisteredTip')}</p>
+          <p className="ml-2 w-[85%] cursor-pointer leading-[18px] text-[#666]">{t('login:unregisteredTip')}</p>
         </label>
       </div>
 
@@ -42,12 +42,12 @@ const CheckComp = (_props: any, ref: any) => {
           <p className="ml-2 w-[85%] cursor-pointer leading-[18px] text-[#666]">
             <Trans
               i18nKey="login:privacyPolicyAgreement"
-              values={{ name: t('name') }}
+              values={{ name: t('login:name') }}
               components={{
                 UserAgreement: <Link href="https://www.toocans.com/terms" target="_blank" />,
                 PrivacyPolicy: <Link href="https://www.toocans.com/privacy" target="_blank" />,
               }}
-            ></Trans>
+            />
           </p>
         </label>
       </div>

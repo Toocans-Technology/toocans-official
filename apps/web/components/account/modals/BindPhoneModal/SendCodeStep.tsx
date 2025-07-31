@@ -75,8 +75,6 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
     async (e: MouseEvent<HTMLSpanElement>) => {
       e.stopPropagation()
 
-      console.log('点击发送按钮')
-
       if (countdown) {
         return
       }
@@ -118,7 +116,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
               <FormLabel>{t('account:emailVerificationCode')}</FormLabel>
               <div
                 aria-invalid={formState.errors.code ? true : false}
-                className="focus-within:border-ring focus-within:ring-primary aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-4 overflow-hidden rounded-md bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
+                className="focus-within:border-ring focus-within:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-4 overflow-hidden rounded-md bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
               >
                 <FormControl>
                   <Input
@@ -129,7 +127,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
                     className="aria-invalid:ring-0 focus-visible:ring-0"
                   />
                 </FormControl>
-                <span className={cn('text-link', !countdown && 'cursor-pointer')} onClick={handleSendCode}>
+                <span className={cn('text-link text-nowrap', !countdown && 'cursor-pointer')} onClick={handleSendCode}>
                   {countdown ? `${Math.round(countdown / 1000)}s` : t('common:send')}
                 </span>
               </div>

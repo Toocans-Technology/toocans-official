@@ -15,7 +15,7 @@ const History: FunctionComponent = () => {
   useRedirectIfNotLogin()
 
   return (
-    <div className="mt-6 rounded-[10px] bg-white p-6">
+    <div className="mt-4 rounded-[10px] bg-white p-6">
       <Tabs defaultValue="deposit" className="w-full">
         <TabsList className="h-8 bg-transparent p-0">
           <TabsTrigger
