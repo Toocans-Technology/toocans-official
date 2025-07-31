@@ -139,7 +139,7 @@ const DepositSteps: FunctionComponent = () => {
                 <div className="mt-2 flex justify-between text-sm">
                   <span className="text-[#666]">{t('deposit:minDeposit')}</span>
                   <span className="text-[#222]">
-                    {selectedNetwork?.tokenSetting?.depositMinQuantity ?? '--'} {selectedNetwork?.tokenName ?? 'USDT'}
+                    {selectedNetwork?.tokenSetting?.depositMinQuantity ?? '--'} {selectedToken?.tokenName ?? 'USDT'}
                   </span>
                 </div>
               </div>
