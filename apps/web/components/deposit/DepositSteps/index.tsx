@@ -73,7 +73,7 @@ const DepositSteps: FunctionComponent = () => {
 
   return (
     <>
-      <div className="mt-4 w-full rounded-[10px] bg-white p-6">
+      <div className="mt-3 w-full rounded-[10px] bg-white p-6">
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-2">
             <div>

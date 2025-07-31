@@ -88,7 +88,7 @@ const WithdrawSteps: FunctionComponent = () => {
 
   return (
     <>
-      <div className="mt-4 flex w-full flex-col gap-10 rounded-[10px] bg-white p-6">
+      <div className="mt-3 flex w-full flex-col gap-10 rounded-[10px] bg-white p-6">
         <div className="flex flex-col gap-2">
           <div>
             <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#222] text-xs text-white">
