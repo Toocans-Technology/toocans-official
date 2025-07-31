@@ -30,7 +30,7 @@ const AccountInfo: FunctionComponent = () => {
   }, [])
 
   return (
-    <div className="mt-5 w-full rounded-[10px] bg-white p-6">
+    <div className="mt-3 w-full rounded-[10px] bg-white p-6">
       {!data?.hasGaKey && (
         <div className="mb-5 rounded-md bg-[#FFF3A5] p-4">
           <p className="text-xs">{t('account:lowSecurityDescription')}</p>
