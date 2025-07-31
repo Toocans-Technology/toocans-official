@@ -50,7 +50,7 @@ const AccountInfo: FunctionComponent = () => {
               height={36}
               className="max-h-9 rounded"
             />
-            <div className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-white">
+            <div className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-[#EBEBEB]">
               <PencilLine color="#222" strokeWidth={1.5} size={8} />
             </div>
           </div>
