@@ -245,7 +245,13 @@ const LoginBox: FunctionComponent = () => {
               </div>
 
               <Form.Item>
-                <Button type="primary" htmlType="submit" className="mt-[36px] w-full" style={{ fontWeight: 500 }}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="mt-[36px] w-full"
+                  style={{ fontWeight: 500 }}
+                  size="large"
+                >
                   {t('login:login')}
                 </Button>
               </Form.Item>
