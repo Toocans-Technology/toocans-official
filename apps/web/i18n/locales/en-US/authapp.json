@@ -1,0 +1,23 @@
+{
+  "title": "Copied successfully!",
+  "VerificationCodeSent": "Verification code sent",
+  "AlreadyBinded": "Google Authenticator already bound, do not bind again.",
+  "CopySuccess": "Copied!",
+  "VerificationSuccess": "Binding successful!",
+  "VerificationFailed": "Verification failed, please try again.",
+  "PleaseEnterCodeAndSecretKey": "Please enter the code and make sure secretKey exists",
+  "GoogleCode6Digits": "Google Authenticator code must be 6 digits",
+  "Confirm": "Confirm",
+  "AuthenticatorApp": "Authenticator app",
+  "SetUpTwoFactorAuthentication": "Set Up Two-Factor Authentication",
+  "DownloadAuthenticator": "Download authenticator",
+  "DownloadGoogleAuthenticator": "Download Google Authenticator Android/iOS",
+  "iOS": "iOS",
+  "Android": "Android",
+  "ScanQRCode": "Scan QR code",
+  "ScanQRCodeDesc": "Open Google Authenticator, scan the QR code below or manually enter the key phrase to activate the verification token. Key phrase is used to recover Google Authenticator in the event of a loss or change of device — please make sure to keep the key phrase safe before setting up Google Authenticator。",
+  "ManualEnterCode": "Or manually enter the code below",
+  "SecurityAuthentication": "Security authentication",
+  "PleaseEnterAuthenticatorCode": "Please enter the Authenticator code",
+  "OnlyNumbersAllowed": "Only numbers are allowed"
+}

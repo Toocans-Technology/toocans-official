@@ -1,0 +1,42 @@
+{
+  "name": "Toocans",
+  "welcome": "Welcome to {{name}}",
+  "send": "Send",
+  "email": "email",
+  "sms": "phone",
+  "phone": "phone",
+  "password": "password",
+  "set": "set",
+  "confirmPassword": "Confirm Password",
+  "forgotPassword": "Forgot Password",
+  "inconsistent": "The {{ name }} is inconsistent",
+  "verificationCode": "Verification Code",
+  "login": "Login",
+  "please": "Please {{name}}",
+  "successfully": "{{name, capitalize}} Successfully",
+  "enter": "Enter {{name }}",
+  "address": "address",
+  "number": "number",
+  "tabs": "{{name, capitalize}}",
+  "loginType": "{{name, capitalize}}",
+  "formatErr": "{{name, capitalize}} format error",
+  "switchTo": "Switch to {{ type }} login",
+  "search": "search",
+  "unregisteredTip": "Unregistered users will be automatically registered directly",
+  "notCode": {
+    "tip1": "Not able to receive verification code?",
+    "tip2": "Please try the following steps:",
+    "step1": "Check if you are using the correct email address abc***@gmail.com",
+    "step2": "If you are still unable to receive it, please check your spam folder."
+  },
+  "ruleTip": {
+    "lowercase": "At least one lowercase character",
+    "uppercase": "At least one uppercase character",
+    "number": "At least one number",
+    "length": "8 to 32 characters"
+  },
+  "verificationCodeTip": "Enter the verification code received via your {{type}} ({{address}})",
+  "privacyPolicyAgreement": "I have read and agreed to the <UserAgreement>{{name}} User Agreement</UserAgreement> and <PrivacyPolicy>Privacy Policy</PrivacyPolicy>",
+  "title": "Login",
+  "description": "Login"
+}

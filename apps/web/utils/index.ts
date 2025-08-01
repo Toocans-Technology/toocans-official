@@ -1,0 +1,52 @@
+import { isValidPhoneNumber } from 'libphonenumber-js/mobile'
+import { EMAIL_REGEX } from '@/lib/utils/constants'
+import { openToast } from './toast'
+
+const matchEmail = (val: string) => {
+  return EMAIL_REGEX.test(val)
+}
+
+const matchPhoneNum = (nationalCode: any, val: any) => {
+  return isValidPhoneNumber(`+${nationalCode}${val}`)
+}
+
+export enum PasswordErrorType {
+  lowercase = 'lowercase',
+  uppercase = 'uppercase',
+  number = 'number',
+  length = 'length',
+}
+
+const matchPassword = (val: string) => {
+  if (!/[a-z]/.test(val)) {
+    return {
+      errorType: PasswordErrorType.lowercase,
+      status: false,
+    }
+  }
+
+  if (!/[A-Z]/.test(val)) {
+    return {
+      errorType: PasswordErrorType.uppercase,
+      status: false,
+    }
+  }
+
+  if (!/[0-9]/.test(val)) {
+    return {
+      errorType: PasswordErrorType.number,
+      status: false,
+    }
+  }
+
+  if (val.length < 8 || val.length > 32) {
+    return {
+      errorType: PasswordErrorType.length,
+      status: false,
+    }
+  }
+
+  return true
+}
+
+export { openToast, matchEmail, matchPhoneNum, matchPassword }

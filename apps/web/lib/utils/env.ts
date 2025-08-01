@@ -1,0 +1,10 @@
+export const isDevEnvironment = () => process.env.NEXT_PUBLIC_ENV_NAME === 'development'
+
+export const isTestingEnvironment = () =>
+  isDevEnvironment() || process.env.NEXT_PUBLIC_ENV_NAME === 'uat' || process.env.NEXT_PUBLIC_ENV_NAME === 'test'
+
+export const isOnlineEnvironment = () => process.env.NEXT_PUBLIC_ENV_NAME === 'production'
+
+export const isTranslateEnvironment = () => isDevEnvironment() && process.env.NODE_ENV === 'production'
+
+export const isLocalhost = (str: string) => str.includes('localhost')

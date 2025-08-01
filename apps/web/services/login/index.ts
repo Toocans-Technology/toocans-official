@@ -1,0 +1,54 @@
+import { useMutation } from '@tanstack/react-query'
+import { z } from 'zod'
+import { getMutation } from '@/lib/api'
+import { getUrl } from '@/lib/api/getUrl'
+
+export * from './getCode'
+export * from './getCountryList'
+
+const LoginReqParams = z.object({
+  clientId: z.string(),
+  grantType: z.enum(['email', 'sms', 'password']).optional(),
+  code: z.nullable(z.string()),
+  uuid: z.nullable(z.string()),
+  channel: z.nullable(z.string()),
+  source: z.nullable(z.string()),
+  inputInviteCode: z.nullable(z.string()),
+  appInfo: z.nullable(z.string()),
+  email: z.string().optional(),
+  emailCode: z.union([z.string(), z.number()]).optional(),
+  nationalCode: z.string().optional(),
+  phonenumber: z.string().optional(),
+  smsCode: z.string().optional(),
+  username: z.string().optional(),
+  password: z.string().optional(),
+})
+
+export const useLogin = () => {
+  return useMutation(
+    getMutation((params: z.infer<typeof LoginReqParams>) => ({
+      method: 'POST',
+      url: getUrl('/index/auth/login'),
+      body: LoginReqParams.parse(params),
+      transfer: (data) => data,
+    }))
+  )
+}
+
+const SetPasswordReqParams = z.object({ password: z.string(), userToken: z.string().nullable().optional() })
+
+export const useSetPassword = () => {
+  return useMutation(
+    getMutation((params: z.infer<typeof SetPasswordReqParams>) => ({
+      method: 'POST',
+      url: getUrl('/uc/user/addPassword'),
+      body: SetPasswordReqParams.parse({
+        password: params.password,
+      }),
+      transfer: (data) => data,
+      headers: {
+        Authorization: `Bearer ${params.userToken}`,
+      },
+    }))
+  )
+}
