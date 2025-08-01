@@ -84,7 +84,7 @@ const TokenTable = () => {
   }, [assets, allTokenData])
 
   return (
-    <div className="mt-[16px] overflow-hidden rounded-2xl bg-white p-0">
+    <div className="mt-4 overflow-hidden rounded-2xl bg-white p-0">
       <div className="flex items-center justify-between px-6 pb-2 pt-6">
         <span className="font-inter text-[16px] font-medium leading-[26px] text-[#222]">{t('overview:Token')}</span>
         <Link href="/history" className="cursor-pointer">
