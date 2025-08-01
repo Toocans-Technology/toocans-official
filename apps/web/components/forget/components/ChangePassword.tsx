@@ -82,14 +82,15 @@ const ChangePassword = () => {
           }}
           onBlur={() => {
             const confirmPassword = formData.getFieldValue('confirmPassword')
-            if (confirmPassword && confirmPassword !== formData.getFieldValue('password')) {
-              formData.setFields([
-                {
-                  name: ['confirmPassword'],
-                  errors: [t('login:inconsistent', { name: t('login:password') })],
-                },
-              ])
-            }
+            const password = formData.getFieldValue('password')
+
+            if (!confirmPassword) return
+            formData.setFields([
+              {
+                name: ['confirmPassword'],
+                errors: confirmPassword !== password ? [t('login:inconsistent', { name: t('login:password') })] : [],
+              },
+            ])
           }}
           allowClear
           iconRender={(visible: boolean) => (visible ? <EyeFilled /> : <EyeInvisibleFilled />)}
