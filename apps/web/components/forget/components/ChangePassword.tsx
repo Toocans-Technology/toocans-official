@@ -157,7 +157,7 @@ const ChangePassword = () => {
         />
       </Form.Item>
 
-      <Button disabled={isDisabled} className="mt-6 w-full" type="primary" onClick={onSubmit}>
+      <Button disabled={isDisabled} className="mt-6 w-full" size="large" type="primary" onClick={onSubmit}>
         {t('login:next')}
       </Button>
     </>
