@@ -82,14 +82,15 @@ const ChangePassword = () => {
           }}
           onBlur={() => {
             const confirmPassword = formData.getFieldValue('confirmPassword')
-            if (confirmPassword && confirmPassword !== formData.getFieldValue('password')) {
-              formData.setFields([
-                {
-                  name: ['confirmPassword'],
-                  errors: [t('login:inconsistent', { name: t('login:password') })],
-                },
-              ])
-            }
+            const password = formData.getFieldValue('password')
+
+            if (!confirmPassword) return
+            formData.setFields([
+              {
+                name: ['confirmPassword'],
+                errors: confirmPassword !== password ? [t('login:inconsistent', { name: t('login:password') })] : [],
+              },
+            ])
           }}
           allowClear
           iconRender={(visible: boolean) => (visible ? <EyeFilled /> : <EyeInvisibleFilled />)}
@@ -156,7 +157,7 @@ const ChangePassword = () => {
         />
       </Form.Item>
 
-      <Button disabled={isDisabled} className="mt-6 w-full" type="primary" onClick={onSubmit}>
+      <Button disabled={isDisabled} className="mt-6 w-full" size="large" type="primary" onClick={onSubmit}>
         {t('login:next')}
       </Button>
     </>
