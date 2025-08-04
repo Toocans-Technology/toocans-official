@@ -23,8 +23,8 @@ const RecentWithdraw: FunctionComponent = () => {
       <Table className="mt-4">
         <TableHeader className="bg-[#f8f8f8]">
           <TableRow className="border-none">
-            <TableHead className="text-[#666]">{t('deposit:token')}</TableHead>
-            <TableHead className="text-[#666]">{t('deposit:amount')}</TableHead>
+            <TableHead className="text-[#666]">{t('withdrawal:token')}</TableHead>
+            <TableHead className="text-[#666]">{t('withdrawal:amount')}</TableHead>
             <TableHead className="text-[#666]">{t('withdrawal:address')}</TableHead>
             <TableHead className="text-[#666]">{t('withdrawal:time')}</TableHead>
             <TableHead className="text-[#666]">{t('withdrawal:status')}</TableHead>
