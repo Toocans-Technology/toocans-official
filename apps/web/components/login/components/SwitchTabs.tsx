@@ -19,7 +19,7 @@ const SwitchTabs = () => {
       <span
         className={cn(
           'cursor-pointer select-none capitalize',
-          grantType == item ? 'font-medium text-[#222]' : 'text-[#666]',
+          grantType == item ? 'font-medium text-[#1aca75]' : 'text-[#666]',
           item == GrantType.SMS && 'ml-4'
         )}
         key={item}

@@ -27,7 +27,7 @@ const CheckComp = (_props: any, ref: any) => {
     <>
       <div className={cn('mt-2', shak == 1 && styles.shake)}>
         <label className="flex items-baseline">
-          <Form.Item name="unregisteredTip" valuePropName="checked">
+          <Form.Item name="unregisteredTip" valuePropName="checked" className="mb-0!">
             <Checkbox />
           </Form.Item>
           <p className="ml-2 w-[85%] cursor-pointer leading-[18px] text-[#666]">{t('login:unregisteredTip')}</p>
@@ -36,7 +36,7 @@ const CheckComp = (_props: any, ref: any) => {
 
       <div className={cn('mt-2', shak == 2 && styles.shake)}>
         <label className="flex items-baseline">
-          <Form.Item name="userAgreement" valuePropName="checked">
+          <Form.Item name="userAgreement" valuePropName="checked" className="mb-0!">
             <Checkbox />
           </Form.Item>
           <p className="ml-2 w-[85%] cursor-pointer leading-[18px] text-[#666]">
