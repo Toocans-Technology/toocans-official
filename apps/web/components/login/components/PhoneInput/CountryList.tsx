@@ -51,6 +51,8 @@ const CountryList = () => {
           if (value) {
             formData.setFieldValue('phone', phoneVal)
             setSearchVal('')
+          } else {
+            formData.validateFields(['phone'])
           }
           setCuntrysVisible(value)
         }}
@@ -91,7 +93,7 @@ const CountryList = () => {
         }}
       >
         <div className={cn('flex items-center', seconds < 60 ? 'cursor-not-allowed' : 'cursor-pointer')}>
-          <Form.Item label={null} style={{ display: 'none' }}></Form.Item>
+          <Form.Item label={null} name="nationalCode" style={{ display: 'none' }}></Form.Item>
           {isLoading ? <Spin /> : <div className="min-w-[35px] text-center">+{nationalCode}</div>}
           <svg
             xmlns="http://www.w3.org/2000/svg"

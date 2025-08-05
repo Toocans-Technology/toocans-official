@@ -73,7 +73,7 @@ const DepositSteps: FunctionComponent = () => {
 
   return (
     <>
-      <div className="mt-4 w-full rounded-[10px] bg-white p-6">
+      <div className="mt-3 w-full rounded-[10px] bg-white p-6">
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-2">
             <div>
@@ -121,7 +121,7 @@ const DepositSteps: FunctionComponent = () => {
               </span>
             </div>
             {step >= DepositStep.DepositDetails && (
-              <div className="max-w-[456px]">
+              <div className="max-w-[518px]">
                 <div className="flex items-center gap-2 rounded bg-[#f8f8f8] p-3">
                   <div className="rounded-md bg-white p-1.5">
                     <QRCodeSVG value={address?.address || ''} size={52} />
@@ -139,7 +139,7 @@ const DepositSteps: FunctionComponent = () => {
                 <div className="mt-2 flex justify-between text-sm">
                   <span className="text-[#666]">{t('deposit:minDeposit')}</span>
                   <span className="text-[#222]">
-                    {selectedNetwork?.tokenSetting?.depositMinQuantity ?? '--'} {selectedNetwork?.tokenName ?? 'USDT'}
+                    {selectedNetwork?.tokenSetting?.depositMinQuantity ?? '--'} {selectedToken?.tokenName ?? 'USDT'}
                   </span>
                 </div>
               </div>

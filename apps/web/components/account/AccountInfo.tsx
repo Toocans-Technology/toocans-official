@@ -30,7 +30,7 @@ const AccountInfo: FunctionComponent = () => {
   }, [])
 
   return (
-    <div className="mt-5 w-full rounded-[10px] bg-white p-6">
+    <div className="mt-3 w-full rounded-[10px] bg-white p-6">
       {!data?.hasGaKey && (
         <div className="mb-5 rounded-md bg-[#FFF3A5] p-4">
           <p className="text-xs">{t('account:lowSecurityDescription')}</p>
@@ -42,7 +42,7 @@ const AccountInfo: FunctionComponent = () => {
       )}
       <div className="grid grid-cols-3 py-3 text-xs">
         <div className="flex items-center gap-2">
-          <div className="relative cursor-pointer overflow-hidden" onClick={() => setOpenChangeAvatarModal(true)}>
+          <div className="relative cursor-pointer" onClick={() => setOpenChangeAvatarModal(true)}>
             <Image
               src={data?.avatar || '/images/avatar.png'}
               alt="User"
@@ -50,8 +50,8 @@ const AccountInfo: FunctionComponent = () => {
               height={36}
               className="max-h-9 rounded"
             />
-            <div className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-white">
-              <PencilLine color="#222" strokeWidth={1.5} size={8} />
+            <div className="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#EBEBEB]">
+              <PencilLine color="#222" size={8} />
             </div>
           </div>
           <div className="flex flex-col gap-1">

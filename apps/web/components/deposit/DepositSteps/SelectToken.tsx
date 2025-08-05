@@ -17,6 +17,7 @@ import {
   PopoverTrigger,
 } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
+import { Empty } from '@/components/common'
 import { useAssetAll } from '@/hooks'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
@@ -54,15 +55,12 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
             icon: token.icon,
             name: token.tokenName,
             fullName: token.tokenFullName,
-            amount: asset?.availableAssetTotal,
-            availableBalance: BigNumber(asset?.availableAssetTotal || 0)
-              .times(asset?.marketPrice || 0)
-              .toFixed(token?.minPrecision)
-              .toLocaleLowerCase(),
+            amount: asset?.total,
+            availableBalance: Number(asset?.availableAssetTotal || 0),
           }
         })
 
-      return sortBy(list, ['availableBalance'])
+      return sortBy(list, ['availableBalance']).reverse()
     } else {
       list = tokens?.map((token) => ({
         id: token.id,
@@ -101,7 +99,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="hover:border-primary focus:border-primary h-11 w-[456px] justify-between border-[#f8f8f8] bg-[#f8f8f8] px-3"
+            className="hover:border-brand focus:border-brand h-11 w-[518px] justify-between border-[#f8f8f8] bg-[#f8f8f8] px-3"
           >
             <div className="flex items-center gap-2">
               {selectedToken ? (
@@ -131,7 +129,9 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
           >
             <CommandInput placeholder={t('common:search')} />
             <CommandList className="pt-2">
-              <CommandEmpty>{t('common:noData')}</CommandEmpty>
+              <CommandEmpty>
+                <Empty />
+              </CommandEmpty>
               {tokenList?.map((token) => (
                 <CommandItem
                   key={token.id}

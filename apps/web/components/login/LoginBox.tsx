@@ -167,7 +167,7 @@ const LoginBox: FunctionComponent = () => {
         typedStorage.refreshToken = refresh_token
         typedStorage.expireIn = expires_in
 
-        openToast(t('login:successfully', { name: t('login:name') }))
+        openToast(t('login:successfully', { name: t('login:login') }))
         router.replace('/overview')
       } catch (error) {
         openToast((error as Error).message, 'error')
@@ -245,7 +245,13 @@ const LoginBox: FunctionComponent = () => {
               </div>
 
               <Form.Item>
-                <Button type="primary" htmlType="submit" className="mt-[36px] w-full" style={{ fontWeight: 500 }}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="mt-[36px] w-full"
+                  style={{ fontWeight: 500 }}
+                  size="large"
+                >
                   {t('login:login')}
                 </Button>
               </Form.Item>

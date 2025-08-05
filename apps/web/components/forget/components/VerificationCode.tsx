@@ -134,6 +134,7 @@ const VerificationCode = () => {
         onClick={handleSendCode}
         disabled={seconds < 60}
         style={{ fontWeight: 500 }}
+        size="large"
       >
         {seconds == 60 ? t('login:send') : `${seconds}s`}
       </Button>
