@@ -23,7 +23,7 @@ const RecentDeposits: FunctionComponent = () => {
           <TableRow className="border-none">
             <TableHead className="text-[#666]">{t('deposit:token')}</TableHead>
             <TableHead className="text-[#666]">{t('deposit:amount')}</TableHead>
-            <TableHead className="text-[#666]">{t('deposit:time')}</TableHead>
+            <TableHead className="text-right text-[#666]">{t('deposit:time')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
