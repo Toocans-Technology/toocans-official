@@ -27,6 +27,7 @@ apps
     │   └── page.tsx
     ├── components
     │   └── login-form.tsx
+    ├── lib
     ├── components.json
     └── package.json
 packages
