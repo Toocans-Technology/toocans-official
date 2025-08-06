@@ -62,7 +62,9 @@ const WithdrawDetailModal: FunctionComponent<Props> = ({ id, open, onOpenChange 
           </div>
           <div className="grid grid-cols-2 items-center py-1.5 text-sm">
             <div className="text-[#999]">{t('withdrawal:network')}</div>
-            <div className="text-right font-medium">{data?.chainName ?? '-'}</div>
+            <div className="text-right font-medium">
+              {data?.protocolName ? `${data?.chainName}(${data?.protocolName})` : (data?.chainName ?? '-')}
+            </div>
           </div>
           <div className="grid grid-cols-2 items-center py-1.5 text-sm">
             <div className="text-[#999]">{t('withdrawal:address')}</div>
