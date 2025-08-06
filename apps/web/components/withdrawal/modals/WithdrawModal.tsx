@@ -176,7 +176,9 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
         <div className="grid gap-2">
           <div className="grid grid-cols-2 items-center py-1.5 text-sm">
             <div className="text-[#999]">{t('withdrawal:network')}</div>
-            <div className="text-right font-medium">{token?.chainName ?? token?.protocolName}</div>
+            <div className="text-right font-medium">
+              {token?.protocolName ? `${token?.chainName}(${token?.protocolName})` : (token?.chainName ?? '-')}
+            </div>
           </div>
           <div className="grid grid-cols-2 items-center py-1.5 text-sm">
             <div className="text-[#999]">{t('withdrawal:address')}</div>
