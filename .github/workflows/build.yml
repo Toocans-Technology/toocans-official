@@ -1,0 +1,21 @@
+# .github/workflows/build.yml
+name: Call Build
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - dev
+      - test
+      - uat
+      - main
+permissions:
+  id-token: write      # ✅ 添加这个
+  contents: read       # ✅ 通常也需要
+jobs:
+  call-build-workflow:
+    uses: Toocans-Technology/infr-ci-build/.github/workflows/nodejs_toocans_official.yaml@main
+    with:
+      nodejs-version: '22'
+    secrets:
+      ECR_AUTH_ARN: ${{ secrets.ECR_AUTH_ARN }}
+      TOOCANS_CD_DOCKERFILE: ${{ secrets.TOOCANS_CD_DOCKERFILE }}
