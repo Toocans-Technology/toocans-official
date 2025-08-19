@@ -1,0 +1,230 @@
+'use client'
+
+import Image from 'next/image'
+import { useEffect, useRef, useState } from 'react'
+import EditToken from '@/components/market/EditToken'
+
+export default function Page() {
+  const [activeTab, setActiveTab] = useState<'favorites' | 'markets'>('favorites')
+  const [isEdit, setIsEdit] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [searchValue, setSearchValue] = useState('')
+  const tabsWrapRef = useRef<HTMLDivElement | null>(null)
+  const favoritesRef = useRef<HTMLButtonElement | null>(null)
+  const marketsRef = useRef<HTMLButtonElement | null>(null)
+  const [indicator, setIndicator] = useState<{ left: number; width: number }>({ left: 0, width: 0 })
+
+  useEffect(() => {
+    const update = () => {
+      const wrapRect = tabsWrapRef.current?.getBoundingClientRect()
+      const el = (activeTab === 'favorites' ? favoritesRef.current : marketsRef.current) as HTMLButtonElement | null
+      const elRect = el?.getBoundingClientRect()
+      if (!wrapRect || !elRect) return
+      const INDICATOR_WIDTH = 28
+      const left = elRect.left - wrapRect.left + (elRect.width - INDICATOR_WIDTH) / 2
+      const width = INDICATOR_WIDTH
+      setIndicator({ left, width })
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [activeTab])
+
+  const cryptoData = [
+    {
+      id: 1,
+      pair: 'BTC/USDT',
+      isFavorite: false,
+      favoriteIcon: 'https://c.animaapp.com/Mv4EovkK/img/dark-action-favoourite-3.svg',
+    },
+    {
+      id: 2,
+      pair: 'ETH/USDT',
+      isFavorite: true,
+      favoriteIcon: 'https://c.animaapp.com/Mv4EovkK/img/dark-action-favoourite-fill-1.svg',
+    },
+    {
+      id: 3,
+      pair: 'SOL/USDT',
+      isFavorite: false,
+      favoriteIcon: 'https://c.animaapp.com/Mv4EovkK/img/dark-action-favoourite-5.svg',
+    },
+    {
+      id: 4,
+      pair: 'DOGE/USDT',
+      isFavorite: false,
+      favoriteIcon: 'https://c.animaapp.com/Mv4EovkK/img/dark-action-favoourite-5.svg',
+    },
+  ]
+
+  const renderCryptoRow = (rowData: typeof cryptoData) => (
+    <div className="relative flex w-full flex-[0_0_auto] items-center gap-6 self-stretch">
+      {rowData.map((crypto) => (
+        <div
+          key={crypto.id}
+          className="bg-collection-1-light-bg-lv1 relative flex h-14 w-[232px] items-center justify-between rounded-lg p-3 transition-opacity hover:opacity-80"
+          role="button"
+          aria-label={`Select ${crypto.pair} trading pair`}
+          tabIndex={0}
+        >
+          <span className="font-14-body-regular-second text-collection-1-light-text-primary relative w-fit text-center text-[length:var(--14-body-regular-second-font-size)] font-[number:var(--14-body-regular-second-font-weight)] leading-[var(--14-body-regular-second-line-height)] tracking-[var(--14-body-regular-second-letter-spacing)] [font-style:var(--14-body-regular-second-font-style)]">
+            {crypto.pair}
+          </span>
+
+          <button
+            className="relative h-5 w-5 cursor-pointer transition-transform hover:scale-110"
+            aria-label={crypto.isFavorite ? `Remove ${crypto.pair} from favorites` : `Add ${crypto.pair} to favorites`}
+          >
+            <Image
+              className="relative h-5 w-5"
+              alt={crypto.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              src={crypto.favoriteIcon}
+              width={20}
+              height={20}
+            />
+          </button>
+        </div>
+      ))}
+    </div>
+  )
+
+  return (
+    <main className="relative mx-auto mt-16 flex w-[1000px] flex-col gap-6">
+      <header className="text-design-token-text-light-primary relative mt-[-1.00px] w-fit text-center text-[32px] font-medium leading-[normal] tracking-[0] [font-family:'Inter',Helvetica]">
+        Market
+      </header>
+
+      <section ref={tabsWrapRef} className="relative flex w-[1000px] flex-[0_0_auto] flex-col items-start gap-4">
+        <nav className="relative flex w-full flex-[0_0_auto] items-center justify-between self-stretch" role="tablist">
+          <div className="relative inline-flex flex-[0_0_auto] items-center gap-[23px]">
+            <button
+              className={`font-16-head-medium-primary relative mt-[-1.00px] w-fit whitespace-nowrap text-center text-[length:var(--16-head-medium-primary-font-size)] font-[number:var(--16-head-medium-primary-font-weight)] leading-[var(--16-head-medium-primary-line-height)] tracking-[var(--16-head-medium-primary-letter-spacing)] [font-style:var(--16-head-medium-primary-font-style)] ${
+                activeTab === 'favorites'
+                  ? 'text-[var(--light-brand-lv1,#1ACA75)]'
+                  : 'text-collection-1-light-text-secondary'
+              } cursor-pointer transition-colors hover:opacity-80`}
+              ref={favoritesRef}
+              onClick={() => {
+                setActiveTab('favorites')
+              }}
+              role="tab"
+              aria-selected={activeTab === 'favorites'}
+              aria-controls="crypto-content"
+            >
+              Favorites
+            </button>
+            <button
+              className={`font-16-head-medium-primary relative mt-[-1.00px] w-fit whitespace-nowrap text-center text-[length:var(--16-head-medium-primary-font-size)] font-[number:var(--16-head-medium-primary-font-weight)] leading-[var(--16-head-medium-primary-line-height)] tracking-[var(--16-head-medium-primary-letter-spacing)] [font-style:var(--16-head-medium-primary-font-style)] ${
+                activeTab === 'markets'
+                  ? 'text-[var(--light-brand-lv1,#1ACA75)]'
+                  : 'text-collection-1-light-text-secondary'
+              } cursor-pointer transition-colors hover:opacity-80`}
+              ref={marketsRef}
+              onClick={() => {
+                setActiveTab('markets')
+              }}
+              role="tab"
+              aria-selected={activeTab === 'markets'}
+              aria-controls="crypto-content"
+            >
+              Markets
+            </button>
+          </div>
+
+          <div className="relative flex h-5 items-center gap-7">
+            <button
+              className="relative aspect-[1] h-5 w-5 cursor-pointer transition-transform hover:scale-110"
+              aria-label="Edit settings"
+            >
+              <Image
+                className="relative aspect-[1] h-5 w-5"
+                alt="Edit settings"
+                src="https://c.animaapp.com/Mv4EovkK/img/dark-action-edit.svg"
+                width={20}
+                height={20}
+                onClick={() => setIsEdit(!isEdit)}
+              />
+            </button>
+
+            {isSearchOpen ? (
+              <div className="relative flex cursor-pointer items-center">
+                <div className="flex w-full items-center gap-3 rounded-full bg-[#f7f7f7] p-3">
+                  <Image
+                    className="h-5 w-5"
+                    alt="search"
+                    src="https://c.animaapp.com/Mv4EovkK/img/dark-action-search.svg"
+                    width={20}
+                    height={20}
+                    onClick={() => setIsSearchOpen((v) => !v)}
+                  />
+                  <input
+                    type="text"
+                    className="w-full bg-transparent text-[14px] text-[#1f2937] outline-none placeholder:text-[#9ca3af]"
+                    placeholder="label"
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    aria-label="Search markets input"
+                    autoFocus
+                  />
+                </div>
+              </div>
+            ) : (
+              <button
+                className="relative h-5 w-5 cursor-pointer transition-transform hover:scale-110"
+                aria-label="Search markets"
+              >
+                <Image
+                  className="relative h-5 w-5"
+                  alt="Search markets"
+                  src="https://c.animaapp.com/Mv4EovkK/img/dark-action-search.svg"
+                  width={20}
+                  height={20}
+                  onClick={() => setIsSearchOpen((v) => !v)}
+                />
+              </button>
+            )}
+          </div>
+        </nav>
+
+        <div className="relative h-[1px] w-[1000px] bg-[#F4F4F4]">
+          <div
+            className="absolute top-1/2 -translate-y-1/2 rounded-full"
+            style={{
+              left: `${indicator.left}px`,
+              width: `${indicator.width}px`,
+              height: '2px',
+              background: 'var(--light-brand-lv1, #1ACA75)',
+              flexShrink: 0,
+              transition: 'left 200ms ease, width 200ms ease',
+            }}
+          />
+        </div>
+      </section>
+
+      <section
+        className="relative flex w-full flex-[0_0_auto] flex-col items-start gap-2 self-stretch"
+        id="crypto-content"
+        role="tabpanel"
+      >
+        {!isEdit && (
+          <h2 className="font-14-body-regular-second text-collection-1-light-text-secondary relative mt-[-1.00px] self-stretch text-[length:var(--14-body-regular-second-font-size)] font-[number:var(--14-body-regular-second-font-weight)] leading-[var(--14-body-regular-second-line-height)] tracking-[var(--14-body-regular-second-letter-spacing)] [font-style:var(--14-body-regular-second-font-style)]">
+            Select crypto
+          </h2>
+        )}
+
+        <div className="relative flex w-full flex-[0_0_auto] flex-col items-center gap-4 self-stretch">
+          {isEdit ? <EditToken tokenname="Token" onClose={() => setIsEdit(false)} /> : renderCryptoRow(cryptoData)}
+
+          <button
+            className="relative flex h-10 w-[210px] cursor-pointer items-center justify-center gap-2.5 rounded-[40px] bg-[#9cff1f] px-[127px] py-2 transition-colors hover:bg-[#8ae01b] focus:outline-none focus:ring-2 focus:ring-[#9cff1f] focus:ring-offset-2"
+            // onClick={() => setConfirmOpen(true)}
+          >
+            <span className="font-16-head-medium-secoond text-collection-1-dark-button-text-primary relative ml-[-85.00px] mr-[-85.00px] mt-[-1.00px] w-fit whitespace-nowrap text-right text-[length:var(--16-head-medium-secoond-font-size)] font-[number:var(--16-head-medium-secoond-font-weight)] leading-[var(--16-head-medium-secoond-line-height)] tracking-[var(--16-head-medium-secoond-letter-spacing)] [font-style:var(--16-head-medium-secoond-font-style)]">
+              Add to Favorites
+            </span>
+          </button>
+        </div>
+      </section>
+    </main>
+  )
+}
