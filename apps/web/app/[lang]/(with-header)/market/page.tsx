@@ -35,25 +35,25 @@ export default function Page() {
       id: 1,
       pair: 'BTC/USDT',
       isFavorite: false,
-      favoriteIcon: 'https://c.animaapp.com/Mv4EovkK/img/dark-action-favoourite-3.svg',
+      favoriteIcon: '/images/market/dark-action-favoourite-3.svg',
     },
     {
       id: 2,
       pair: 'ETH/USDT',
       isFavorite: true,
-      favoriteIcon: 'https://c.animaapp.com/Mv4EovkK/img/dark-action-favoourite-fill-1.svg',
+      favoriteIcon: '/images/market/dark-action-favoourite-fill-1.svg',
     },
     {
       id: 3,
       pair: 'SOL/USDT',
       isFavorite: false,
-      favoriteIcon: 'https://c.animaapp.com/Mv4EovkK/img/dark-action-favoourite-5.svg',
+      favoriteIcon: '/images/market/dark-action-favoourite-5.svg',
     },
     {
       id: 4,
       pair: 'DOGE/USDT',
       isFavorite: false,
-      favoriteIcon: 'https://c.animaapp.com/Mv4EovkK/img/dark-action-favoourite-5.svg',
+      favoriteIcon: '/images/market/dark-action-favoourite-5.svg',
     },
   ]
 
@@ -139,7 +139,7 @@ export default function Page() {
               <Image
                 className="relative aspect-[1] h-5 w-5"
                 alt="Edit settings"
-                src="https://c.animaapp.com/Mv4EovkK/img/dark-action-edit.svg"
+                src="/images/market/dark-action-edit.svg"
                 width={20}
                 height={20}
                 onClick={() => setIsEdit(!isEdit)}
@@ -152,7 +152,7 @@ export default function Page() {
                   <Image
                     className="h-5 w-5"
                     alt="search"
-                    src="https://c.animaapp.com/Mv4EovkK/img/dark-action-search.svg"
+                    src="/images/market/dark-action-search.svg"
                     width={20}
                     height={20}
                     onClick={() => setIsSearchOpen((v) => !v)}
@@ -176,7 +176,7 @@ export default function Page() {
                 <Image
                   className="relative h-5 w-5"
                   alt="Search markets"
-                  src="https://c.animaapp.com/Mv4EovkK/img/dark-action-search.svg"
+                  src="/images/market/dark-action-search.svg"
                   width={20}
                   height={20}
                   onClick={() => setIsSearchOpen((v) => !v)}

@@ -82,8 +82,8 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokenname, onClose }) =>
                       alt={isTokenSelected(token.id) ? 'Checkbox selected' : 'Checkbox unselect'}
                       src={
                         isTokenSelected(token.id)
-                          ? 'https://c.animaapp.com/tBZj80ot/img/frame-2131328381.svg'
-                          : 'https://c.animaapp.com/tBZj80ot/img/checkbox-unselect-4.svg'
+                          ? '/images/market/frame-2131328381.svg'
+                          : '/images/market/checkbox-unselect-4.svg'
                       }
                       width={16}
                       height={16}
@@ -100,7 +100,7 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokenname, onClose }) =>
                 <Image
                   className="relative w-[120px]"
                   alt="Frame"
-                  src="https://c.animaapp.com/tBZj80ot/img/frame-2131328914-4.svg"
+                  src="/images/market/frame-2131328914-4.svg"
                   width={120}
                   height={20}
                 />
@@ -124,8 +124,8 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokenname, onClose }) =>
                 alt="Frame"
                 src={
                   isAllSelected
-                    ? 'https://c.animaapp.com/tBZj80ot/img/frame-2131328381.svg'
-                    : 'https://c.animaapp.com/tBZj80ot/img/checkbox-unselect-4.svg'
+                    ? '/images/market/frame-2131328381.svg'
+                    : '/images/market/checkbox-unselect-4.svg'
                 }
                 width={16}
                 height={16}
@@ -140,7 +140,7 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokenname, onClose }) =>
           <Image
             className="relative h-[11.5px] w-px"
             alt="Vector"
-            src="https://c.animaapp.com/tBZj80ot/img/vector-4627.svg"
+            src="/images/market/vector-4627.svg"
             width={1}
             height={12}
           />
@@ -154,7 +154,7 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokenname, onClose }) =>
             <Image
               className="relative h-5 w-5"
               alt="Dark action delete"
-              src="https://c.animaapp.com/tBZj80ot/img/dark-action-delete.svg"
+              src="/images/market/dark-action-delete.svg"
               width={20}
               height={20}
             />
