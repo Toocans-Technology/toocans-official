@@ -67,7 +67,7 @@ export default function Page() {
           aria-label={`Select ${crypto.pair} trading pair`}
           tabIndex={0}
         >
-          <span className="font-14-body-regular-second text-collection-1-light-text-primary relative w-fit text-center text-[length:var(--14-body-regular-second-font-size)] font-[number:var(--14-body-regular-second-font-weight)] leading-[var(--14-body-regular-second-line-height)] tracking-[var(--14-body-regular-second-letter-spacing)] [font-style:var(--14-body-regular-second-font-style)]">
+          <span className="relative w-fit text-center font-[Inter] text-[14px] font-normal leading-normal text-[var(--light-text-primary,#222)]">
             {crypto.pair}
           </span>
 
@@ -98,10 +98,10 @@ export default function Page() {
         <nav className="relative flex w-full flex-[0_0_auto] items-center justify-between self-stretch" role="tablist">
           <div className="relative inline-flex flex-[0_0_auto] items-center gap-[23px]">
             <button
-              className={`font-16-head-medium-primary relative mt-[-1.00px] w-fit whitespace-nowrap text-center text-[length:var(--16-head-medium-primary-font-size)] font-[number:var(--16-head-medium-primary-font-weight)] leading-[var(--16-head-medium-primary-line-height)] tracking-[var(--16-head-medium-primary-letter-spacing)] [font-style:var(--16-head-medium-primary-font-style)] ${
+              className={`relative mt-[-1.00px] w-fit whitespace-nowrap text-center font-[Inter] text-[16px] font-medium leading-normal ${
                 activeTab === 'favorites'
                   ? 'text-[var(--light-brand-lv1,#1ACA75)]'
-                  : 'text-collection-1-light-text-secondary'
+                  : 'text-[var(--light-brand-lv1,#666)]'
               } cursor-pointer transition-colors hover:opacity-80`}
               ref={favoritesRef}
               onClick={() => {
@@ -114,10 +114,8 @@ export default function Page() {
               Favorites
             </button>
             <button
-              className={`font-16-head-medium-primary relative mt-[-1.00px] w-fit whitespace-nowrap text-center text-[length:var(--16-head-medium-primary-font-size)] font-[number:var(--16-head-medium-primary-font-weight)] leading-[var(--16-head-medium-primary-line-height)] tracking-[var(--16-head-medium-primary-letter-spacing)] [font-style:var(--16-head-medium-primary-font-style)] ${
-                activeTab === 'markets'
-                  ? 'text-[var(--light-brand-lv1,#1ACA75)]'
-                  : 'text-collection-1-light-text-secondary'
+              className={`relative mt-[-1.00px] w-fit whitespace-nowrap text-center font-[Inter] text-[16px] ${
+                activeTab === 'markets' ? 'text-[var(--light-brand-lv1,#1ACA75)]' : 'text-[var(--light-brand-lv1,#666)]'
               } cursor-pointer transition-colors hover:opacity-80`}
               ref={marketsRef}
               onClick={() => {
@@ -207,22 +205,24 @@ export default function Page() {
         role="tabpanel"
       >
         {!isEdit && (
-          <h2 className="font-14-body-regular-second text-collection-1-light-text-secondary relative mt-[-1.00px] self-stretch text-[length:var(--14-body-regular-second-font-size)] font-[number:var(--14-body-regular-second-font-weight)] leading-[var(--14-body-regular-second-line-height)] tracking-[var(--14-body-regular-second-letter-spacing)] [font-style:var(--14-body-regular-second-font-style)]">
+          <h2 className="relative mt-[-1.00px] self-stretch font-[Inter] text-[14px] font-normal leading-normal text-[var(--light-text-secondary,#666)]">
             Select crypto
           </h2>
         )}
 
         <div className="relative flex w-full flex-[0_0_auto] flex-col items-center gap-4 self-stretch">
-          {isEdit ? <EditToken tokenname="Token" onClose={() => setIsEdit(false)} /> : renderCryptoRow(cryptoData)}
+          {isEdit ? <EditToken tokens={cryptoData} onClose={() => setIsEdit(false)} /> : renderCryptoRow(cryptoData)}
 
-          <button
-            className="relative flex h-10 w-[210px] cursor-pointer items-center justify-center gap-2.5 rounded-[40px] bg-[#9cff1f] px-[127px] py-2 transition-colors hover:bg-[#8ae01b] focus:outline-none focus:ring-2 focus:ring-[#9cff1f] focus:ring-offset-2"
-            // onClick={() => setConfirmOpen(true)}
-          >
-            <span className="font-16-head-medium-secoond text-collection-1-dark-button-text-primary relative ml-[-85.00px] mr-[-85.00px] mt-[-1.00px] w-fit whitespace-nowrap text-right text-[length:var(--16-head-medium-secoond-font-size)] font-[number:var(--16-head-medium-secoond-font-weight)] leading-[var(--16-head-medium-secoond-line-height)] tracking-[var(--16-head-medium-secoond-letter-spacing)] [font-style:var(--16-head-medium-secoond-font-style)]">
-              Add to Favorites
-            </span>
-          </button>
+          {!isEdit && (
+            <button
+              className="relative flex h-10 w-[210px] cursor-pointer items-center justify-center gap-2.5 rounded-[40px] bg-[#9cff1f] px-[127px] py-2 transition-colors hover:bg-[#8ae01b] focus:outline-none focus:ring-2 focus:ring-[#9cff1f] focus:ring-offset-2"
+              // onClick={() => setConfirmOpen(true)}
+            >
+              <span className="relative ml-[-85.00px] mr-[-85.00px] mt-[-1.00px] w-fit whitespace-nowrap text-right font-[Inter] text-[16px] font-medium leading-[24px] text-[var(--dark-button-text-primary,#222)]">
+                Add to Favorites
+              </span>
+            </button>
+          )}
         </div>
       </section>
     </main>

@@ -35,7 +35,7 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="gap-6 py-6 sm:max-w-[432px]">
         <DialogHeader className="gap-0">
-          <DialogTitle className="text-[16px] font-medium leading-6 text-[#222] [font-family:'Inter',Helvetica]">
+          <DialogTitle className="text-[16px] font-medium leading-6 text-[#222] [font-family:'Inter',Helvetica]" style={{paddingBottom:'8px'}}>
             {title}
           </DialogTitle>
           <Separator />

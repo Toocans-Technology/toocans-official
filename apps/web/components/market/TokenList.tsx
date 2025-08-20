@@ -4,12 +4,12 @@ import Image from 'next/image'
 import { FunctionComponent, useState } from 'react'
 import ConfirmModal from '@/components/market/ConfirmModal'
 
-interface EditTokenProps {
+interface TokenListProps {
   tokens: Array<{ id: string | number; pair: string }>
   onClose: () => void
 }
 
-const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose }) => {
+const TokenList: FunctionComponent<TokenListProps> = ({ tokens, onClose }) => {
   const [selectedTokens, setSelectedTokens] = useState<string[]>([])
   const [confirmOpen, setConfirmOpen] = useState(false)
 
@@ -183,4 +183,4 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose }) => {
   )
 }
 
-export default EditToken
+export default TokenList
