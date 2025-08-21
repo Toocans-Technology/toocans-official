@@ -75,7 +75,7 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose }) => {
                 <div className="relative flex h-[22px] w-24 items-center gap-2">
                   <button
                     onClick={() => handleTokenSelect(token.id)}
-                    className="relative aspect-[1] h-4 w-4 cursor-pointer"
+                    className="relative aspect-[1] h-5 w-5 cursor-pointer"
                     aria-label={`Select ${token.name}`}
                   >
                     <Image
@@ -85,8 +85,8 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose }) => {
                           ? '/images/market/frame-2131328381.svg'
                           : '/images/market/checkbox-unselect-4.svg'
                       }
-                      width={16}
-                      height={16}
+                      width={20}
+                      height={20}
                     />
                   </button>
 

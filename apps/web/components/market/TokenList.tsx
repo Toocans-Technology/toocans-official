@@ -1,184 +1,201 @@
 'use client'
 
 import Image from 'next/image'
-import { FunctionComponent, useState } from 'react'
-import ConfirmModal from '@/components/market/ConfirmModal'
+import { FunctionComponent, useEffect, useMemo, useState } from 'react'
+import { PaginationControls } from '@/components/common'
+
+const BASE_PAIRS = [
+  'BTC/USDT',
+  'ETH/USDT',
+  'SOL/USDT',
+  'DOGE/USDT',
+  'BNB/USDT',
+  'XRP/USDT',
+  'ADA/USDT',
+  'TRX/USDT',
+  'LINK/USDT',
+  'TON/USDT',
+]
 
 interface TokenListProps {
-  tokens: Array<{ id: string | number; pair: string }>
   onClose: () => void
 }
 
-const TokenList: FunctionComponent<TokenListProps> = ({ tokens, onClose }) => {
+const TokenList: FunctionComponent<TokenListProps> = ({ onClose: _onClose }) => {
+  // mark prop as intentionally unused for now
+  void _onClose
   const [selectedTokens, setSelectedTokens] = useState<string[]>([])
-  const [confirmOpen, setConfirmOpen] = useState(false)
+  const randPrice = () => Number((Math.random() * (50000 - 1) + 1).toFixed(2))
+  const randChange = () => Number((Math.random() * 20 - 10).toFixed(2))
 
-  const tokenData = tokens.map((t) => ({ id: String(t.id), name: t.pair }))
+  const data = useMemo(
+    () =>
+      Array.from({ length: 50 }, (_, i) => ({
+        id: `t${i + 1}`,
+        name: BASE_PAIRS[i % BASE_PAIRS.length],
+        price: randPrice(),
+        change: randChange(),
+      })),
+    []
+  )
 
-  const handleTokenSelect = (tokenId: string) => {
-    setSelectedTokens((prev) => (prev.includes(tokenId) ? prev.filter((id) => id !== tokenId) : [...prev, tokenId]))
-  }
+  const [sortKey, setSortKey] = useState<null | 'name' | 'price' | 'change'>(null)
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const pageSize = 5
 
-  const handleSelectAll = () => {
-    if (selectedTokens.length === tokenData.length) {
-      setSelectedTokens([])
+  const toggleSort = (key: 'name' | 'price' | 'change') => {
+    if (sortKey !== key) {
+      setSortKey(key)
+      setSortOrder('asc')
+    } else if (sortOrder === 'asc') {
+      setSortOrder('desc')
     } else {
-      setSelectedTokens(tokenData.map((token) => token.id))
+      setSortKey(null)
+      setSortOrder('asc')
     }
   }
 
-  const handleDelete = () => {
-    setConfirmOpen(true)
-  }
+  const displayData = useMemo(() => {
+    if (!sortKey) return data
+    const sorted = [...data]
+    sorted.sort((a, b) => {
+      const aVal = a[sortKey]
+      const bVal = b[sortKey]
+      if (typeof aVal === 'number' && typeof bVal === 'number') {
+        return sortOrder === 'asc' ? aVal - bVal : bVal - aVal
+      }
+      const cmp = String(aVal).localeCompare(String(bVal))
+      return sortOrder === 'asc' ? cmp : -cmp
+    })
+    return sorted
+  }, [data, sortKey, sortOrder])
 
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [sortKey, sortOrder])
+
+  const totalPages = useMemo(() => Math.ceil(displayData.length / pageSize), [displayData])
+  const pagedData = useMemo(() => {
+    const start = (currentPage - 1) * pageSize
+    const end = start + pageSize
+    return displayData.slice(start, end)
+  }, [displayData, currentPage])
+
+  const getSortIcon = (key: 'name' | 'price' | 'change') => {
+    if (sortKey !== key) return '/images/market/normal.png'
+    return sortOrder === 'asc' ? '/images/market/asc.png' : '/images/market/desc.png'
+  }
+  const handleTokenSelect = (tokenId: string) => {
+    setSelectedTokens((prev) => (prev.includes(tokenId) ? prev.filter((id) => id !== tokenId) : [...prev, tokenId]))
+  }
   const isTokenSelected = (tokenId: string) => selectedTokens.includes(tokenId)
-  const isAllSelected = selectedTokens.length === tokenData.length
 
   return (
     <div className="relative flex w-[1000px] flex-col items-start gap-4" data-model-id="2708:1805">
       <div className="relative flex w-full flex-[0_0_auto] flex-col items-start self-stretch">
         <div className="relative flex w-full flex-[0_0_auto] flex-col items-start gap-2 self-stretch">
           <div
-            className="relative flex w-full flex-[0_0_auto] items-center justify-between self-stretch"
-            style={{ borderBottom: '1px solid #F4F4F4', paddingBottom: '8px' }}
+            className="relative self-stretch"
+            style={{ borderBottom: '1px solid #F4F4F4', paddingBottom: '8px', display: 'flex', gap: '222px' }}
           >
-            <div className="relative flex h-[22px] w-24 items-center gap-2.5 px-0 py-2.5">
-              <div className="font-12-caption-regular-second text-collection-1-light-text-third relative mb-[-8.00px] mt-[-10.00px] w-fit whitespace-nowrap font-[number:var(--12-caption-regular-second-font-weight)] leading-[var(--12-caption-regular-second-line-height)] tracking-[var(--12-caption-regular-second-letter-spacing)] [font-style:var(--12-caption-regular-second-font-style)]">
+            <div className="relative flex h-[22px] w-[130px] items-center gap-1 px-0 py-2.5">
+              <div>
                 <span className="font-[Inter] text-[12px] font-normal leading-[20px] text-[var(--light-text-third,#999)]">
-                  Token
+                  Name
                 </span>
               </div>
+              <button className="mt-1.5 h-4 w-4" aria-label="Sort by name" onClick={() => toggleSort('name')}>
+                <Image alt="Sort by name" className="cursor-pointer" src={getSortIcon('name')} width={16} height={16} />
+              </button>
             </div>
 
-            <div className="relative flex h-[22px] w-[120px] items-center gap-5">
-              <div className="font-12-caption-regular-second text-collection-1-light-text-third relative w-12 text-right font-[number:var(--12-caption-regular-second-font-weight)] leading-[var(--12-caption-regular-second-line-height)] tracking-[var(--12-caption-regular-second-letter-spacing)] [font-style:var(--12-caption-regular-second-font-style)]">
+            <div className="relative flex h-[22px] w-[130px] items-center gap-1">
+              <div>
                 <span className="font-[Inter] text-[12px] font-normal leading-[20px] text-[var(--light-text-third,#999)]">
-                  Top
+                  Price
                 </span>
               </div>
+              <button className="mt-1.5 h-4 w-4" aria-label="Sort by price" onClick={() => toggleSort('price')}>
+                <Image
+                  alt="Sort by price"
+                  className="cursor-pointer"
+                  src={getSortIcon('price')}
+                  width={16}
+                  height={16}
+                />
+              </button>
+            </div>
 
-              <div className="font-12-caption-regular-second text-collection-1-light-text-third relative w-12 text-right font-[number:var(--12-caption-regular-second-font-weight)] leading-[var(--12-caption-regular-second-line-height)] tracking-[var(--12-caption-regular-second-letter-spacing)] [font-style:var(--12-caption-regular-second-font-style)]">
+            <div className="relative flex h-[22px] w-[130px] items-center gap-1">
+              <div>
                 <span className="font-[Inter] text-[12px] font-normal leading-[20px] text-[var(--light-text-third,#999)]">
-                  Drag
+                  24h change
                 </span>
               </div>
+              <button className="mt-1.5 h-4 w-4" aria-label="Sort by change" onClick={() => toggleSort('change')}>
+                <Image
+                  alt="Sort by change"
+                  className="cursor-pointer"
+                  src={getSortIcon('change')}
+                  width={16}
+                  height={16}
+                />
+              </button>
             </div>
           </div>
         </div>
         <div className="relative flex w-full flex-[0_0_auto] flex-col items-start self-stretch">
-          {tokenData.map((token) => (
+          {pagedData.map((token) => (
             <div
               key={token.id}
-              className="relative flex w-full flex-[0_0_auto] flex-col items-start justify-center self-stretch border-b border-[#F4F4F4]"
+              className="relative flex w-full self-stretch border-b border-[#F4F4F4]"
+              style={{ flexDirection: 'row', alignItems: 'center', gap: '222px' }}
             >
-              <div className="relative flex h-[72px] w-full items-center justify-between self-stretch">
+              <div className="relative flex h-[72px] w-[130px] items-center justify-between self-stretch">
                 <div className="relative flex h-[22px] w-24 items-center gap-2">
                   <button
                     onClick={() => handleTokenSelect(token.id)}
-                    className="relative aspect-[1] h-4 w-4 cursor-pointer"
+                    className="relative aspect-[1] h-5 w-5 cursor-pointer"
                     aria-label={`Select ${token.name}`}
                   >
                     <Image
                       alt={isTokenSelected(token.id) ? 'Checkbox selected' : 'Checkbox unselect'}
                       src={
                         isTokenSelected(token.id)
-                          ? '/images/market/frame-2131328381.svg'
-                          : '/images/market/checkbox-unselect-4.svg'
+                          ? '/images/market/dark-action-favoourite-3.svg'
+                          : '/images/market/dark-action-favoourite-fill-1.svg'
                       }
-                      width={16}
-                      height={16}
+                      width={20}
+                      height={20}
                     />
                   </button>
 
                   <div
                     onClick={() => handleTokenSelect(token.id)}
-                    className={`relative cursor-pointer w-fit text-center font-[Inter] text-[14px] font-normal leading-normal text-[var(--light-text-primary,#222)] ${token.name === 'DOGE/USDT' ? 'mr-[-11.00px]' : ''}`}
+                    className={`relative w-fit cursor-pointer text-center font-[Inter] text-[14px] font-normal leading-normal text-[var(--light-text-primary,#222)] ${token.name === 'DOGE/USDT' ? 'mr-[-11.00px]' : ''}`}
                   >
                     {token.name}
                   </div>
                 </div>
-
-                <Image
-                  className="relative w-[120px] cursor-pointer"
-                  alt="Frame"
-                  src="/images/market/frame-2131328914-4.svg"
-                  width={120}
-                  height={20}
-                />
+              </div>
+              <div className="flex w-[130px] items-center justify-between font-[Inter] text-[14px] font-normal leading-normal text-[var(--light-text-primary,#222)]">
+                {token.price}
+              </div>
+              <div
+                className={`flex w-[130px] items-center justify-between font-[Inter] text-[14px] font-normal leading-normal ${
+                  token.change > 0 ? 'text-[#1ACA75]' : 'text-[#FF476F]'
+                }`}
+              >
+                {token.change > 0 ? `+${token.change}%` : `${token.change}%`}
               </div>
             </div>
           ))}
-        </div>
-      </div>
-
-      <div className="relative flex w-[1000px] flex-[0_0_auto] items-center justify-between">
-        <div className="relative flex flex-[0_0_auto] items-center gap-3">
-          <div className="relative flex flex-[0_0_auto] items-end gap-2">
-            <button
-              onClick={handleSelectAll}
-              className="relative flex flex-[0_0_auto] cursor-pointer items-center gap-2"
-              aria-label={isAllSelected ? 'Deselect all' : 'Select all'}
-            >
-              <Image
-                className="relative cursor-pointer aspect-[1] h-4 w-4"
-                alt="Frame"
-                src={isAllSelected ? '/images/market/frame-2131328381.svg' : '/images/market/checkbox-unselect-4.svg'}
-                width={16}
-                height={16}
-              />
-
-              <div className="relative mt-[-1.00px] w-fit text-center font-[Inter] text-[14px] font-normal leading-normal text-[var(--light-text-primary,#222)]">
-                Select all
-              </div>
-            </button>
+          <div className="mt-4 flex w-full justify-end">
+            <PaginationControls totalPages={totalPages} currentPage={currentPage} onPageChange={setCurrentPage} />
           </div>
-
-          <Image
-            className="relative h-[11.5px] w-px"
-            alt="Vector"
-            src="/images/market/vector-4627.svg"
-            width={1}
-            height={12}
-          />
-
-          <button
-            onClick={handleDelete}
-            disabled={selectedTokens.length === 0}
-            className={`relative inline-flex flex-[0_0_auto] cursor-pointer items-center gap-2 ${selectedTokens.length === 0 ? 'cursor-not-allowed opacity-50' : ''}`}
-            aria-label="Delete selected tokens"
-          >
-            <Image
-              className="relative h-5 w-5"
-              alt="Dark action delete"
-              src="/images/market/dark-action-delete.svg"
-              width={20}
-              height={20}
-            />
-
-            <div className="relative w-fit text-center font-[Inter] text-[14px] font-normal leading-normal text-[var(--light-text-primary,#222)]">
-              Delete
-            </div>
-          </button>
         </div>
-
-        <button
-          onClick={onClose}
-          className="relative w-fit cursor-pointer text-center font-[Inter] text-[14px] font-normal leading-normal text-[var(--dark-status-link,#3C7BF4)]"
-        >
-          Done
-        </button>
       </div>
-      <ConfirmModal
-        open={confirmOpen}
-        onOpenChange={setConfirmOpen}
-        title="Delete all"
-        description="Are you sure to delete all the data"
-        cancelText="Cancel"
-        confirmText="Deltete"
-        onConfirm={() => {
-          setSelectedTokens([])
-        }}
-      />
     </div>
   )
 }

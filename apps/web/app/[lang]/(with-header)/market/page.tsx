@@ -3,10 +3,12 @@
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import EditToken from '@/components/market/EditToken'
+import TokenList from '@/components/market/TokenList'
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState<'favorites' | 'markets'>('favorites')
   const [isEdit, setIsEdit] = useState(false)
+  const [isAdd, setIsAdd] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchValue, setSearchValue] = useState('')
   const tabsWrapRef = useRef<HTMLDivElement | null>(null)
@@ -140,7 +142,7 @@ export default function Page() {
                 src="/images/market/dark-action-edit.svg"
                 width={20}
                 height={20}
-                onClick={() => setIsEdit(!isEdit)}
+                onClick={() => { setIsEdit(!isEdit); setIsAdd(false); }}
               />
             </button>
 
@@ -204,19 +206,24 @@ export default function Page() {
         id="crypto-content"
         role="tabpanel"
       >
-        {!isEdit && (
+        {(!isEdit && !isAdd) && (
           <h2 className="relative mt-[-1.00px] self-stretch font-[Inter] text-[14px] font-normal leading-normal text-[var(--light-text-secondary,#666)]">
             Select crypto
           </h2>
         )}
 
         <div className="relative flex w-full flex-[0_0_auto] flex-col items-center gap-4 self-stretch">
-          {isEdit ? <EditToken tokens={cryptoData} onClose={() => setIsEdit(false)} /> : renderCryptoRow(cryptoData)}
+          {(!isAdd && isEdit) && <EditToken tokens={cryptoData} onClose={() => setIsEdit(false)} />}
 
-          {!isEdit && (
+          {(isAdd && !isEdit) && <TokenList onClose={() => setIsAdd(false)} />}
+
+          {(!isEdit && !isAdd) && (
+            renderCryptoRow(cryptoData)
+          )}
+          {(!isEdit && !isAdd) && (
             <button
               className="relative flex h-10 w-[210px] cursor-pointer items-center justify-center gap-2.5 rounded-[40px] bg-[#9cff1f] px-[127px] py-2 transition-colors hover:bg-[#8ae01b] focus:outline-none focus:ring-2 focus:ring-[#9cff1f] focus:ring-offset-2"
-              // onClick={() => setConfirmOpen(true)}
+              onClick={() => setIsAdd(true)}
             >
               <span className="relative ml-[-85.00px] mr-[-85.00px] mt-[-1.00px] w-fit whitespace-nowrap text-right font-[Inter] text-[16px] font-medium leading-[24px] text-[var(--dark-button-text-primary,#222)]">
                 Add to Favorites
