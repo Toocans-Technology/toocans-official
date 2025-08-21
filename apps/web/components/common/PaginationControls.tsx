@@ -26,13 +26,9 @@ const PaginationControls: FunctionComponent<PaginationControlsProps> = ({
   siblingCount = 1,
   onPageChange,
 }) => {
-  // 文字样式（去掉宽高，避免与容器尺寸冲突导致点击时重排/闪烁）
   const pageTextCls = 'font-[Inter] text-[14px] leading-[22px] font-normal text-center text-[var(--BG-666,#666)]'
-  // 基础容器尺寸，所有数字项统一 32x32，居中子元素
   const pageContainerBase = 'w-8 h-8 flex items-center justify-center'
-  // 激活容器：添加背景/圆角/内边距（保留整体 32x32）
   const activeItemCls = `${pageContainerBase} rounded bg-[var(--dark-brand-default,#9CFF1F)] text-[var(--BG-222222,#222)]`
-  // 按钮额外样式：填充父容器，禁用 hover/active 背景，去除过渡闪烁
   const pageButtonBase = 'w-full h-full hover:bg-transparent active:bg-transparent focus-visible:ring-0 transition-none'
   const pageRange = useMemo(() => {
     const range: number[] = []
