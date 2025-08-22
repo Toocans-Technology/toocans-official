@@ -73,7 +73,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
 
       return sortBy(list, ['name'])
     }
-  }, [tokens, data])
+  }, [tokens, data, showAvailable])
 
   const handleSelectToken = useCallback(
     (value: string) => {
@@ -87,7 +87,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
       setSelectedToken(selectedToken)
       onSelect?.(selectedToken)
     },
-    [tokens]
+    [onSelect, tokens]
   )
 
   return (

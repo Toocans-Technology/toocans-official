@@ -10,7 +10,7 @@ export const useSecurityLevel = (kycLevel = KycLevel.unverified, hasGA = false) 
       case KycLevel.unverified:
         return hasGA ? t('account:high') : t('account:low')
       case KycLevel.low:
-        return hasGA ? t('account:high') : t('account:medium')
+        return hasGA ? t('account:high') : t('account:low')
       default:
         return t('account:low')
     }
