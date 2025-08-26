@@ -107,7 +107,6 @@ export default function OverviewBalancePanel() {
             <>
               <Button
                 rounded="full"
-                size="lg"
                 className="px-7 text-[16px] font-normal leading-[22px]"
                 onClick={() => setOpenVerifyModal(true)}
               >
@@ -115,7 +114,6 @@ export default function OverviewBalancePanel() {
               </Button>
               <Button
                 rounded="full"
-                size="lg"
                 variant="secondary"
                 className="px-7 text-[16px] font-normal leading-[22px]"
                 onClick={() => setOpenVerifyModal(true)}

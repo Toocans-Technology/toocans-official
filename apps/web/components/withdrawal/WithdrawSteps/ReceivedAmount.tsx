@@ -86,11 +86,11 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, network, address }) =
 
   const handleAmountChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const value = formatInputAmount(e.target.value)
+      const value = formatInputAmount(e.target.value, token?.minPrecision)
       const newAmount = validateAmount(value)
       setAmount(newAmount)
     },
-    [userAsset, minAmount]
+    [token, userAsset, minAmount]
   )
 
   const handleOpenDetail = useCallback((open: boolean, data: Withdrawal) => {

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
+import { useLogin } from '@/hooks'
 import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
 
@@ -35,6 +36,8 @@ const GetAllAssetResponseSchema = z.array(BalanceVoSchema)
 export type GetAllAssetResponse = z.infer<typeof GetAllAssetResponseSchema>
 
 export const useGetAllAsset = (params?: GetAllAssetParams) => {
+  const { isLoggedIn } = useLogin()
+
   return useQuery({
     ...getQuery({
       method: 'GET',
@@ -42,6 +45,6 @@ export const useGetAllAsset = (params?: GetAllAssetParams) => {
       query: GetAllAssetParamsSchema.parse(params),
       transfer: GetAllAssetResponseSchema.parse,
     }),
-    enabled: params ? !!params?.tokenId : true,
+    enabled: isLoggedIn && (params ? !!params?.tokenId : true),
   })
 }

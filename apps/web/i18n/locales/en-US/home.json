@@ -34,5 +34,6 @@
   "chainTransfer": "Chain transfers, free internal transfers, anytime, anywhere",
   "signUpNow": "Sign Up Now",
   "signUpNowDescription": "start your crypto security management wallet",
-  "invalidEmail": "Please enter a valid email"
+  "invalidEmail": "Please enter a valid email",
+  "totalBalance": "Your total balance"
 }
