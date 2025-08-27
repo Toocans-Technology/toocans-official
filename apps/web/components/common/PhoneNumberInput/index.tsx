@@ -10,24 +10,33 @@ import CountrySelect from './CountrySelect'
 interface Props {
   invalid?: boolean
   value?: string
+  name?: string
+  endContent?: React.ReactNode
   onChange?: (value: string) => void
   onCountryChange?: (country: Country) => void
 }
 
-const PhoneNumberInput: FunctionComponent<Props> = ({ invalid, value, onChange, onCountryChange, ...props }) => {
+const PhoneNumberInput: FunctionComponent<Props> = ({
+  invalid,
+  value,
+  onChange,
+  onCountryChange,
+  endContent,
+  ...props
+}) => {
   const { t } = useT(['common'])
 
   return (
     <div
       aria-invalid={invalid}
-      className="focus-within:border-ring focus-within:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-2 overflow-hidden rounded bg-[#f8f8f8] px-3 focus-within:ring-[1px]"
+      className="hover:border-ring hover:ring-brand focus-within:border-ring focus-within:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-2 overflow-hidden rounded-md bg-[#f8f8f8] px-2.5 focus-within:ring-[1px]"
     >
       <CountrySelect onChange={onCountryChange} />
-      <Separator orientation="vertical" className="max-h-2.5 bg-[#999]" />
+      <Separator orientation="vertical" className="bg-[#999] data-[orientation=vertical]:h-2.5" />
       <Input
         autoComplete="off"
         placeholder={t('common:enterPhone')}
-        className="aria-invalid:ring-0 px-0 focus-visible:ring-0"
+        className="aria-invalid:ring-0 px-0 hover:ring-0 focus-visible:ring-0"
         {...props}
         value={value}
         onChange={(e) => {
@@ -45,6 +54,7 @@ const PhoneNumberInput: FunctionComponent<Props> = ({ invalid, value, onChange, 
           <XIcon color="#fff" size={12} />
         </span>
       )}
+      {endContent}
     </div>
   )
 }

@@ -58,7 +58,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
           ? z.string().regex(VERIFICATION_CODE_REGEX, t('withdrawal:withdrawModal.gaCodeError')).length(6)
           : z.string().optional(),
       }),
-    [hasGaKey]
+    [hasGaKey, t]
   )
 
   useEffect(() => {
@@ -116,7 +116,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
       return countdown ? t('withdrawal:emailVerification', { email: userInfo?.email }) : t('withdrawal:emailAuth')
     }
     return countdown ? t('withdrawal:phoneVerification', { phone: userInfo?.concatMobile }) : t('withdrawal:phoneAuth')
-  }, [verifyType, countdown])
+  }, [verifyType, countdown, t, userInfo?.concatMobile, userInfo?.email])
 
   const handleSwitchVerifyType = useCallback(() => {
     setVerifyType(verifyType === VerifyType.email ? VerifyType.sms : VerifyType.email)
@@ -152,7 +152,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
         toast.error((error as HttpError).message)
       }
     },
-    [mutateWithdraw, address, amount, tokenFee, token, reset, userInfo, refetch]
+    [userInfo, mutateWithdraw, address, amount, tokenFee, token.tokenId, reset, refetch, openDetail]
   )
 
   return (
@@ -215,7 +215,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
                         maxLength={6}
                         autoComplete="off"
                         placeholder={t('withdrawal:emailAuthPlaceholder')}
-                        className="aria-invalid:ring-0 focus-visible:ring-0"
+                        className="aria-invalid:ring-0 hover:ring-0 focus-visible:ring-0"
                       />
                     </FormControl>
                     <span

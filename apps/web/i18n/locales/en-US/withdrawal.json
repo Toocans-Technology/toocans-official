@@ -6,6 +6,7 @@
   "setDestination": "Set destination",
   "onChainType": "On-chain type",
   "selectNetwork": "Select network",
+  "withdrawalAddress": "Withdrawal address",
   "addressPlaceholder": "Please enter",
   "setAmount": "Set withdrawal amount",
   "receivedAmount": "Received amount",
@@ -53,5 +54,15 @@
     "gaCodeError.required": "Please enter the Google Authenticator code",
     "codeError": "Verification code format error",
     "gaCodeError": "Google Authenticator code format error"
-  }
+  },
+  "onChain": "On-chain",
+  "internalTransfer": "Internal transfer",
+  "manageAddresses": "Manage addresses",
+  "accountName": "Account Name",
+  "email": "Email",
+  "emailPlaceholder": "Enter email",
+  "phone": "Phone",
+  "phonePlaceholder": "Enter phone",
+  "uid": "UID",
+  "uidPlaceholder": "Enter UID"
 }

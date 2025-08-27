@@ -1,18 +1,15 @@
 'use client'
 
-import { sortBy } from 'es-toolkit'
-import { ChangeEvent, FunctionComponent, useCallback, useMemo, useState } from 'react'
-import { Input, Label } from '@workspace/ui/components'
+import { ChangeEvent, FunctionComponent, useCallback, useState } from 'react'
 import { cn } from '@workspace/ui/lib/utils'
-import SelectNetwork from '@/components/deposit/DepositSteps/SelectNetwork'
 import SelectToken from '@/components/deposit/DepositSteps/SelectToken'
 import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { validateAddress } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
-import { AllowWithdraw } from '@/types/token'
 import RecentWithdraw from '../RecentWithdraw'
 import ReceivedAmount from './ReceivedAmount'
+import SetDestination from './SetDestination'
 
 enum WithdrawStep {
   ChooseToken,
@@ -28,22 +25,6 @@ const WithdrawSteps: FunctionComponent = () => {
   const [address, setAddress] = useState<string>('')
 
   useRedirectIfNotLogin()
-
-  const networkList = useMemo(() => {
-    if (!selectedToken) {
-      return []
-    }
-
-    const list = selectedToken.subTokenList.map((item) => ({
-      id: item.id,
-      name: item.chainName,
-      icon: item.chainIcon || '/images/symbol-placeholder.png',
-      protocolName: item.protocolName,
-      disabled: item.tokenSetting?.allowWithdraw === AllowWithdraw.disabled,
-    }))
-
-    return sortBy(list, ['name'])
-  }, [selectedToken])
 
   const handleSelectToken = useCallback((token: Token) => {
     setSelectedToken(token)
@@ -112,26 +93,14 @@ const WithdrawSteps: FunctionComponent = () => {
               {t('withdrawal:setDestination')}
             </span>
           </div>
-          {step >= WithdrawStep.ChooseNetwork && (
-            <>
-              <div className="mt-2 flex flex-col gap-2">
-                <Label className="text-sm text-[#222]">{t('withdrawal:onChainType')}</Label>
-                <SelectNetwork
-                  value={selectedNetwork?.id || ''}
-                  networks={networkList}
-                  onValueChange={handleSelectNetwork}
-                />
-              </div>
-              <div className="mt-4 flex max-w-[518px] flex-col gap-2">
-                <Label className="text-sm text-[#222]">{t('withdrawal:address')}</Label>
-                <Input
-                  placeholder={t('withdrawal:addressPlaceholder')}
-                  value={address}
-                  className="rounded"
-                  onChange={handleAddressChange}
-                />
-              </div>
-            </>
+          {step >= WithdrawStep.ChooseNetwork && selectedToken && (
+            <SetDestination
+              address={address}
+              token={selectedToken}
+              selectedNetwork={selectedNetwork}
+              handleSelectNetwork={handleSelectNetwork}
+              handleAddressChange={handleAddressChange}
+            />
           )}
         </div>
         <div className="flex flex-col gap-2">

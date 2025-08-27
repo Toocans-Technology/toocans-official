@@ -7,14 +7,9 @@ import { useT } from '@/i18n'
 import { formatInputAmount } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { Withdrawal } from '@/services/wallet'
+import { InputValueType } from '@/types/form'
 import { WithdrawDetailModal } from '../modals'
 import WithdrawModal from '../modals/WithdrawModal'
-
-type InputValueType = {
-  value: string
-  error: string
-  isInvalid: boolean
-}
 
 interface Props {
   token?: Token
@@ -82,7 +77,7 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, network, address }) =
     const maxAmount = getMaxOrderAmount(userAsset?.available || 0)
     const validatedAmount = validateAmount(maxAmount.toString())
     setAmount(validatedAmount)
-  }, [userAsset, getMaxOrderAmount])
+  }, [getMaxOrderAmount, userAsset?.available, validateAmount])
 
   const handleAmountChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +85,7 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, network, address }) =
       const newAmount = validateAmount(value)
       setAmount(newAmount)
     },
-    [token, userAsset, minAmount]
+    [token?.minPrecision, validateAmount]
   )
 
   const handleOpenDetail = useCallback((open: boolean, data: Withdrawal) => {
@@ -106,7 +101,7 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, network, address }) =
           <Input
             value={amount.value}
             placeholder={`${t('withdrawal:min')} ${minAmount}`}
-            className="flex-1 focus-visible:ring-0"
+            className="flex-1 hover:ring-0 focus-visible:ring-0"
             onChange={handleAmountChange}
           />
           {token && <span className="text-sm">{token?.tokenName}</span>}

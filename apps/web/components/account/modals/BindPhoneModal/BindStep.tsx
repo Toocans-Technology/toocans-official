@@ -79,12 +79,15 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
     return () => {
       reset()
     }
-  }, [])
+  }, [reset])
 
-  const handleCountryChange = useCallback((country: Country) => {
-    setValue('nationalCode', country.nationalCode)
-    setCountryCode(country.domainShortName as CountryCode)
-  }, [])
+  const handleCountryChange = useCallback(
+    (country: Country) => {
+      setValue('nationalCode', country.nationalCode)
+      setCountryCode(country.domainShortName as CountryCode)
+    },
+    [setValue]
+  )
 
   const handleSendCode = useCallback(async () => {
     await trigger('phoneNumber')
@@ -153,7 +156,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
                     autoComplete="off"
                     maxLength={6}
                     placeholder={t('account:phoneVerificationCode')}
-                    className="aria-invalid:ring-0 focus-visible:ring-0"
+                    className="aria-invalid:ring-0 hover:ring-0 focus-visible:ring-0"
                   />
                 </FormControl>
                 <span className={cn('text-link text-nowrap', !countdown && 'cursor-pointer')} onClick={handleSendCode}>
