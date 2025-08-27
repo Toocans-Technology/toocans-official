@@ -48,7 +48,7 @@ const OnChain: FunctionComponent<Props> = ({
         <Label className="text-sm text-[#222]">{t('withdrawal:onChainType')}</Label>
         <SelectNetwork value={selectedNetwork?.id || ''} networks={networkList} onValueChange={handleSelectNetwork} />
       </div>
-      <div className="mt-4 flex max-w-[518px] flex-col gap-2">
+      <div className="mt-4 flex max-w-[456px] flex-col gap-2">
         <div className="flex justify-between">
           <Label className="text-sm text-[#222]" htmlFor="withdrawalAddress">
             {t('withdrawal:withdrawalAddress')}
@@ -57,7 +57,7 @@ const OnChain: FunctionComponent<Props> = ({
             {t('withdrawal:manageAddresses')}
           </Button>
         </div>
-        <div className="focus-within:border-ring focus-within:ring-brand flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-3 focus-within:ring-[1px]">
+        <div className="focus-within:border-ring focus-within:ring-brand flex items-center gap-4 overflow-hidden rounded-md bg-[#f8f8f8] pr-3 focus-within:ring-[1px]">
           <Input
             id="withdrawalAddress"
             value={address}

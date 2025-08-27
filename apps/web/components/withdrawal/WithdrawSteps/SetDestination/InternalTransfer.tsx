@@ -70,7 +70,7 @@ const InternalTransfer: FunctionComponent<Props> = () => {
           </div>
         ))}
       </div>
-      <div className="max-w-[518px]">
+      <div className="max-w-[456px]">
         {transferType === TransferType.Email && (
           <div className="mt-2 flex flex-col gap-2">
             <Label className="text-sm" htmlFor="email">

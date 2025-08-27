@@ -83,7 +83,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
     } catch (error) {
       toast.error((error as HttpError).message)
     }
-  }, [mutateSendCode, countdown, email, formState.errors.email])
+  }, [trigger, countdown, formState.errors.email, mutateSendCode, email])
 
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {

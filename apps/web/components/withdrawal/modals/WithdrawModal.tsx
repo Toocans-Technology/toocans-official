@@ -162,7 +162,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
           fullWidth
           rounded="full"
           disabled={disabled}
-          className="mt-4 max-w-[518px]"
+          className="mt-4 max-w-[456px]"
           onClick={() => setOpen(true)}
         >
           {t('common:next')}
