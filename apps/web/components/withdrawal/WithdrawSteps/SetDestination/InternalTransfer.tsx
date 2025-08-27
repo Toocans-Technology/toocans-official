@@ -1,11 +1,11 @@
 'use client'
 
+import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js'
 import Image from 'next/image'
 import { ChangeEvent, FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { Button, Label } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
-import { PhoneNumberInput } from '@/components/common'
-import { Input } from '@/components/common/form'
+import { PhoneNumberInput, Input } from '@/components/common'
 import { useT } from '@/i18n'
 import { EMAIL_REGEX, INPUT_DEFAULT_VALUE } from '@/lib/utils'
 import { Country } from '@/services/login'
@@ -27,7 +27,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange }) => {
   const [email, setEmail] = useState<InputValueType>(INPUT_DEFAULT_VALUE)
   const [phone, setPhone] = useState<InputValueType>(INPUT_DEFAULT_VALUE)
   const [uid, setUid] = useState<InputValueType>(INPUT_DEFAULT_VALUE)
-  const [countryCode, setCountryCode] = useState('')
+  const [countryCode, setCountryCode] = useState<CountryCode>()
   const [transferType, setTransferType] = useState(InternalTransferType.Email)
 
   const transferTypeList = useMemo(() => {
@@ -80,19 +80,30 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange }) => {
 
   const handlePhoneChange = useCallback(
     (value: string) => {
-      setPhone((s) => ({ ...s, value }))
-      onChange?.({ phone: value, countryCode })
+      const isPhone = isValidPhoneNumber(value, countryCode)
+
+      if (isPhone) {
+        setPhone((s) => ({ ...s, value }))
+        onChange?.({ phone: value, countryCode })
+      } else {
+        setPhone((s) => ({ ...s, value, error: t('withdrawal:phoneError'), isInvalid: true }))
+      }
     },
-    [onChange, setPhone, countryCode]
+    [countryCode, onChange, t]
   )
 
   const handleUidChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/[^\d]/g, '')
-      setUid((s) => ({ ...s, value }))
-      onChange?.({ uid: value })
+
+      if (value === '') {
+        setUid((s) => ({ ...s, value, error: t('withdrawal:uidError'), isInvalid: true }))
+      } else {
+        setUid((s) => ({ ...s, value, error: '', isInvalid: false }))
+        onChange?.({ uid: value })
+      }
     },
-    [onChange, setUid]
+    [onChange, setUid, t]
   )
 
   return (
@@ -122,6 +133,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange }) => {
               aria-labelledby="email"
               value={email.value}
               invalid={email.isInvalid}
+              maxLength={100}
               placeholder={t('withdrawal:emailPlaceholder')}
               onChange={handleEmailChange}
               endContent={
@@ -144,13 +156,14 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange }) => {
               value={phone.value}
               invalid={phone.isInvalid}
               onChange={handlePhoneChange}
-              onCountryChange={(country: Country) => setCountryCode(country.nationalCode)}
+              onCountryChange={(country: Country) => setCountryCode(country.nationalCode as CountryCode)}
               endContent={
                 <Button variant="ghost" size="icon" className="size-6" rounded="sm">
                   <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />
                 </Button>
               }
             />
+            {phone.isInvalid && <p className="text-destructive text-xs">{phone.error}</p>}
           </div>
         )}
         {transferType === InternalTransferType.UID && (
@@ -163,6 +176,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange }) => {
               aria-labelledby="uid"
               value={uid.value}
               invalid={uid.isInvalid}
+              maxLength={100}
               placeholder={t('withdrawal:uidPlaceholder')}
               onChange={handleUidChange}
               endContent={
@@ -171,6 +185,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange }) => {
                 </Button>
               }
             />
+            {uid.isInvalid && <p className="text-destructive text-xs">{uid.error}</p>}
           </div>
         )}
       </div>

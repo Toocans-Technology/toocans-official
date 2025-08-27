@@ -61,9 +61,11 @@
   "accountName": "Account Name",
   "email": "Email",
   "emailPlaceholder": "Enter Email",
-  "emailError": "Email format error",
+  "emailError": "Invalid email format",
   "phone": "Phone",
   "phonePlaceholder": "Enter Phone",
+  "phoneError": "Phone number format error",
   "uid": "UID",
-  "uidPlaceholder": "Enter Toocans UID"
+  "uidPlaceholder": "Enter Toocans UID",
+  "uidError": "Enter UID"
 }

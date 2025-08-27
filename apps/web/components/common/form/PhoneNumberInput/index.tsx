@@ -36,6 +36,7 @@ const PhoneNumberInput: FunctionComponent<Props> = ({
       <Input
         id="phone"
         autoComplete="off"
+        maxLength={100}
         placeholder={t('common:enterPhone')}
         className="aria-invalid:ring-0 px-0 hover:ring-0 focus-visible:ring-0"
         {...props}

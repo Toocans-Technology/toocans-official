@@ -3,7 +3,8 @@
 import { sortBy } from 'es-toolkit'
 import Image from 'next/image'
 import { ChangeEvent, FunctionComponent, useMemo } from 'react'
-import { Button, Input, Label } from '@workspace/ui/components'
+import { Button, Label } from '@workspace/ui/components'
+import { Input } from '@/components/common'
 import SelectNetwork from '@/components/deposit/DepositSteps/SelectNetwork'
 import { useT } from '@/i18n'
 import { Token } from '@/services/basicConfig'
@@ -57,18 +58,17 @@ const OnChain: FunctionComponent<Props> = ({
             {t('withdrawal:manageAddresses')}
           </Button>
         </div>
-        <div className="focus-within:border-ring focus-within:ring-brand flex items-center gap-4 overflow-hidden rounded-md bg-[#f8f8f8] pr-3 focus-within:ring-[1px]">
-          <Input
-            id="withdrawalAddress"
-            value={address}
-            placeholder={t('withdrawal:withdrawalAddress')}
-            className="flex-1 hover:ring-0 focus-visible:ring-0"
-            onChange={handleAddressChange}
-          />
-          <Button variant="ghost" size="icon" className="size-6" rounded="sm">
-            <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />
-          </Button>
-        </div>
+        <Input
+          name="address"
+          value={address}
+          placeholder={t('withdrawal:withdrawalAddress')}
+          onChange={handleAddressChange}
+          endContent={
+            <Button variant="ghost" size="icon" className="size-6" rounded="sm">
+              <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />
+            </Button>
+          }
+        />
       </div>
     </>
   )
