@@ -29,3 +29,11 @@ export enum VerifyType {
 }
 
 export const verifyTypeSchema = z.nativeEnum(VerifyType)
+
+export enum InternalTransferType {
+  Email = 1,
+  Phone = 2,
+  UID = 3,
+}
+
+export const internalTransferTypeSchema = z.nativeEnum(InternalTransferType)

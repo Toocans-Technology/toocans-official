@@ -29,11 +29,12 @@ const PhoneNumberInput: FunctionComponent<Props> = ({
   return (
     <div
       aria-invalid={invalid}
-      className="hover:border-ring hover:ring-brand focus-within:border-ring focus-within:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-2 overflow-hidden rounded-md bg-[#f8f8f8] px-2.5 focus-within:ring-[1px]"
+      className="hover:border-ring hover:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-2 overflow-hidden rounded-md bg-[#f8f8f8] px-2.5 hover:ring-[1px]"
     >
       <CountrySelect onChange={onCountryChange} />
       <Separator orientation="vertical" className="bg-[#999] data-[orientation=vertical]:h-2.5" />
       <Input
+        id="phone"
         autoComplete="off"
         placeholder={t('common:enterPhone')}
         className="aria-invalid:ring-0 px-0 hover:ring-0 focus-visible:ring-0"

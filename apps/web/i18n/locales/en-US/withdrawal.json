@@ -60,9 +60,10 @@
   "manageAddresses": "Manage addresses",
   "accountName": "Account Name",
   "email": "Email",
-  "emailPlaceholder": "Enter email",
+  "emailPlaceholder": "Enter Email",
+  "emailError": "Email format error",
   "phone": "Phone",
-  "phonePlaceholder": "Enter phone",
+  "phonePlaceholder": "Enter Phone",
   "uid": "UID",
-  "uidPlaceholder": "Enter UID"
+  "uidPlaceholder": "Enter Toocans UID"
 }
