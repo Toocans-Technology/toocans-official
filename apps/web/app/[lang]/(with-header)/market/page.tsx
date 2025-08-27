@@ -3,6 +3,7 @@
 import { notification } from 'antd'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@workspace/ui/components'
 import { Empty } from '@/components/common'
 import EditToken from '@/components/market/EditToken'
 import TokenList from '@/components/market/TokenList'
@@ -109,7 +110,7 @@ export default function Page() {
       if (token) {
         const symbolId = token.tokenId
         addFavorite(
-          { favorites: [{ symbolId, customOrder: cryptoData.length-1 }] },
+          { favorites: [{ symbolId, customOrder: cryptoData.length - 1 }] },
           {
             onSuccess: () => {
               notification.destroy()
@@ -193,7 +194,15 @@ export default function Page() {
         }))
         .sort((a, b) => a.customOrder - b.customOrder)
       setIsEmpty(false)
-      setCryptoData(updatedCryptoData as Array<{ id: number; symbolID: string; pair: string; tokenName: string; isFavorite: boolean }>) // 确保类型正确
+      setCryptoData(
+        updatedCryptoData as Array<{
+          id: number
+          symbolID: string
+          pair: string
+          tokenName: string
+          isFavorite: boolean
+        }>
+      )
     } else {
       setIsEmpty(true)
       setCryptoData([
@@ -213,100 +222,90 @@ export default function Page() {
       </header>
 
       <section ref={tabsWrapRef} className="relative flex w-[1000px] flex-[0_0_auto] flex-col items-start gap-4">
-        <nav className="relative flex w-full flex-[0_0_auto] items-center justify-between self-stretch" role="tablist">
-          <div className="relative inline-flex flex-[0_0_auto] items-center gap-[23px]">
-            {isLoggedIn && (
+        <Tabs
+          value={activeTab}
+          onValueChange={(val) => handleTabChange(val as 'favorites' | 'markets')}
+          className="flex w-full flex-row items-center justify-between"
+        >
+          <TabsList>
+            {isLoggedIn && <TabsTrigger value="favorites">{t('market:TabFavorites')}</TabsTrigger>}
+            <TabsTrigger value="markets">{t('market:TabMarkets')}</TabsTrigger>
+          </TabsList>
+          <TabsContent value="favorites">
+            <div className="relative mb-4 flex h-5 items-center justify-end gap-7">
               <button
-                className={`relative mt-[-1.00px] w-fit whitespace-nowrap text-center font-[Inter] text-[16px] font-medium leading-normal ${
-                  activeTab === 'favorites'
-                    ? 'text-[var(--light-brand-lv1,#1ACA75)]'
-                    : 'text-[var(--light-brand-lv1,#666)]'
-                } cursor-pointer transition-colors hover:opacity-80`}
-                ref={favoritesRef}
-                onClick={() => handleTabChange('favorites')}
-                role="tab"
-                aria-selected={activeTab === 'favorites'}
-                aria-controls="crypto-content"
+                className="relative aspect-[1] h-5 w-5 cursor-pointer transition-transform hover:scale-110"
+                aria-label={t('market:EditAria')}
               >
-                {t('market:TabFavorites')}
-              </button>
-            )}
-            <button
-              className={`relative mt-[-1.00px] w-fit whitespace-nowrap text-center font-[Inter] text-[16px] ${
-                activeTab === 'markets' ? 'text-[var(--light-brand-lv1,#1ACA75)]' : 'text-[var(--light-brand-lv1,#666)]'
-              } cursor-pointer transition-colors hover:opacity-80`}
-              ref={marketsRef}
-              onClick={() => handleTabChange('markets')}
-              role="tab"
-              aria-selected={activeTab === 'markets'}
-              aria-controls="crypto-content"
-            >
-              {t('market:TabMarkets')}
-            </button>
-          </div>
-
-          <div className="relative flex h-5 items-center gap-7">
-            <button
-              className="relative aspect-[1] h-5 w-5 cursor-pointer transition-transform hover:scale-110"
-              aria-label={t('market:EditAria')}
-            >
-              {!isAdd && !isEdit && isLoggedIn && (
-                <Image
-                  className={`relative aspect-[1] h-5 w-5 ${isEmpty ? 'pointer-events-none opacity-50' : ''}`}
-                  alt={t('market:EditAria')}
-                  src="/images/market/dark-action-edit.svg"
-                  width={20}
-                  height={20}
-                  onClick={() => {
-                    if (!isEmpty) {
-                      setIsEdit(true)
-                      setActiveTab('favorites')
-                      setIsAdd(false)
-                      setSearchValue('')
-                    }
-                  }}
-                />
-              )}
-            </button>
-
-            {!isEdit && (
-              <div className="relative flex cursor-pointer items-center">
-                <div className="flex w-full items-center gap-3 rounded-full bg-[#f7f7f7] p-3">
+                {!isAdd && !isEdit && isLoggedIn && (
                   <Image
-                    className="h-5 w-5"
-                    alt={t('market:SearchPlaceholder')}
-                    src="/images/market/dark-action-search.svg"
+                    className={`relative aspect-[1] h-5 w-5 ${isEmpty ? 'pointer-events-none opacity-50' : ''}`}
+                    alt={t('market:EditAria')}
+                    src="/images/market/dark-action-edit.svg"
                     width={20}
                     height={20}
+                    onClick={() => {
+                      if (!isEmpty) {
+                        setIsEdit(true)
+                        setActiveTab('favorites')
+                        setIsAdd(false)
+                        setSearchValue('')
+                      }
+                    }}
                   />
-                  <input
-                    type="text"
-                    className="w-full bg-transparent text-[14px] text-[#1f2937] outline-none placeholder:text-[#9ca3af]"
-                    placeholder={t('market:SearchPlaceholder')}
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                    aria-label={t('market:SearchAria')}
-                    autoFocus
-                  />
+                )}
+              </button>
+              {!isEdit && (
+                <div className="relative flex cursor-pointer items-center">
+                  <div className="flex w-full items-center gap-3 rounded-full bg-[#f7f7f7] p-3">
+                    <Image
+                      className="h-5 w-5"
+                      alt={t('market:SearchPlaceholder')}
+                      src="/images/market/dark-action-search.svg"
+                      width={20}
+                      height={20}
+                    />
+                    <input
+                      type="text"
+                      className="w-full bg-transparent text-[14px] text-[#1f2937] outline-none placeholder:text-[#9ca3af]"
+                      placeholder={t('market:SearchPlaceholder')}
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
+                      aria-label={t('market:SearchAria')}
+                      autoFocus
+                    />
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        </nav>
-
-        <div className="relative h-[1px] w-[1000px] bg-[#F4F4F4]">
-          <div
-            className="absolute top-1/2 -translate-y-1/2 rounded-full"
-            style={{
-              left: `${indicator.left}px`,
-              width: `${indicator.width}px`,
-              height: '2px',
-              background: 'var(--light-brand-lv1, #1ACA75)',
-              flexShrink: 0,
-              transition: 'left 200ms ease, width 200ms ease',
-            }}
-          />
-        </div>
+              )}
+            </div>
+          </TabsContent>
+          <TabsContent value="markets">
+            <div className="relative mb-4 flex h-5 items-center gap-7 justify-end">
+              {!isEdit && (
+                <div className="relative flex cursor-pointer items-center">
+                  <div className="flex w-full items-center gap-3 rounded-full bg-[#f7f7f7] p-3">
+                    <Image
+                      className="h-5 w-5"
+                      alt={t('market:SearchPlaceholder')}
+                      src="/images/market/dark-action-search.svg"
+                      width={20}
+                      height={20}
+                    />
+                    <input
+                      type="text"
+                      className="w-full bg-transparent text-[14px] text-[#1f2937] outline-none placeholder:text-[#9ca3af]"
+                      placeholder={t('market:SearchPlaceholder')}
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
+                      aria-label={t('market:SearchAria')}
+                      autoFocus
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
       </section>
 
       <section
@@ -351,7 +350,7 @@ export default function Page() {
               onClick={() => {
                 const favoriteTokens = cryptoData.filter((crypto) => crypto.isFavorite)
                 const favorites = favoriteTokens.map((favorite, index) => {
-                const token = allTokenData?.find((t) => t.tokenId === favorite.tokenName)
+                  const token = allTokenData?.find((t) => t.tokenId === favorite.tokenName)
                   if (token) {
                     return {
                       symbolId: token.tokenId,
