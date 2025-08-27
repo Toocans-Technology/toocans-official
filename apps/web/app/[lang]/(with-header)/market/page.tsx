@@ -1,20 +1,49 @@
 'use client'
 
+import { notification } from 'antd'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
+import { Empty } from '@/components/common'
 import EditToken from '@/components/market/EditToken'
 import TokenList from '@/components/market/TokenList'
+import { useLogin } from '@/hooks'
+import { useAllToken } from '@/hooks/useAllToken'
+import { useT } from '@/i18n'
+import { useUserFavorites, useAddFavorite } from '@/services/market'
+import { useDeleteFavorite } from '@/services/market/deleteFavorite'
+import { openToast } from '@/utils'
 
 export default function Page() {
-  const [activeTab, setActiveTab] = useState<'favorites' | 'markets'>('favorites')
+  const { t } = useT('market')
+  const [activeTab, setActiveTab] = useState<'favorites' | 'markets'>('markets')
   const [isEdit, setIsEdit] = useState(false)
   const [isAdd, setIsAdd] = useState(false)
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isEmpty, setIsEmpty] = useState(false)
+
+  const { isLoggedIn } = useLogin()
   const [searchValue, setSearchValue] = useState('')
   const tabsWrapRef = useRef<HTMLDivElement | null>(null)
   const favoritesRef = useRef<HTMLButtonElement | null>(null)
   const marketsRef = useRef<HTMLButtonElement | null>(null)
+  const { tokens: allTokenData } = useAllToken()
+  const { data: userFavorites, refetch: refetchUserFavorites } = useUserFavorites()
+  const { mutate: addFavorite } = useAddFavorite()
+  const { mutate: deleteFavorite } = useDeleteFavorite()
+
   const [indicator, setIndicator] = useState<{ left: number; width: number }>({ left: 0, width: 0 })
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    console.log('searchValue changed:', searchValue)
+  }, [searchValue])
+
+  const handleTabChange = (tab: 'favorites' | 'markets') => {
+    if (tab !== activeTab) {
+      setSearchValue('')
+    }
+    if (tab === 'favorites' && !isLoggedIn) return
+    setActiveTab(tab)
+  }
 
   useEffect(() => {
     const update = () => {
@@ -28,46 +57,93 @@ export default function Page() {
       setIndicator({ left, width })
     }
     update()
+    if (activeTab === 'favorites') {
+      setIsAdd(false)
+    } else {
+      setIsAdd(true)
+    }
     window.addEventListener('resize', update)
     return () => window.removeEventListener('resize', update)
   }, [activeTab])
 
-  const cryptoData = [
-    {
-      id: 1,
-      pair: 'BTC/USDT',
-      isFavorite: false,
-      favoriteIcon: '/images/market/dark-action-favoourite-3.svg',
-    },
-    {
-      id: 2,
-      pair: 'ETH/USDT',
-      isFavorite: true,
-      favoriteIcon: '/images/market/dark-action-favoourite-fill-1.svg',
-    },
-    {
-      id: 3,
-      pair: 'SOL/USDT',
-      isFavorite: false,
-      favoriteIcon: '/images/market/dark-action-favoourite-5.svg',
-    },
-    {
-      id: 4,
-      pair: 'DOGE/USDT',
-      isFavorite: false,
-      favoriteIcon: '/images/market/dark-action-favoourite-5.svg',
-    },
-  ]
+  const [cryptoData, setCryptoData] = useState<
+    Array<{ id: number; symbolID: string; pair: string; tokenName: string; isFavorite: boolean }>
+  >([])
+
+  const toggleFavorite = (tokenName: string, isFavorite: boolean) => {
+    if (!isLoggedIn || userFavorites?.length === 0) {
+      setCryptoData((prevCryptoData) =>
+        prevCryptoData.map((crypto) =>
+          crypto.tokenName === tokenName ? { ...crypto, isFavorite: !isFavorite } : crypto
+        )
+      )
+      notification.destroy()
+      openToast(isFavorite ? t('market:RemovedFromFavoritesToast') : t('market:AddedToFavoritesToast'), 'success')
+      return
+    }
+
+    setLoading(true)
+
+    if (isFavorite) {
+      const token = allTokenData?.find((t) => t.tokenId === tokenName)
+      if (token) {
+        const symbolId = token.tokenId
+        deleteFavorite(
+          { symbolIds: [symbolId] },
+          {
+            onSuccess: () => {
+              notification.destroy()
+              openToast(t('market:RemovedFromFavoritesToast'), 'success')
+              refetchUserFavorites()
+              setLoading(false)
+            },
+            onError: () => {
+              setLoading(false)
+              // Handle error
+            },
+          }
+        )
+      }
+    } else {
+      const token = allTokenData?.find((t) => t.tokenId === tokenName)
+      if (token) {
+        const symbolId = token.tokenId
+        addFavorite(
+          { favorites: [{ symbolId, customOrder: cryptoData.length-1 }] },
+          {
+            onSuccess: () => {
+              notification.destroy()
+              openToast(t('market:AddedToFavoritesToast'), 'success')
+              refetchUserFavorites()
+              setLoading(false)
+            },
+            onError: () => {
+              setLoading(false)
+              // Handle error
+            },
+          }
+        )
+      }
+    }
+  }
+
+  const filteredCryptoData = cryptoData.filter((c) => {
+    if (!searchValue) return true
+    const key = searchValue.trim().toLowerCase()
+    const base = c.pair?.split('/')[0]?.toLowerCase() ?? ''
+    return base.includes(key)
+  })
 
   const renderCryptoRow = (rowData: typeof cryptoData) => (
     <div className="relative flex w-full flex-[0_0_auto] items-center gap-6 self-stretch">
       {rowData.map((crypto) => (
         <div
           key={crypto.id}
-          className="bg-collection-1-light-bg-lv1 relative flex h-14 w-[232px] items-center justify-between rounded-lg p-3 transition-opacity hover:opacity-80"
+          className="relative flex h-14 w-[33.33%] cursor-pointer items-center justify-between rounded-[8px] bg-[#F8F8F8] p-3 transition-opacity hover:opacity-80"
           role="button"
-          aria-label={`Select ${crypto.pair} trading pair`}
+          aria-label={`Toggle favorite ${crypto.pair}`}
           tabIndex={0}
+          onClick={() => toggleFavorite(crypto.tokenName, crypto.isFavorite)}
         >
           <span className="relative w-fit text-center font-[Inter] text-[14px] font-normal leading-normal text-[var(--light-text-primary,#222)]">
             {crypto.pair}
@@ -80,7 +156,11 @@ export default function Page() {
             <Image
               className="relative h-5 w-5"
               alt={crypto.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-              src={crypto.favoriteIcon}
+              src={
+                crypto.isFavorite
+                  ? '/images/market/dark-action-favoourite-fill-1.svg'
+                  : '/images/market/dark-action-favoourite-3.svg'
+              }
               width={20}
               height={20}
             />
@@ -90,98 +170,126 @@ export default function Page() {
     </div>
   )
 
+  useEffect(() => {
+    if (isLoggedIn) {
+      setActiveTab('favorites')
+    }
+  }, [isLoggedIn])
+
+  useEffect(() => {
+    if (!userFavorites) {
+      setIsEmpty(true)
+      return
+    }
+    if (userFavorites && userFavorites.length > 0) {
+      const updatedCryptoData = userFavorites
+        .map((favorite) => ({
+          id: favorite.id ?? 0,
+          pair: favorite.symbolId + `/` + (favorite.symbolPairConfig?.quoteToken ?? 'USDT'),
+          tokenName: favorite.symbolId,
+          isFavorite: true,
+          customOrder: favorite.customOrder ?? 0,
+          symbolID: favorite.symbolPairConfig?.id,
+        }))
+        .sort((a, b) => a.customOrder - b.customOrder)
+      setIsEmpty(false)
+      setCryptoData(updatedCryptoData as Array<{ id: number; symbolID: string; pair: string; tokenName: string; isFavorite: boolean }>) // 确保类型正确
+    } else {
+      setIsEmpty(true)
+      setCryptoData([
+        { id: 1, symbolID: '1', pair: 'BTC/USDT', tokenName: 'BTC', isFavorite: true },
+        { id: 2, symbolID: '2', pair: 'SOL/USDT', tokenName: 'SOL', isFavorite: true },
+        { id: 3, symbolID: '3', pair: 'ETH/USDT', tokenName: 'ETH', isFavorite: true },
+      ])
+    }
+  }, [userFavorites])
+
+  const hasFavorite = cryptoData.some((crypto) => crypto.isFavorite)
+
   return (
     <main className="relative mx-auto mt-16 flex w-[1000px] flex-col gap-6">
       <header className="text-design-token-text-light-primary relative mt-[-1.00px] w-fit text-center text-[32px] font-medium leading-[normal] tracking-[0] [font-family:'Inter',Helvetica]">
-        Market
+        {t('market:PageTitle')}
       </header>
 
       <section ref={tabsWrapRef} className="relative flex w-[1000px] flex-[0_0_auto] flex-col items-start gap-4">
         <nav className="relative flex w-full flex-[0_0_auto] items-center justify-between self-stretch" role="tablist">
           <div className="relative inline-flex flex-[0_0_auto] items-center gap-[23px]">
-            <button
-              className={`relative mt-[-1.00px] w-fit whitespace-nowrap text-center font-[Inter] text-[16px] font-medium leading-normal ${
-                activeTab === 'favorites'
-                  ? 'text-[var(--light-brand-lv1,#1ACA75)]'
-                  : 'text-[var(--light-brand-lv1,#666)]'
-              } cursor-pointer transition-colors hover:opacity-80`}
-              ref={favoritesRef}
-              onClick={() => {
-                setActiveTab('favorites')
-              }}
-              role="tab"
-              aria-selected={activeTab === 'favorites'}
-              aria-controls="crypto-content"
-            >
-              Favorites
-            </button>
+            {isLoggedIn && (
+              <button
+                className={`relative mt-[-1.00px] w-fit whitespace-nowrap text-center font-[Inter] text-[16px] font-medium leading-normal ${
+                  activeTab === 'favorites'
+                    ? 'text-[var(--light-brand-lv1,#1ACA75)]'
+                    : 'text-[var(--light-brand-lv1,#666)]'
+                } cursor-pointer transition-colors hover:opacity-80`}
+                ref={favoritesRef}
+                onClick={() => handleTabChange('favorites')}
+                role="tab"
+                aria-selected={activeTab === 'favorites'}
+                aria-controls="crypto-content"
+              >
+                {t('market:TabFavorites')}
+              </button>
+            )}
             <button
               className={`relative mt-[-1.00px] w-fit whitespace-nowrap text-center font-[Inter] text-[16px] ${
                 activeTab === 'markets' ? 'text-[var(--light-brand-lv1,#1ACA75)]' : 'text-[var(--light-brand-lv1,#666)]'
               } cursor-pointer transition-colors hover:opacity-80`}
               ref={marketsRef}
-              onClick={() => {
-                setActiveTab('markets')
-              }}
+              onClick={() => handleTabChange('markets')}
               role="tab"
               aria-selected={activeTab === 'markets'}
               aria-controls="crypto-content"
             >
-              Markets
+              {t('market:TabMarkets')}
             </button>
           </div>
 
           <div className="relative flex h-5 items-center gap-7">
             <button
               className="relative aspect-[1] h-5 w-5 cursor-pointer transition-transform hover:scale-110"
-              aria-label="Edit settings"
+              aria-label={t('market:EditAria')}
             >
-              <Image
-                className="relative aspect-[1] h-5 w-5"
-                alt="Edit settings"
-                src="/images/market/dark-action-edit.svg"
-                width={20}
-                height={20}
-                onClick={() => { setIsEdit(!isEdit); setIsAdd(false); }}
-              />
+              {!isAdd && !isEdit && isLoggedIn && (
+                <Image
+                  className={`relative aspect-[1] h-5 w-5 ${isEmpty ? 'pointer-events-none opacity-50' : ''}`}
+                  alt={t('market:EditAria')}
+                  src="/images/market/dark-action-edit.svg"
+                  width={20}
+                  height={20}
+                  onClick={() => {
+                    if (!isEmpty) {
+                      setIsEdit(true)
+                      setActiveTab('favorites')
+                      setIsAdd(false)
+                      setSearchValue('')
+                    }
+                  }}
+                />
+              )}
             </button>
 
-            {isSearchOpen ? (
+            {!isEdit && (
               <div className="relative flex cursor-pointer items-center">
                 <div className="flex w-full items-center gap-3 rounded-full bg-[#f7f7f7] p-3">
                   <Image
                     className="h-5 w-5"
-                    alt="search"
+                    alt={t('market:SearchPlaceholder')}
                     src="/images/market/dark-action-search.svg"
                     width={20}
                     height={20}
-                    onClick={() => setIsSearchOpen((v) => !v)}
                   />
                   <input
                     type="text"
                     className="w-full bg-transparent text-[14px] text-[#1f2937] outline-none placeholder:text-[#9ca3af]"
-                    placeholder="label"
+                    placeholder={t('market:SearchPlaceholder')}
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
-                    aria-label="Search markets input"
+                    aria-label={t('market:SearchAria')}
                     autoFocus
                   />
                 </div>
               </div>
-            ) : (
-              <button
-                className="relative h-5 w-5 cursor-pointer transition-transform hover:scale-110"
-                aria-label="Search markets"
-              >
-                <Image
-                  className="relative h-5 w-5"
-                  alt="Search markets"
-                  src="/images/market/dark-action-search.svg"
-                  width={20}
-                  height={20}
-                  onClick={() => setIsSearchOpen((v) => !v)}
-                />
-              </button>
             )}
           </div>
         </nav>
@@ -206,28 +314,83 @@ export default function Page() {
         id="crypto-content"
         role="tabpanel"
       >
-        {(!isEdit && !isAdd) && (
+        {!isEdit && !isAdd && cryptoData.length > 0 && (
           <h2 className="relative mt-[-1.00px] self-stretch font-[Inter] text-[14px] font-normal leading-normal text-[var(--light-text-secondary,#666)]">
-            Select crypto
+            {t('market:SelectCrypto')}
           </h2>
         )}
 
         <div className="relative flex w-full flex-[0_0_auto] flex-col items-center gap-4 self-stretch">
-          {(!isAdd && isEdit) && <EditToken tokens={cryptoData} onClose={() => setIsEdit(false)} />}
-
-          {(isAdd && !isEdit) && <TokenList onClose={() => setIsAdd(false)} />}
-
-          {(!isEdit && !isAdd) && (
-            renderCryptoRow(cryptoData)
+          {isEdit && !isAdd && (
+            <EditToken
+              tokens={cryptoData}
+              onClose={() => {
+                setSearchValue('')
+                setIsEdit(false)
+                refetchUserFavorites()
+              }}
+              searchCoin={searchValue}
+            />
           )}
-          {(!isEdit && !isAdd) && (
+
+          {isAdd && (
+            <TokenList
+              onClose={() => {
+                setSearchValue('')
+                setIsAdd(false)
+              }}
+              cryptoData={cryptoData ?? []}
+              searchCoin={searchValue}
+            />
+          )}
+
+          {!isEdit && !isAdd && (filteredCryptoData.length > 0 ? renderCryptoRow(filteredCryptoData) : <Empty />)}
+          {!isEdit && !isAdd && userFavorites?.length === 0 && (
             <button
-              className="relative flex h-10 w-[210px] cursor-pointer items-center justify-center gap-2.5 rounded-[40px] bg-[#9cff1f] px-[127px] py-2 transition-colors hover:bg-[#8ae01b] focus:outline-none focus:ring-2 focus:ring-[#9cff1f] focus:ring-offset-2"
-              onClick={() => setIsAdd(true)}
+              className={`relative flex h-10 w-[210px] cursor-pointer items-center justify-center gap-2.5 rounded-[40px] bg-[#9cff1f] px-[127px] py-2 transition-colors hover:bg-[#8ae01b] focus:outline-none focus:ring-2 focus:ring-[#9cff1f] focus:ring-offset-2 ${!hasFavorite ? 'opacity-50' : ''}`}
+              onClick={() => {
+                const favoriteTokens = cryptoData.filter((crypto) => crypto.isFavorite)
+                const favorites = favoriteTokens.map((favorite, index) => {
+                const token = allTokenData?.find((t) => t.tokenId === favorite.tokenName)
+                  if (token) {
+                    return {
+                      symbolId: token.tokenId,
+                      customOrder: index,
+                    }
+                  } else {
+                    return {
+                      symbolId: null,
+                      customOrder: index,
+                    }
+                  }
+                })
+                if (favorites.length > 0) {
+                  setLoading(true)
+                  addFavorite(
+                    { favorites },
+                    {
+                      onSuccess: () => {
+                        notification.destroy()
+                        openToast(t('market:AddedToFavoritesToast'), 'success')
+                        refetchUserFavorites()
+                        setLoading(false)
+                      },
+                      onError: () => {
+                        setLoading(false)
+                      },
+                    }
+                  )
+                }
+              }}
+              disabled={loading}
             >
-              <span className="relative ml-[-85.00px] mr-[-85.00px] mt-[-1.00px] w-fit whitespace-nowrap text-right font-[Inter] text-[16px] font-medium leading-[24px] text-[var(--dark-button-text-primary,#222)]">
-                Add to Favorites
-              </span>
+              {loading ? (
+                <span className="loader" />
+              ) : (
+                <span className="relative ml-[-85.00px] mr-[-85.00px] mt-[-1.00px] w-fit whitespace-nowrap text-right font-[Inter] text-[16px] font-medium leading-[24px] text-[var(--dark-button-text-primary,#222)]">
+                  {t('market:AddToFavoritesBtn')}
+                </span>
+              )}
             </button>
           )}
         </div>
