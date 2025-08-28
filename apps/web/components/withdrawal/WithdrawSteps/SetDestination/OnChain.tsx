@@ -2,13 +2,14 @@
 
 import { sortBy } from 'es-toolkit'
 import Image from 'next/image'
-import { ChangeEvent, FunctionComponent, useMemo } from 'react'
+import { ChangeEvent, FunctionComponent, useMemo, useState } from 'react'
 import { Button, Label } from '@workspace/ui/components'
 import { Input } from '@/components/common'
 import SelectNetwork from '@/components/deposit/DepositSteps/SelectNetwork'
 import { useT } from '@/i18n'
 import { Token } from '@/services/basicConfig'
 import { AllowWithdraw } from '@/types/token'
+import { SelectAddressModal } from '../../modals'
 
 interface Props {
   token: Token
@@ -20,6 +21,7 @@ interface Props {
 
 const OnChain: FunctionComponent<Props> = ({ token, address, selectedNetwork, onSelectNetwork, onAddressChange }) => {
   const { t } = useT('withdrawal')
+  const [open, setOpen] = useState(false)
 
   const networkList = useMemo(() => {
     if (!token) {
@@ -58,12 +60,13 @@ const OnChain: FunctionComponent<Props> = ({ token, address, selectedNetwork, on
           placeholder={t('withdrawal:withdrawalAddress')}
           onChange={onAddressChange}
           endContent={
-            <Button variant="ghost" size="icon" className="size-6" rounded="sm">
+            <Button variant="ghost" size="icon" className="size-6" rounded="sm" onClick={() => setOpen(true)}>
               <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />
             </Button>
           }
         />
       </div>
+      <SelectAddressModal tokenName={token.tokenName} open={open} onOpenChange={setOpen} />
     </>
   )
 }

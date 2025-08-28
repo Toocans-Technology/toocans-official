@@ -70,5 +70,14 @@
   "uidPlaceholder": "Enter Toocans UID",
   "uidError": "Enter UID",
   "nickname": "Nickname",
-  "hash": "Hash"
+  "hash": "Hash",
+  "selectAddressModal": {
+    "title": "Select {{ tokenName }} address",
+    "empty": "No address added",
+    "addNow": "Add now"
+  },
+  "addAddressModal": {
+    "title": "Add Withdrawal Address",
+    "name": "Name(Optional)"
+  }
 }
