@@ -8,24 +8,26 @@ import { formatInputAmount } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { Withdrawal } from '@/services/wallet'
 import { InputValueType } from '@/types/form'
+import { ChargeType } from '@/types/withdraw'
 import { WithdrawDetailModal } from '../modals'
 import WithdrawModal from '../modals/WithdrawModal'
 
 interface Props {
   token?: Token
-  network?: Token
   address?: string
+  chargeType?: ChargeType
 }
 
-const ReceivedAmount: FunctionComponent<Props> = ({ token, network, address }) => {
+const ReceivedAmount: FunctionComponent<Props> = ({ token, address, chargeType }) => {
   const { t } = useT('withdrawal')
-  const minAmount = network?.tokenSetting?.withdrawMinQuantity || 0
+  const minAmount = token?.tokenSetting?.withdrawMinQuantity || 0
   const { data } = useAssetAll(token?.tokenId)
   const [transferId, setTransferId] = useState<string | undefined>(undefined)
   const [open, setOpen] = useState(false)
   const [amount, setAmount] = useState<InputValueType>({ value: '', error: '', isInvalid: false })
-  const { getTokenFee, getMaxOrderAmount } = useTokenFee(network)
+  const { getTokenFee, getMaxOrderAmount } = useTokenFee(token, chargeType)
   const tokenFee = useMemo(() => getTokenFee(amount.value), [getTokenFee, amount.value])
+  const isOnChain = chargeType === ChargeType.OnChain
 
   const userAsset = useMemo(() => {
     if (!data?.length) {
@@ -75,6 +77,7 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, network, address }) =
 
   const handleAll = useCallback(() => {
     const maxAmount = getMaxOrderAmount(userAsset?.available || 0)
+    console.log('maxAmount', maxAmount)
     const validatedAmount = validateAmount(maxAmount.toString())
     setAmount(validatedAmount)
   }, [getMaxOrderAmount, userAsset?.available, validateAmount])
@@ -117,9 +120,7 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, network, address }) =
       </div>
       <div className="flex justify-between text-sm">
         <span className="text-[#999]">{t('withdrawal:chargeAndNetwork')}</span>
-        <span>
-          {tokenFee} {token?.tokenName}
-        </span>
+        <span>{isOnChain ? `${tokenFee} ${token?.tokenName}` : t('withdrawal:free')}</span>
       </div>
       <div className="flex justify-between text-sm">
         <span className="text-[#999]">{t('withdrawal:withdrawAmount')}</span>
@@ -127,12 +128,13 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, network, address }) =
           {withdrawAmount} {token?.tokenName}
         </span>
       </div>
-      {network && address && (
+      {address && token && (
         <WithdrawModal
-          token={network}
+          token={token}
           address={address}
           disabled={disabled}
           tokenFee={tokenFee}
+          chargeType={chargeType}
           amount={withdrawAmount}
           openDetail={handleOpenDetail}
         />

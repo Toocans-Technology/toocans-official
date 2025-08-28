@@ -2,24 +2,19 @@
 
 import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js'
 import Image from 'next/image'
-import { ChangeEvent, FunctionComponent, useCallback, useMemo, useState } from 'react'
+import { ChangeEvent, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Label } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
 import { PhoneNumberInput, Input } from '@/components/common'
 import { useT } from '@/i18n'
 import { EMAIL_REGEX, INPUT_DEFAULT_VALUE } from '@/lib/utils'
 import { Country } from '@/services/login'
+import { User, useSearchUser } from '@/services/wallet/searchUser'
 import { InputValueType } from '@/types/form'
 import { InternalTransferType } from '@/types/withdraw'
 
 interface Props {
-  onChange?: (params: {
-    email?: string
-    phone?: string
-    uid?: string
-    countryCode?: string
-    type?: InternalTransferType
-  }) => void
+  onChange?: (data?: User) => void
 }
 
 const InternalTransfer: FunctionComponent<Props> = ({ onChange }) => {
@@ -29,6 +24,27 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange }) => {
   const [uid, setUid] = useState<InputValueType>(INPUT_DEFAULT_VALUE)
   const [countryCode, setCountryCode] = useState<CountryCode>()
   const [transferType, setTransferType] = useState(InternalTransferType.Email)
+
+  const searchKey = useMemo(() => {
+    if (transferType === InternalTransferType.UID) {
+      return uid.value
+    } else if (transferType === InternalTransferType.Phone) {
+      return isValidPhoneNumber(phone.value, countryCode) ? `+${countryCode}${phone.value}` : undefined
+    } else {
+      return EMAIL_REGEX.test(email.value) ? email.value : undefined
+    }
+  }, [transferType, uid.value, phone.value, email.value, countryCode])
+
+  const { data } = useSearchUser({
+    searchKey,
+    type: transferType,
+  })
+
+  useEffect(() => {
+    if (data) {
+      onChange?.(data)
+    }
+  }, [data, onChange])
 
   const transferTypeList = useMemo(() => {
     return [
@@ -58,7 +74,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange }) => {
         setEmail(INPUT_DEFAULT_VALUE)
       }
 
-      onChange?.({ email: undefined, phone: undefined, uid: undefined, countryCode: undefined, type: value })
+      onChange?.(undefined)
     },
     [onChange]
   )
@@ -70,12 +86,11 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange }) => {
 
       if (isEmail || value === '') {
         setEmail((s) => ({ ...s, value, error: '', isInvalid: false }))
-        onChange?.({ email: value })
       } else {
         setEmail((s) => ({ ...s, value, error: t('withdrawal:emailError'), isInvalid: true }))
       }
     },
-    [onChange, setEmail, t]
+    [setEmail, t]
   )
 
   const handlePhoneChange = useCallback(
@@ -84,12 +99,11 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange }) => {
 
       if (isPhone) {
         setPhone((s) => ({ ...s, value }))
-        onChange?.({ phone: value, countryCode })
       } else {
         setPhone((s) => ({ ...s, value, error: t('withdrawal:phoneError'), isInvalid: true }))
       }
     },
-    [countryCode, onChange, t]
+    [countryCode, t]
   )
 
   const handleUidChange = useCallback(
@@ -100,10 +114,9 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange }) => {
         setUid((s) => ({ ...s, value, error: t('withdrawal:uidError'), isInvalid: true }))
       } else {
         setUid((s) => ({ ...s, value, error: '', isInvalid: false }))
-        onChange?.({ uid: value })
       }
     },
-    [onChange, setUid, t]
+    [setUid, t]
   )
 
   return (
