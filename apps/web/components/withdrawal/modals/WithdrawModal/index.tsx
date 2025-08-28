@@ -195,7 +195,7 @@ const WithdrawModal: FunctionComponent<Props> = ({
           chargeType={chargeType}
         />
         <Form {...form}>
-          <div className="mt-4 grid gap-6">
+          <div className="grid gap-4">
             <FormField
               control={form.control}
               name="code"

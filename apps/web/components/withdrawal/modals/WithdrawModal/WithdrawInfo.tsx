@@ -45,16 +45,26 @@ const WithdrawInfo: FunctionComponent<Props> = ({ token, address, amount, tokenF
         </div>
       )}
       {chargeType === ChargeType.Internal && (
-        <div className="grid gap-2">
-          <div className="grid grid-cols-2 items-center py-1.5 text-sm">
-            <div className="text-[#999]">{t('withdrawal:uid')}</div>
-            <div className="overflow-hidden break-words text-right font-medium">{userInfo?.uid || '-'}</div>
+        <>
+          <div className="flex flex-col items-center gap-3 text-sm">
+            <div className="text-[#666]">{t('withdrawal:receivedAmount')}</div>
+            <div className="flex items-center text-right font-medium">
+              <span className="text-2xl">
+                {amount} {token?.tokenName}
+              </span>
+            </div>
           </div>
-          <div className="grid grid-cols-2 items-center py-1.5 text-sm">
-            <div className="text-[#999]">{t('withdrawal:nickname')}</div>
-            <div className="overflow-hidden break-words text-right font-medium">{userInfo?.nickName || '-'}</div>
+          <div className="mt-4 grid gap-2">
+            <div className="grid grid-cols-2 items-center py-1.5 text-sm">
+              <div className="text-[#999]">{t('withdrawal:uid')}</div>
+              <div className="overflow-hidden break-words text-right font-medium">{userInfo?.uid || '-'}</div>
+            </div>
+            <div className="grid grid-cols-2 items-center py-1.5 text-sm">
+              <div className="text-[#999]">{t('withdrawal:nickname')}</div>
+              <div className="overflow-hidden break-words text-right font-medium">{userInfo?.nickName || '-'}</div>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </>
   )
