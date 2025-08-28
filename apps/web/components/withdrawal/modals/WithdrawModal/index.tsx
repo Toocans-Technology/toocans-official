@@ -25,8 +25,10 @@ import { VERIFICATION_CODE_REGEX } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { useUserInfo } from '@/services/user/info'
 import { getWithdrawOrder, useSendCode, useWithdraw, Withdrawal } from '@/services/wallet'
+import { User } from '@/services/wallet/searchUser'
 import { HttpError } from '@/types/http'
-import { VerifyType } from '@/types/withdraw'
+import { ChargeType, VerifyType } from '@/types/withdraw'
+import WithdrawInfo from './WithdrawInfo'
 
 const COUNT_DOWN = 59 * 1000
 
@@ -34,12 +36,23 @@ interface Props {
   token: Token
   address: string
   amount: number
+  targetUser?: User
   disabled?: boolean
+  chargeType?: ChargeType
   tokenFee: string | number
   openDetail?: (open: boolean, data: Withdrawal) => void
 }
 
-const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, tokenFee, openDetail, disabled = true }) => {
+const WithdrawModal: FunctionComponent<Props> = ({
+  address,
+  token,
+  amount,
+  tokenFee,
+  targetUser,
+  chargeType,
+  openDetail,
+  disabled = true,
+}) => {
   const { data: userInfo } = useUserInfo()
   const hasGaKey = userInfo?.hasGaKey ?? false
   const { t } = useT(['withdrawal', 'common'])
@@ -49,6 +62,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
   const { mutateAsync: mutateSendCode } = useSendCode()
   const { mutateAsync: mutateWithdraw, isPending } = useWithdraw()
   const { refetch } = getWithdrawOrder({ pageNo: 1, pageSize: 10, tokenId: token.tokenId })
+  const isOnChain = chargeType === ChargeType.OnChain
 
   const FormSchema = useMemo(
     () =>
@@ -137,7 +151,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
           tokenFee: Number(tokenFee),
           tokenId: token.tokenId,
           accountId: userInfo.accountId,
-          chargeType: 1,
+          chargeType: chargeType ?? ChargeType.OnChain,
         })
 
         if (!res) {
@@ -152,7 +166,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
         toast.error((error as HttpError).message)
       }
     },
-    [userInfo, mutateWithdraw, address, amount, tokenFee, token.tokenId, reset, refetch, openDetail]
+    [userInfo, mutateWithdraw, address, amount, tokenFee, token.tokenId, chargeType, reset, refetch, openDetail]
   )
 
   return (
@@ -173,30 +187,14 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
           <DialogTitle>{t('withdrawal:withdrawModal.title')}</DialogTitle>
           <Separator />
         </DialogHeader>
-        <div className="grid gap-2">
-          <div className="grid grid-cols-2 items-center py-1.5 text-sm">
-            <div className="text-[#999]">{t('withdrawal:network')}</div>
-            <div className="text-right font-medium">
-              {token?.protocolName ? `${token?.chainName}(${token?.protocolName})` : (token?.chainName ?? '-')}
-            </div>
-          </div>
-          <div className="grid grid-cols-2 items-center py-1.5 text-sm">
-            <div className="text-[#999]">{t('withdrawal:address')}</div>
-            <div className="overflow-hidden break-words text-right font-medium">{address}</div>
-          </div>
-          <div className="grid grid-cols-2 items-center py-1.5 text-sm">
-            <div className="text-[#999]">{t('withdrawal:withdrawAmount')}</div>
-            <div className="text-right font-medium">
-              {amount} {token?.tokenName}
-            </div>
-          </div>
-          <div className="grid grid-cols-2 items-center py-1.5 text-sm">
-            <div className="text-[#999]">{t('withdrawal:chargeAndNetwork')}</div>
-            <div className="text-right font-medium">
-              {tokenFee} {token?.tokenName}
-            </div>
-          </div>
-        </div>
+        <WithdrawInfo
+          token={token}
+          address={address}
+          amount={amount}
+          tokenFee={tokenFee}
+          userInfo={targetUser}
+          chargeType={chargeType}
+        />
         <Form {...form}>
           <div className="mt-4 grid gap-6">
             <FormField
