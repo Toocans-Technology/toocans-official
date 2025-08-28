@@ -59,6 +59,7 @@
   "internalTransfer": "Internal transfer",
   "manageAddresses": "Manage addresses",
   "accountName": "Account Name",
+  "free": "Free",
   "email": "Email",
   "emailPlaceholder": "Enter Email",
   "emailError": "Invalid email format",
@@ -67,5 +68,6 @@
   "phoneError": "Phone number format error",
   "uid": "UID",
   "uidPlaceholder": "Enter Toocans UID",
-  "uidError": "Enter UID"
+  "uidError": "Enter UID",
+  "nickname": "Nickname"
 }

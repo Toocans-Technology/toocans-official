@@ -31,9 +31,16 @@ export enum VerifyType {
 export const verifyTypeSchema = z.nativeEnum(VerifyType)
 
 export enum InternalTransferType {
-  Email = 1,
-  Phone = 2,
-  UID = 3,
+  UID = 1,
+  Email = 2,
+  Phone = 3,
 }
 
 export const internalTransferTypeSchema = z.nativeEnum(InternalTransferType)
+
+export enum ChargeType {
+  OnChain = 1, // 链上
+  Internal = 2, // 内部转账
+}
+
+export const chargeTypeSchema = z.nativeEnum(ChargeType)

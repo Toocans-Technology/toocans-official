@@ -62,7 +62,6 @@ const WithdrawModal: FunctionComponent<Props> = ({
   const { mutateAsync: mutateSendCode } = useSendCode()
   const { mutateAsync: mutateWithdraw, isPending } = useWithdraw()
   const { refetch } = getWithdrawOrder({ pageNo: 1, pageSize: 10, tokenId: token.tokenId })
-  const isOnChain = chargeType === ChargeType.OnChain
 
   const FormSchema = useMemo(
     () =>

@@ -14,17 +14,11 @@ interface Props {
   token: Token
   address?: string
   selectedNetwork?: Token
-  handleSelectNetwork: (value: string) => void
-  handleAddressChange: (event: ChangeEvent<HTMLInputElement>) => void
+  onSelectNetwork: (value: string) => void
+  onAddressChange: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
-const OnChain: FunctionComponent<Props> = ({
-  token,
-  address,
-  selectedNetwork,
-  handleSelectNetwork,
-  handleAddressChange,
-}) => {
+const OnChain: FunctionComponent<Props> = ({ token, address, selectedNetwork, onSelectNetwork, onAddressChange }) => {
   const { t } = useT('withdrawal')
 
   const networkList = useMemo(() => {
@@ -47,7 +41,7 @@ const OnChain: FunctionComponent<Props> = ({
     <>
       <div className="flex flex-col gap-2">
         <Label className="text-sm text-[#222]">{t('withdrawal:onChainType')}</Label>
-        <SelectNetwork value={selectedNetwork?.id || ''} networks={networkList} onValueChange={handleSelectNetwork} />
+        <SelectNetwork value={selectedNetwork?.id || ''} networks={networkList} onValueChange={onSelectNetwork} />
       </div>
       <div className="mt-4 flex max-w-[456px] flex-col gap-2">
         <div className="flex justify-between">
@@ -62,7 +56,7 @@ const OnChain: FunctionComponent<Props> = ({
           name="address"
           value={address}
           placeholder={t('withdrawal:withdrawalAddress')}
-          onChange={handleAddressChange}
+          onChange={onAddressChange}
           endContent={
             <Button variant="ghost" size="icon" className="size-6" rounded="sm">
               <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />

@@ -7,6 +7,8 @@ import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { validateAddress } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
+import { User } from '@/services/wallet/searchUser'
+import { ChargeType } from '@/types/withdraw'
 import RecentWithdraw from '../RecentWithdraw'
 import ReceivedAmount from './ReceivedAmount'
 import SetDestination from './SetDestination'
@@ -22,7 +24,9 @@ const WithdrawSteps: FunctionComponent = () => {
   const [step, setStep] = useState(WithdrawStep.ChooseToken)
   const [selectedToken, setSelectedToken] = useState<Token>()
   const [selectedNetwork, setSelectedNetwork] = useState<Token>()
+  const [chargeType, setChargeType] = useState<ChargeType>(ChargeType.OnChain)
   const [address, setAddress] = useState<string>('')
+  const [targetUser, setTargetUser] = useState<User>()
 
   useRedirectIfNotLogin()
 
@@ -67,6 +71,28 @@ const WithdrawSteps: FunctionComponent = () => {
     [selectedNetwork]
   )
 
+  const handleTabChange = useCallback((value: string) => {
+    setAddress('')
+    setSelectedNetwork(undefined)
+    setChargeType(Number(value) as ChargeType)
+    setStep(WithdrawStep.ChooseNetwork)
+  }, [])
+
+  const handleInternalTransferChange = useCallback(
+    (data?: User) => {
+      if (data) {
+        setAddress(data.uid)
+        setTargetUser(data)
+        setStep(WithdrawStep.WithdrawAmount)
+      } else {
+        setAddress('')
+        setTargetUser(undefined)
+        setStep(WithdrawStep.ChooseNetwork)
+      }
+    },
+    [setStep, setAddress]
+  )
+
   return (
     <>
       <div className="mt-3 flex w-full flex-col gap-10 rounded-[10px] bg-white p-6">
@@ -97,9 +123,12 @@ const WithdrawSteps: FunctionComponent = () => {
             <SetDestination
               address={address}
               token={selectedToken}
+              chargeType={chargeType}
               selectedNetwork={selectedNetwork}
-              handleSelectNetwork={handleSelectNetwork}
-              handleAddressChange={handleAddressChange}
+              onTabChange={handleTabChange}
+              onSelectNetwork={handleSelectNetwork}
+              onAddressChange={handleAddressChange}
+              onInternalTransferChange={handleInternalTransferChange}
             />
           )}
         </div>
@@ -118,7 +147,12 @@ const WithdrawSteps: FunctionComponent = () => {
             </span>
           </div>
           {step >= WithdrawStep.WithdrawAmount && (
-            <ReceivedAmount token={selectedToken} network={selectedNetwork} address={address} />
+            <ReceivedAmount
+              token={selectedNetwork ?? selectedToken}
+              address={address}
+              chargeType={chargeType}
+              targetUser={targetUser}
+            />
           )}
         </div>
       </div>

@@ -7,6 +7,7 @@ import { useT } from '@/i18n'
 import { formatInputAmount } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { Withdrawal } from '@/services/wallet'
+import { User } from '@/services/wallet/searchUser'
 import { InputValueType } from '@/types/form'
 import { ChargeType } from '@/types/withdraw'
 import { WithdrawDetailModal } from '../modals'
@@ -16,9 +17,10 @@ interface Props {
   token?: Token
   address?: string
   chargeType?: ChargeType
+  targetUser?: User
 }
 
-const ReceivedAmount: FunctionComponent<Props> = ({ token, address, chargeType }) => {
+const ReceivedAmount: FunctionComponent<Props> = ({ token, address, chargeType, targetUser }) => {
   const { t } = useT('withdrawal')
   const minAmount = token?.tokenSetting?.withdrawMinQuantity || 0
   const { data } = useAssetAll(token?.tokenId)
@@ -134,6 +136,7 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address, chargeType }
           address={address}
           disabled={disabled}
           tokenFee={tokenFee}
+          targetUser={targetUser}
           chargeType={chargeType}
           amount={withdrawAmount}
           openDetail={handleOpenDetail}

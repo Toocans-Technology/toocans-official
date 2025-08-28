@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 import { getMutation } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
+import { chargeTypeSchema } from '@/types/withdraw'
 import { WithdrawalSchema } from './schemas'
 
 const WithdrawReqSchema = z.object({
@@ -11,7 +12,7 @@ const WithdrawReqSchema = z.object({
   addressTag: z.optional(z.string()), // 如果是内部转账，addressTag 为 1:UID、2:邮箱 3:手机号码
   amount: z.number(),
   tokenFee: z.optional(z.number()),
-  chargeType: z.optional(z.number().refine((val) => [1, 2].includes(val), { message: 'chargeType must be 1 or 2' })), // 提现类型 1:普通提现 2:内部转账
+  chargeType: chargeTypeSchema, // 提现类型 1:普通提现 2:内部转账
   code: z.string(),
   gaCode: z.optional(z.string()),
 })

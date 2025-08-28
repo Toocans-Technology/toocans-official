@@ -4,9 +4,11 @@ import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
 
 const UserSchema = z.object({
-  uid: z.number(),
+  uid: z.string(),
   nickName: z.string(),
 })
+
+export type User = z.infer<typeof UserSchema>
 
 const SearchUserParamsSchema = z
   .object({
@@ -25,5 +27,6 @@ export const useSearchUser = (params?: SearchUserParams) => {
       query: SearchUserParamsSchema.parse(params),
       transfer: UserSchema.parse,
     }),
+    enabled: !!params?.searchKey && !!params?.type,
   })
 }
