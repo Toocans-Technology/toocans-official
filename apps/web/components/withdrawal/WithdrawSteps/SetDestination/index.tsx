@@ -5,7 +5,7 @@ import { Separator, Tabs, TabsContent, TabsList, TabsTrigger } from '@workspace/
 import { useT } from '@/i18n'
 import { Token } from '@/services/basicConfig'
 import { User } from '@/services/wallet/searchUser'
-import { ChargeType } from '@/types/withdraw'
+import { ChargeType, InternalTransferType } from '@/types/withdraw'
 import InternalTransfer from './InternalTransfer'
 import OnChain from './OnChain'
 
@@ -16,6 +16,7 @@ interface Props {
   chargeType: ChargeType
   onTabChange?: (value: string) => void
   onSelectNetwork: (value: string) => void
+  onTransferTabChange?: (type: InternalTransferType) => void
   onAddressChange: (event: ChangeEvent<HTMLInputElement>) => void
   onInternalTransferChange: (data?: User) => void
 }
@@ -28,6 +29,7 @@ const SetDestination: FunctionComponent<Props> = ({
   onTabChange,
   onSelectNetwork,
   onAddressChange,
+  onTransferTabChange,
   onInternalTransferChange,
 }) => {
   const { t } = useT('withdrawal')
@@ -50,7 +52,7 @@ const SetDestination: FunctionComponent<Props> = ({
           />
         </TabsContent>
         <TabsContent value={ChargeType.Internal.toString()} className="mt-2">
-          <InternalTransfer onChange={onInternalTransferChange} />
+          <InternalTransfer onChange={onInternalTransferChange} onTransferTabChange={onTransferTabChange} />
         </TabsContent>
       </Tabs>
     </div>

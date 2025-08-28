@@ -15,9 +15,10 @@ import { InternalTransferType } from '@/types/withdraw'
 
 interface Props {
   onChange?: (data?: User) => void
+  onTransferTabChange?: (type: InternalTransferType) => void
 }
 
-const InternalTransfer: FunctionComponent<Props> = ({ onChange }) => {
+const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabChange }) => {
   const { t } = useT('withdrawal')
   const [email, setEmail] = useState<InputValueType>(INPUT_DEFAULT_VALUE)
   const [phone, setPhone] = useState<InputValueType>(INPUT_DEFAULT_VALUE)
@@ -75,8 +76,9 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange }) => {
       }
 
       onChange?.(undefined)
+      onTransferTabChange?.(value)
     },
-    [onChange]
+    [onChange, onTransferTabChange]
   )
 
   const handleEmailChange = useCallback(

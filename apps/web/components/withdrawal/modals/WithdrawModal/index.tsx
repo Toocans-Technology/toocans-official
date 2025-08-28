@@ -27,7 +27,7 @@ import { useUserInfo } from '@/services/user/info'
 import { getWithdrawOrder, useSendCode, useWithdraw, Withdrawal } from '@/services/wallet'
 import { User } from '@/services/wallet/searchUser'
 import { HttpError } from '@/types/http'
-import { ChargeType, VerifyType } from '@/types/withdraw'
+import { ChargeType, InternalTransferType, VerifyType } from '@/types/withdraw'
 import WithdrawInfo from './WithdrawInfo'
 
 const COUNT_DOWN = 59 * 1000
@@ -40,6 +40,7 @@ interface Props {
   disabled?: boolean
   chargeType?: ChargeType
   tokenFee: string | number
+  transferType?: InternalTransferType
   openDetail?: (open: boolean, data: Withdrawal) => void
 }
 
@@ -50,6 +51,7 @@ const WithdrawModal: FunctionComponent<Props> = ({
   tokenFee,
   targetUser,
   chargeType,
+  transferType,
   openDetail,
   disabled = true,
 }) => {
@@ -143,7 +145,7 @@ const WithdrawModal: FunctionComponent<Props> = ({
       }
 
       try {
-        const res = await mutateWithdraw({
+        const params = {
           ...data,
           address,
           amount,
@@ -151,7 +153,10 @@ const WithdrawModal: FunctionComponent<Props> = ({
           tokenId: token.tokenId,
           accountId: userInfo.accountId,
           chargeType: chargeType ?? ChargeType.OnChain,
-        })
+          addressTag: chargeType === ChargeType.Internal && transferType ? transferType.toString() : undefined,
+        }
+
+        const res = await mutateWithdraw(params)
 
         if (!res) {
           return
@@ -165,7 +170,19 @@ const WithdrawModal: FunctionComponent<Props> = ({
         toast.error((error as HttpError).message)
       }
     },
-    [userInfo, mutateWithdraw, address, amount, tokenFee, token.tokenId, chargeType, reset, refetch, openDetail]
+    [
+      userInfo,
+      mutateWithdraw,
+      address,
+      amount,
+      tokenFee,
+      token.tokenId,
+      chargeType,
+      transferType,
+      reset,
+      refetch,
+      openDetail,
+    ]
   )
 
   return (

@@ -8,7 +8,7 @@ import { useT } from '@/i18n'
 import { validateAddress } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { User } from '@/services/wallet/searchUser'
-import { ChargeType } from '@/types/withdraw'
+import { ChargeType, InternalTransferType } from '@/types/withdraw'
 import RecentWithdraw from '../RecentWithdraw'
 import ReceivedAmount from './ReceivedAmount'
 import SetDestination from './SetDestination'
@@ -27,6 +27,7 @@ const WithdrawSteps: FunctionComponent = () => {
   const [chargeType, setChargeType] = useState<ChargeType>(ChargeType.OnChain)
   const [address, setAddress] = useState<string>('')
   const [targetUser, setTargetUser] = useState<User>()
+  const [transferType, setTransferType] = useState<InternalTransferType>(InternalTransferType.Email)
 
   useRedirectIfNotLogin()
 
@@ -128,6 +129,7 @@ const WithdrawSteps: FunctionComponent = () => {
               onTabChange={handleTabChange}
               onSelectNetwork={handleSelectNetwork}
               onAddressChange={handleAddressChange}
+              onTransferTabChange={setTransferType}
               onInternalTransferChange={handleInternalTransferChange}
             />
           )}
@@ -152,6 +154,7 @@ const WithdrawSteps: FunctionComponent = () => {
               address={address}
               chargeType={chargeType}
               targetUser={targetUser}
+              transferType={transferType}
             />
           )}
         </div>

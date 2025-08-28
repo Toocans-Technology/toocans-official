@@ -2,7 +2,7 @@
 
 import dayjs from 'dayjs'
 import Image from 'next/image'
-import { FunctionComponent, useCallback } from 'react'
+import { FunctionComponent, useCallback, useMemo } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { Button, Separator, toast } from '@workspace/ui/components'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@workspace/ui/components'
@@ -10,7 +10,7 @@ import { useRouter } from '@/hooks'
 import { useT } from '@/i18n'
 import { PATHNAMES } from '@/lib/utils'
 import { getWithdrawInfo } from '@/services/wallet'
-import { WithdrawMethod } from '@/types/withdraw'
+import { InternalTransferType, WithdrawMethod } from '@/types/withdraw'
 
 interface Props {
   id?: string
@@ -23,6 +23,21 @@ const WithdrawDetailModal: FunctionComponent<Props> = ({ id, open, onOpenChange 
   const { data } = getWithdrawInfo(id)
   const router = useRouter()
   const isOnChain = data?.withdrawMethod === WithdrawMethod.OnChain
+
+  const addressTag = useMemo(() => {
+    switch (data?.addressTag) {
+      case InternalTransferType.Email.toString():
+        return t('withdrawal:email')
+
+      case InternalTransferType.Phone.toString():
+        return t('withdrawal:phone')
+
+      case InternalTransferType.UID.toString():
+        return t('withdrawal:uid')
+      default:
+        return t('withdrawal:email')
+    }
+  }, [data, t])
 
   const handleConfirm = useCallback(() => {
     onOpenChange?.(false)
@@ -107,8 +122,8 @@ const WithdrawDetailModal: FunctionComponent<Props> = ({ id, open, onOpenChange 
           ) : (
             <>
               <div className="grid grid-cols-2 items-center py-1.5 text-sm">
-                <div className="text-[#999]">{t('withdrawal:uid')}</div>
-                <div className="text-right">{data?.address ?? '-'}</div>
+                <div className="text-[#999]">{addressTag}</div>
+                <div className="text-right">{data?.transferShowName ?? '-'}</div>
               </div>
               <div className="grid grid-cols-2 items-center py-1.5 text-sm">
                 <div className="text-[#999]">{t('withdrawal:nickname')}</div>
