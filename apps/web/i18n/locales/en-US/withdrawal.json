@@ -69,5 +69,6 @@
   "uid": "UID",
   "uidPlaceholder": "Enter Toocans UID",
   "uidError": "Enter UID",
-  "nickname": "Nickname"
+  "nickname": "Nickname",
+  "hash": "Hash"
 }

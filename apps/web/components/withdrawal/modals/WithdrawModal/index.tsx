@@ -181,7 +181,7 @@ const WithdrawModal: FunctionComponent<Props> = ({
           {t('common:next')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>{t('withdrawal:withdrawModal.title')}</DialogTitle>
           <Separator />
@@ -253,9 +253,12 @@ const WithdrawModal: FunctionComponent<Props> = ({
             )}
           </div>
           <DialogFooter>
+            <Button rounded="full" variant="secondary" onClick={() => setOpen(false)}>
+              {t('common:cancel')}
+            </Button>
             <Button rounded="full" disabled={!formState.isValid || isPending} onClick={handleSubmit(onSubmit)}>
               {isPending && <Loader2Icon className="animate-spin" />}
-              {t('common:next')}
+              {t('common:confirm')}
             </Button>
           </DialogFooter>
         </Form>
