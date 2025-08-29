@@ -22,7 +22,7 @@ export const useVerifyGoogleAuth = () => {
       return {
         method: 'POST',
         url: getUrl('/uc/user/verifyGoogleAuth'),
-        body: formData,
+        body: formData as any, // FIXME: formData type error
         transfer: VerifyGoogleAuthResponseSchema.parse,
       }
     })

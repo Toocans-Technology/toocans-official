@@ -5,7 +5,6 @@ import { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import { useAllToken } from '@/hooks/useAllToken'
 import { applyTokenPrecision } from '@/lib/utils'
 import { useHourlyMarketPrice } from '@/services/market/hourly'
-
 const BASE_PAIRS = [
   'BTC/USDT',
   'ETH/USDT',
@@ -37,6 +36,7 @@ const TokenList: FunctionComponent<TokenListProps> = ({ onClose: _onClose, searc
     })
   }
 
+  
   const { data: hourlyData, isLoading: isHourlyLoading } = useHourlyMarketPrice('BTC-USDT')
   useEffect(() => {
     if (hourlyData) {
@@ -160,18 +160,15 @@ const TokenList: FunctionComponent<TokenListProps> = ({ onClose: _onClose, searc
     try {
       const formattedCoinName = coinName.includes('/') ? coinName.split('/')[0] : coinName
       if (!formattedCoinName) return '--'
-      const str = applyTokenPrecision(getTokenPrecision(coinName), val)
+      const str = applyTokenPrecision(getTokenPrecision(coinName),val)
       return str
     } catch {
       return '--'
     }
   }
   useEffect(() => {
-    console.log(
-      '：',
-      data.map((d) => ({ name: d.name, spark: d.spark }))
-    )
-  }, [data])
+    console.log('：', data.map(d => ({ name: d.name, spark: d.spark })));
+  }, [data]);
   return (
     <div className="relative mx-auto flex w-full flex-col items-start gap-4 bg-[#0F0F0F] py-[44px]">
       <div className="relative mx-auto flex w-[1440px] flex-col items-start">
