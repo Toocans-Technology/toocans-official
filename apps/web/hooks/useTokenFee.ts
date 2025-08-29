@@ -24,7 +24,7 @@ export const useTokenFee = (token?: Token) => {
         .times(chargeValue)
         .toFixed(token?.minPrecision || 4)
     },
-    [chargeType, chargeValue]
+    [chargeType, chargeValue, token?.minPrecision]
   )
 
   /**
