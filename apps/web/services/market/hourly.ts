@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import { getQuery } from '@/lib/api'
-import { getUrl } from '@/lib/api/getUrl'
+import { getUrlByMarket } from '@/lib/api/getUrl'
 
 const HistoryMarketPriceSchema = z.object({
   symbol: z.string(),
@@ -39,7 +39,7 @@ export const useHourlyMarketPrice = (symbol: string) => {
   return useQuery({
     ...getQuery({
       method: 'GET',
-      url: getUrl('/v1/quotation/market-price/hourly'),
+      url: getUrlByMarket('/quotation/market-price/hourly'),
       query: { symbol },
       transfer: HourlyMarketPriceResponseSchema.parse,
     }),
