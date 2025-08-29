@@ -22,6 +22,15 @@ const TokenSettingSchema = z.object({
   createdAt: z.string().nullable(),
   updatedAt: z.string().nullable(),
   blockExploreUrl: z.string().nullable(),
+  tokenPrecisionAutoVO: z
+    .object({
+      ruleName: z.string().nullable(),
+      roundMode: z.number().nullable(),
+      padWithZeros: z.number().nullable(),
+      displayPrecision: z.number().nullable(),
+    })
+    .nullable()
+    .optional(),
 })
 
 const TokenSchema = z.object({
