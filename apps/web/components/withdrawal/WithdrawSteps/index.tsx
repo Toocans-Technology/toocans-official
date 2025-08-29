@@ -1,6 +1,6 @@
 'use client'
 
-import { ChangeEvent, FunctionComponent, useCallback, useState } from 'react'
+import { FunctionComponent, useCallback, useState } from 'react'
 import { cn } from '@workspace/ui/lib/utils'
 import SelectToken from '@/components/deposit/DepositSteps/SelectToken'
 import { useRedirectIfNotLogin } from '@/hooks'
@@ -57,8 +57,7 @@ const WithdrawSteps: FunctionComponent = () => {
   )
 
   const handleAddressChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      const { value } = e.target
+    (value: string) => {
       const isValidAddress = validateAddress(value)
 
       setAddress(value)

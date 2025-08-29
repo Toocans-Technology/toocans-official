@@ -74,7 +74,9 @@
   "selectAddressModal": {
     "title": "Select {{ tokenName }} address",
     "empty": "No address added",
-    "addNow": "Add now"
+    "addNow": "Add now",
+    "addedOn": "Added on",
+    "searchPlaceholder": "Enter address or name"
   },
   "addAddressModal": {
     "title": "Add Withdrawal Address",

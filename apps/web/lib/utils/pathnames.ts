@@ -4,4 +4,5 @@ export const PATHNAMES = {
   withdraw: '/withdrawal',
   deposit: '/deposit',
   history: '/history',
+  withdrawAddress: '/withdrawal/address',
 }

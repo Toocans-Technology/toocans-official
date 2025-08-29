@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
+import { addressTypeSchema } from '@/types/withdraw'
 import { WithdrawAddressSchema } from './schemas/address.schema'
 
 const WithdrawAddressListSchema = z.array(WithdrawAddressSchema)
@@ -10,7 +11,7 @@ export type WithdrawAddressList = z.infer<typeof WithdrawAddressListSchema>
 
 const WithdrawAddressParamsSchema = z
   .object({
-    addressTypes: z.optional(z.array(z.string())), // 地址类型
+    addressTypes: z.optional(z.array(addressTypeSchema)), // 地址类型
     tokenId: z.optional(z.string()), // 币种ID
     tokenNetWorks: z.optional(z.array(z.string())), // 币种网络
   })

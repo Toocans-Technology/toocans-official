@@ -1,6 +1,6 @@
 'use client'
 
-import { FunctionComponent, useCallback, useState } from 'react'
+import { FunctionComponent, useCallback, useEffect, useState } from 'react'
 import {
   Button,
   Command,
@@ -14,62 +14,68 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { useRouter } from '@/hooks'
 import { useT } from '@/i18n'
 import { PATHNAMES } from '@/lib/utils'
+import { Token } from '@/services/basicConfig'
 import { WithdrawAddress } from '@/services/wallet/schemas/address.schema'
 import { useWithdrawAddressList } from '@/services/wallet/withdrawAddressList'
+import { AddressType } from '@/types/withdraw'
 import EmptyAddress from './EmptyAddress'
 import ListItem from './ListItem'
 
 interface Props {
+  value?: string
   open?: boolean
-  tokenName?: string
+  token?: Token
+  addressTypes?: AddressType[]
   onOpenChange?: (open: boolean) => void
-  onConfirm?: (address: WithdrawAddress) => void
+  onConfirm?: (address?: WithdrawAddress) => void
 }
 
-const SelectAddressModal: FunctionComponent<Props> = ({ tokenName, open, onConfirm, onOpenChange }) => {
+const SelectAddressModal: FunctionComponent<Props> = ({
+  value,
+  token,
+  open,
+  addressTypes,
+  onConfirm,
+  onOpenChange,
+}) => {
   const { t } = useT(['withdrawal', 'common'])
   const router = useRouter()
-  const { data: addressList } = useWithdrawAddressList()
-  const [selectedAddress, setSelectedAddress] = useState<string[]>([])
+  const { data: addressList } = useWithdrawAddressList({
+    tokenId: token?.tokenId,
+    addressTypes,
+  })
+  const [selectedAddressId, setSelectedAddressId] = useState<string>()
+
+  useEffect(() => {
+    setSelectedAddressId(value)
+  }, [value])
 
   const handleSelect = useCallback(
     (id: string) => {
-      setSelectedAddress((prev) => {
-        if (prev.includes(id)) {
-          return prev.filter((item) => item !== id)
-        }
-        return [id]
-      })
-
-      const address = addressList?.find((item) => item.id === id)
-
-      if (address) {
+      if (selectedAddressId === id) {
+        setSelectedAddressId(undefined)
+        onConfirm?.(undefined)
+      } else {
+        const address = addressList?.find((item) => item.id === id)
+        setSelectedAddressId(id)
         onConfirm?.(address)
       }
 
       onOpenChange?.(false)
     },
-    [addressList, onConfirm, onOpenChange]
+    [addressList, onConfirm, onOpenChange, selectedAddressId]
   )
 
-  const handleOpenChange = useCallback(
-    (open: boolean) => {
-      setSelectedAddress([])
-      onOpenChange?.(open)
-    },
-    [onOpenChange]
-  )
-
-  const handleConfirm = useCallback(() => {
+  const handleAddNow = useCallback(() => {
     onOpenChange?.(false)
     router.push(PATHNAMES.withdrawAddress)
   }, [onOpenChange, router])
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{t('withdrawal:selectAddressModal.title', { tokenName: tokenName })}</DialogTitle>
+          <DialogTitle>{t('withdrawal:selectAddressModal.title', { tokenName: token?.tokenName })}</DialogTitle>
           <Separator />
         </DialogHeader>
         <div className="grid gap-2">
@@ -99,7 +105,7 @@ const SelectAddressModal: FunctionComponent<Props> = ({ tokenName, open, onConfi
                     key={item.id}
                     data={item}
                     onSelect={handleSelect}
-                    isSelected={selectedAddress.includes(item.id)}
+                    isSelected={selectedAddressId === item.id}
                   />
                 </CommandItem>
               ))}
@@ -107,7 +113,7 @@ const SelectAddressModal: FunctionComponent<Props> = ({ tokenName, open, onConfi
           </Command>
         </div>
         <DialogFooter>
-          <Button rounded="full" onClick={handleConfirm}>
+          <Button rounded="full" onClick={handleAddNow}>
             {t('withdrawal:selectAddressModal.addNow')}
           </Button>
         </DialogFooter>
