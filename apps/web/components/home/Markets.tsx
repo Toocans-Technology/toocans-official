@@ -18,13 +18,8 @@ const BASE_PAIRS = [
   'TON/USDT',
 ]
 
-interface TokenListProps {
-  onClose: () => void
-  searchCoin?: string
-}
 
-const TokenList: FunctionComponent<TokenListProps> = ({ onClose: _onClose, searchCoin }) => {
-  void _onClose
+const TokenList: FunctionComponent = () => {
   const randPrice = () => Number((Math.random() * (50000 - 1) + 1).toFixed(2))
   const randChange = () => Number((Math.random() * 20 - 10).toFixed(2))
   const genSpark = () => {
@@ -116,13 +111,9 @@ const TokenList: FunctionComponent<TokenListProps> = ({ onClose: _onClose, searc
   const filtered = useMemo(
     () =>
       data.filter((d) => {
-        if (!searchCoin) return true
-        const key = searchCoin.trim().toLowerCase()
-        const pair = d.name || ''
-        const base = typeof pair === 'string' ? (pair.split('/')[0]?.toLowerCase() ?? '') : ''
-        return base.includes(key)
+        return true
       }),
-    [data, searchCoin]
+    [data]
   )
 
   const displayData = useMemo(() => {
@@ -142,7 +133,7 @@ const TokenList: FunctionComponent<TokenListProps> = ({ onClose: _onClose, searc
 
   useEffect(() => {
     setCurrentPage(1)
-  }, [sortKey, sortOrder, searchCoin])
+  }, [sortKey, sortOrder])
 
   const pagedData = useMemo(() => {
     const start = (currentPage - 1) * pageSize
