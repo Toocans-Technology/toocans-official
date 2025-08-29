@@ -1,7 +1,5 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
-import { useLogin } from '@/hooks'
 import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
 import { allowDepositSchema, allowWithdrawSchema, withdrawChargeTypeSchema } from '@/types/token'
@@ -24,12 +22,15 @@ const TokenSettingSchema = z.object({
   createdAt: z.string().nullable(),
   updatedAt: z.string().nullable(),
   blockExploreUrl: z.string().nullable(),
-  tokenPrecisionAutoVO: z.object({
-    displayPrecision: z.number(),
-    padWithZeros: z.number(),
-    roundMode: z.number(),
-    ruleName: z.string(),
-  }),
+  tokenPrecisionAutoVO: z
+    .object({
+      ruleName: z.string().nullable(),
+      roundMode: z.number().nullable(),
+      padWithZeros: z.number().nullable(),
+      displayPrecision: z.number().nullable(),
+    })
+    .nullable()
+    .optional(),
 })
 
 const TokenSchema = z.object({
@@ -80,15 +81,12 @@ const AllTokenParamsSchema = z
 export type AllTokenParams = z.infer<typeof AllTokenParamsSchema>
 
 export const getAllToken = (params?: AllTokenParams) => {
-  const { isLoggedIn } = useLogin()
-
-  return useQuery({
-    ...getQuery({
+  return useQuery(
+    getQuery({
       method: 'GET',
       url: getUrl('/bc/baseConfig/allToken'),
       query: AllTokenParamsSchema.parse(params),
       transfer: AllTokenSchema.parse,
-    }),
-    enabled: isLoggedIn,
-  })
+    })
+  )
 }
