@@ -20,8 +20,11 @@ const ListItem: FunctionComponent<Props> = ({ data, isSelected, onSelect }) => {
   }, [onSelect, data.id])
 
   return (
-    <div className="flex flex-1 cursor-pointer items-center justify-between" onClick={handleSelect}>
-      <div className="border-border flex flex-1 flex-col gap-2 border-b pb-4">
+    <div
+      className="border-border flex flex-1 cursor-pointer items-center justify-between border-b"
+      onClick={handleSelect}
+    >
+      <div className="flex flex-1 flex-col gap-2 pb-4">
         <div className="flex items-center gap-2 text-sm">
           <span className="font-medium">{data.addressName}</span>
           <span className="rounded bg-[#f8f8f8] px-1.5">{data.tokenNetWork}</span>
