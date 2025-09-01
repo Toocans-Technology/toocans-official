@@ -11,9 +11,9 @@ export type WithdrawAddressList = z.infer<typeof WithdrawAddressListSchema>
 
 const WithdrawAddressParamsSchema = z
   .object({
-    addressTypes: z.optional(z.array(addressTypeSchema)), // 地址类型
+    addressTypes: z.optional(z.array(addressTypeSchema).transform((val) => val.join(','))), // 地址类型
     tokenId: z.optional(z.string()), // 币种ID
-    tokenNetWorks: z.optional(z.array(z.string())), // 币种网络
+    tokenNetWorks: z.optional(z.array(z.string()).transform((val) => val.join(','))), // 币种网络
   })
   .optional()
 

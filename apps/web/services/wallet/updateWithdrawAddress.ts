@@ -4,7 +4,7 @@ import { getMutation } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
 import { WithdrawalSchema } from './schemas'
 
-const UpdateWithdrawAddressReqSchema = z.object({
+export const UpdateWithdrawAddressReqSchema = z.object({
   id: z.string(),
   addressName: z.string().min(1).max(20),
 })

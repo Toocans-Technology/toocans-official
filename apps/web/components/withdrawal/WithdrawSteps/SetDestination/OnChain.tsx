@@ -69,8 +69,6 @@ const OnChain: FunctionComponent<Props> = ({
 
   const handleConfirm = useCallback(
     (address?: WithdrawAddress) => {
-      console.info('address', address)
-
       setSelectedAddress(address)
       onSelectAddress?.(address)
       onAddressChange?.(address?.address || '')

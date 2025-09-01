@@ -56,7 +56,12 @@ const SetDestination: FunctionComponent<Props> = ({
           />
         </TabsContent>
         <TabsContent value={ChargeType.Internal.toString()} className="mt-2">
-          <InternalTransfer onChange={onInternalTransferChange} onTransferTabChange={onTransferTabChange} />
+          <InternalTransfer
+            token={token}
+            onSelectAddress={onSelectAddress}
+            onChange={onInternalTransferChange}
+            onTransferTabChange={onTransferTabChange}
+          />
         </TabsContent>
       </Tabs>
     </div>
