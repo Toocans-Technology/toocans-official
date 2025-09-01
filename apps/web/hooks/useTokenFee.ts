@@ -2,17 +2,26 @@ import BigNumber from 'bignumber.js'
 import { useCallback } from 'react'
 import { Token } from '@/services/basicConfig'
 import { WithdrawChargeType } from '@/types/token'
+import { ChargeType } from '@/types/withdraw'
+import { useAllToken } from './useAllToken'
 
-export const useTokenFee = (token?: Token) => {
-  const chargeType = token?.tokenSetting?.withdrawChargeType || WithdrawChargeType.fixed
+export const useTokenFee = (token?: Token, chargeType?: ChargeType) => {
+  const { getTokenPrecision } = useAllToken()
+  const withdrawChargeType = token?.tokenSetting?.withdrawChargeType || WithdrawChargeType.fixed
   const chargeValue = token?.tokenSetting?.withdrawChargeValue || 0
+  const tokenPrecision = getTokenPrecision(token?.tokenId || '')
+  const isInternal = chargeType === ChargeType.Internal
 
   /**
    * 获取提现手续费
    */
   const getTokenFee = useCallback(
     (amount: BigNumber.Value) => {
-      if (chargeType === WithdrawChargeType.fixed) {
+      if (isInternal) {
+        return 0
+      }
+
+      if (withdrawChargeType === WithdrawChargeType.fixed) {
         return BigNumber(chargeValue).toNumber()
       }
 
@@ -22,9 +31,9 @@ export const useTokenFee = (token?: Token) => {
 
       return BigNumber(amount)
         .times(chargeValue)
-        .toFixed(token?.minPrecision || 4)
+        .toFixed(tokenPrecision?.displayPrecision || 4)
     },
-    [chargeType, chargeValue, token?.minPrecision]
+    [withdrawChargeType, chargeValue, tokenPrecision?.displayPrecision, isInternal]
   )
 
   /**
@@ -32,20 +41,24 @@ export const useTokenFee = (token?: Token) => {
    */
   const getMaxOrderAmount = useCallback(
     (balance: BigNumber.Value) => {
-      if (chargeType === WithdrawChargeType.fixed) {
+      if (isInternal) {
+        return BigNumber(balance).toFixed(tokenPrecision?.displayPrecision || 4, BigNumber.ROUND_FLOOR)
+      }
+
+      if (withdrawChargeType === WithdrawChargeType.fixed) {
         if (BigNumber(balance).lt(chargeValue)) {
           return 0
         }
         return BigNumber(balance)
           .minus(chargeValue)
-          .toFixed(token?.minPrecision || 4, BigNumber.ROUND_FLOOR)
+          .toFixed(tokenPrecision?.displayPrecision || 4, BigNumber.ROUND_FLOOR)
       }
 
       return BigNumber(balance)
         .div(BigNumber(1).plus(chargeValue))
-        .toFixed(token?.minPrecision || 4, BigNumber.ROUND_FLOOR)
+        .toFixed(tokenPrecision?.displayPrecision || 4, BigNumber.ROUND_FLOOR)
     },
-    [chargeType, chargeValue]
+    [withdrawChargeType, chargeValue, tokenPrecision?.displayPrecision, isInternal]
   )
 
   return { getTokenFee, getMaxOrderAmount }

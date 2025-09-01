@@ -95,11 +95,11 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
       <Popover open={open} onOpenChange={setOpen} modal={true}>
         <PopoverTrigger asChild>
           <Button
-            rounded="sm"
+            rounded="md"
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="hover:border-brand focus:border-brand h-11 w-[518px] justify-between border-[#f8f8f8] bg-[#f8f8f8] px-3"
+            className="hover:border-brand focus:border-brand h-11 w-[456px] justify-between border-[#f8f8f8] bg-[#f8f8f8] px-3"
           >
             <div className="flex items-center gap-2">
               {selectedToken ? (
@@ -119,7 +119,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
             <ChevronDown className="opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[518px] border-none p-0 shadow-lg" align="start">
+        <PopoverContent className="w-[456px] border-none p-0 shadow-lg" align="start">
           <Command
             className="p-3"
             filter={(value, search) => {
