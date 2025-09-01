@@ -124,7 +124,7 @@ const SendCodeStep: FunctionComponent<Props> = ({ userInfo, onSuccess }) => {
                     autoComplete="off"
                     maxLength={6}
                     placeholder={t('account:emailVerificationCode')}
-                    className="aria-invalid:ring-0 focus-visible:ring-0"
+                    className="aria-invalid:ring-0 hover:ring-0 focus-visible:ring-0"
                   />
                 </FormControl>
                 <span className={cn('text-link text-nowrap', !countdown && 'cursor-pointer')} onClick={handleSendCode}>
