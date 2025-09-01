@@ -40,7 +40,7 @@ const WithdrawSteps: FunctionComponent = () => {
 
   const handleSelectNetwork = useCallback(
     (value: string) => {
-      const network = selectedToken?.subTokenList.find((item) => item.id === value)
+      const network = selectedToken?.subTokenList.find((item) => item.tokenId === value)
 
       if (!network) {
         return

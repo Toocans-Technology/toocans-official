@@ -59,8 +59,18 @@ const OnChain: FunctionComponent<Props> = ({
     onSelectAddress?.(undefined)
   }, [onAddressChange, onSelectAddress])
 
+  const handleAddressChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      handleClearAddress()
+      onAddressChange?.(e.target.value)
+    },
+    [onAddressChange, handleClearAddress]
+  )
+
   const handleConfirm = useCallback(
     (address?: WithdrawAddress) => {
+      console.info('address', address)
+
       setSelectedAddress(address)
       onSelectAddress?.(address)
       onAddressChange?.(address?.address || '')
@@ -72,11 +82,12 @@ const OnChain: FunctionComponent<Props> = ({
     <>
       <div className="flex flex-col gap-2">
         <Label className="text-sm text-[#222]">{t('withdrawal:onChainType')}</Label>
-        <SelectNetwork
-          value={selectedNetwork?.id || selectedAddress?.tokenId || ''}
-          networks={networkList}
-          onValueChange={onSelectNetwork}
-        />
+        <SelectNetwork value={selectedNetwork?.tokenId || ''} networks={networkList} onValueChange={onSelectNetwork} />
+        {selectedAddress && selectedNetwork && selectedNetwork?.chainTokenId !== selectedAddress.tokenNetWork && (
+          <div className="bg-warning max-w-[456px] rounded-md px-3 py-2 text-sm">
+            {t('withdrawal:networkChangeWarning')}
+          </div>
+        )}
       </div>
       <div className="mt-4 flex max-w-[456px] flex-col gap-2">
         <div className="flex justify-between">
@@ -100,9 +111,9 @@ const OnChain: FunctionComponent<Props> = ({
             <Input
               autoComplete="off"
               className={cn('aria-invalid:ring-0 h-9 p-0 hover:ring-0 focus-visible:ring-0', selectedAddress && 'h-8')}
-              value={selectedAddress?.address || address}
+              value={address}
               placeholder={t('withdrawal:withdrawalAddress')}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => onAddressChange(e.target.value)}
+              onChange={handleAddressChange}
             />
           </div>
           {(address || selectedAddress) && (
