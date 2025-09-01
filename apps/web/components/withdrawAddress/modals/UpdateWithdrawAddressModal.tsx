@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2Icon } from 'lucide-react'
+import Image from 'next/image'
 import { FunctionComponent, useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {
@@ -14,6 +15,9 @@ import {
   Input,
   Separator,
   toast,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from '@workspace/ui/components'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@workspace/ui/components'
 import { useT } from '@/i18n'
@@ -27,26 +31,26 @@ import { WithdrawAddress } from '@/services/wallet/schemas/address.schema'
 import { HttpError } from '@/types/http'
 
 interface Props {
-  data: WithdrawAddress
+  data?: WithdrawAddress
 }
 
-const ChangeNameModal: FunctionComponent<Props> = ({ data }) => {
-  const { t } = useT(['account', 'common'])
-  const [open, setOpen] = useState(false)
+const UpdateWithdrawAddressModal: FunctionComponent<Props> = ({ data }) => {
+  const { t } = useT(['withdrawAddress', 'common'])
   const { refetch } = useWithdrawAddressList()
+  const [open, setOpen] = useState(false)
   const { mutateAsync: mutateUpdateAddressName, isPending } = useUpdateWithdrawAddress()
 
   const form = useForm<UpdateWithdrawAddressReq>({
     resolver: zodResolver(UpdateWithdrawAddressReqSchema),
     defaultValues: {
-      id: data.id,
-      addressName: data.addressName || '',
+      id: data?.id,
+      addressName: data?.addressName || '',
     },
   })
   const { handleSubmit, setValue, formState } = form
 
   useEffect(() => {
-    setValue('addressName', data.addressName || '')
+    setValue('addressName', data?.addressName || '')
   }, [setValue, data])
 
   const onSubmit = useCallback(
@@ -64,7 +68,7 @@ const ChangeNameModal: FunctionComponent<Props> = ({ data }) => {
 
         toast.success(t('account:changeNicknameSuccess'))
         refetch()
-        setOpen(false)
+        setOpen?.(false)
       } catch (error) {
         toast.error((error as HttpError).message)
       }
@@ -75,13 +79,20 @@ const ChangeNameModal: FunctionComponent<Props> = ({ data }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button rounded="full" variant="secondary">
-          {t('common:change')}
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button size="icon" variant="ghost" onClick={() => setOpen(true)}>
+              <Image src="/icons/edit.svg" alt="edit" width={20} height={20} />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{t('common:edit')}</p>
+          </TooltipContent>
+        </Tooltip>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{t('account:changeNickname')}</DialogTitle>
+          <DialogTitle>{t('withdrawAddress:editName')}</DialogTitle>
           <Separator />
         </DialogHeader>
         <Form {...form}>
@@ -91,17 +102,16 @@ const ChangeNameModal: FunctionComponent<Props> = ({ data }) => {
               name="addressName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('account:changeNickname')}</FormLabel>
+                  <FormLabel>{t('withdrawAddress:addressName')}</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       maxLength={20}
                       autoCapitalize="off"
                       className="rounded-sm"
-                      placeholder={t('account:changeNicknamePlaceholder')}
+                      placeholder={t('withdrawAddress:addressNamePlaceholder')}
                     />
                   </FormControl>
-                  <p className="text-sm text-[#666]">{t('account:changeNicknameTips')}</p>
                 </FormItem>
               )}
             />
@@ -121,4 +131,4 @@ const ChangeNameModal: FunctionComponent<Props> = ({ data }) => {
   )
 }
 
-export default ChangeNameModal
+export default UpdateWithdrawAddressModal
