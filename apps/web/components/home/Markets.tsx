@@ -1,62 +1,112 @@
+import Image from 'next/image'
+import { FunctionComponent } from 'react'
+
+const Markets: FunctionComponent = () => {
+  return (
+    <div className="w-full bg-[#0f0f0f]">
+      <div className="mx-auto flex max-w-[1200px] items-center justify-between px-8 py-16 text-white">
+        <Image src="/images/home/markets.png" alt="Markets" width={1200} height={540} />
+      </div>
+    </div>
+  )
+}
+
+export default Markets
 'use client'
 
 import Image from 'next/image'
+import { useId } from 'react'
 import { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import { useAllToken } from '@/hooks/useAllToken'
 import { applyTokenPrecision } from '@/lib/utils'
 import { useHourlyMarketPrice } from '@/services/market/hourly'
-const BASE_PAIRS = [
-  'BTC/USDT',
-  'ETH/USDT',
-  'SOL/USDT',
-  'DOGE/USDT',
-  'BNB/USDT',
-  'XRP/USDT',
-  'ADA/USDT',
-  'TRX/USDT',
-  'LINK/USDT',
-  'TON/USDT',
-]
+import { useMarketPrices } from '@/services/market/marketPrices'
 
+const WS_SUBSCRIBE_MSG = {
+  method: 'subscribe_live_price',
+  sn: '1',
+}
 
 const TokenList: FunctionComponent = () => {
-  const randPrice = () => Number((Math.random() * (50000 - 1) + 1).toFixed(2))
-  const randChange = () => Number((Math.random() * 20 - 10).toFixed(2))
-  const genSpark = () => {
-    const len = 24
-    let cur = Math.random() * 50 + 50
-    return Array.from({ length: len }, () => {
-      cur = Math.max(1, cur + (Math.random() - 0.5) * 6)
-      return Number(cur.toFixed(2))
-    })
-  }
+  const { mutateAsync: fetchHourlyData, data: hourlyData } = useHourlyMarketPrice()
+  const { mutateAsync: fetchMarketPrices, data: marketPricesData } = useMarketPrices()
 
-  
-  const { data: hourlyData, isLoading: isHourlyLoading } = useHourlyMarketPrice('BTC-USDT')
+  const { getToken, getTokenPrecision } = useAllToken()
+  const [marketWSData, setMarketWSData] = useState<typeof marketPricesData>([])
+
+  const data = useMemo(() => {
+    return (
+      marketPricesData?.map((token, i) => {
+        const tokenId = token.baseToken?.toUpperCase() || ''
+        const tokenIcon = getToken(tokenId)?.icon || ''
+        const updatedToken = marketWSData?.find(
+          (updated) => updated.displaySymbol?.toUpperCase() === token.displaySymbol?.toUpperCase()
+        )
+        return {
+          id: token.id || `t${i + 1}`,
+          name: token.displaySymbol?.toUpperCase() || '',
+          icon: tokenIcon,
+          quoteToken: getToken(token.displaySymbol?.toUpperCase() || '')?.tokenFullName || '',
+          price: parseFloat(updatedToken?.marketPrice || token.marketPrice || '0'),
+          last: parseFloat(token.marketPrice || '0'),
+          change: parseFloat(updatedToken?.marketPriceChange || token.marketPriceChange || '0'),
+          spark:
+            hourlyData?.[`${token.displaySymbol?.toUpperCase()}USDT`]?.map((entry) => entry.lastPrice) ||
+            Array(24).fill(0),
+        }
+      }) || []
+    )
+  }, [marketPricesData, marketWSData, getToken, hourlyData])
+
   useEffect(() => {
-    if (hourlyData) {
-      console.log('BTC-USDT hourlyData:', hourlyData)
+    const wsUrl = process.env.NEXT_PUBLIC_QUOTATION_WSS
+    if (!wsUrl || !marketPricesData) {
+      return
     }
-  }, [hourlyData])
+    const ws = new window.WebSocket(wsUrl)
 
-  const data = useMemo(
-    () =>
-      Array.from({ length: 50 }, (_, i) => ({
-        id: `t${i + 1}`,
-        name: BASE_PAIRS[i % BASE_PAIRS.length],
-        price: randPrice(),
-        last: randChange(),
-        change: randChange(),
-        spark: genSpark(),
-      })),
-    []
-  )
+    ws.onopen = () => {
+      ws.send(JSON.stringify(WS_SUBSCRIBE_MSG))
+    }
+
+    ws.onmessage = (event) => {
+      try {
+        const wsData = JSON.parse(event.data)
+        const payloads = wsData.payloads
+        if (Array.isArray(payloads) && marketPricesData) {
+          const updatedData = [...marketPricesData]
+          payloads.forEach((payload) => {
+            const index = updatedData.findIndex(
+              (token) => token.displaySymbol?.toUpperCase() === payload.baseTokenId?.toUpperCase()
+            )
+            if (index !== -1 && updatedData[index]) {
+              updatedData[index].marketPrice = payload.marketPrice
+              updatedData[index].marketPriceChange = payload.marketPriceChange
+            }
+          })
+          setMarketWSData(updatedData)
+        }
+      } catch (err) {
+        console.error('Error parsing WebSocket data:', err)
+      }
+    }
+
+    ws.onclose = () => {
+      console.log('WSS closed')
+    }
+    ws.onerror = (err) => {
+      console.log('WSSSSmarketPricesData:', marketPricesData)
+      console.error('WSS error:', err)
+    }
+  }, [marketPricesData])
+
   const Sparkline: FunctionComponent<{ data: number[]; width?: number; height?: number; color?: string }> = ({
     data,
     width = 120,
     height = 34,
     color = '#FF2E65',
   }) => {
+    const gradId = useId()
     if (!data?.length) return null
     const min = Math.min(...data)
     const max = Math.max(...data)
@@ -68,7 +118,6 @@ const TokenList: FunctionComponent = () => {
     }))
     const lineD = coords.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(' ')
     const areaD = `${lineD} L${width},${height} L0,${height} Z`
-    const gradId = `spark-grad-${Math.random().toString(36).slice(2, 8)}`
     return (
       <svg
         width={width}
@@ -92,7 +141,6 @@ const TokenList: FunctionComponent = () => {
   const [sortKey, setSortKey] = useState<null | 'name' | 'price' | 'change' | 'last'>(null)
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | ''>('')
   const [currentPage, setCurrentPage] = useState<number>(1)
-  const { tokens: allTokenData, getTokenPrecision } = useAllToken()
 
   const pageSize = 7
 
@@ -108,13 +156,9 @@ const TokenList: FunctionComponent = () => {
     }
   }
 
-  const filtered = useMemo(
-    () =>
-      data.filter((d) => {
-        return true
-      }),
-    [data]
-  )
+  const filtered = useMemo(() => {
+    return data.filter(() => true)
+  }, [data])
 
   const displayData = useMemo(() => {
     if (!sortKey) return filtered
@@ -151,15 +195,25 @@ const TokenList: FunctionComponent = () => {
     try {
       const formattedCoinName = coinName.includes('/') ? coinName.split('/')[0] : coinName
       if (!formattedCoinName) return '--'
-      const str = applyTokenPrecision(getTokenPrecision(coinName),val)
+      const str = applyTokenPrecision(getTokenPrecision(coinName), val)
       return str
-    } catch {
+    } catch (err) {
+      console.error('Error formatting amount for coin:', coinName, err)
       return '--'
     }
   }
+  // useEffect(() => {
+  //   console.log(
+  //     'data：',
+  //     data.map((d) => ({ name: d.name, spark: d.spark }))
+  //   )
+  // }, [data])
+
   useEffect(() => {
-    console.log('：', data.map(d => ({ name: d.name, spark: d.spark })));
-  }, [data]);
+    fetchMarketPrices({})
+    fetchHourlyData({})
+  }, [fetchMarketPrices, fetchHourlyData])
+
   return (
     <div className="relative mx-auto flex w-full flex-col items-start gap-4 bg-[#0F0F0F] py-[44px]">
       <div className="relative mx-auto flex w-[1440px] flex-col items-start">
@@ -234,15 +288,23 @@ const TokenList: FunctionComponent = () => {
               className="relative self-stretch"
               style={{ paddingBottom: '8px', display: 'flex', justifyContent: 'space-around' }}
             >
-              <div className="relative flex h-[72px] w-[130px] items-center justify-between gap-[8px] self-stretch">
-                <Image alt="btc" src="/images/market/btc.png" width={30} height={30} />
+              <div className="flex-start relative flex h-[72px] w-[130px] items-center gap-[8px] self-stretch">
+                <Image
+                  alt="btc"
+                  src={token.icon || '/images/market/defaultCoin.png'}
+                  width={30}
+                  height={30}
+                  className="rounded-full"
+                />
                 <div className="relative flex flex-col items-start gap-0">
                   <div
                     className={`relative w-fit text-center font-[Inter] text-[16px] font-medium leading-normal text-[#FFF] ${token.name === 'DOGE/USDT' ? 'mr-[-11.00px]' : ''}`}
                   >
                     {token.name}
                   </div>
-                  <div className="font-[Inter] text-[14px] font-normal leading-[22px] text-[#666]">Tether</div>
+                  <div className="font-[Inter] text-[14px] font-normal leading-[22px] text-[#666]">
+                    {token.quoteToken}
+                  </div>
                 </div>
               </div>
               <div className="flex w-[130px] items-center justify-between font-[Inter] text-[14px] font-medium leading-normal text-[#FFF]">
@@ -250,13 +312,13 @@ const TokenList: FunctionComponent = () => {
               </div>
               <div
                 className={`flex w-[130px] items-center justify-between font-[Inter] text-[14px] font-medium leading-normal ${
-                  token.change > 0 ? 'text-[#1ACA75]' : 'text-[#FF476F]'
+                  token.change >= 0 ? 'text-[#1ACA75]' : 'text-[#FF476F]'
                 }`}
               >
-                {token.change > 0 ? `+${token.change}%` : `${token.change}%`}
+                {token.change >= 0 ? `+${token.change.toFixed(2)}%` : `${token.change.toFixed(2)}%`}
               </div>
               <div className="flex w-[130px] items-center justify-between">
-                <Sparkline data={token.spark} color={token.change > 0 ? '#1ACA75' : '#FF2E65'} />
+                <Sparkline data={token.spark} color={token.change >= 0 ? '#1ACA75' : '#FF2E65'} />
               </div>
             </div>
           ))}
