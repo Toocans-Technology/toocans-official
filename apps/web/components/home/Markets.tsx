@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 import { FunctionComponent } from 'react'
 
@@ -12,7 +14,6 @@ const Markets: FunctionComponent = () => {
 }
 
 export default Markets
-'use client'
 
 import Image from 'next/image'
 import { useId } from 'react'
