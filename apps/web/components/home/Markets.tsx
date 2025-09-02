@@ -4,10 +4,10 @@ import Image from 'next/image'
 import { useId } from 'react'
 import { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import { useAllToken } from '@/hooks/useAllToken'
+import { useT } from '@/i18n'
 import { applyTokenPrecision } from '@/lib/utils'
 import { useHourlyMarketPrice } from '@/services/market/hourly'
 import { useMarketPrices } from '@/services/market/marketPrices'
-import { useT } from '@/i18n'
 
 const WS_SUBSCRIBE_MSG = {
   method: 'subscribe_live_price',
@@ -16,11 +16,11 @@ const WS_SUBSCRIBE_MSG = {
 
 const TokenList: FunctionComponent = () => {
   const { t } = useT('home')
-  
+
   const { mutateAsync: fetchHourlyData, data: hourlyData } = useHourlyMarketPrice()
   const { mutateAsync: fetchMarketPrices, data: marketPricesData } = useMarketPrices()
 
-  const { getToken, getTokenPrecision } = useAllToken()
+  const { getToken } = useAllToken()
   const [marketWSData, setMarketWSData] = useState<typeof marketPricesData>([])
 
   const data = useMemo(() => {
@@ -184,7 +184,10 @@ const TokenList: FunctionComponent = () => {
     try {
       const formattedCoinName = coinName.includes('/') ? coinName.split('/')[0] : coinName
       if (!formattedCoinName) return '--'
-      const str = applyTokenPrecision(getTokenPrecision(coinName), val)
+      const str = applyTokenPrecision(
+        marketPricesData?.find((token) => token.displaySymbol?.toUpperCase() === coinName)?.rulePairInfo,
+        val
+      )
       return str
     } catch (err) {
       console.error('Error formatting amount for coin:', coinName, err)
