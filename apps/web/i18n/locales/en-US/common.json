@@ -60,5 +60,7 @@
     "documents": "Government-issued documents",
     "personalInformation": "Personal Information"
   },
-  "save": "Save"
+  "save": "Save",
+  "edit": "Edit",
+  "delete": "Delete"
 }

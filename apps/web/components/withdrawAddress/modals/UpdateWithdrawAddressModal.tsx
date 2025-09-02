@@ -21,22 +21,17 @@ import {
 } from '@workspace/ui/components'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@workspace/ui/components'
 import { useT } from '@/i18n'
-import {
-  UpdateWithdrawAddressReq,
-  UpdateWithdrawAddressReqSchema,
-  useUpdateWithdrawAddress,
-  useWithdrawAddressList,
-} from '@/services/wallet'
+import { UpdateWithdrawAddressReq, UpdateWithdrawAddressReqSchema, useUpdateWithdrawAddress } from '@/services/wallet'
 import { WithdrawAddress } from '@/services/wallet/schemas/address.schema'
 import { HttpError } from '@/types/http'
 
 interface Props {
   data?: WithdrawAddress
+  onSuccess?: () => void
 }
 
-const UpdateWithdrawAddressModal: FunctionComponent<Props> = ({ data }) => {
+const UpdateWithdrawAddressModal: FunctionComponent<Props> = ({ data, onSuccess }) => {
   const { t } = useT(['withdrawAddress', 'common'])
-  const { refetch } = useWithdrawAddressList()
   const [open, setOpen] = useState(false)
   const { mutateAsync: mutateUpdateAddressName, isPending } = useUpdateWithdrawAddress()
 
@@ -66,14 +61,14 @@ const UpdateWithdrawAddressModal: FunctionComponent<Props> = ({ data }) => {
           return
         }
 
-        toast.success(t('account:changeNicknameSuccess'))
-        refetch()
+        onSuccess?.()
+        toast.success(t('withdrawAddress:changeNameSuccess'))
         setOpen?.(false)
       } catch (error) {
         toast.error((error as HttpError).message)
       }
     },
-    [mutateUpdateAddressName, refetch, t]
+    [mutateUpdateAddressName, t, onSuccess]
   )
 
   return (

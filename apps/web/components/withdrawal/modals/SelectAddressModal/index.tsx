@@ -42,7 +42,7 @@ const SelectAddressModal: FunctionComponent<Props> = ({
   const router = useRouter()
   const { data: addressList } = useWithdrawAddressList({
     tokenId: token?.tokenId,
-    addressTypes,
+    addressTypes: addressTypes?.join(','),
   })
   const [selectedAddressId, setSelectedAddressId] = useState<string>()
 

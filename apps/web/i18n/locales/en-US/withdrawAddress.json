@@ -1,0 +1,21 @@
+{
+  "title": "Manage addresses",
+  "description": "Manage your withdrawal addresses",
+  "addWithdrawalAddress": "Add withdrawal address",
+  "addressName": "Address Name",
+  "addressNamePlaceholder": "Enter address name",
+  "searchPlaceholder": "Enter address or name",
+  "token": "Token",
+  "address": "Address",
+  "network": "Network",
+  "name": "Name",
+  "updated": "Updated",
+  "action": "Action",
+  "editName": "Edit name",
+  "selected": "Selected",
+  "changeNameSuccess": "Change address name successfully",
+  "deleteWithdrawAddress": "Delete this address",
+  "deleteWithdrawAddressDescription": "Address deletion will not be recovered",
+  "deleteWithdrawAddressSuccess": "Delete withdrawal address successfully",
+  "deleteWithdrawAddressBatch": "Delete {{count}} withdrawal addresses"
+}

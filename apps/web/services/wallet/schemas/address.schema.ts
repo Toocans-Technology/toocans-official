@@ -17,7 +17,7 @@ export const WithdrawAddressSchema = z.object({
   successNum: z.optional(z.number()), // 成功次数
   protocolName: z.optional(z.string()).nullable(),
   chainName: z.optional(z.string()).nullable(),
-  chainIcon: z.optional(z.string()),
+  chainIcon: z.optional(z.string()).nullable(),
 })
 
 export type WithdrawAddress = z.infer<typeof WithdrawAddressSchema>
