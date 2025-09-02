@@ -66,7 +66,7 @@ const TokenList: FunctionComponent = () => {
           const updatedData = [...marketPricesData]
           payloads.forEach((payload) => {
             const index = updatedData.findIndex(
-              (token) => token.displaySymbol?.toUpperCase() === payload.baseTokenId?.toUpperCase()
+              (token) => token.displaySymbol?.split('/')[0]?.toUpperCase() === payload.baseTokenId?.toUpperCase()
             )
             if (index !== -1 && updatedData[index]) {
               updatedData[index].marketPrice = payload.marketPrice
