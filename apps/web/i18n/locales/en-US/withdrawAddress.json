@@ -13,9 +13,11 @@
   "action": "Action",
   "editName": "Edit name",
   "selected": "Selected",
+  "addWithdrawAddressSuccess": "Add withdrawal address successfully",
   "changeNameSuccess": "Change address name successfully",
   "deleteWithdrawAddress": "Delete this address",
   "deleteWithdrawAddressDescription": "Address deletion will not be recovered",
   "deleteWithdrawAddressSuccess": "Delete withdrawal address successfully",
-  "deleteWithdrawAddressBatch": "Delete {{count}} withdrawal addresses"
+  "deleteWithdrawAddressBatch": "Delete {{count}} withdrawal addresses",
+  "addWithdrawAddress": "Add withdrawal address"
 }

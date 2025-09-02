@@ -25,7 +25,12 @@ import { Empty } from '@/components/common'
 import { useT } from '@/i18n'
 import { useWithdrawAddressList, WithdrawAddressParams } from '@/services/wallet'
 import { AddressType } from '@/types/withdraw'
-import { DeleteWithdrawAddressModal, BatchDeleteWithdrawAddressModal, UpdateWithdrawAddressModal } from '../modals'
+import {
+  DeleteWithdrawAddressModal,
+  BatchDeleteWithdrawAddressModal,
+  UpdateWithdrawAddressModal,
+  AddWithdrawAddressModal,
+} from '../modals'
 import Filter, { FilterParams } from './Filter'
 
 const OnChainAddresses: FunctionComponent = () => {
@@ -66,7 +71,7 @@ const OnChainAddresses: FunctionComponent = () => {
     <>
       <div className="flex justify-between">
         <Filter onChange={handleChange} />
-        <Button rounded="full">{t('withdrawAddress:addWithdrawalAddress')}</Button>
+        <AddWithdrawAddressModal onSuccess={refetch} />
       </div>
       <Table className="mt-4">
         <TableHeader className="bg-[#f8f8f8]">

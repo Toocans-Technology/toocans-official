@@ -21,7 +21,12 @@ import { Empty } from '@/components/common'
 import { useT } from '@/i18n'
 import { useWithdrawAddressList, WithdrawAddressParams } from '@/services/wallet'
 import { AddressType } from '@/types/withdraw'
-import { BatchDeleteWithdrawAddressModal, DeleteWithdrawAddressModal, UpdateWithdrawAddressModal } from '../modals'
+import {
+  AddWithdrawAddressModal,
+  BatchDeleteWithdrawAddressModal,
+  DeleteWithdrawAddressModal,
+  UpdateWithdrawAddressModal,
+} from '../modals'
 import Filter, { FilterParams } from './Filter'
 
 const InternalTransferAddresses: FunctionComponent = () => {
@@ -61,7 +66,7 @@ const InternalTransferAddresses: FunctionComponent = () => {
     <>
       <div className="flex justify-between">
         <Filter onChange={handleChange} />
-        <Button rounded="full">{t('withdrawAddress:addWithdrawalAddress')}</Button>
+        <AddWithdrawAddressModal onSuccess={refetch} />
       </div>
       <Table className="mt-4">
         <TableHeader className="bg-[#f8f8f8]">
