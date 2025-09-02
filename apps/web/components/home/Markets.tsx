@@ -131,7 +131,7 @@ const TokenList: FunctionComponent = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | ''>('')
   const [currentPage, setCurrentPage] = useState<number>(1)
 
-  const pageSize = 711
+  const pageSize = 7
 
   const toggleSort = (key: 'name' | 'price' | 'change' | 'last') => {
     if (sortKey !== key) {
