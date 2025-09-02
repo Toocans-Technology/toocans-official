@@ -4,10 +4,9 @@ import dayjs from 'dayjs'
 import { Loader2Icon } from 'lucide-react'
 import Image from 'next/image'
 import { QRCodeSVG } from 'qrcode.react'
-import { FunctionComponent, useCallback, useState } from 'react'
+import { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {
-  Button,
   Checkbox,
   Table,
   TableBody,
@@ -60,6 +59,10 @@ const OnChainAddresses: FunctionComponent = () => {
     })
   }, [])
 
+  const checkedAll = useMemo(() => {
+    return data?.length ? selectedIds.length === data?.length : false
+  }, [data, selectedIds])
+
   const handleSelectAll = useCallback(
     (checked: boolean) => {
       setSelectedIds(checked ? data?.map((item) => item.id) || [] : [])
@@ -78,10 +81,7 @@ const OnChainAddresses: FunctionComponent = () => {
           <TableRow className="border-none">
             <TableHead className="text-[#666]">
               <div className="flex items-center gap-2">
-                <Checkbox
-                  checked={data?.length ? selectedIds.length === data?.length : false}
-                  onCheckedChange={handleSelectAll}
-                />
+                <Checkbox checked={checkedAll} onCheckedChange={handleSelectAll} />
                 <span>{t('withdrawAddress:token')}</span>
               </div>
             </TableHead>

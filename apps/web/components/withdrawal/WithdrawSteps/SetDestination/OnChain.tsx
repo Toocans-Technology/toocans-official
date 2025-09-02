@@ -82,12 +82,10 @@ const OnChain: FunctionComponent<Props> = ({
         <Label className="text-sm text-[#222]">{t('withdrawal:onChainType')}</Label>
         <SelectNetwork value={selectedNetwork?.tokenId || ''} networks={networkList} onValueChange={onSelectNetwork} />
         {selectedAddress && selectedNetwork && selectedNetwork?.chainTokenId !== selectedAddress.tokenNetWork && (
-          <div className="bg-warning max-w-[456px] rounded-md px-3 py-2 text-sm">
-            {t('withdrawal:networkChangeWarning')}
-          </div>
+          <div className="bg-warning rounded-md px-3 py-2 text-sm">{t('withdrawal:networkChangeWarning')}</div>
         )}
       </div>
-      <div className="mt-4 flex max-w-[456px] flex-col gap-2">
+      <div className="mt-4 flex flex-col gap-2">
         <div className="flex justify-between">
           <Label className="text-sm text-[#222]" htmlFor="withdrawalAddress">
             {t('withdrawal:withdrawalAddress')}

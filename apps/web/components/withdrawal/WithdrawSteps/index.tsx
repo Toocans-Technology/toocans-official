@@ -96,16 +96,21 @@ const WithdrawSteps: FunctionComponent = () => {
   return (
     <>
       <div className="mt-3 flex w-full flex-col gap-10 rounded-[10px] bg-white p-6">
-        <div className="flex flex-col gap-2">
+        <div className="flex max-w-[456px] flex-col gap-2">
           <div>
             <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#222] text-xs text-white">
               1
             </span>
             <span className="ml-2 text-sm">{t('withdrawal:selectToken')}</span>
           </div>
-          <SelectToken showAvailable onSelect={handleSelectToken} showDefaultTokens={false} />
+          <SelectToken
+            showAvailable
+            onSelect={handleSelectToken}
+            showDefaultTokens={false}
+            popoverClassName="w-[456px]"
+          />
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex max-w-[456px] flex-col gap-2">
           <div>
             <span
               className={cn(
@@ -133,7 +138,7 @@ const WithdrawSteps: FunctionComponent = () => {
             />
           )}
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex max-w-[456px] flex-col gap-2">
           <div>
             <span
               className={cn(

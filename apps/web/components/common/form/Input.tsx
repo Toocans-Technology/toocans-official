@@ -11,6 +11,7 @@ interface Props extends React.ComponentProps<'input'> {
   endContent?: React.ReactNode // 输入框的右侧内容
   className?: string // 输入框的类名
   inputClassName?: string // 输入框的类名
+  showClear?: boolean // 是否显示清除按钮
 }
 
 const Input: FunctionComponent<Props> = ({
@@ -20,6 +21,7 @@ const Input: FunctionComponent<Props> = ({
   endContent,
   className,
   inputClassName,
+  showClear = true,
   onChange,
   ...props
 }) => {
@@ -39,7 +41,7 @@ const Input: FunctionComponent<Props> = ({
         onChange={onChange}
         {...props}
       />
-      {value && (
+      {showClear && value && (
         <span
           className="inline-flex h-4 min-w-4 cursor-pointer items-center justify-center rounded-full bg-[#666] hover:bg-[#999]"
           onClick={() => {
