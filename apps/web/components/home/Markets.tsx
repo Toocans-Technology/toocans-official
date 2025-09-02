@@ -29,13 +29,13 @@ const TokenList: FunctionComponent = () => {
         const tokenId = token.baseToken?.toUpperCase() || ''
         const tokenIcon = getToken(tokenId)?.icon || ''
         const updatedToken = marketWSData?.find(
-          (updated) => updated.displaySymbol?.toUpperCase() === token.displaySymbol?.toUpperCase()
+          (updated) => updated.displaySymbol?.split('/')[0]?.toUpperCase() === token.displaySymbol?.split('/')[0]?.toUpperCase()
         )
         return {
           id: token.id || `t${i + 1}`,
           name: token.displaySymbol?.toUpperCase() || '',
           icon: tokenIcon,
-          quoteToken: getToken(token.displaySymbol?.toUpperCase() || '')?.tokenFullName || '',
+          quoteToken: getToken(token.displaySymbol?.split('/')[0]?.toUpperCase() || '')?.tokenFullName || '',
           price: parseFloat(updatedToken?.marketPrice || token.marketPrice || '0'),
           last: parseFloat(token.marketPrice || '0'),
           change: parseFloat(updatedToken?.marketPriceChange || token.marketPriceChange || '0'),
@@ -185,7 +185,7 @@ const TokenList: FunctionComponent = () => {
       const formattedCoinName = coinName.includes('/') ? coinName.split('/')[0] : coinName
       if (!formattedCoinName) return '--'
       const str = applyTokenPrecision(
-        marketPricesData?.find((token) => token.displaySymbol?.toUpperCase() === formattedCoinName?.toUpperCase())
+        marketPricesData?.find((token) => token.displaySymbol?.split('/')[0]?.toUpperCase() === formattedCoinName?.toUpperCase())
           ?.rulePairInfo,
         val
       )
