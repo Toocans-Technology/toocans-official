@@ -34,5 +34,11 @@
   "chainTransfer": "Chain transfers, free internal transfers, anytime, anywhere",
   "signUpNow": "Sign Up Now",
   "signUpNowDescription": "start your crypto security management wallet",
-  "invalidEmail": "Please enter a valid email"
+  "invalidEmail": "Please enter a valid email",
+  "market": {
+    "Name": "Name",
+    "LastPrice": "Last Price",
+    "Change": "Change",
+    "Last24h": "Last 24h"
+  }
 }
