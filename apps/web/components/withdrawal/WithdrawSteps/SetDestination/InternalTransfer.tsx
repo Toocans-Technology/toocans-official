@@ -4,8 +4,7 @@ import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js'
 import Image from 'next/image'
 import { ChangeEvent, FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { Button, Label, toast } from '@workspace/ui/components'
-import { cn } from '@workspace/ui/lib/utils'
-import { PhoneNumberInput, Input, Link } from '@/components/common'
+import { PhoneNumberInput, Input, Link, TransferTypeTab } from '@/components/common'
 import { useT } from '@/i18n'
 import { EMAIL_REGEX, INPUT_DEFAULT_VALUE, PATHNAMES } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
@@ -69,23 +68,6 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
     searchKey,
     type: transferType,
   })
-
-  const transferTypeList = useMemo(() => {
-    return [
-      {
-        label: t('withdrawal:email'),
-        value: InternalTransferType.Email,
-      },
-      {
-        label: t('withdrawal:phone'),
-        value: InternalTransferType.Phone,
-      },
-      {
-        label: t('withdrawal:uid'),
-        value: InternalTransferType.UID,
-      },
-    ]
-  }, [t])
 
   const handleTabChange = useCallback(
     (value: InternalTransferType) => {
@@ -187,20 +169,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
 
   return (
     <>
-      <div className="flex gap-4">
-        {transferTypeList.map((item) => (
-          <div
-            key={item.value}
-            className={cn(
-              'inline-flex cursor-pointer items-center rounded-md border border-solid border-[#f8f8f8] bg-[#f8f8f8] px-4 py-[5px]',
-              transferType === item.value && 'border-brand'
-            )}
-            onClick={() => handleTabChange(item.value)}
-          >
-            <span className="text-foreground text-sm">{item.label}</span>
-          </div>
-        ))}
-      </div>
+      <TransferTypeTab value={transferType} onTransferTabChange={handleTabChange} />
       <div className="max-w-[456px]">
         {transferType === InternalTransferType.Email && (
           <div className="mt-2 flex flex-col gap-2">

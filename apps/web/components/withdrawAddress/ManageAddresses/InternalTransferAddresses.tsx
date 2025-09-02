@@ -29,7 +29,12 @@ import {
 } from '../modals'
 import Filter, { FilterParams } from './Filter'
 
-const InternalTransferAddresses: FunctionComponent = () => {
+interface Props {
+  chargeType?: string
+  onSuccess?: (addressType: AddressType) => void
+}
+
+const InternalTransferAddresses: FunctionComponent<Props> = ({ chargeType, onSuccess }) => {
   const { t } = useT(['withdrawAddress', 'common'])
   const [params, setParams] = useState<WithdrawAddressParams>({
     tokenId: '',
@@ -66,11 +71,19 @@ const InternalTransferAddresses: FunctionComponent = () => {
     [data]
   )
 
+  const handleSuccess = useCallback(
+    (addressType: AddressType) => {
+      onSuccess?.(addressType)
+      refetch()
+    },
+    [onSuccess, refetch]
+  )
+
   return (
     <>
       <div className="flex justify-between">
         <Filter onChange={handleChange} />
-        <AddWithdrawAddressModal onSuccess={refetch} />
+        <AddWithdrawAddressModal chargeType={chargeType} onSuccess={handleSuccess} />
       </div>
       <Table className="mt-4">
         <TableHeader className="bg-[#f8f8f8]">

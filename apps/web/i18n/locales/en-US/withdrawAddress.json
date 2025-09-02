@@ -5,6 +5,7 @@
   "addressName": "Address Name",
   "addressNamePlaceholder": "Enter address name",
   "searchPlaceholder": "Enter address or name",
+  "account": "Account",
   "token": "Token",
   "address": "Address",
   "network": "Network",
@@ -26,5 +27,6 @@
   "addressError": "Please enter a address",
   "tokenError": "Please select a token",
   "networkError": "Please select a network",
-  "invalidAddress": "Invalid address"
+  "invalidAddress": "Invalid address",
+  "accountError": "Invalid account"
 }

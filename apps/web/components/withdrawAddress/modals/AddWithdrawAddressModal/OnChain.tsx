@@ -27,11 +27,11 @@ import { AllowWithdraw } from '@/types/token'
 import { AddressType, addressTypeSchema } from '@/types/withdraw'
 
 interface Props {
-  onSuccess?: () => void
+  onSuccess?: (addressType: AddressType) => void
 }
 
 const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
-  const { t } = useT('withdrawal')
+  const { t } = useT('withdrawAddress')
   const [networkList, setNetworkList] = useState<NetworkItem[]>([])
   const { mutateAsync: addWithdrawAddress, isPending } = useAddWithdrawAddress()
 
@@ -61,8 +61,6 @@ const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
   })
   const { handleSubmit, setValue, formState } = form
 
-  console.log(formState)
-
   const handleSelectToken = useCallback(
     (token: Token) => {
       setValue('tokenId', token.tokenId)
@@ -86,7 +84,7 @@ const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
           ...data,
           addressType: AddressType.OnChain,
         })
-        onSuccess?.()
+        onSuccess?.(AddressType.OnChain)
       } catch (error) {
         toast.error((error as HttpError).message)
       }
