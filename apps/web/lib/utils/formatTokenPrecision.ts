@@ -73,7 +73,7 @@ export function applyTokenPrecision(
 
   let result = num.toFixed(digits, roundingMode)
 
-  if (precisionVO.padWithZeros !== 1) {
+  if (precisionVO.padWithZeros !== 0) {
     if (result.indexOf('.') >= 0) {
       result = result.replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.0+$/, '')
     }
