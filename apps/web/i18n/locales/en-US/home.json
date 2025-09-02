@@ -35,5 +35,10 @@
   "signUpNow": "Sign Up Now",
   "signUpNowDescription": "start your crypto security management wallet",
   "invalidEmail": "Please enter a valid email",
-  "totalBalance": "Your total balance"
+  "market": {
+    "Name": "Name",
+    "LastPrice": "Last Price",
+    "Change": "Change",
+    "Last24h": "Last 24h"
+  }
 }

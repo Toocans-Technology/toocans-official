@@ -7,6 +7,7 @@ import { useAllToken } from '@/hooks/useAllToken'
 import { applyTokenPrecision } from '@/lib/utils'
 import { useHourlyMarketPrice } from '@/services/market/hourly'
 import { useMarketPrices } from '@/services/market/marketPrices'
+import { useT } from '@/i18n'
 
 const WS_SUBSCRIBE_MSG = {
   method: 'subscribe_live_price',
@@ -14,6 +15,8 @@ const WS_SUBSCRIBE_MSG = {
 }
 
 const TokenList: FunctionComponent = () => {
+  const { t } = useT('home')
+  
   const { mutateAsync: fetchHourlyData, data: hourlyData } = useHourlyMarketPrice()
   const { mutateAsync: fetchMarketPrices, data: marketPricesData } = useMarketPrices()
 
@@ -211,7 +214,7 @@ const TokenList: FunctionComponent = () => {
             <div className="relative flex h-[22px] w-[130px] items-center gap-1 px-0 py-2.5">
               <div>
                 <span className="font-[Inter] text-[12px] font-normal leading-[20px] text-[var(--light-text-third,#666)]">
-                  Name
+                  {t('home:market:Name')}
                 </span>
               </div>
             </div>
@@ -219,7 +222,7 @@ const TokenList: FunctionComponent = () => {
             <div className="relative flex h-[22px] w-[130px] items-center gap-1">
               <div>
                 <span className="font-[Inter] text-[12px] font-normal leading-[20px] text-[var(--light-text-third,#666)]">
-                  Last Price
+                  {t('home:market:LastPrice')}
                 </span>
               </div>
               <button className="mt-1.5 h-4 w-4" aria-label="Sort by price" onClick={() => toggleSort('price')}>
@@ -236,7 +239,7 @@ const TokenList: FunctionComponent = () => {
             <div className="relative flex h-[22px] w-[130px] items-center gap-1">
               <div>
                 <span className="font-[Inter] text-[12px] font-normal leading-[20px] text-[var(--light-text-third,#666)]">
-                  Change
+                  {t('home:market:Change')}
                 </span>
               </div>
               <button className="mt-1.5 h-4 w-4" aria-label="Sort by change" onClick={() => toggleSort('change')}>
@@ -252,7 +255,7 @@ const TokenList: FunctionComponent = () => {
             <div className="relative flex h-[22px] w-[130px] items-center gap-1">
               <div>
                 <span className="font-[Inter] text-[12px] font-normal leading-[20px] text-[var(--light-text-third,#666)]">
-                  Last 24h
+                  {t('home:market:Last24h')}
                 </span>
               </div>
               <button className="mt-1.5 h-4 w-4" aria-label="Sort by change" onClick={() => toggleSort('last')}>
