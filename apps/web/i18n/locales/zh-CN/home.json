@@ -34,5 +34,11 @@
   "chainTransfer": "链上转账，平台内免费转账，随时随地",
   "signUpNow": "立即注册",
   "signUpNowDescription": "开启您的加密资产安全管理之旅",
-  "invalidEmail": "请输入有效的邮箱地址"
+  "invalidEmail": "请输入有效的邮箱地址",
+  "market": {
+    "Name": "名称",
+    "LastPrice": "最新价格",
+    "Change": "涨跌幅",
+    "Last24h": "最近24小时"
+  }
 }
