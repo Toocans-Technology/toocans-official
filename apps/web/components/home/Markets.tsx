@@ -225,7 +225,7 @@ const TokenList: FunctionComponent = () => {
                   {t('home:market:LastPrice')}
                 </span>
               </div>
-              <button className="mt-1.5 h-4 w-4" aria-label="Sort by price" onClick={() => toggleSort('price')}>
+              {/* <button className="mt-1.5 h-4 w-4" aria-label="Sort by price" onClick={() => toggleSort('price')}>
                 <Image
                   alt="Sort by price"
                   className="cursor-pointer"
@@ -233,7 +233,7 @@ const TokenList: FunctionComponent = () => {
                   width={16}
                   height={16}
                 />
-              </button>
+              </button> */}
             </div>
 
             <div className="relative flex h-[22px] w-[130px] items-center gap-1">
@@ -242,7 +242,7 @@ const TokenList: FunctionComponent = () => {
                   {t('home:market:Change')}
                 </span>
               </div>
-              <button className="mt-1.5 h-4 w-4" aria-label="Sort by change" onClick={() => toggleSort('change')}>
+              {/* <button className="mt-1.5 h-4 w-4" aria-label="Sort by change" onClick={() => toggleSort('change')}>
                 <Image
                   alt="Sort by change"
                   className="cursor-pointer"
@@ -250,7 +250,7 @@ const TokenList: FunctionComponent = () => {
                   width={16}
                   height={16}
                 />
-              </button>
+              </button> */}
             </div>
             <div className="relative flex h-[22px] w-[130px] items-center gap-1">
               <div>
@@ -258,7 +258,7 @@ const TokenList: FunctionComponent = () => {
                   {t('home:market:Last24h')}
                 </span>
               </div>
-              <button className="mt-1.5 h-4 w-4" aria-label="Sort by change" onClick={() => toggleSort('last')}>
+              {/* <button className="mt-1.5 h-4 w-4" aria-label="Sort by change" onClick={() => toggleSort('last')}>
                 <Image
                   alt="Sort by change"
                   className="cursor-pointer"
@@ -266,7 +266,7 @@ const TokenList: FunctionComponent = () => {
                   width={16}
                   height={16}
                 />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
