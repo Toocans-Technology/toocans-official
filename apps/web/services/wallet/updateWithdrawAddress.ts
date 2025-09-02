@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 import { getMutation } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
-import { WithdrawalSchema } from './schemas'
+import { WithdrawAddressSchema } from './schemas'
 
 export const UpdateWithdrawAddressReqSchema = z.object({
   id: z.string(),
@@ -17,7 +17,7 @@ export const useUpdateWithdrawAddress = () => {
       method: 'POST',
       url: getUrl('/dw/withdrawAddress/update'),
       body: UpdateWithdrawAddressReqSchema.parse(params),
-      transfer: WithdrawalSchema.parse,
+      transfer: WithdrawAddressSchema.parse,
     }))
   )
 }
