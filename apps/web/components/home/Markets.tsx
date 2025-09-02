@@ -185,7 +185,7 @@ const TokenList: FunctionComponent = () => {
       const formattedCoinName = coinName.includes('/') ? coinName.split('/')[0] : coinName
       if (!formattedCoinName) return '--'
       const str = applyTokenPrecision(
-        marketPricesData?.find((token) => token.displaySymbol?.toUpperCase() === coinName)?.rulePairInfo,
+        marketPricesData?.find((token) => token.displaySymbol?.toUpperCase() === formattedCoinName?.toUpperCase())?.rulePairInfo,
         val
       )
       return str
