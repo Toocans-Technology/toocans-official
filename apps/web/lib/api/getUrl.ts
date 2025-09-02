@@ -1,5 +1,5 @@
 const API_DOMAIN = 't-api'
-const API_SERVICE_NAME = 'toocans-wallet-api'
+const API_SERVICE_NAME = 'toocans-broker-api'
 const API_VERSION = 'v1'
 const API_VERSION2 = 'v2'
 const API_MARKET_DOMAIN = 't-quotation'
