@@ -40,7 +40,7 @@ const TokenList: FunctionComponent = () => {
           last: parseFloat(token.marketPrice || '0'),
           change: parseFloat(updatedToken?.marketPriceChange || token.marketPriceChange || '0'),
           spark:
-            hourlyData?.[`${token.displaySymbol?.toUpperCase()}USDT`]?.map((entry) => entry.lastPrice) ||
+            hourlyData?.[`${token.displaySymbol?.split('/')[0]?.toUpperCase()}USDT`]?.map((entry) => entry.lastPrice) ||
             Array(24).fill(0),
         }
       }) || []
@@ -185,7 +185,8 @@ const TokenList: FunctionComponent = () => {
       const formattedCoinName = coinName.includes('/') ? coinName.split('/')[0] : coinName
       if (!formattedCoinName) return '--'
       const str = applyTokenPrecision(
-        marketPricesData?.find((token) => token.displaySymbol?.toUpperCase() === formattedCoinName?.toUpperCase())?.rulePairInfo,
+        marketPricesData?.find((token) => token.displaySymbol?.toUpperCase() === formattedCoinName?.toUpperCase())
+          ?.rulePairInfo,
         val
       )
       return str
