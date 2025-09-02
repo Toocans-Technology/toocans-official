@@ -88,7 +88,6 @@ export const getAllToken = (params?: AllTokenParams) => {
       url: getUrl('/bc/baseConfig/allToken'),
       query: AllTokenParamsSchema.parse(params),
       transfer: AllTokenSchema.parse,
-    }),
-    enabled: isLoggedIn,
+    })
   })
 }
