@@ -31,7 +31,7 @@ interface Props {
 }
 
 const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
-  const { t } = useT('withdrawAddress')
+  const { t } = useT(['withdrawAddress', 'common'])
   const [networkList, setNetworkList] = useState<NetworkItem[]>([])
   const { mutateAsync: addWithdrawAddress, isPending } = useAddWithdrawAddress()
 
@@ -84,12 +84,13 @@ const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
           ...data,
           addressType: AddressType.OnChain,
         })
+        toast.success(t('withdrawAddress:addSuccess'))
         onSuccess?.(AddressType.OnChain)
       } catch (error) {
         toast.error((error as HttpError).message)
       }
     },
-    [addWithdrawAddress, onSuccess]
+    [addWithdrawAddress, onSuccess, t]
   )
 
   return (

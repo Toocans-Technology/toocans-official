@@ -1,5 +1,5 @@
 export type InputValueType = {
-  value: string
+  value?: string
   error: string
   isInvalid: boolean
 }

@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js'
 import { Loader2Icon } from 'lucide-react'
-import { FunctionComponent, useCallback, useMemo, useState } from 'react'
+import { ChangeEvent, FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 import {
@@ -19,7 +19,7 @@ import {
 } from '@workspace/ui/components'
 import { Input, PhoneNumberInput, TransferTypeTab } from '@/components/common'
 import { useT } from '@/i18n'
-import { EMAIL_REGEX } from '@/lib/utils'
+import { EMAIL_REGEX, NUMBER_REGEX } from '@/lib/utils'
 import { useAddWithdrawAddress } from '@/services/wallet'
 import { HttpError } from '@/types/http'
 import { AddressType, addressTypeSchema, InternalTransferType } from '@/types/withdraw'
@@ -44,29 +44,33 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
     }
   }, [transferType])
 
-  const FormSchema = useMemo(
-    () =>
-      z.object({
-        nationalCode: z.string().optional(),
-        addressType: addressTypeSchema,
-        addressName: z.optional(z.string()),
-        address: z.string().refine(
-          (value) => {
-            if (transferType === InternalTransferType.Email) {
-              return EMAIL_REGEX.test(value)
-            } else if (transferType === InternalTransferType.Phone) {
-              return isValidPhoneNumber(value, nationalCode)
-            } else {
-              return value.length > 0
-            }
-          },
-          {
-            message: t('withdrawAddress:accountError'),
+  const FormSchema = useMemo(() => {
+    let message = t('withdrawAddress:accountError')
+
+    if (transferType === InternalTransferType.Phone) {
+      message = t('withdrawAddress:phoneError')
+    }
+
+    return z.object({
+      nationalCode: z.string().optional(),
+      addressType: addressTypeSchema,
+      addressName: z.optional(z.string()),
+      address: z.string().refine(
+        (value) => {
+          if (transferType === InternalTransferType.Email) {
+            return EMAIL_REGEX.test(value)
+          } else if (transferType === InternalTransferType.Phone) {
+            return isValidPhoneNumber(`+${nationalCode}${value}`)
+          } else {
+            return value.length > 0 && NUMBER_REGEX.test(value)
           }
-        ),
-      }),
-    [t, transferType, nationalCode]
-  )
+        },
+        {
+          message,
+        }
+      ),
+    })
+  }, [t, transferType, nationalCode])
 
   const form = useForm<z.infer<typeof FormSchema>>({
     mode: 'onBlur',
@@ -86,14 +90,16 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
       try {
         await addWithdrawAddress({
           ...data,
+          tokenId: '',
           addressType,
         })
+        toast.success(t('withdrawAddress:addSuccess'))
         onSuccess?.(addressType)
       } catch (error) {
         toast.error((error as HttpError).message)
       }
     },
-    [addWithdrawAddress, addressType, onSuccess]
+    [addWithdrawAddress, addressType, onSuccess, t]
   )
 
   const handleTransferTabChange = useCallback(
@@ -151,7 +157,16 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
                 <FormItem>
                   <FormLabel>{t('withdrawAddress:account')}</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder={t('withdrawal:uidPlaceholder')} />
+                    <Input
+                      {...field}
+                      placeholder={t('withdrawal:uidPlaceholder')}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        const value = e.target.value
+                        if (NUMBER_REGEX.test(value)) {
+                          field.onChange(value)
+                        }
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

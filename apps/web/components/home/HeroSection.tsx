@@ -24,7 +24,7 @@ const HeroSection: FunctionComponent = () => {
     if (isValid) {
       router.push(`/login?email=${email}`)
     }
-  }, [isValid, email])
+  }, [isValid, router, email])
 
   return (
     <div className="w-full bg-black">
@@ -43,7 +43,7 @@ const HeroSection: FunctionComponent = () => {
                 {t('home:startNow')}
               </Button>
             </div>
-            {isValid && <p className="text-destructive">{t('home:invalidEmail')}</p>}
+            {!isValid && <p className="text-destructive">{t('home:invalidEmail')}</p>}
           </div>
           <div className="flex flex-col">
             <p className="text-[#999]">{t('home:continueWith')}</p>

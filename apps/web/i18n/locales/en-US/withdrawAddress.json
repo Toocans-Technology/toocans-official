@@ -28,5 +28,7 @@
   "tokenError": "Please select a token",
   "networkError": "Please select a network",
   "invalidAddress": "Invalid address",
-  "accountError": "Invalid account"
+  "accountError": "Enter address format error",
+  "addSuccess": "Add successfully",
+  "phoneError": "Phone number format error"
 }

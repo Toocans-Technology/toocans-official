@@ -40,8 +40,9 @@ const SelectAddressModal: FunctionComponent<Props> = ({
 }) => {
   const { t } = useT(['withdrawal', 'common'])
   const router = useRouter()
+  const isOnChain = addressTypes?.includes(AddressType.OnChain)
   const { data: addressList } = useWithdrawAddressList({
-    tokenId: token?.tokenId,
+    tokenId: isOnChain ? token?.tokenId : undefined,
     addressTypes: addressTypes?.join(','),
   })
   const [selectedAddressId, setSelectedAddressId] = useState<string>()

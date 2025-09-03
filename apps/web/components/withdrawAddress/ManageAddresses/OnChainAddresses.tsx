@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import { Loader2Icon } from 'lucide-react'
 import Image from 'next/image'
 import { QRCodeSVG } from 'qrcode.react'
-import { FunctionComponent, useCallback, useMemo, useState } from 'react'
+import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {
   Checkbox,
@@ -23,7 +23,7 @@ import {
 import { Empty } from '@/components/common'
 import { useT } from '@/i18n'
 import { useWithdrawAddressList, WithdrawAddressParams } from '@/services/wallet'
-import { AddressType } from '@/types/withdraw'
+import { AddressType, ChargeType } from '@/types/withdraw'
 import {
   DeleteWithdrawAddressModal,
   BatchDeleteWithdrawAddressModal,
@@ -43,8 +43,14 @@ const OnChainAddresses: FunctionComponent<Props> = ({ chargeType, onSuccess }) =
     tokenId: '',
     addressTypes: AddressType.OnChain.toString(),
   })
-  const { data, refetch, isLoading } = useWithdrawAddressList(params)
+  const { data, refetch, isLoading } = useWithdrawAddressList(params, false)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
+
+  useEffect(() => {
+    if (chargeType === ChargeType.OnChain.toString()) {
+      refetch()
+    }
+  }, [chargeType, refetch])
 
   const handleChange = useCallback((filterParams: FilterParams) => {
     setParams({ ...filterParams, addressTypes: AddressType.OnChain.toString() })
@@ -139,7 +145,7 @@ const OnChainAddresses: FunctionComponent<Props> = ({ chargeType, onSuccess }) =
                   </div>
                 </TableCell>
                 <TableCell className="py-3">{record.tokenNetWork}</TableCell>
-                <TableCell className="py-3">{record.addressName}</TableCell>
+                <TableCell className="py-3">{record.addressName ?? '-'}</TableCell>
                 <TableCell className="py-3 text-right">
                   {dayjs(Number(record.updated)).format('YYYY-MM-DD HH:mm:ss')}
                 </TableCell>

@@ -3,7 +3,7 @@
 import dayjs from 'dayjs'
 import { Loader2Icon } from 'lucide-react'
 import Image from 'next/image'
-import { FunctionComponent, useCallback, useMemo, useState } from 'react'
+import { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import {
   Button,
@@ -20,7 +20,7 @@ import {
 import { Empty } from '@/components/common'
 import { useT } from '@/i18n'
 import { useWithdrawAddressList, WithdrawAddressParams } from '@/services/wallet'
-import { AddressType } from '@/types/withdraw'
+import { AddressType, ChargeType } from '@/types/withdraw'
 import {
   AddWithdrawAddressModal,
   BatchDeleteWithdrawAddressModal,
@@ -40,8 +40,14 @@ const InternalTransferAddresses: FunctionComponent<Props> = ({ chargeType, onSuc
     tokenId: '',
     addressTypes: [AddressType.UID, AddressType.Email, AddressType.Phone].join(','),
   })
-  const { data, refetch, isLoading } = useWithdrawAddressList(params)
+  const { data, refetch, isLoading } = useWithdrawAddressList(params, false)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
+
+  useEffect(() => {
+    if (chargeType === ChargeType.Internal.toString()) {
+      refetch()
+    }
+  }, [chargeType, refetch])
 
   const handleChange = useCallback((filterParams: FilterParams) => {
     setParams(filterParams)
@@ -112,7 +118,7 @@ const InternalTransferAddresses: FunctionComponent<Props> = ({ chargeType, onSuc
                       checked={selectedIds.includes(record.id)}
                       onCheckedChange={() => handleSelect(record.id)}
                     />
-                    <span>{record.tokenId}</span>
+                    <span>{record.tokenId || '-'}</span>
                   </div>
                 </TableCell>
                 <TableCell className="py-3">
@@ -127,13 +133,13 @@ const InternalTransferAddresses: FunctionComponent<Props> = ({ chargeType, onSuc
                     </CopyToClipboard>
                   </div>
                 </TableCell>
-                <TableCell className="py-3">{record.tokenNetWork}</TableCell>
-                <TableCell className="py-3">{record.addressName}</TableCell>
+                <TableCell className="py-3">{record.tokenNetWork ?? '-'}</TableCell>
+                <TableCell className="py-3">{record.addressName ?? '-'}</TableCell>
                 <TableCell className="py-3 text-right">
                   {dayjs(Number(record.updated)).format('YYYY-MM-DD HH:mm:ss')}
                 </TableCell>
                 <TableCell className="py-3">
-                  <div className="flex items-center justify-end gap-1">
+                  <div className="flex items-center gap-1">
                     <UpdateWithdrawAddressModal data={record} onSuccess={refetch} />
                     <DeleteWithdrawAddressModal data={record} onSuccess={refetch} />
                   </div>

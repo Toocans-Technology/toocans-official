@@ -58,7 +58,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
       const phoneNumber = `+${countryCode}${phone.value}`
       return isValidPhoneNumber(phoneNumber) ? phoneNumber : undefined
     } else {
-      return EMAIL_REGEX.test(email.value) ? email.value : undefined
+      return email.value && EMAIL_REGEX.test(email.value) ? email.value : undefined
     }
   }, [transferType, uid.value, phone.value, email.value, countryCode])
 
@@ -109,7 +109,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
   )
 
   const handleEmailBlur = useCallback(async () => {
-    const isEmail = EMAIL_REGEX.test(email.value)
+    const isEmail = email.value && EMAIL_REGEX.test(email.value)
 
     if (isEmail) {
       setEmail((s) => ({ ...s, error: '', isInvalid: false }))
@@ -157,8 +157,23 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
 
   const handleConfirm = useCallback(
     (address?: WithdrawAddress) => {
+      console.log('address', address)
+
       if (address) {
-        setTransferType(address.addressType as InternalTransferType)
+        let type = InternalTransferType.Email
+
+        if (address.addressType === AddressType.Email) {
+          type = InternalTransferType.Email
+          setEmail((s) => ({ ...s, value: address.address }))
+        } else if (address.addressType === AddressType.Phone) {
+          type = InternalTransferType.Phone
+          setPhone((s) => ({ ...s, value: address.address }))
+        } else {
+          type = InternalTransferType.UID
+          setUid((s) => ({ ...s, value: address.address }))
+        }
+
+        setTransferType(type)
       }
 
       setSelectedAddress(address)

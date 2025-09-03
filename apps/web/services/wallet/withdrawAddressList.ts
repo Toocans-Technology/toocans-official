@@ -18,13 +18,14 @@ const WithdrawAddressParamsSchema = z
 
 export type WithdrawAddressParams = z.infer<typeof WithdrawAddressParamsSchema>
 
-export const useWithdrawAddressList = (params?: WithdrawAddressParams) => {
-  return useQuery(
-    getQuery({
+export const useWithdrawAddressList = (params?: WithdrawAddressParams, enabled: boolean = true) => {
+  return useQuery({
+    ...getQuery({
       method: 'GET',
       url: getUrl('/dw/withdrawAddress/list'),
       query: WithdrawAddressParamsSchema.parse(params),
       transfer: WithdrawAddressListSchema.parse,
-    })
-  )
+    }),
+    enabled,
+  })
 }
