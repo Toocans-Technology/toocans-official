@@ -152,9 +152,11 @@ export default function Page() {
   useEffect(() => {
     if (isLoggedIn) {
       setActiveTab('favorites')
+    }else{
+        fetchMarketPrices({})
     }
-  }, [isLoggedIn])
-
+  }, [isLoggedIn, fetchMarketPrices])
+  
   useEffect(() => {
     if (!userFavorites) {
       setIsEmpty(true)
