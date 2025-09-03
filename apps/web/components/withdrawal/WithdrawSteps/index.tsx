@@ -1,12 +1,13 @@
 'use client'
 
-import { ChangeEvent, FunctionComponent, useCallback, useState } from 'react'
+import { FunctionComponent, useCallback, useState } from 'react'
 import { cn } from '@workspace/ui/lib/utils'
 import SelectToken from '@/components/deposit/DepositSteps/SelectToken'
 import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { validateAddress } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
+import { WithdrawAddress } from '@/services/wallet/schemas/address.schema'
 import { User } from '@/services/wallet/searchUser'
 import { ChargeType, InternalTransferType } from '@/types/withdraw'
 import RecentWithdraw from '../RecentWithdraw'
@@ -40,7 +41,7 @@ const WithdrawSteps: FunctionComponent = () => {
 
   const handleSelectNetwork = useCallback(
     (value: string) => {
-      const network = selectedToken?.subTokenList.find((item) => item.id === value)
+      const network = selectedToken?.subTokenList.find((item) => item.tokenId === value)
 
       if (!network) {
         return
@@ -57,8 +58,7 @@ const WithdrawSteps: FunctionComponent = () => {
   )
 
   const handleAddressChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      const { value } = e.target
+    (value: string) => {
       const isValidAddress = validateAddress(value)
 
       setAddress(value)
@@ -94,19 +94,37 @@ const WithdrawSteps: FunctionComponent = () => {
     [setStep, setAddress]
   )
 
+  const handleSelectAddress = useCallback(
+    (address?: WithdrawAddress) => {
+      if (address?.tokenNetWork) {
+        const network = selectedToken?.subTokenList.find((item) => item.tokenId === address?.tokenNetWork)
+
+        if (network) {
+          setSelectedNetwork(network)
+        }
+      }
+    },
+    [selectedToken?.subTokenList]
+  )
+
   return (
     <>
       <div className="mt-3 flex w-full flex-col gap-10 rounded-[10px] bg-white p-6">
-        <div className="flex flex-col gap-2">
+        <div className="flex max-w-[456px] flex-col gap-2">
           <div>
             <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#222] text-xs text-white">
               1
             </span>
             <span className="ml-2 text-sm">{t('withdrawal:selectToken')}</span>
           </div>
-          <SelectToken showAvailable onSelect={handleSelectToken} showDefaultTokens={false} />
+          <SelectToken
+            showAvailable
+            onSelect={handleSelectToken}
+            showDefaultTokens={false}
+            popoverClassName="w-[456px]"
+          />
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex max-w-[456px] flex-col gap-2">
           <div>
             <span
               className={cn(
@@ -127,6 +145,7 @@ const WithdrawSteps: FunctionComponent = () => {
               chargeType={chargeType}
               selectedNetwork={selectedNetwork}
               onTabChange={handleTabChange}
+              onSelectAddress={handleSelectAddress}
               onSelectNetwork={handleSelectNetwork}
               onAddressChange={handleAddressChange}
               onTransferTabChange={setTransferType}
@@ -134,7 +153,7 @@ const WithdrawSteps: FunctionComponent = () => {
             />
           )}
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex max-w-[456px] flex-col gap-2">
           <div>
             <span
               className={cn(

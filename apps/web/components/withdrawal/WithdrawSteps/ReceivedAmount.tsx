@@ -100,7 +100,7 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address, chargeType, 
   }, [])
 
   return (
-    <div className="mt-2 flex max-w-[456px] flex-col gap-2">
+    <div className="mt-2 flex flex-col gap-2">
       <div className="flex flex-col gap-2">
         <Label className="text-sm">{t('withdrawal:receivedAmount')}</Label>
         <div className="focus-within:border-ring focus-within:ring-brand flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]">

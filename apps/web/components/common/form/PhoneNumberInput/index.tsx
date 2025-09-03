@@ -12,7 +12,9 @@ interface Props {
   value?: string
   name?: string
   endContent?: React.ReactNode
+  onBlur?: () => void
   onChange?: (value: string) => void
+  onClear?: () => void
   onCountryChange?: (country: Country) => void
 }
 
@@ -22,6 +24,8 @@ const PhoneNumberInput: FunctionComponent<Props> = ({
   onChange,
   onCountryChange,
   endContent,
+  onBlur,
+  onClear,
   ...props
 }) => {
   const { t } = useT(['common'])
@@ -45,12 +49,14 @@ const PhoneNumberInput: FunctionComponent<Props> = ({
           const value = e.target.value.replace(/[^\d]/g, '')
           onChange?.(value)
         }}
+        onBlur={onBlur}
       />
       {value && (
         <span
           className="inline-flex h-4 min-w-4 cursor-pointer items-center justify-center rounded-full bg-[#666]"
           onClick={() => {
             onChange?.('')
+            onClear?.()
           }}
         >
           <XIcon color="#fff" size={12} />
