@@ -12,6 +12,7 @@ interface Props {
   value?: string
   name?: string
   endContent?: React.ReactNode
+  onBlur?: () => void
   onChange?: (value: string) => void
   onCountryChange?: (country: Country) => void
 }
@@ -22,6 +23,7 @@ const PhoneNumberInput: FunctionComponent<Props> = ({
   onChange,
   onCountryChange,
   endContent,
+  onBlur,
   ...props
 }) => {
   const { t } = useT(['common'])
@@ -45,6 +47,7 @@ const PhoneNumberInput: FunctionComponent<Props> = ({
           const value = e.target.value.replace(/[^\d]/g, '')
           onChange?.(value)
         }}
+        onBlur={onBlur}
       />
       {value && (
         <span

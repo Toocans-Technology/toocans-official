@@ -36,7 +36,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
     }
   }, [transferType, uid.value, phone.value, email.value, countryCode])
 
-  const { data } = useSearchUser({
+  const { data, refetch } = useSearchUser({
     searchKey,
     type: transferType,
   })
@@ -151,6 +151,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
               maxLength={100}
               placeholder={t('withdrawal:emailPlaceholder')}
               onChange={handleEmailChange}
+              onBlur={() => refetch()}
               endContent={
                 <Button variant="ghost" size="icon" className="size-6" rounded="sm">
                   <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />
@@ -172,6 +173,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
               invalid={phone.isInvalid}
               onChange={handlePhoneChange}
               onCountryChange={(country: Country) => setCountryCode(country.nationalCode as CountryCode)}
+              onBlur={() => refetch()}
               endContent={
                 <Button variant="ghost" size="icon" className="size-6" rounded="sm">
                   <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />
@@ -194,6 +196,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
               maxLength={100}
               placeholder={t('withdrawal:uidPlaceholder')}
               onChange={handleUidChange}
+              onBlur={() => refetch()}
               endContent={
                 <Button variant="ghost" size="icon" className="size-6" rounded="sm">
                   <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />

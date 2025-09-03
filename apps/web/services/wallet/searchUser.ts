@@ -19,7 +19,7 @@ const SearchUserParamsSchema = z
 
 export type SearchUserParams = z.infer<typeof SearchUserParamsSchema>
 
-export const useSearchUser = (params?: SearchUserParams) => {
+export const useSearchUser = (params?: SearchUserParams, enabled: boolean = false) => {
   return useQuery({
     ...getQuery({
       method: 'GET',
@@ -27,6 +27,6 @@ export const useSearchUser = (params?: SearchUserParams) => {
       query: SearchUserParamsSchema.parse(params),
       transfer: UserSchema.parse,
     }),
-    enabled: !!params?.searchKey && !!params?.type,
+    enabled: !!params?.searchKey && !!params?.type && enabled,
   })
 }
