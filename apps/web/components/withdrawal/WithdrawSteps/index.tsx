@@ -7,6 +7,7 @@ import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { validateAddress } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
+import { WithdrawAddress } from '@/services/wallet/schemas/address.schema'
 import { User } from '@/services/wallet/searchUser'
 import { ChargeType, InternalTransferType } from '@/types/withdraw'
 import RecentWithdraw from '../RecentWithdraw'
@@ -93,6 +94,19 @@ const WithdrawSteps: FunctionComponent = () => {
     [setStep, setAddress]
   )
 
+  const handleSelectAddress = useCallback(
+    (address?: WithdrawAddress) => {
+      if (address?.tokenNetWork) {
+        const network = selectedToken?.subTokenList.find((item) => item.tokenId === address?.tokenNetWork)
+
+        if (network) {
+          setSelectedNetwork(network)
+        }
+      }
+    },
+    [selectedToken?.subTokenList]
+  )
+
   return (
     <>
       <div className="mt-3 flex w-full flex-col gap-10 rounded-[10px] bg-white p-6">
@@ -131,6 +145,7 @@ const WithdrawSteps: FunctionComponent = () => {
               chargeType={chargeType}
               selectedNetwork={selectedNetwork}
               onTabChange={handleTabChange}
+              onSelectAddress={handleSelectAddress}
               onSelectNetwork={handleSelectNetwork}
               onAddressChange={handleAddressChange}
               onTransferTabChange={setTransferType}

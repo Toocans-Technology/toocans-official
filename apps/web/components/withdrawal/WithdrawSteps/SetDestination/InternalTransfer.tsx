@@ -2,7 +2,7 @@
 
 import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js'
 import Image from 'next/image'
-import { ChangeEvent, FunctionComponent, useCallback, useMemo, useState } from 'react'
+import { ChangeEvent, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Label, toast } from '@workspace/ui/components'
 import { PhoneNumberInput, Input, Link, TransferTypeTab } from '@/components/common'
 import { useT } from '@/i18n'
@@ -100,6 +100,12 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
     }
   }, [refetch, onChange])
 
+  useEffect(() => {
+    if (selectedAddress) {
+      handleRefetch()
+    }
+  }, [selectedAddress, handleRefetch])
+
   const handleEmailChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value
@@ -140,7 +146,6 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
   const handleUidChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/[^\d]/g, '')
-
       setUid((s) => ({ ...s, value, error: '', isInvalid: false }))
     },
     [setUid]
@@ -155,22 +160,26 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
     }
   }, [handleRefetch, t, uid.value])
 
+  const handleClearAddress = useCallback(() => {
+    setSelectedAddress(undefined)
+    onSelectAddress?.(undefined)
+    onChange?.(undefined)
+  }, [onSelectAddress, onChange])
+
   const handleConfirm = useCallback(
     (address?: WithdrawAddress) => {
-      console.log('address', address)
-
       if (address) {
         let type = InternalTransferType.Email
 
         if (address.addressType === AddressType.Email) {
           type = InternalTransferType.Email
-          setEmail((s) => ({ ...s, value: address.address }))
+          setEmail((s) => ({ ...s, value: address.address, isInvalid: false }))
         } else if (address.addressType === AddressType.Phone) {
           type = InternalTransferType.Phone
-          setPhone((s) => ({ ...s, value: address.address }))
+          setPhone((s) => ({ ...s, value: address.address, isInvalid: false }))
         } else {
           type = InternalTransferType.UID
-          setUid((s) => ({ ...s, value: address.address }))
+          setUid((s) => ({ ...s, value: address.address, isInvalid: false }))
         }
 
         setTransferType(type)
@@ -198,6 +207,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
               placeholder={t('withdrawal:emailPlaceholder')}
               onChange={handleEmailChange}
               onBlur={handleEmailBlur}
+              onClear={handleClearAddress}
               endContent={
                 <Button variant="ghost" size="icon" className="size-6" rounded="sm" onClick={() => setOpen(true)}>
                   <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />
@@ -218,6 +228,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
               onChange={handlePhoneChange}
               onCountryChange={(country: Country) => setCountryCode(country.nationalCode as CountryCode)}
               onBlur={handlePhoneBlur}
+              onClear={handleClearAddress}
               endContent={
                 <Button variant="ghost" size="icon" className="size-6" rounded="sm" onClick={() => setOpen(true)}>
                   <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />
@@ -239,6 +250,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
               placeholder={t('withdrawal:uidPlaceholder')}
               onChange={handleUidChange}
               onBlur={handleUidBlur}
+              onClear={handleClearAddress}
               endContent={
                 <Button variant="ghost" size="icon" className="size-6" rounded="sm" onClick={() => setOpen(true)}>
                   <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />

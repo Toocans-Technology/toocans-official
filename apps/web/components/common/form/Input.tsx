@@ -12,6 +12,7 @@ interface Props extends React.ComponentProps<'input'> {
   className?: string // 输入框的类名
   inputClassName?: string // 输入框的类名
   showClear?: boolean // 是否显示清除按钮
+  onClear?: () => void
 }
 
 const Input: FunctionComponent<Props> = ({
@@ -23,6 +24,7 @@ const Input: FunctionComponent<Props> = ({
   inputClassName,
   showClear = true,
   onChange,
+  onClear,
   ...props
 }) => {
   return (
@@ -46,6 +48,7 @@ const Input: FunctionComponent<Props> = ({
           className="inline-flex h-4 min-w-4 cursor-pointer items-center justify-center rounded-full bg-[#666] hover:bg-[#999]"
           onClick={() => {
             onChange?.({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>)
+            onClear?.()
           }}
         >
           <XIcon color="#fff" size={12} />
