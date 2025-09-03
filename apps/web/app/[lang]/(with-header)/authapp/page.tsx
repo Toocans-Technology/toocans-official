@@ -78,25 +78,33 @@ export default function AuthAppPage() {
     refetch()
   }, [])
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#fafbfc]">
-      <div className="mx-auto w-full max-w-[942px] rounded-xl bg-white p-[60px_32px_24px_32px] shadow-[0_2px_16px_0_rgba(0,0,0,0.04)]">
-        <div className="font-inter flex items-center gap-[20px] pb-10 text-[32px] font-medium leading-[30px] text-black">
-          <div style={{ width: '21px', height: '21px' }}>
-            <Image
+    <div  className="bg-[#f6f6f6]">
+       <div className="flex justify-center bg-[#f6f6f6]">
+      <div className="w-full max-w-[942px] pt-[60px]">
+        <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '20px', paddingBottom: '22px', fontSize: '32px', fontWeight: '500', color: '#000'}}>
+          <Image
               src={'/images/authapp/Left.png'}
               alt="Back"
               width={21}
               height={15}
+              style={{ width: '21px',height: '15px' }}
               onClick={() => router.push('/account')}
               className="cursor-pointer"
             />
-          </div>
-          <div>{t('authapp:AuthenticatorApp')}</div>
+        <h1 className="font-inter text-[32px] font-medium leading-[30px] text-black">
+          {t('authapp:AuthenticatorApp')}
+        </h1>
         </div>
+      </div>
+    </div>
+    <div className="flex items-center justify-center">
+      <div className="mx-auto w-full max-w-[942px] rounded-xl bg-white p-[24px_32px_24px_32px] shadow-[0_2px_16px_0_rgba(0,0,0,0.04)]">
+      
         <div className="mb-8">
           <div className="font-inter pb-8 text-[16px] font-medium leading-[26px] text-[#222]">
             {t('authapp:SetUpTwoFactorAuthentication')}
           </div>
+         
           <div className="mb-2 flex items-center">
             <div className="font-inter flex h-5 w-5 items-center justify-center gap-2 rounded-full bg-[#222] p-2 text-center text-[12px] font-medium leading-5 text-white">
               1
@@ -193,6 +201,7 @@ export default function AuthAppPage() {
           )}
         </div>
       </div>
+    </div>
     </div>
   )
 }

@@ -27,7 +27,7 @@ const AccountInfo: FunctionComponent = () => {
 
   const handleCopy = useCallback(() => {
     toast.success(t('common:copySuccess'))
-  }, [])
+  }, [t])
 
   return (
     <div className="mt-3 w-full rounded-[10px] bg-white p-6">

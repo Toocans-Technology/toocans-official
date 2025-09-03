@@ -40,5 +40,7 @@
     "LastPrice": "最新价格",
     "Change": "涨跌幅",
     "Last24h": "最近24小时"
-  }
+  },
+     "totalBalance": "总资产"
+
 }
