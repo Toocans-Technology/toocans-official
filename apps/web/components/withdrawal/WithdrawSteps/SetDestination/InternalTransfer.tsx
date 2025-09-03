@@ -3,7 +3,7 @@
 import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js'
 import Image from 'next/image'
 import { ChangeEvent, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
-import { Button, Label } from '@workspace/ui/components'
+import { Button, Label, toast } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
 import { PhoneNumberInput, Input } from '@/components/common'
 import { useT } from '@/i18n'
@@ -30,22 +30,17 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
     if (transferType === InternalTransferType.UID) {
       return uid.value
     } else if (transferType === InternalTransferType.Phone) {
-      return isValidPhoneNumber(phone.value, countryCode) ? `+${countryCode}${phone.value}` : undefined
+      const phoneNumber = `+${countryCode}${phone.value}`
+      return isValidPhoneNumber(phoneNumber) ? phoneNumber : undefined
     } else {
       return EMAIL_REGEX.test(email.value) ? email.value : undefined
     }
   }, [transferType, uid.value, phone.value, email.value, countryCode])
 
-  const { data } = useSearchUser({
+  const { refetch } = useSearchUser({
     searchKey,
     type: transferType,
   })
-
-  useEffect(() => {
-    if (data) {
-      onChange?.(data)
-    }
-  }, [data, onChange])
 
   const transferTypeList = useMemo(() => {
     return [
@@ -81,45 +76,74 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
     [onChange, onTransferTabChange]
   )
 
+  const handleRefetch = useCallback(async () => {
+    const { data, error } = await refetch()
+
+    if (data) {
+      onChange?.(data)
+    } else {
+      onChange?.(undefined)
+
+      if (error?.message) {
+        toast.error(error?.message)
+      }
+    }
+  }, [refetch, onChange])
+
   const handleEmailChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value
-      const isEmail = EMAIL_REGEX.test(value)
-
-      if (isEmail || value === '') {
-        setEmail((s) => ({ ...s, value, error: '', isInvalid: false }))
-      } else {
-        setEmail((s) => ({ ...s, value, error: t('withdrawal:emailError'), isInvalid: true }))
-      }
+      setEmail((s) => ({ ...s, value, error: '', isInvalid: false }))
     },
-    [setEmail, t]
+    [setEmail]
   )
+
+  const handleEmailBlur = useCallback(async () => {
+    const isEmail = EMAIL_REGEX.test(email.value)
+
+    if (isEmail) {
+      setEmail((s) => ({ ...s, error: '', isInvalid: false }))
+      handleRefetch()
+    } else {
+      setEmail((s) => ({ ...s, error: t('withdrawal:emailError'), isInvalid: true }))
+    }
+  }, [email.value, t, handleRefetch])
 
   const handlePhoneChange = useCallback(
     (value: string) => {
-      const isPhone = isValidPhoneNumber(value, countryCode)
-
-      if (isPhone) {
-        setPhone((s) => ({ ...s, value }))
-      } else {
-        setPhone((s) => ({ ...s, value, error: t('withdrawal:phoneError'), isInvalid: true }))
-      }
+      setPhone((s) => ({ ...s, value, error: '', isInvalid: false }))
     },
-    [countryCode, t]
+    [setPhone]
   )
+
+  const handlePhoneBlur = useCallback(() => {
+    const isPhone = isValidPhoneNumber(`+${countryCode}${phone.value}`)
+
+    if (isPhone) {
+      setPhone((s) => ({ ...s, error: '', isInvalid: false }))
+      handleRefetch()
+    } else {
+      setPhone((s) => ({ ...s, error: t('withdrawal:phoneError'), isInvalid: true }))
+    }
+  }, [phone.value, countryCode, t, handleRefetch])
 
   const handleUidChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/[^\d]/g, '')
 
-      if (value === '') {
-        setUid((s) => ({ ...s, value, error: t('withdrawal:uidError'), isInvalid: true }))
-      } else {
-        setUid((s) => ({ ...s, value, error: '', isInvalid: false }))
-      }
+      setUid((s) => ({ ...s, value, error: '', isInvalid: false }))
     },
-    [setUid, t]
+    [setUid]
   )
+
+  const handleUidBlur = useCallback(async () => {
+    if (uid.value === '') {
+      setUid((s) => ({ ...s, error: t('withdrawal:uidError'), isInvalid: true }))
+    } else {
+      setUid((s) => ({ ...s, error: '', isInvalid: false }))
+      handleRefetch()
+    }
+  }, [handleRefetch, t, uid.value])
 
   return (
     <>
@@ -151,6 +175,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
               maxLength={100}
               placeholder={t('withdrawal:emailPlaceholder')}
               onChange={handleEmailChange}
+              onBlur={handleEmailBlur}
               endContent={
                 <Button variant="ghost" size="icon" className="size-6" rounded="sm">
                   <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />
@@ -172,6 +197,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
               invalid={phone.isInvalid}
               onChange={handlePhoneChange}
               onCountryChange={(country: Country) => setCountryCode(country.nationalCode as CountryCode)}
+              onBlur={handlePhoneBlur}
               endContent={
                 <Button variant="ghost" size="icon" className="size-6" rounded="sm">
                   <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />
@@ -194,6 +220,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
               maxLength={100}
               placeholder={t('withdrawal:uidPlaceholder')}
               onChange={handleUidChange}
+              onBlur={handleUidBlur}
               endContent={
                 <Button variant="ghost" size="icon" className="size-6" rounded="sm">
                   <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />
