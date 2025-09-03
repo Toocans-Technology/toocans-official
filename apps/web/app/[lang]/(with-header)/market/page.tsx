@@ -166,7 +166,7 @@ export default function Page() {
       const updatedCryptoData = userFavorites
         .map((favorite) => ({
           id: favorite.id ?? 0,
-          pair: favorite.symbolId + `/` + (favorite.symbolPairConfig?.quoteToken ?? 'USDT'),
+          pair: (favorite.symbolPairConfig?.displaySymbol),
           tokenName: favorite.symbolId,
           isFavorite: true,
           customOrder: favorite.customOrder ?? 0,
