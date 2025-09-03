@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import { PaginationControls } from '@/components/common'
 import { Empty } from '@/components/common'
-import { useAllToken } from '@/hooks/useAllToken'
+import { useLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { applyTokenPrecision } from '@/lib/utils'
 
@@ -61,7 +61,7 @@ const TokenList: FunctionComponent<TokenListProps> = ({
 
         return {
           id: String(item.id),
-          name: (item?.displaySymbol?.toUpperCase?.() ?? '--'),
+          name: item?.displaySymbol?.toUpperCase?.() ?? '--',
           price: updatedItem?.marketPrice || item?.marketPrice,
           tokenName: item?.displaySymbol,
           change: updatedItem?.marketPriceChange || item?.marketPriceChange,
@@ -83,6 +83,7 @@ const TokenList: FunctionComponent<TokenListProps> = ({
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const [currentPage, setCurrentPage] = useState<number>(1)
   const pageSize = 5
+  const { isLoggedIn } = useLogin()
 
   const toggleSort = (key: 'name' | 'price' | 'change') => {
     console.log('Toggling sort:', key)
@@ -143,7 +144,7 @@ const TokenList: FunctionComponent<TokenListProps> = ({
 
   const formatAmount = (val: number | string | BigNumber, coinName: string) => {
     try {
-       const str = applyTokenPrecision(
+      const str = applyTokenPrecision(
         marketPricesData?.find((token) => token.displaySymbol?.toUpperCase() === coinName?.toUpperCase())?.rulePairInfo,
         val
       )
@@ -277,24 +278,26 @@ const TokenList: FunctionComponent<TokenListProps> = ({
                 >
                   <div className="relative flex h-[72px] w-[130px] items-center justify-between self-stretch">
                     <div className="relative flex h-[22px] w-24 items-center gap-2">
-                      <button
-                        onClick={() => handleTokenSelect(token.id, token.tokenName as string, token.isFavorite)}
-                        className="relative aspect-[1] h-5 w-5 cursor-pointer"
-                        aria-label={t('market:AriaSelectToken', { pair: token.name })}
-                      >
-                        <Image
-                          alt={
-                            !isTokenSelected(token.id) ? t('market:CheckboxSelected') : t('market:CheckboxUnselected')
-                          }
-                          src={
-                            !isTokenSelected(token.id)
-                              ? '/images/market/dark-action-favoourite-3.svg'
-                              : '/images/market/dark-action-favoourite-fill-1.svg'
-                          }
-                          width={20}
-                          height={20}
-                        />
-                      </button>
+                      {isLoggedIn && (
+                        <button
+                          onClick={() => handleTokenSelect(token.id, token.tokenName as string, token.isFavorite)}
+                          className="relative aspect-[1] h-5 w-5 cursor-pointer"
+                          aria-label={t('market:AriaSelectToken', { pair: token.name })}
+                        >
+                          <Image
+                            alt={
+                              !isTokenSelected(token.id) ? t('market:CheckboxSelected') : t('market:CheckboxUnselected')
+                            }
+                            src={
+                              !isTokenSelected(token.id)
+                                ? '/images/market/dark-action-favoourite-3.svg'
+                                : '/images/market/dark-action-favoourite-fill-1.svg'
+                            }
+                            width={20}
+                            height={20}
+                          />
+                        </button>
+                      )}
 
                       <div
                         onClick={() => handleTokenSelect(token.id, token.tokenName as string, token.isFavorite)}
