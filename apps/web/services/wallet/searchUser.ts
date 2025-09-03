@@ -27,6 +27,7 @@ export const useSearchUser = (params?: SearchUserParams, enabled: boolean = fals
       query: SearchUserParamsSchema.parse(params),
       transfer: UserSchema.parse,
     }),
+    retry: false,
     enabled: !!params?.searchKey && !!params?.type && enabled,
   })
 }
