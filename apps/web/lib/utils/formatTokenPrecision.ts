@@ -10,7 +10,7 @@ import BigNumber from 'bignumber.js'
  *    3 floor     : 向 -∞ 舍入 (正数截断, 负数进位)   => BigNumber.ROUND_FLOOR
  *    4 halfUp    : 四舍五入, .5 远离 0              => BigNumber.ROUND_HALF_UP
  *    5 halfDown  : 五舍六入, .5 向 0                => BigNumber.ROUND_HALF_DOWN
- *  padWithZeros: 1=补 0 到指定位数; 0=不补 (会去掉末尾多余 0)
+ *  padWithZeros: 0=补 0 到指定位数; 1=不补 (会去掉末尾多余 0)
  *  displayPrecision: 目标展示小数位数
  */
 export interface TokenPrecisionAutoVO {

@@ -182,10 +182,8 @@ const TokenList: FunctionComponent = () => {
   }
   const formatAmount = (val: number | string | BigNumber, coinName: string) => {
     try {
-      const formattedCoinName = coinName.includes('/') ? coinName.split('/')[0] : coinName
-      if (!formattedCoinName) return '--'
       const str = applyTokenPrecision(
-        marketPricesData?.find((token) => token.displaySymbol?.split('/')[0]?.toUpperCase() === formattedCoinName?.toUpperCase())
+        marketPricesData?.find((token) => token.displaySymbol?.toUpperCase() === coinName?.toUpperCase())
           ?.rulePairInfo,
         val
       )
