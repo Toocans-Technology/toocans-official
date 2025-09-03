@@ -10,8 +10,8 @@ import TokenList from '@/components/market/TokenList'
 import { useLogin } from '@/hooks'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
-import { useUserFavorites, useAddFavorite } from '@/services/market'
-import { useDeleteFavorite } from '@/services/market/deleteFavorite'
+import { useUserFavorites, useAddFavorite,useDeleteFavorite,useMarketPrices } from '@/services/market'
+
 import { openToast } from '@/utils'
 
 export default function Page() {
@@ -24,14 +24,12 @@ export default function Page() {
   const { isLoggedIn } = useLogin()
   const [searchValue, setSearchValue] = useState('')
   const tabsWrapRef = useRef<HTMLDivElement | null>(null)
-  const favoritesRef = useRef<HTMLButtonElement | null>(null)
-  const marketsRef = useRef<HTMLButtonElement | null>(null)
+
   const { tokens: allTokenData } = useAllToken()
   const { data: userFavorites, refetch: refetchUserFavorites } = useUserFavorites()
   const { mutate: addFavorite } = useAddFavorite()
   const { mutate: deleteFavorite } = useDeleteFavorite()
-
-  const [indicator, setIndicator] = useState<{ left: number; width: number }>({ left: 0, width: 0 })
+  const { mutateAsync: fetchMarketPrices, data: marketPricesData } = useMarketPrices()
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -43,28 +41,31 @@ export default function Page() {
       setSearchValue('')
     }
     if (tab === 'favorites' && !isLoggedIn) return
+    if (tab === 'markets' && !marketPricesData) {
+      fetchMarketPrices({})
+    }
     setActiveTab(tab)
   }
 
   useEffect(() => {
-    const update = () => {
-      const wrapRect = tabsWrapRef.current?.getBoundingClientRect()
-      const el = (activeTab === 'favorites' ? favoritesRef.current : marketsRef.current) as HTMLButtonElement | null
-      const elRect = el?.getBoundingClientRect()
-      if (!wrapRect || !elRect) return
-      const INDICATOR_WIDTH = 28
-      const left = elRect.left - wrapRect.left + (elRect.width - INDICATOR_WIDTH) / 2
-      const width = INDICATOR_WIDTH
-      setIndicator({ left, width })
-    }
-    update()
+    // const update = () => {
+    //   const wrapRect = tabsWrapRef.current?.getBoundingClientRect()
+    //   const el = (activeTab === 'favorites' ? favoritesRef.current : marketsRef.current) as HTMLButtonElement | null
+    //   const elRect = el?.getBoundingClientRect()
+    //   if (!wrapRect || !elRect) return
+    //   const INDICATOR_WIDTH = 28
+    //   const left = elRect.left - wrapRect.left + (elRect.width - INDICATOR_WIDTH) / 2
+    //   const width = INDICATOR_WIDTH
+    //   setIndicator({ left, width })
+    // }
+    // update()
     if (activeTab === 'favorites') {
       setIsAdd(false)
     } else {
       setIsAdd(true)
     }
-    window.addEventListener('resize', update)
-    return () => window.removeEventListener('resize', update)
+    // window.addEventListener('resize', update)
+    // return () => window.removeEventListener('resize', update)
   }, [activeTab])
 
   const [cryptoData, setCryptoData] = useState<
@@ -86,9 +87,7 @@ export default function Page() {
     setLoading(true)
 
     if (isFavorite) {
-      const token = allTokenData?.find((t) => t.tokenId === tokenName)
-      if (token) {
-        const symbolId = token.tokenId
+        const symbolId = tokenName
         deleteFavorite(
           { symbolIds: [symbolId] },
           {
@@ -104,27 +103,6 @@ export default function Page() {
             },
           }
         )
-      }
-    } else {
-      const token = allTokenData?.find((t) => t.tokenId === tokenName)
-      if (token) {
-        const symbolId = token.tokenId
-        addFavorite(
-          { favorites: [{ symbolId, customOrder: cryptoData.length - 1 }] },
-          {
-            onSuccess: () => {
-              notification.destroy()
-              openToast(t('market:AddedToFavoritesToast'), 'success')
-              refetchUserFavorites()
-              setLoading(false)
-            },
-            onError: () => {
-              setLoading(false)
-              // Handle error
-            },
-          }
-        )
-      }
     }
   }
 
@@ -136,11 +114,11 @@ export default function Page() {
   })
 
   const renderCryptoRow = (rowData: typeof cryptoData) => (
-    <div className="relative flex w-full flex-[0_0_auto] items-center gap-6 self-stretch">
+    <div className="relative flex w-full flex-[0_0_auto] flex-wrap items-center gap-5 self-stretch">
       {rowData.map((crypto) => (
         <div
           key={crypto.id}
-          className="relative flex h-14 w-[33.33%] cursor-pointer items-center justify-between rounded-[8px] bg-[#F8F8F8] p-3 transition-opacity hover:opacity-80"
+          className="relative flex h-14 w-[318px] cursor-pointer items-center justify-between rounded-[8px] bg-[#F8F8F8] p-3 transition-opacity hover:opacity-80"
           role="button"
           aria-label={`Toggle favorite ${crypto.pair}`}
           tabIndex={0}
@@ -227,7 +205,7 @@ export default function Page() {
           onValueChange={(val) => handleTabChange(val as 'favorites' | 'markets')}
           className="flex w-full flex-row items-center justify-between"
         >
-          <TabsList>
+          <TabsList className="bg-transparent">
             {isLoggedIn && <TabsTrigger value="favorites">{t('market:TabFavorites')}</TabsTrigger>}
             <TabsTrigger value="markets">{t('market:TabMarkets')}</TabsTrigger>
           </TabsList>
@@ -280,7 +258,7 @@ export default function Page() {
             </div>
           </TabsContent>
           <TabsContent value="markets">
-            <div className="relative mb-4 flex h-5 items-center gap-7 justify-end">
+            <div className="relative mb-4 flex h-5 items-center justify-end gap-7">
               {!isEdit && (
                 <div className="relative flex cursor-pointer items-center">
                   <div className="flex w-full items-center gap-3 rounded-full bg-[#f7f7f7] p-3">
@@ -339,7 +317,52 @@ export default function Page() {
                 setIsAdd(false)
               }}
               cryptoData={cryptoData ?? []}
+              marketPricesData={marketPricesData ?? []}
               searchCoin={searchValue}
+              onTokenSelect={(tokenName, isFavorite) => {
+                if (!isFavorite) {
+                  const token = tokenName
+                  if (token) {
+                    const favoriteCount = cryptoData.filter((c) => c.isFavorite).length
+                    addFavorite(
+                      { favorites: [{ symbolId: token as string, customOrder: favoriteCount }] },
+                      {
+                        onSuccess: () => {
+                          notification.destroy()
+                          openToast(t('market:AddedToFavoritesToast'), 'success')
+                          setCryptoData((prev) =>
+                            prev.map((c) => (c.tokenName === token ? { ...c, isFavorite: true } : c))
+                          )
+                          refetchUserFavorites()
+                        },
+                        onError: () => {
+                          // Handle error
+                        },
+                      }
+                    )
+                  }
+                } else {
+                  const token = tokenName
+                  if (token) {
+                    deleteFavorite(
+                      { symbolIds: [token] },
+                      {
+                        onSuccess: () => {
+                          notification.destroy()
+                          setCryptoData((prev) =>
+                            prev.map((c) => (c.tokenName === token ? { ...c, isFavorite: false } : c))
+                          )
+                          openToast(t('market:RemovedFromFavoritesToast'), 'success')
+                          refetchUserFavorites()
+                        },
+                        onError: () => {
+                          // Handle error
+                        },
+                      }
+                    )
+                  }
+                }
+              }}
             />
           )}
 

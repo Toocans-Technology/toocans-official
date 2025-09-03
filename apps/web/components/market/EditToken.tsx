@@ -1,15 +1,17 @@
 'use client'
-import { notification } from 'antd'
 
+import { notification } from 'antd'
 import Image from 'next/image'
-import { FunctionComponent, useState, useEffect, useMemo } from 'react'
+import { FunctionComponent, useState, useEffect, useMemo, useRef } from 'react'
 import { Empty } from '@/components/common'
 import ConfirmModal from '@/components/market/ConfirmModal'
 import { useT } from '@/i18n'
+import { useDeleteFavorite } from '@/services/market/deleteFavorite'
+import { useUpdateFavoriteOrder } from '@/services/market/updateFavoriteOrder'
 import { openToast } from '@/utils'
 
 interface EditTokenProps {
-  tokens: Array<{ id: string | number; pair: string }>
+  tokens: Array<{ id: string | number; pair: string; tokenName: string }>
   onClose: () => void
   searchCoin?: string
 }
@@ -18,10 +20,15 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
   const { t } = useT('market')
   const [selectedTokens, setSelectedTokens] = useState<string[]>([])
   const [confirmOpen, setConfirmOpen] = useState(false)
-  const [orderedTokens, setOrderedTokens] = useState<Array<{ id: string; name: string }>>([])
+  const [orderedTokens, setOrderedTokens] = useState<Array<{ id: string; name: string; tokenName: string }>>([])
+  const [draggingId, setDraggingId] = useState<string | null>(null)
+  const [dragOverId, setDragOverId] = useState<string | null>(null)
+  const dragStartOrderRef = useRef<string[] | null>(null)
+  const { mutate: deleteFavorite } = useDeleteFavorite()
+  const { mutate: updateFavoriteOrder } = useUpdateFavoriteOrder()
 
   useEffect(() => {
-    const incoming = tokens.map((t) => ({ id: String(t.id), name: t.pair }))
+    const incoming = tokens.map((t) => ({ id: String(t.id), name: t.pair, tokenName: t.tokenName }))
     setOrderedTokens((prev) => {
       if (prev.length === 0) return incoming
       const incomingIds = new Set(incoming.map((i) => i.id))
@@ -37,8 +44,8 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
       orderedTokens.filter((t) => {
         if (!searchCoin) return true
         const key = searchCoin.trim().toLowerCase()
-        const pair: string = t.name || ''
-        const base = pair ? (pair.split('/')[0]?.toLowerCase() ?? '') : ''
+        const pair: string = t.tokenName || ''
+        const base = pair ? (pair.toLowerCase() ?? '') : ''
         return base.includes(key)
       }),
     [orderedTokens, searchCoin]
@@ -75,7 +82,47 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
       next.unshift(item)
       return next
     })
-    openToast(t('market:PinSuccess'), 'success')
+    // openToast(t('market:PinSuccess'), 'success')
+  }
+
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, id: string) => {
+    setDraggingId(id)
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/plain', id)
+    dragStartOrderRef.current = orderedTokens.map((t) => t.id)
+  }
+  const handleDragEnter = (id: string) => {
+    if (!draggingId || id === draggingId) return
+    setDragOverId(id)
+    setOrderedTokens((prev) => {
+      const from = prev.findIndex((t) => t.id === draggingId)
+      const to = prev.findIndex((t) => t.id === id)
+      if (from === -1 || to === -1 || from === to) return prev
+      const next = [...prev]
+      const [item] = next.splice(from, 1)
+      if (!item) return prev
+      next.splice(to, 0, item)
+      return next
+    })
+  }
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+  }
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setDraggingId(null)
+    setDragOverId(null)
+  }
+  const handleDragEnd = () => {
+    if (dragStartOrderRef.current) {
+      const endOrder = orderedTokens.map((t) => t.id)
+      if (JSON.stringify(endOrder) !== JSON.stringify(dragStartOrderRef.current)) {
+        // openToast(t('market:MoveSuccess'), 'success')
+      }
+    }
+    dragStartOrderRef.current = null
+    setDraggingId(null)
+    setDragOverId(null)
   }
 
   const isTokenSelected = (tokenId: string) => selectedTokens.includes(tokenId)
@@ -121,7 +168,15 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
             tokenData.map((token) => (
               <div
                 key={token.id}
-                className="relative flex w-full flex-[0_0_auto] flex-col items-start justify-center self-stretch border-b border-[#F4F4F4]"
+                className={`relative flex w-full flex-[0_0_auto] flex-col items-start justify-center self-stretch border-b border-[#F4F4F4] transition-colors ${dragOverId === token.id && draggingId !== token.id ? 'bg-[#F7F7F7]' : ''} ${draggingId === token.id ? 'width-[300px] border border-dashed border-[#1ACA75] opacity-80' : ''}`}
+                draggable
+                onDragStart={(e) => handleDragStart(e, token.id)}
+                onDragEnter={() => handleDragEnter(token.id)}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e)}
+                onDragEnd={handleDragEnd}
+                aria-grabbed={draggingId === token.id}
+                role="option"
               >
                 <div className="relative flex h-[72px] w-full items-center justify-between self-stretch">
                   <div className="relative flex h-[22px] w-24 items-center gap-2">
@@ -144,13 +199,14 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
 
                     <div
                       onClick={() => handleTokenSelect(token.id)}
-                      className={`relative w-fit cursor-pointer text-center font-[Inter] text-[14px] font-normal leading-normal text-[var(--light-text-primary,#222)] ${token.name === 'DOGE/USDT' ? 'mr-[-11.00px]' : ''}`}
+                      // className={`relative w-fit cursor-pointer text-center font-[Inter] text-[14px] font-normal leading-normal text-[var(--light-text-primary,#222)] ${token.name === 'DOGE/USDT' ? 'mr-[-11.00px]' : ''}`}
+                      className={`text-[var(--light-text-primary,#222)]} relative w-fit cursor-pointer text-center font-[Inter] text-[14px] font-normal leading-normal`}
                     >
                       {token.name}
                     </div>
                   </div>
 
-                  <div className="relative flex h-[22px] w-[120px] items-center gap-5">
+                  <div className="relative flex h-[22px] w-[120px] select-none items-center gap-5">
                     <div className="flex w-12 justify-end text-right">
                       <button
                         type="button"
@@ -170,8 +226,8 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
 
                     <div className="flex w-12 justify-end text-right">
                       <Image
-                        className="w-[20px] cursor-pointer"
-                        alt="Frame"
+                        className="w-[20px] cursor-move"
+                        alt={t('market:DragColumn')}
                         src="/images/market/drag.svg"
                         width={20}
                         height={20}
@@ -236,12 +292,48 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
           </button>
         </div>
 
-        <button
-          onClick={onClose}
-          className="relative w-fit cursor-pointer text-center font-[Inter] text-[14px] font-normal leading-normal text-[var(--dark-status-link,#3C7BF4)]"
-        >
-          {t('market:DoneAction')}
-        </button>
+        <div style={{ display: 'flex', gap: '24px' }}>
+          <button
+            onClick={() => {
+              notification.destroy()
+              onClose()
+            }}
+            className="relative w-fit cursor-pointer text-center font-[Inter] text-[14px] font-normal leading-normal text-[var(--dark-status-link,#3C7BF4)]"
+          >
+            {t('market:Cancel')}
+          </button>
+
+          <button
+            onClick={() => {
+              if (!tokenData || tokenData.length === 0) {
+                notification.destroy()
+                onClose()
+                return
+              }
+
+              const orders = tokenData.map((token, index) => ({
+                symbolId: token.tokenName,
+                customOrder: index,
+              }))
+
+              updateFavoriteOrder(
+                { orders },
+                {
+                  onSuccess: () => {
+                    notification.destroy()
+                    openToast(t('market:UpdateOrderSuccess'), 'success')
+                    onClose()
+                  },
+                  onError: () => {
+                  },
+                }
+              )
+            }}
+            className="relative w-fit cursor-pointer text-center font-[Inter] text-[14px] font-normal leading-normal text-[var(--dark-status-link,#3C7BF4)]"
+          >
+            {t('market:DoneAction')}
+          </button>
+        </div>
       </div>
       <ConfirmModal
         open={confirmOpen}
@@ -251,6 +343,26 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
         cancelText={t('market:Cancel')}
         confirmText={t('market:DeleteAction')}
         onConfirm={() => {
+          if (selectedTokens.length > 0) {
+            const selectedTokenNames = selectedTokens
+              .map((id) => {
+                const token = tokenData.find((t) => t.id === id)
+                return token ? token.tokenName : null
+              })
+              .filter((tokenName) => tokenName !== null)
+
+            setOrderedTokens((prev) => prev.filter((t) => !selectedTokens.includes(t.id)))
+            deleteFavorite(
+              { symbolIds: selectedTokenNames },
+              {
+                onSuccess: () => {
+                  notification.destroy()
+                  openToast(t('market:RemovedFromFavoritesToast'), 'success')
+                },
+                onError: () => {},
+              }
+            )
+          }
           setSelectedTokens([])
         }}
       />
