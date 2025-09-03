@@ -26,6 +26,10 @@ const PaginationControls: FunctionComponent<PaginationControlsProps> = ({
   siblingCount = 1,
   onPageChange,
 }) => {
+  const pageTextCls = 'font-[Inter] text-[14px] leading-[22px] font-normal text-center text-[var(--BG-666,#666)]'
+  const pageContainerBase = 'w-8 h-8 flex items-center justify-center'
+  const activeItemCls = `${pageContainerBase} rounded bg-[var(--dark-brand-default,#9CFF1F)] text-[var(--BG-222222,#222)]`
+  const pageButtonBase = 'w-full h-full hover:bg-transparent active:bg-transparent focus-visible:ring-0 transition-none'
   const pageRange = useMemo(() => {
     const range: number[] = []
 
@@ -53,24 +57,27 @@ const PaginationControls: FunctionComponent<PaginationControlsProps> = ({
         {/* 左侧省略号 */}
         {currentPage > siblingCount + 1 && (
           <>
-            <PaginationItem>
-              <Button variant="ghost" size="sm" onClick={() => onPageChange(1)}>
+            <PaginationItem className={currentPage === 1 ? activeItemCls : pageContainerBase}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn(pageTextCls, pageButtonBase, currentPage === 1 && 'pointer-events-none')}
+                onClick={() => onPageChange(1)}
+              >
                 1
               </Button>
             </PaginationItem>
-            {currentPage > siblingCount + 2 && (
-              <PaginationItem className="text-muted-foreground px-2 text-sm">...</PaginationItem>
-            )}
+            {currentPage > siblingCount + 2 && <PaginationItem className={`px-2 ${pageTextCls}`}>...</PaginationItem>}
           </>
         )}
 
         {/* 中间页码 */}
         {pageRange.map((page) => (
-          <PaginationItem key={page}>
+          <PaginationItem key={page} className={page === currentPage ? activeItemCls : pageContainerBase}>
             <Button
-              variant={page === currentPage ? 'default' : 'ghost'}
+              variant="ghost"
               size="sm"
-              className={cn(page === currentPage && 'pointer-events-none')}
+              className={cn(pageTextCls, pageButtonBase, page === currentPage && 'pointer-events-none')}
               onClick={() => onPageChange(page)}
             >
               {page}
@@ -82,10 +89,15 @@ const PaginationControls: FunctionComponent<PaginationControlsProps> = ({
         {currentPage < totalPages - siblingCount && (
           <>
             {currentPage < totalPages - siblingCount - 1 && (
-              <PaginationItem className="text-muted-foreground px-2 text-sm">...</PaginationItem>
+              <PaginationItem className={`px-2 ${pageTextCls}`}>...</PaginationItem>
             )}
-            <PaginationItem>
-              <Button variant="ghost" size="sm" onClick={() => onPageChange(totalPages)}>
+            <PaginationItem className={currentPage === totalPages ? activeItemCls : pageContainerBase}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn(pageTextCls, pageButtonBase, currentPage === totalPages && 'pointer-events-none')}
+                onClick={() => onPageChange(totalPages)}
+              >
                 {totalPages}
               </Button>
             </PaginationItem>
