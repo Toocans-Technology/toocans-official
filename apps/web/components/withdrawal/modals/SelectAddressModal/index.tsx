@@ -11,7 +11,7 @@ import {
   Separator,
 } from '@workspace/ui/components'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@workspace/ui/components'
-import { useRouter } from '@/hooks'
+import { Link } from '@/components/common'
 import { useT } from '@/i18n'
 import { PATHNAMES } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
@@ -39,7 +39,6 @@ const SelectAddressModal: FunctionComponent<Props> = ({
   onOpenChange,
 }) => {
   const { t } = useT(['withdrawal', 'common'])
-  const router = useRouter()
   const isOnChain = addressTypes?.includes(AddressType.OnChain)
   const { data: addressList } = useWithdrawAddressList({
     tokenId: isOnChain ? token?.tokenId : undefined,
@@ -66,11 +65,6 @@ const SelectAddressModal: FunctionComponent<Props> = ({
     },
     [addressList, onConfirm, onOpenChange, selectedAddressId]
   )
-
-  const handleAddNow = useCallback(() => {
-    onOpenChange?.(false)
-    router.push(PATHNAMES.withdrawAddress)
-  }, [onOpenChange, router])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -114,9 +108,9 @@ const SelectAddressModal: FunctionComponent<Props> = ({
           </Command>
         </div>
         <DialogFooter>
-          <Button rounded="full" onClick={handleAddNow}>
-            {t('withdrawal:selectAddressModal.addNow')}
-          </Button>
+          <Link href={PATHNAMES.withdrawAddress} target="_blank">
+            <Button rounded="full">{t('withdrawal:selectAddressModal.addNow')}</Button>
+          </Link>
         </DialogFooter>
       </DialogContent>
     </Dialog>
