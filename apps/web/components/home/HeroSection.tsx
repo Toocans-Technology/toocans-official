@@ -81,7 +81,7 @@ const HeroSection: FunctionComponent = () => {
                     {t('home:startNow')}
                   </Button>
                 </div>
-                {isValid && <p className="text-destructive">{t('home:invalidEmail')}</p>}
+                {!isValid && <p className="text-destructive">{t('home:invalidEmail')}</p>}
               </>
             )}
           </div>
