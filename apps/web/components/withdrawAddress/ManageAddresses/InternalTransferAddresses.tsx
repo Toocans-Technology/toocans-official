@@ -29,6 +29,8 @@ import {
 } from '../modals'
 import Filter, { FilterParams } from './Filter'
 
+const addressTypes = [AddressType.UID, AddressType.Email, AddressType.Phone].join(',')
+
 interface Props {
   chargeType?: string
   onSuccess?: (addressType: AddressType) => void
@@ -38,19 +40,33 @@ const InternalTransferAddresses: FunctionComponent<Props> = ({ chargeType, onSuc
   const { t } = useT(['withdrawAddress', 'common'])
   const [params, setParams] = useState<WithdrawAddressParams>({
     tokenId: '',
-    addressTypes: [AddressType.UID, AddressType.Email, AddressType.Phone].join(','),
+    addressTypes,
   })
   const { data, refetch, isLoading } = useWithdrawAddressList(params, false)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [filterParams, setFilterParams] = useState<FilterParams>({
+    tokenId: '',
+    keyword: '',
+  })
 
   useEffect(() => {
     if (chargeType === ChargeType.Internal.toString()) {
       refetch()
     }
-  }, [chargeType, refetch])
+  }, [chargeType, refetch, params?.tokenId])
+
+  const addressesList = useMemo(() => {
+    return data?.filter((item) =>
+      [item.address, item.addressName].some((item) =>
+        item?.toLocaleLowerCase().includes(filterParams?.keyword?.toLocaleLowerCase() || '')
+      )
+    )
+  }, [data, filterParams])
 
   const handleChange = useCallback((filterParams: FilterParams) => {
-    setParams(filterParams)
+    setFilterParams(filterParams)
+    setParams({ tokenId: filterParams.tokenId, addressTypes })
+    setSelectedIds([])
   }, [])
 
   const handleCopy = useCallback(() => {
@@ -108,8 +124,8 @@ const InternalTransferAddresses: FunctionComponent<Props> = ({ chargeType, onSuc
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data?.length ? (
-            data?.map((record) => (
+          {addressesList?.length ? (
+            addressesList?.map((record) => (
               <TableRow key={record.id}>
                 <TableCell className="py-3 font-medium">
                   <div className="flex items-center gap-2">
@@ -135,9 +151,7 @@ const InternalTransferAddresses: FunctionComponent<Props> = ({ chargeType, onSuc
                 </TableCell>
                 <TableCell className="py-3">{record.tokenNetWork ?? '-'}</TableCell>
                 <TableCell className="py-3">{record.addressName ?? '-'}</TableCell>
-                <TableCell className="py-3 text-right">
-                  {dayjs(Number(record.updated)).format('YYYY-MM-DD HH:mm:ss')}
-                </TableCell>
+                <TableCell className="py-3">{dayjs(Number(record.updated)).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                 <TableCell className="py-3">
                   <div className="flex items-center gap-1">
                     <UpdateWithdrawAddressModal data={record} onSuccess={refetch} />

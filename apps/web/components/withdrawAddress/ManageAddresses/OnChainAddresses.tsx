@@ -45,15 +45,28 @@ const OnChainAddresses: FunctionComponent<Props> = ({ chargeType, onSuccess }) =
   })
   const { data, refetch, isLoading } = useWithdrawAddressList(params, false)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [filterParams, setFilterParams] = useState<FilterParams>({
+    tokenId: '',
+    keyword: '',
+  })
 
   useEffect(() => {
     if (chargeType === ChargeType.OnChain.toString()) {
       refetch()
     }
-  }, [chargeType, refetch])
+  }, [chargeType, refetch, params?.tokenId])
+
+  const addressesList = useMemo(() => {
+    return data?.filter((item) =>
+      [item.address, item.addressName].some((item) =>
+        item?.toLocaleLowerCase().includes(filterParams?.keyword?.toLocaleLowerCase() || '')
+      )
+    )
+  }, [data, filterParams])
 
   const handleChange = useCallback((filterParams: FilterParams) => {
-    setParams({ ...filterParams, addressTypes: AddressType.OnChain.toString() })
+    setFilterParams(filterParams)
+    setParams({ tokenId: filterParams.tokenId, addressTypes: AddressType.OnChain.toString() })
     setSelectedIds([])
   }, [])
 
@@ -112,8 +125,8 @@ const OnChainAddresses: FunctionComponent<Props> = ({ chargeType, onSuccess }) =
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data?.length ? (
-            data?.map((record) => (
+          {addressesList?.length ? (
+            addressesList?.map((record) => (
               <TableRow key={record.id}>
                 <TableCell className="py-3 font-medium">
                   <div className="flex items-center gap-2">
@@ -146,9 +159,7 @@ const OnChainAddresses: FunctionComponent<Props> = ({ chargeType, onSuccess }) =
                 </TableCell>
                 <TableCell className="py-3">{record.tokenNetWork}</TableCell>
                 <TableCell className="py-3">{record.addressName ?? '-'}</TableCell>
-                <TableCell className="py-3 text-right">
-                  {dayjs(Number(record.updated)).format('YYYY-MM-DD HH:mm:ss')}
-                </TableCell>
+                <TableCell className="py-3">{dayjs(Number(record.updated)).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                 <TableCell className="py-3">
                   <div className="flex items-center justify-end gap-1">
                     <UpdateWithdrawAddressModal data={record} onSuccess={refetch} />
