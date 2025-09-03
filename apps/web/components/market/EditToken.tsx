@@ -302,8 +302,8 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
           >
             {t('market:Cancel')}
           </button>
-
-          <button
+{tokenData.length >0 && (
+  <button
             onClick={() => {
               if (!tokenData || tokenData.length === 0) {
                 notification.destroy()
@@ -333,6 +333,8 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
           >
             {t('market:DoneAction')}
           </button>
+)}
+          
         </div>
       </div>
       <ConfirmModal

@@ -186,9 +186,9 @@ export default function Page() {
     } else {
       setIsEmpty(true)
       setCryptoData([
-        { id: 1, symbolID: '1', pair: 'BTC/USDT', tokenName: 'BTC', isFavorite: true },
-        { id: 2, symbolID: '2', pair: 'SOL/USDT', tokenName: 'SOL', isFavorite: true },
-        { id: 3, symbolID: '3', pair: 'ETH/USDT', tokenName: 'ETH', isFavorite: true },
+        { id: 1, symbolID: '1', pair: 'BTC/USDT', tokenName: 'BTC/USDT', isFavorite: true },
+        { id: 2, symbolID: '2', pair: 'SOL/USDT', tokenName: 'SOL/USDT', isFavorite: true },
+        { id: 3, symbolID: '3', pair: 'ETH/USDT', tokenName: 'ETH/USDT', isFavorite: true },
       ])
     }
   }, [userFavorites])
@@ -375,17 +375,17 @@ export default function Page() {
               onClick={() => {
                 const favoriteTokens = cryptoData.filter((crypto) => crypto.isFavorite)
                 const favorites = favoriteTokens.map((favorite, index) => {
-                  const token = allTokenData?.find((t) => t.tokenId === favorite.tokenName)
-                  if (token) {
+                  // const token = allTokenData?.find((t) => t.tokenId === favorite.tokenName)
+                  // if (token) {
+                  //   return {
+                  //     symbolId: token.tokenId,
+                  //     customOrder: index,
+                  //   }
+                  // } else {
                     return {
-                      symbolId: token.tokenId,
+                      symbolId: favorite.tokenName,
                       customOrder: index,
-                    }
-                  } else {
-                    return {
-                      symbolId: null,
-                      customOrder: index,
-                    }
+                    // }
                   }
                 })
                 if (favorites.length > 0) {
