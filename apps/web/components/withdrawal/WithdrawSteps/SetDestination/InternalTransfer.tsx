@@ -4,27 +4,52 @@ import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js'
 import Image from 'next/image'
 import { ChangeEvent, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Label, toast } from '@workspace/ui/components'
-import { cn } from '@workspace/ui/lib/utils'
-import { PhoneNumberInput, Input } from '@/components/common'
+import { PhoneNumberInput, Input, Link, TransferTypeTab } from '@/components/common'
 import { useT } from '@/i18n'
-import { EMAIL_REGEX, INPUT_DEFAULT_VALUE } from '@/lib/utils'
+import { EMAIL_REGEX, INPUT_DEFAULT_VALUE, PATHNAMES } from '@/lib/utils'
+import { Token } from '@/services/basicConfig'
 import { Country } from '@/services/login'
+import { WithdrawAddress } from '@/services/wallet/schemas/address.schema'
 import { User, useSearchUser } from '@/services/wallet/searchUser'
 import { InputValueType } from '@/types/form'
-import { InternalTransferType } from '@/types/withdraw'
+import { AddressType, InternalTransferType } from '@/types/withdraw'
+import { SelectAddressModal } from '../../modals'
+
+interface AccountNameLabelProps {
+  htmlFor: string
+}
+
+const AccountNameLabel: FunctionComponent<AccountNameLabelProps> = ({ htmlFor }) => {
+  const { t } = useT('withdrawal')
+
+  return (
+    <div className="flex justify-between">
+      <Label className="text-sm text-[#222]" htmlFor={htmlFor}>
+        {t('withdrawal:accountName')}
+      </Label>
+      <Link href={PATHNAMES.withdrawAddress} className="text-link hover:text-link/80 text-sm">
+        {t('withdrawal:manageAddresses')}
+      </Link>
+    </div>
+  )
+}
 
 interface Props {
+  token: Token
   onChange?: (data?: User) => void
+  onSelectAddress?: (address?: WithdrawAddress) => void
   onTransferTabChange?: (type: InternalTransferType) => void
 }
 
-const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabChange }) => {
+const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectAddress, onTransferTabChange }) => {
   const { t } = useT('withdrawal')
+  const [open, setOpen] = useState(false)
   const [email, setEmail] = useState<InputValueType>(INPUT_DEFAULT_VALUE)
   const [phone, setPhone] = useState<InputValueType>(INPUT_DEFAULT_VALUE)
   const [uid, setUid] = useState<InputValueType>(INPUT_DEFAULT_VALUE)
   const [countryCode, setCountryCode] = useState<CountryCode>()
   const [transferType, setTransferType] = useState(InternalTransferType.Email)
+  const [selectedAddress, setSelectedAddress] = useState<WithdrawAddress>()
 
   const searchKey = useMemo(() => {
     if (transferType === InternalTransferType.UID) {
@@ -33,31 +58,16 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
       const phoneNumber = `+${countryCode}${phone.value}`
       return isValidPhoneNumber(phoneNumber) ? phoneNumber : undefined
     } else {
-      return EMAIL_REGEX.test(email.value) ? email.value : undefined
+      return email.value && EMAIL_REGEX.test(email.value) ? email.value : undefined
     }
   }, [transferType, uid.value, phone.value, email.value, countryCode])
+
+  const addressTypes = useMemo(() => [AddressType.UID, AddressType.Email, AddressType.Phone], [])
 
   const { refetch } = useSearchUser({
     searchKey,
     type: transferType,
   })
-
-  const transferTypeList = useMemo(() => {
-    return [
-      {
-        label: t('withdrawal:email'),
-        value: InternalTransferType.Email,
-      },
-      {
-        label: t('withdrawal:phone'),
-        value: InternalTransferType.Phone,
-      },
-      {
-        label: t('withdrawal:uid'),
-        value: InternalTransferType.UID,
-      },
-    ]
-  }, [t])
 
   const handleTabChange = useCallback(
     (value: InternalTransferType) => {
@@ -90,6 +100,12 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
     }
   }, [refetch, onChange])
 
+  useEffect(() => {
+    if (selectedAddress) {
+      handleRefetch()
+    }
+  }, [selectedAddress, handleRefetch])
+
   const handleEmailChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value
@@ -99,7 +115,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
   )
 
   const handleEmailBlur = useCallback(async () => {
-    const isEmail = EMAIL_REGEX.test(email.value)
+    const isEmail = email.value && EMAIL_REGEX.test(email.value)
 
     if (isEmail) {
       setEmail((s) => ({ ...s, error: '', isInvalid: false }))
@@ -130,7 +146,6 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
   const handleUidChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/[^\d]/g, '')
-
       setUid((s) => ({ ...s, value, error: '', isInvalid: false }))
     },
     [setUid]
@@ -145,28 +160,44 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
     }
   }, [handleRefetch, t, uid.value])
 
+  const handleClearAddress = useCallback(() => {
+    setSelectedAddress(undefined)
+    onSelectAddress?.(undefined)
+    onChange?.(undefined)
+  }, [onSelectAddress, onChange])
+
+  const handleConfirm = useCallback(
+    (address?: WithdrawAddress) => {
+      if (address) {
+        let type = InternalTransferType.Email
+
+        if (address.addressType === AddressType.Email) {
+          type = InternalTransferType.Email
+          setEmail((s) => ({ ...s, value: address.address, isInvalid: false }))
+        } else if (address.addressType === AddressType.Phone) {
+          type = InternalTransferType.Phone
+          setPhone((s) => ({ ...s, value: address.address, isInvalid: false }))
+        } else {
+          type = InternalTransferType.UID
+          setUid((s) => ({ ...s, value: address.address, isInvalid: false }))
+        }
+
+        setTransferType(type)
+      }
+
+      setSelectedAddress(address)
+      onSelectAddress?.(address)
+    },
+    [onSelectAddress]
+  )
+
   return (
     <>
-      <div className="flex gap-4">
-        {transferTypeList.map((item) => (
-          <div
-            key={item.value}
-            className={cn(
-              'inline-flex cursor-pointer items-center rounded-md border border-solid border-[#f8f8f8] bg-[#f8f8f8] px-4 py-[5px]',
-              transferType === item.value && 'border-brand'
-            )}
-            onClick={() => handleTabChange(item.value)}
-          >
-            <span className="text-foreground text-sm">{item.label}</span>
-          </div>
-        ))}
-      </div>
+      <TransferTypeTab value={transferType} onTransferTabChange={handleTabChange} />
       <div className="max-w-[456px]">
         {transferType === InternalTransferType.Email && (
           <div className="mt-2 flex flex-col gap-2">
-            <Label className="text-sm" htmlFor="email">
-              {t('withdrawal:accountName')}
-            </Label>
+            <AccountNameLabel htmlFor="email" />
             <Input
               name="email"
               aria-labelledby="email"
@@ -176,8 +207,9 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
               placeholder={t('withdrawal:emailPlaceholder')}
               onChange={handleEmailChange}
               onBlur={handleEmailBlur}
+              onClear={handleClearAddress}
               endContent={
-                <Button variant="ghost" size="icon" className="size-6" rounded="sm">
+                <Button variant="ghost" size="icon" className="size-6" rounded="sm" onClick={() => setOpen(true)}>
                   <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />
                 </Button>
               }
@@ -187,9 +219,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
         )}
         {transferType === InternalTransferType.Phone && (
           <div className="mt-2 flex flex-col gap-2">
-            <Label className="text-sm" htmlFor="phone">
-              {t('withdrawal:accountName')}
-            </Label>
+            <AccountNameLabel htmlFor="phone" />
             <PhoneNumberInput
               name="phone"
               aria-labelledby="phone"
@@ -198,8 +228,9 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
               onChange={handlePhoneChange}
               onCountryChange={(country: Country) => setCountryCode(country.nationalCode as CountryCode)}
               onBlur={handlePhoneBlur}
+              onClear={handleClearAddress}
               endContent={
-                <Button variant="ghost" size="icon" className="size-6" rounded="sm">
+                <Button variant="ghost" size="icon" className="size-6" rounded="sm" onClick={() => setOpen(true)}>
                   <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />
                 </Button>
               }
@@ -209,9 +240,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
         )}
         {transferType === InternalTransferType.UID && (
           <div className="mt-2 flex flex-col gap-2">
-            <Label className="text-sm" htmlFor="uid">
-              {t('withdrawal:accountName')}
-            </Label>
+            <AccountNameLabel htmlFor="uid" />
             <Input
               name="uid"
               aria-labelledby="uid"
@@ -221,8 +250,9 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
               placeholder={t('withdrawal:uidPlaceholder')}
               onChange={handleUidChange}
               onBlur={handleUidBlur}
+              onClear={handleClearAddress}
               endContent={
-                <Button variant="ghost" size="icon" className="size-6" rounded="sm">
+                <Button variant="ghost" size="icon" className="size-6" rounded="sm" onClick={() => setOpen(true)}>
                   <Image src="/icons/identity.svg" alt="identity" width={24} height={24} />
                 </Button>
               }
@@ -231,6 +261,14 @@ const InternalTransfer: FunctionComponent<Props> = ({ onChange, onTransferTabCha
           </div>
         )}
       </div>
+      <SelectAddressModal
+        open={open}
+        value={selectedAddress?.id}
+        token={token}
+        addressTypes={addressTypes}
+        onOpenChange={setOpen}
+        onConfirm={handleConfirm}
+      />
     </>
   )
 }

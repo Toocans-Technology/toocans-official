@@ -44,3 +44,12 @@ export enum ChargeType {
 }
 
 export const chargeTypeSchema = z.nativeEnum(ChargeType)
+
+export enum AddressType {
+  OnChain = 1, // 链上地址
+  UID = 2, // UID
+  Email = 3, // 邮箱
+  Phone = 4, // 手机号
+}
+
+export const addressTypeSchema = z.nativeEnum(AddressType)

@@ -25,12 +25,20 @@ import { Token } from '@/services/basicConfig'
 import DefaultTokens from './DefaultTokens'
 
 interface Props {
+  className?: string
+  popoverClassName?: string
   showAvailable?: boolean
   showDefaultTokens?: boolean
   onSelect?: (token: Token) => void
 }
 
-const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = true, showAvailable = false }) => {
+const SelectToken: FunctionComponent<Props> = ({
+  onSelect,
+  showDefaultTokens = true,
+  showAvailable = false,
+  className,
+  popoverClassName,
+}) => {
   const { t } = useT('common')
   const { tokens } = useAllToken()
   const { data } = useAssetAll()
@@ -99,7 +107,10 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="hover:border-brand focus:border-brand h-11 w-[456px] justify-between border-[#f8f8f8] bg-[#f8f8f8] px-3"
+            className={cn(
+              'hover:border-brand focus:border-brand h-11 justify-between border-[#f8f8f8] bg-[#f8f8f8] px-3',
+              className
+            )}
           >
             <div className="flex items-center gap-2">
               {selectedToken ? (
@@ -113,13 +124,13 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
                   <div className="text-sm text-[#333]">{selectedToken?.tokenName}</div>
                 </>
               ) : (
-                <span className="text-xs text-[#999]">{t('common:searchToken')}</span>
+                <span className="text-xs text-[#999]">{t('common:selectToken')}</span>
               )}
             </div>
             <ChevronDown className="opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[456px] border-none p-0 shadow-lg" align="start">
+        <PopoverContent className={cn('w-full border-none p-0 shadow-lg', popoverClassName)} align="start">
           <Command
             className="p-3"
             filter={(value, search) => {
