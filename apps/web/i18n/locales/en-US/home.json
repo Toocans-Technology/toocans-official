@@ -40,5 +40,6 @@
     "LastPrice": "Last Price",
     "Change": "Change",
     "Last24h": "Last 24h"
-  }
+  },
+  "totalBalance": "Total Balance"
 }
