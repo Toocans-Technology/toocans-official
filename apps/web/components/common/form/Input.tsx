@@ -31,7 +31,7 @@ const Input: FunctionComponent<Props> = ({
     <div
       aria-invalid={invalid}
       className={cn(
-        'hover:border-ring hover:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-2 overflow-hidden rounded-md bg-[#f8f8f8] px-3 hover:ring-[1px]',
+        'hover:border-ring hover:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] focus-within:border-ring focus-within:ring-brand flex items-center gap-2 overflow-hidden rounded-md bg-[#f8f8f8] px-3 focus-within:ring-[1px] hover:ring-[1px]',
         className
       )}
     >

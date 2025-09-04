@@ -32,6 +32,7 @@ const InputWithTag: FunctionComponent<Props> = ({
       aria-invalid={invalid}
       className={cn(
         'hover:border-ring hover:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] focus-within:border-ring focus-within:ring-brand flex items-center gap-2 overflow-hidden rounded-md bg-[#f8f8f8] px-3 py-1 focus-within:ring-[1px] hover:ring-[1px]',
+        tag && 'py-2.5',
         className
       )}
     >
@@ -43,7 +44,11 @@ const InputWithTag: FunctionComponent<Props> = ({
         )}
         <InputBase
           autoComplete="off"
-          className={cn('aria-invalid:ring-0 h-9 p-0 hover:ring-0 focus-visible:ring-0', tag && 'h-8', inputClassName)}
+          className={cn(
+            'aria-invalid:ring-0 h-9 p-0 hover:ring-0 focus-visible:ring-0',
+            tag && 'h-7.5',
+            inputClassName
+          )}
           value={value}
           onChange={onChange}
           {...props}
