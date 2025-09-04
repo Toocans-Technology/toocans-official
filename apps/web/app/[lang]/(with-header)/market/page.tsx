@@ -10,8 +10,7 @@ import TokenList from '@/components/market/TokenList'
 import { useLogin } from '@/hooks'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
-import { useUserFavorites, useAddFavorite,useDeleteFavorite,useMarketPrices } from '@/services/market'
-
+import { useUserFavorites, useAddFavorite, useDeleteFavorite, useMarketPrices } from '@/services/market'
 import { openToast } from '@/utils'
 
 export default function Page() {
@@ -87,22 +86,22 @@ export default function Page() {
     setLoading(true)
 
     if (isFavorite) {
-        const symbolId = tokenName
-        deleteFavorite(
-          { symbolIds: [symbolId] },
-          {
-            onSuccess: () => {
-              notification.destroy()
-              openToast(t('market:RemovedFromFavoritesToast'), 'success')
-              refetchUserFavorites()
-              setLoading(false)
-            },
-            onError: () => {
-              setLoading(false)
-              // Handle error
-            },
-          }
-        )
+      const symbolId = tokenName
+      deleteFavorite(
+        { symbolIds: [symbolId] },
+        {
+          onSuccess: () => {
+            notification.destroy()
+            openToast(t('market:RemovedFromFavoritesToast'), 'success')
+            refetchUserFavorites()
+            setLoading(false)
+          },
+          onError: () => {
+            setLoading(false)
+            // Handle error
+          },
+        }
+      )
     }
   }
 
@@ -152,11 +151,11 @@ export default function Page() {
   useEffect(() => {
     if (isLoggedIn) {
       setActiveTab('favorites')
-    }else{
-        fetchMarketPrices({})
+    } else {
+      fetchMarketPrices({})
     }
   }, [isLoggedIn, fetchMarketPrices])
-  
+
   useEffect(() => {
     if (!userFavorites) {
       setIsEmpty(true)
@@ -166,7 +165,7 @@ export default function Page() {
       const updatedCryptoData = userFavorites
         .map((favorite) => ({
           id: favorite.id ?? 0,
-          pair: (favorite.symbolPairConfig?.displaySymbol),
+          pair: favorite.symbolPairConfig?.displaySymbol,
           tokenName: favorite.symbolId,
           isFavorite: true,
           customOrder: favorite.customOrder ?? 0,
