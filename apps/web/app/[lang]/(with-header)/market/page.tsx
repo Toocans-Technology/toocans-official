@@ -2,11 +2,12 @@
 
 import { notification } from 'antd'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState, useMemo } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@workspace/ui/components'
 import { Empty } from '@/components/common'
+import { Loading } from '@/components/common'
 import EditToken from '@/components/market/EditToken'
-import { useRouter } from 'next/navigation'
 import TokenList from '@/components/market/TokenList'
 import { useLogin } from '@/hooks'
 import { useT } from '@/i18n'
@@ -19,6 +20,7 @@ export default function Page() {
   const [isEdit, setIsEdit] = useState(false)
   const [isAdd, setIsAdd] = useState(false)
   const [isEmpty, setIsEmpty] = useState(false)
+  const [isClear, setIsClear] = useState(false)
   const router = useRouter()
 
   const { isLoggedIn } = useLogin()
@@ -30,6 +32,7 @@ export default function Page() {
   const { mutate: deleteFavorite } = useDeleteFavorite()
   const { mutateAsync: fetchMarketPrices, data: marketPricesData } = useMarketPrices()
   const [loading, setLoading] = useState(false)
+  const [userLoading,setUserLoading] = useState(true)
 
   useEffect(() => {
     console.log('searchValue changed:', searchValue)
@@ -78,17 +81,9 @@ export default function Page() {
   }, [cryptoData])
 
   const filteredMarketPricesData = useMemo(() => {
-    console.log('0---');
-    console.log(marketPricesData);
-    console.log(cryptoData);
     if (!marketPricesData || !Array.isArray(marketPricesData) || cryptoData.length === 0) return []
-    console.log('1---');
-    console.log(marketPricesData);
-    console.log(cryptoData);
     const pairSet = new Set(cryptoData.map((c) => c.pair).filter(Boolean))
     const orderMap = new Map(cryptoData.map((c) => [c.pair, c.customOrder ?? 0]))
-    console.log('2---');
-    console.log(pairSet);
     return (marketPricesData ?? [])
       .filter((m) => m?.displaySymbol && pairSet.has(m.displaySymbol))
       .sort((a, b) => {
@@ -332,6 +327,17 @@ export default function Page() {
                 setIsEdit(false)
                 refetchUserFavorites()
               }}
+              onClearAll={() => {
+                setIsEmpty(true)
+                setIsClear(true)
+                setCryptoData([])
+                setCryptoData([
+                  { id: 1, symbolID: '1', pair: 'BTC/USDT', tokenName: 'BTC/USDT', isFavorite: true, customOrder: 2 },
+                  { id: 2, symbolID: '2', pair: 'SOL/USDT', tokenName: 'SOL/USDT', isFavorite: true, customOrder: 1 },
+                  { id: 3, symbolID: '3', pair: 'ETH/USDT', tokenName: 'ETH/USDT', isFavorite: true, customOrder: 0 },
+                ])
+                setIsEdit(false)
+              }}
               searchCoin={searchValue}
             />
           )}
@@ -347,8 +353,8 @@ export default function Page() {
               searchCoin={searchValue}
               onTokenSelect={(tokenName, isFavorite) => {
                 if (!isLoggedIn) {
-                   router.replace('/login')
-                  return;
+                  router.replace('/login')
+                  return
                 }
                 if (!isFavorite) {
                   const token = tokenName
@@ -358,6 +364,7 @@ export default function Page() {
                       { favorites: [{ symbolId: token as string, customOrder: favoriteCount }] },
                       {
                         onSuccess: () => {
+                          setIsClear(false)
                           notification.destroy()
                           openToast(t('market:AddedToFavoritesToast'), 'success')
                           setCryptoData((prev) =>
@@ -395,7 +402,7 @@ export default function Page() {
               }}
             />
           )}
-          {!isEdit && !isAdd && (userFavorites?.length ?? 0) > 0 && filteredCryptoData.length > 0 && (
+          {!isEdit && !isClear && !isAdd && (userFavorites?.length ?? 0) > 0 && filteredCryptoData.length > 0 && (
             <TokenList
               onClose={() => {
                 setSearchValue('')
@@ -413,6 +420,7 @@ export default function Page() {
                       { favorites: [{ symbolId: token as string, customOrder: favoriteCount }] },
                       {
                         onSuccess: () => {
+                          setIsClear(false)
                           notification.destroy()
                           openToast(t('market:AddedToFavoritesToast'), 'success')
                           setCryptoData((prev) =>
@@ -450,10 +458,15 @@ export default function Page() {
               }}
             />
           )}
-          {!isEdit && !isAdd && (userFavorites?.length ?? 0) === 0 && filteredCryptoData.length === 0 && <Empty />}
+          {
+            (userLoading && !userFavorites) && <Loading />
+          }
+          {!isEdit && !userLoading && !isAdd && (userFavorites?.length ?? 0) === 0 && filteredCryptoData.length === 0 && (
+            <Empty />
+          )}
           {!isEdit &&
             !isAdd &&
-            (userFavorites?.length ?? 0) === 0 &&
+            ((userFavorites?.length ?? 0) === 0 || isClear) &&
             filteredCryptoData.length > 0 &&
             renderCryptoRow(filteredCryptoData)}
           {!isEdit && !isAdd && userFavorites?.length === 0 && (
@@ -483,6 +496,7 @@ export default function Page() {
                     { favorites },
                     {
                       onSuccess: () => {
+                        setIsClear(false)
                         notification.destroy()
                         openToast(t('market:AddedToFavoritesToast'), 'success')
                         refetchUserFavorites()

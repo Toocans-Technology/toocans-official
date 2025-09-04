@@ -51,6 +51,7 @@
   "selectToken": "Select token",
   "searchToken": "Search token",
   "noData": "No Data",
+  "loading": "Loading...",
   "all": "All",
   "verifyModal": {
     "title": "Please Verify Your Account",
