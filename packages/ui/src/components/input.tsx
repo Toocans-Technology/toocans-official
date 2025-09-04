@@ -15,7 +15,7 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
       )}
       {...props}
       style={{
-        caretColor: 'oklch(from #1ACA75 l c h)',
+        caretColor: 'oklch(0.74 0.18 154 / 0.5)',
       }}
     />
   )

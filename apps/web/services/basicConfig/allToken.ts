@@ -80,14 +80,12 @@ const AllTokenParamsSchema = z
 export type AllTokenParams = z.infer<typeof AllTokenParamsSchema>
 
 export const getAllToken = (params?: AllTokenParams) => {
-  const { isLoggedIn } = useLogin()
-
   return useQuery({
     ...getQuery({
       method: 'GET',
       url: getUrl('/bc/baseConfig/allToken'),
       query: AllTokenParamsSchema.parse(params),
       transfer: AllTokenSchema.parse,
-    })
+    }),
   })
 }
