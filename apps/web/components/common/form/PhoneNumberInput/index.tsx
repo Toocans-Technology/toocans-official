@@ -11,6 +11,7 @@ interface Props {
   invalid?: boolean
   value?: string
   name?: string
+  nationalCode?: string
   endContent?: React.ReactNode
   onBlur?: () => void
   onChange?: (value: string) => void
@@ -21,6 +22,7 @@ interface Props {
 const PhoneNumberInput: FunctionComponent<Props> = ({
   invalid,
   value,
+  nationalCode,
   onChange,
   onCountryChange,
   endContent,
@@ -35,7 +37,7 @@ const PhoneNumberInput: FunctionComponent<Props> = ({
       aria-invalid={invalid}
       className="hover:border-ring hover:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-2 overflow-hidden rounded-md bg-[#f8f8f8] px-2.5 hover:ring-[1px]"
     >
-      <CountrySelect onChange={onCountryChange} />
+      <CountrySelect nationalCode={nationalCode} onChange={onCountryChange} />
       <Separator orientation="vertical" className="bg-[#999] data-[orientation=vertical]:h-2.5" />
       <Input
         id="phone"
