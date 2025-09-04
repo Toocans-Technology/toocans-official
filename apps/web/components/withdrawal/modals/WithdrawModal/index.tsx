@@ -92,8 +92,9 @@ const WithdrawModal: FunctionComponent<Props> = ({
   }, [userInfo])
 
   const form = useForm<z.infer<typeof FormSchema>>({
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
     resolver: zodResolver(FormSchema),
-    mode: 'onChange',
     defaultValues: {
       code: '',
       gaCode: '',
