@@ -55,5 +55,11 @@
     "uppercase": "At least one uppercase character",
     "number": "At least one number",
     "length": "8 to 32 characters"
-  }
+  },
+  "deleteAccountTitle": "Delete Account",
+  "deleteAccountBullet1": "Your personal information and related data (e.g. history, favorites, orders) will be permanently deleted and cannot be recovered.",
+  "deleteAccountBullet2": "You will not be able to use the services related to this account.",
+  "deleteAccountBullet3": "Before deletion, please make sure you have backed up the data you need.",
+  "deleteAccountAgreement": "I have read and understand that all data will not be recoverable after deletion",
+  "deleteAccountNext": "Next"
 }
