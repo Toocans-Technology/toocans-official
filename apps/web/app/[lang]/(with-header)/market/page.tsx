@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, useMemo } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@workspace/ui/components'
 import { Empty } from '@/components/common'
 import EditToken from '@/components/market/EditToken'
+import { useRouter } from 'next/navigation'
 import TokenList from '@/components/market/TokenList'
 import { useLogin } from '@/hooks'
 import { useT } from '@/i18n'
@@ -18,6 +19,7 @@ export default function Page() {
   const [isEdit, setIsEdit] = useState(false)
   const [isAdd, setIsAdd] = useState(false)
   const [isEmpty, setIsEmpty] = useState(false)
+  const router = useRouter()
 
   const { isLoggedIn } = useLogin()
   const [searchValue, setSearchValue] = useState('')
@@ -77,8 +79,13 @@ export default function Page() {
 
   const filteredMarketPricesData = useMemo(() => {
     if (!marketPricesData || !Array.isArray(marketPricesData) || cryptoData.length === 0) return []
+    console.log('1---');
+    console.log(marketPricesData);
+    console.log(cryptoData);
     const pairSet = new Set(cryptoData.map((c) => c.pair).filter(Boolean))
     const orderMap = new Map(cryptoData.map((c) => [c.pair, c.customOrder ?? 0]))
+    console.log('2---');
+    console.log(pairSet);
     return (marketPricesData ?? [])
       .filter((m) => m?.displaySymbol && pairSet.has(m.displaySymbol))
       .sort((a, b) => {
@@ -336,6 +343,10 @@ export default function Page() {
               marketPricesData={marketPricesData ?? []}
               searchCoin={searchValue}
               onTokenSelect={(tokenName, isFavorite) => {
+                if (!isLoggedIn) {
+                   router.replace('/login')
+                  return;
+                }
                 if (!isFavorite) {
                   const token = tokenName
                   if (token) {
