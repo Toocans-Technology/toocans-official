@@ -302,39 +302,38 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
           >
             {t('market:Cancel')}
           </button>
-{tokenData.length >0 && (
-  <button
-            onClick={() => {
-              if (!tokenData || tokenData.length === 0) {
-                notification.destroy()
-                onClose()
-                return
-              }
-
-              const orders = tokenData.map((token, index) => ({
-                symbolId: token.tokenName,
-                customOrder: index,
-              }))
-
-              updateFavoriteOrder(
-                { orders },
-                {
-                  onSuccess: () => {
-                    notification.destroy()
-                    openToast(t('market:UpdateOrderSuccess'), 'success')
-                    onClose()
-                  },
-                  onError: () => {
-                  },
+          {tokenData.length > 0 && (
+            <button
+              onClick={() => {
+                if (!tokenData || tokenData.length === 0) {
+                  notification.destroy()
+                  onClose()
+                  return
                 }
-              )
-            }}
-            className="relative w-fit cursor-pointer text-center font-[Inter] text-[14px] font-normal leading-normal text-[var(--dark-status-link,#3C7BF4)]"
-          >
-            {t('market:DoneAction')}
-          </button>
-)}
-          
+
+                const total = tokenData.length
+                const orders = tokenData.map((token, index) => ({
+                  symbolId: token.tokenName,
+                  customOrder: total - 1 - index,
+                }))
+
+                updateFavoriteOrder(
+                  { orders },
+                  {
+                    onSuccess: () => {
+                      notification.destroy()
+                      openToast(t('market:UpdateOrderSuccess'), 'success')
+                      onClose()
+                    },
+                    onError: () => {},
+                  }
+                )
+              }}
+              className="relative w-fit cursor-pointer text-center font-[Inter] text-[14px] font-normal leading-normal text-[var(--dark-status-link,#3C7BF4)]"
+            >
+              {t('market:DoneAction')}
+            </button>
+          )}
         </div>
       </div>
       <ConfirmModal
@@ -353,6 +352,7 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
               })
               .filter((tokenName) => tokenName !== null)
 
+            const remainingCount = orderedTokens.filter((t) => !selectedTokens.includes(t.id)).length
             setOrderedTokens((prev) => prev.filter((t) => !selectedTokens.includes(t.id)))
             deleteFavorite(
               { symbolIds: selectedTokenNames },
@@ -360,6 +360,9 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
                 onSuccess: () => {
                   notification.destroy()
                   openToast(t('market:RemovedFromFavoritesToast'), 'success')
+                  if (remainingCount === 0) {
+                    onClose()
+                  }
                 },
                 onError: () => {},
               }
