@@ -28,6 +28,7 @@ const TokenList: FunctionComponent = () => {
       marketPricesData?.map((token, i) => {
         const tokenId = token.baseToken?.toUpperCase() || ''
         const tokenIcon = getToken(tokenId)?.icon || ''
+        console.log('tokenIcon:', tokenIcon, 'for tokenId:', tokenId)
         const updatedToken = marketWSData?.find(
           (updated) =>
             updated.displaySymbol?.split('/')[0]?.toUpperCase() === token.displaySymbol?.split('/')[0]?.toUpperCase()

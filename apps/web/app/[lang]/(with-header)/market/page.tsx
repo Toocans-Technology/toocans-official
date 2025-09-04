@@ -2,13 +2,13 @@
 
 import { notification } from 'antd'
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useMemo } from 'react'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@workspace/ui/components'
 import { Empty } from '@/components/common'
 import EditToken from '@/components/market/EditToken'
+import { useRouter } from 'next/navigation'
 import TokenList from '@/components/market/TokenList'
 import { useLogin } from '@/hooks'
-import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
 import { useUserFavorites, useAddFavorite, useDeleteFavorite, useMarketPrices } from '@/services/market'
 import { openToast } from '@/utils'
@@ -19,12 +19,12 @@ export default function Page() {
   const [isEdit, setIsEdit] = useState(false)
   const [isAdd, setIsAdd] = useState(false)
   const [isEmpty, setIsEmpty] = useState(false)
+  const router = useRouter()
 
   const { isLoggedIn } = useLogin()
   const [searchValue, setSearchValue] = useState('')
   const tabsWrapRef = useRef<HTMLDivElement | null>(null)
 
-  const { tokens: allTokenData } = useAllToken()
   const { data: userFavorites, refetch: refetchUserFavorites } = useUserFavorites()
   const { mutate: addFavorite } = useAddFavorite()
   const { mutate: deleteFavorite } = useDeleteFavorite()
@@ -68,8 +68,35 @@ export default function Page() {
   }, [activeTab])
 
   const [cryptoData, setCryptoData] = useState<
-    Array<{ id: number; symbolID: string; pair: string; tokenName: string; isFavorite: boolean }>
+    Array<{ id: number; symbolID: string; pair: string; tokenName: string; isFavorite: boolean; customOrder?: number }>
   >([])
+
+  const sortedCryptoData = useMemo(() => {
+    if (!cryptoData || cryptoData.length === 0) return [] as typeof cryptoData
+    console.log([...cryptoData].sort((a, b) => (b.customOrder ?? 0) - (a.customOrder ?? 0)))
+    return [...cryptoData].sort((a, b) => (b.customOrder ?? 0) - (a.customOrder ?? 0))
+  }, [cryptoData])
+
+  const filteredMarketPricesData = useMemo(() => {
+    console.log('0---');
+    console.log(marketPricesData);
+    console.log(cryptoData);
+    if (!marketPricesData || !Array.isArray(marketPricesData) || cryptoData.length === 0) return []
+    console.log('1---');
+    console.log(marketPricesData);
+    console.log(cryptoData);
+    const pairSet = new Set(cryptoData.map((c) => c.pair).filter(Boolean))
+    const orderMap = new Map(cryptoData.map((c) => [c.pair, c.customOrder ?? 0]))
+    console.log('2---');
+    console.log(pairSet);
+    return (marketPricesData ?? [])
+      .filter((m) => m?.displaySymbol && pairSet.has(m.displaySymbol))
+      .sort((a, b) => {
+        const oa = orderMap.get(a?.displaySymbol ?? '') ?? -Infinity
+        const ob = orderMap.get(b?.displaySymbol ?? '') ?? -Infinity
+        return ob - oa
+      })
+  }, [marketPricesData, cryptoData])
 
   const toggleFavorite = (tokenName: string, isFavorite: boolean) => {
     if (!isLoggedIn || userFavorites?.length === 0) {
@@ -111,7 +138,6 @@ export default function Page() {
     const base = c.pair?.split('/')[0]?.toLowerCase() ?? ''
     return base.includes(key)
   })
-
   const renderCryptoRow = (rowData: typeof cryptoData) => (
     <div className="relative flex w-full flex-[0_0_auto] flex-wrap items-center gap-5 self-stretch">
       {rowData.map((crypto) => (
@@ -149,13 +175,11 @@ export default function Page() {
   )
 
   useEffect(() => {
+    fetchMarketPrices({})
     if (isLoggedIn) {
       setActiveTab('favorites')
-    } else {
-      fetchMarketPrices({})
     }
   }, [isLoggedIn, fetchMarketPrices])
-
   useEffect(() => {
     if (!userFavorites) {
       setIsEmpty(true)
@@ -171,7 +195,7 @@ export default function Page() {
           customOrder: favorite.customOrder ?? 0,
           symbolID: favorite.symbolPairConfig?.id,
         }))
-        .sort((a, b) => a.customOrder - b.customOrder)
+        .sort((a, b) => b.customOrder - a.customOrder)
       setIsEmpty(false)
       setCryptoData(
         updatedCryptoData as Array<{
@@ -180,14 +204,15 @@ export default function Page() {
           pair: string
           tokenName: string
           isFavorite: boolean
+          customOrder?: number
         }>
       )
     } else {
       setIsEmpty(true)
       setCryptoData([
-        { id: 1, symbolID: '1', pair: 'BTC/USDT', tokenName: 'BTC', isFavorite: true },
-        { id: 2, symbolID: '2', pair: 'SOL/USDT', tokenName: 'SOL', isFavorite: true },
-        { id: 3, symbolID: '3', pair: 'ETH/USDT', tokenName: 'ETH', isFavorite: true },
+        { id: 1, symbolID: '1', pair: 'BTC/USDT', tokenName: 'BTC/USDT', isFavorite: true, customOrder: 2 },
+        { id: 2, symbolID: '2', pair: 'SOL/USDT', tokenName: 'SOL/USDT', isFavorite: true, customOrder: 1 },
+        { id: 3, symbolID: '3', pair: 'ETH/USDT', tokenName: 'ETH/USDT', isFavorite: true, customOrder: 0 },
       ])
     }
   }, [userFavorites])
@@ -292,7 +317,7 @@ export default function Page() {
         id="crypto-content"
         role="tabpanel"
       >
-        {!isEdit && !isAdd && cryptoData.length > 0 && (
+        {!isEdit && !isAdd && cryptoData.length === 0 && (
           <h2 className="relative mt-[-1.00px] self-stretch font-[Inter] text-[14px] font-normal leading-normal text-[var(--light-text-secondary,#666)]">
             {t('market:SelectCrypto')}
           </h2>
@@ -317,8 +342,67 @@ export default function Page() {
                 setSearchValue('')
                 setIsAdd(false)
               }}
-              cryptoData={cryptoData ?? []}
+              cryptoData={userFavorites && userFavorites?.length > 0 ? sortedCryptoData : []}
               marketPricesData={marketPricesData ?? []}
+              searchCoin={searchValue}
+              onTokenSelect={(tokenName, isFavorite) => {
+                if (!isLoggedIn) {
+                   router.replace('/login')
+                  return;
+                }
+                if (!isFavorite) {
+                  const token = tokenName
+                  if (token) {
+                    const favoriteCount = cryptoData.filter((c) => c.isFavorite).length
+                    addFavorite(
+                      { favorites: [{ symbolId: token as string, customOrder: favoriteCount }] },
+                      {
+                        onSuccess: () => {
+                          notification.destroy()
+                          openToast(t('market:AddedToFavoritesToast'), 'success')
+                          setCryptoData((prev) =>
+                            prev.map((c) => (c.tokenName === token ? { ...c, isFavorite: true } : c))
+                          )
+                          refetchUserFavorites()
+                        },
+                        onError: () => {
+                          // Handle error
+                        },
+                      }
+                    )
+                  }
+                } else {
+                  const token = tokenName
+                  if (token) {
+                    deleteFavorite(
+                      { symbolIds: [token] },
+                      {
+                        onSuccess: () => {
+                          notification.destroy()
+                          setCryptoData((prev) =>
+                            prev.map((c) => (c.tokenName === token ? { ...c, isFavorite: false } : c))
+                          )
+                          openToast(t('market:RemovedFromFavoritesToast'), 'success')
+                          refetchUserFavorites()
+                        },
+                        onError: () => {
+                          // Handle error
+                        },
+                      }
+                    )
+                  }
+                }
+              }}
+            />
+          )}
+          {!isEdit && !isAdd && (userFavorites?.length ?? 0) > 0 && filteredCryptoData.length > 0 && (
+            <TokenList
+              onClose={() => {
+                setSearchValue('')
+                setIsAdd(false)
+              }}
+              cryptoData={sortedCryptoData}
+              marketPricesData={filteredMarketPricesData}
               searchCoin={searchValue}
               onTokenSelect={(tokenName, isFavorite) => {
                 if (!isFavorite) {
@@ -366,28 +450,34 @@ export default function Page() {
               }}
             />
           )}
-
-          {!isEdit && !isAdd && (filteredCryptoData.length > 0 ? renderCryptoRow(filteredCryptoData) : <Empty />)}
+          {!isEdit && !isAdd && (userFavorites?.length ?? 0) === 0 && filteredCryptoData.length === 0 && <Empty />}
+          {!isEdit &&
+            !isAdd &&
+            (userFavorites?.length ?? 0) === 0 &&
+            filteredCryptoData.length > 0 &&
+            renderCryptoRow(filteredCryptoData)}
           {!isEdit && !isAdd && userFavorites?.length === 0 && (
             <button
               className={`relative flex h-10 w-[210px] cursor-pointer items-center justify-center gap-2.5 rounded-[40px] bg-[#9cff1f] px-[127px] py-2 transition-colors hover:bg-[#8ae01b] focus:outline-none focus:ring-2 focus:ring-[#9cff1f] focus:ring-offset-2 ${!hasFavorite ? 'opacity-50' : ''}`}
               onClick={() => {
                 const favoriteTokens = cryptoData.filter((crypto) => crypto.isFavorite)
-                const favorites = favoriteTokens.map((favorite, index) => {
-                  const token = allTokenData?.find((t) => t.tokenId === favorite.tokenName)
-                  if (token) {
-                    return {
-                      symbolId: token.tokenId,
-                      customOrder: index,
-                    }
-                  } else {
-                    return {
-                      symbolId: null,
-                      customOrder: index,
-                    }
+                let favorites = favoriteTokens.map((favorite, index) => {
+                  // const token = allTokenData?.find((t) => t.tokenId === favorite.tokenName)
+                  // if (token) {
+                  //   return {
+                  //     symbolId: token.tokenId,
+                  //     customOrder: index,
+                  //   }
+                  // } else {
+                  return {
+                    symbolId: favorite.tokenName,
+                    customOrder: index,
+                    // }
                   }
                 })
                 if (favorites.length > 0) {
+                  const total = favorites.length
+                  favorites = favorites.map((f, i) => ({ ...f, customOrder: total - 1 - i }))
                   setLoading(true)
                   addFavorite(
                     { favorites },

@@ -82,7 +82,7 @@ const TokenList: FunctionComponent<TokenListProps> = ({
   const [sortKey, setSortKey] = useState<null | 'name' | 'price' | 'change'>(null)
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const [currentPage, setCurrentPage] = useState<number>(1)
-  const pageSize = 5
+  const pageSize = 20
   const { isLoggedIn } = useLogin()
 
   const toggleSort = (key: 'name' | 'price' | 'change') => {
