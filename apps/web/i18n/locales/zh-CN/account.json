@@ -55,5 +55,11 @@
     "uppercase": "至少包含一个大写字母",
     "number": "至少包含一个数字",
     "length": "8到32个字符"
-  }
+  },
+  "deleteAccountTitle": "删除账号",
+  "deleteAccountBullet1": "您的个人信息及相关数据（如历史记录、收藏、订单等）将被永久删除且无法恢复。",
+  "deleteAccountBullet2": "您将无法继续使用与该账号相关的任何服务。",
+  "deleteAccountBullet3": "删除前请确保已备份所需数据。",
+  "deleteAccountAgreement": "我已阅读并理解，删除后所有数据将无法恢复。",
+  "deleteAccountNext": "下一步"
 }
