@@ -226,6 +226,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
               value={phone.value}
               invalid={phone.isInvalid}
               onChange={handlePhoneChange}
+              tag={selectedAddress?.addressName}
               onCountryChange={(country: Country) => setCountryCode(country.nationalCode)}
               nationalCode={countryCode}
               onBlur={handlePhoneBlur}
