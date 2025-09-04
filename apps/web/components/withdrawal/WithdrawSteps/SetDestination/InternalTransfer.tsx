@@ -115,10 +115,9 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value
       setEmail((s) => ({ ...s, value, error: '', isInvalid: false }))
-      setSelectedAddress(undefined)
-      onSelectAddress?.(undefined)
+      handleClearAddress()
     },
-    [onSelectAddress]
+    [handleClearAddress]
   )
 
   const handleEmailBlur = useCallback(async () => {
@@ -135,10 +134,9 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
   const handlePhoneChange = useCallback(
     (value: string) => {
       setPhone((s) => ({ ...s, value, error: '', isInvalid: false }))
-      setSelectedAddress(undefined)
-      onSelectAddress?.(undefined)
+      handleClearAddress()
     },
-    [setPhone, onSelectAddress]
+    [handleClearAddress]
   )
 
   const handlePhoneBlur = useCallback(() => {
@@ -156,10 +154,9 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/[^\d]/g, '')
       setUid((s) => ({ ...s, value, error: '', isInvalid: false }))
-      setSelectedAddress(undefined)
-      onSelectAddress?.(undefined)
+      handleClearAddress()
     },
-    [onSelectAddress]
+    [handleClearAddress]
   )
 
   const handleUidBlur = useCallback(async () => {
