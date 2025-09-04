@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2Icon } from 'lucide-react'
 import Image from 'next/image'
-import { FunctionComponent, useCallback, useEffect, useState } from 'react'
+import { FunctionComponent, useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {
   Button,
@@ -42,11 +42,8 @@ const UpdateWithdrawAddressModal: FunctionComponent<Props> = ({ data, onSuccess 
       addressName: data?.addressName || '',
     },
   })
-  const { handleSubmit, setValue, formState } = form
 
-  useEffect(() => {
-    setValue('addressName', data?.addressName || '')
-  }, [setValue, data])
+  const { handleSubmit, formState } = form
 
   const onSubmit = useCallback(
     async (data: UpdateWithdrawAddressReq) => {
@@ -71,8 +68,16 @@ const UpdateWithdrawAddressModal: FunctionComponent<Props> = ({ data, onSuccess 
     [mutateUpdateAddressName, t, onSuccess]
   )
 
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      setOpen(open)
+      form.reset()
+    },
+    [form]
+  )
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -112,7 +117,7 @@ const UpdateWithdrawAddressModal: FunctionComponent<Props> = ({ data, onSuccess 
             />
           </div>
           <DialogFooter>
-            <Button rounded="full" variant="secondary" onClick={() => setOpen(false)}>
+            <Button rounded="full" variant="secondary" onClick={() => handleOpenChange(false)}>
               {t('common:cancel')}
             </Button>
             <Button rounded="full" disabled={!formState.isValid || isPending} onClick={handleSubmit(onSubmit)}>

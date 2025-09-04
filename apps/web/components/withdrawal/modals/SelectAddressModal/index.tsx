@@ -52,18 +52,12 @@ const SelectAddressModal: FunctionComponent<Props> = ({
 
   const handleSelect = useCallback(
     (id: string) => {
-      if (selectedAddressId === id) {
-        setSelectedAddressId(undefined)
-        onConfirm?.(undefined)
-      } else {
-        const address = addressList?.find((item) => item.id === id)
-        setSelectedAddressId(id)
-        onConfirm?.(address)
-      }
-
+      const address = addressList?.find((item) => item.id === id)
+      setSelectedAddressId(id)
+      onConfirm?.(address)
       onOpenChange?.(false)
     },
-    [addressList, onConfirm, onOpenChange, selectedAddressId]
+    [addressList, onConfirm, onOpenChange]
   )
 
   return (

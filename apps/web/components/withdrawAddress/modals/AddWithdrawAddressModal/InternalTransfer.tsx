@@ -92,6 +92,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
           ...data,
           tokenId: '',
           addressType,
+          address: `${nationalCode}${data.address}`,
         })
         toast.success(t('withdrawAddress:addSuccess'))
         onSuccess?.(addressType)
@@ -99,7 +100,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
         toast.error((error as HttpError).message)
       }
     },
-    [addWithdrawAddress, addressType, onSuccess, t]
+    [addWithdrawAddress, addressType, nationalCode, onSuccess, t]
   )
 
   const handleTransferTabChange = useCallback(
