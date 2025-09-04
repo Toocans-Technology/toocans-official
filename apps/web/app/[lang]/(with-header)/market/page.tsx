@@ -78,6 +78,9 @@ export default function Page() {
   }, [cryptoData])
 
   const filteredMarketPricesData = useMemo(() => {
+    console.log('0---');
+    console.log(marketPricesData);
+    console.log(cryptoData);
     if (!marketPricesData || !Array.isArray(marketPricesData) || cryptoData.length === 0) return []
     console.log('1---');
     console.log(marketPricesData);
