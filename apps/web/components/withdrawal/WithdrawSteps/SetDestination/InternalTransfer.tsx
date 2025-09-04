@@ -68,6 +68,12 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
     type: transferType,
   })
 
+  const handleClearAddress = useCallback(() => {
+    setSelectedAddress(undefined)
+    onSelectAddress?.(undefined)
+    onChange?.(undefined)
+  }, [onSelectAddress, onChange])
+
   const handleTabChange = useCallback(
     (value: InternalTransferType) => {
       setTransferType(value)
@@ -79,10 +85,10 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
         setEmail(INPUT_DEFAULT_VALUE)
       }
 
-      onChange?.(undefined)
+      handleClearAddress()
       onTransferTabChange?.(value)
     },
-    [onChange, onTransferTabChange]
+    [onTransferTabChange, handleClearAddress]
   )
 
   const handleRefetch = useCallback(async () => {
@@ -109,8 +115,10 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value
       setEmail((s) => ({ ...s, value, error: '', isInvalid: false }))
+      setSelectedAddress(undefined)
+      onSelectAddress?.(undefined)
     },
-    [setEmail]
+    [onSelectAddress]
   )
 
   const handleEmailBlur = useCallback(async () => {
@@ -127,8 +135,10 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
   const handlePhoneChange = useCallback(
     (value: string) => {
       setPhone((s) => ({ ...s, value, error: '', isInvalid: false }))
+      setSelectedAddress(undefined)
+      onSelectAddress?.(undefined)
     },
-    [setPhone]
+    [setPhone, onSelectAddress]
   )
 
   const handlePhoneBlur = useCallback(() => {
@@ -146,8 +156,10 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/[^\d]/g, '')
       setUid((s) => ({ ...s, value, error: '', isInvalid: false }))
+      setSelectedAddress(undefined)
+      onSelectAddress?.(undefined)
     },
-    [setUid]
+    [onSelectAddress]
   )
 
   const handleUidBlur = useCallback(async () => {
@@ -158,12 +170,6 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
       handleRefetch()
     }
   }, [handleRefetch, t, uid.value])
-
-  const handleClearAddress = useCallback(() => {
-    setSelectedAddress(undefined)
-    onSelectAddress?.(undefined)
-    onChange?.(undefined)
-  }, [onSelectAddress, onChange])
 
   const handleConfirm = useCallback(
     (address?: WithdrawAddress) => {
