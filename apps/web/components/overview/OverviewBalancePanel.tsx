@@ -19,7 +19,7 @@ import { Link, VerifyModal } from '../common'
 export default function OverviewBalancePanel() {
   const { t } = useT('overview')
   const { data: data } = useAssetAll()
-  const { tokens: allTokenData,getTokenPrecision } = useAllToken()
+  const { tokens: allTokenData, getTokenPrecision } = useAllToken()
   const { data: verifyInfo } = useUserVerifyInfo()
   const [openVerifyModal, setOpenVerifyModal] = useState(false)
   const isUnverified = verifyInfo?.kycLevel === KycLevel.unverified || !verifyInfo
@@ -39,7 +39,7 @@ export default function OverviewBalancePanel() {
 
   const formatUsdtAmount = (val: number | string | BigNumber) => {
     try {
-      const str = applyTokenPrecision(getTokenPrecision('USDT'),val)
+      const str = applyTokenPrecision(getTokenPrecision('USDT'), val)
       return str
     } catch {
       return '--'

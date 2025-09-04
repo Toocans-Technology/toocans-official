@@ -16,7 +16,7 @@ export const useTokenFee = (token?: Token, chargeType?: ChargeType) => {
    * 获取提现手续费
    */
   const getTokenFee = useCallback(
-    (amount: BigNumber.Value) => {
+    (amount?: BigNumber.Value) => {
       if (isInternal) {
         return 0
       }
