@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
-import { useLogin } from '@/hooks'
 import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
 import { allowDepositSchema, allowWithdrawSchema, withdrawChargeTypeSchema } from '@/types/token'

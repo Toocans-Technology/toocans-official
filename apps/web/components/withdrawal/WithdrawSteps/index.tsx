@@ -9,6 +9,7 @@ import { validateAddress } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { WithdrawAddress } from '@/services/wallet/schemas/address.schema'
 import { User } from '@/services/wallet/searchUser'
+import { AllowWithdraw } from '@/types/token'
 import { ChargeType, InternalTransferType } from '@/types/withdraw'
 import RecentWithdraw from '../RecentWithdraw'
 import ReceivedAmount from './ReceivedAmount'
@@ -97,10 +98,12 @@ const WithdrawSteps: FunctionComponent = () => {
   const handleSelectAddress = useCallback(
     (address?: WithdrawAddress) => {
       if (address?.tokenNetWork) {
-        const network = selectedToken?.subTokenList.find((item) => item.chainTokenId === address?.tokenNetWork)
+        const network = selectedToken?.subTokenList.find((item) => item.tokenId === address?.tokenNetWork)
 
-        if (network) {
+        if (network && network.tokenSetting?.allowWithdraw === AllowWithdraw.enabled) {
           setSelectedNetwork(network)
+        } else {
+          setSelectedNetwork(undefined)
         }
       }
     },

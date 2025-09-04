@@ -27,5 +27,7 @@ export const useWithdrawAddressList = (params?: WithdrawAddressParams, enabled: 
       transfer: WithdrawAddressListSchema.parse,
     }),
     enabled,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   })
 }
