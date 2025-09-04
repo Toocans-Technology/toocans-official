@@ -55,8 +55,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
     if (transferType === InternalTransferType.UID) {
       return uid.value
     } else if (transferType === InternalTransferType.Phone) {
-      const phoneNumber = `+${countryCode}${phone.value}`
-      return isValidPhoneNumber(phoneNumber) ? phoneNumber : undefined
+      return isValidPhoneNumber(`+${countryCode}${phone.value}`) ? `${countryCode}${phone.value}` : undefined
     } else {
       return email.value && EMAIL_REGEX.test(email.value) ? email.value : undefined
     }

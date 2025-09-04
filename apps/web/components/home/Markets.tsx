@@ -4,10 +4,10 @@ import Image from 'next/image'
 import { useId } from 'react'
 import { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import { useAllToken } from '@/hooks/useAllToken'
+import { useT } from '@/i18n'
 import { applyTokenPrecision } from '@/lib/utils'
 import { useHourlyMarketPrice } from '@/services/market/hourly'
 import { useMarketPrices } from '@/services/market/marketPrices'
-import { useT } from '@/i18n'
 
 const WS_SUBSCRIBE_MSG = {
   method: 'subscribe_live_price',
@@ -16,11 +16,11 @@ const WS_SUBSCRIBE_MSG = {
 
 const TokenList: FunctionComponent = () => {
   const { t } = useT('home')
-  
+
   const { mutateAsync: fetchHourlyData, data: hourlyData } = useHourlyMarketPrice()
   const { mutateAsync: fetchMarketPrices, data: marketPricesData } = useMarketPrices()
 
-  const { getToken, getTokenPrecision } = useAllToken()
+  const { getToken } = useAllToken()
   const [marketWSData, setMarketWSData] = useState<typeof marketPricesData>([])
 
   const data = useMemo(() => {
@@ -29,18 +29,19 @@ const TokenList: FunctionComponent = () => {
         const tokenId = token.baseToken?.toUpperCase() || ''
         const tokenIcon = getToken(tokenId)?.icon || ''
         const updatedToken = marketWSData?.find(
-          (updated) => updated.displaySymbol?.toUpperCase() === token.displaySymbol?.toUpperCase()
+          (updated) =>
+            updated.displaySymbol?.split('/')[0]?.toUpperCase() === token.displaySymbol?.split('/')[0]?.toUpperCase()
         )
         return {
           id: token.id || `t${i + 1}`,
           name: token.displaySymbol?.toUpperCase() || '',
           icon: tokenIcon,
-          quoteToken: getToken(token.displaySymbol?.toUpperCase() || '')?.tokenFullName || '',
+          quoteToken: getToken(token.displaySymbol?.split('/')[0]?.toUpperCase() || '')?.tokenFullName || '',
           price: parseFloat(updatedToken?.marketPrice || token.marketPrice || '0'),
           last: parseFloat(token.marketPrice || '0'),
           change: parseFloat(updatedToken?.marketPriceChange || token.marketPriceChange || '0'),
           spark:
-            hourlyData?.[`${token.displaySymbol?.toUpperCase()}USDT`]?.map((entry) => entry.lastPrice) ||
+            hourlyData?.[`${token.displaySymbol?.split('/')[0]?.toUpperCase()}USDT`]?.map((entry) => entry.lastPrice) ||
             Array(24).fill(0),
         }
       }) || []
@@ -66,7 +67,7 @@ const TokenList: FunctionComponent = () => {
           const updatedData = [...marketPricesData]
           payloads.forEach((payload) => {
             const index = updatedData.findIndex(
-              (token) => token.displaySymbol?.toUpperCase() === payload.baseTokenId?.toUpperCase()
+              (token) => token.displaySymbol?.split('/')[0]?.toUpperCase() === payload.baseTokenId?.toUpperCase()
             )
             if (index !== -1 && updatedData[index]) {
               updatedData[index].marketPrice = payload.marketPrice
@@ -182,9 +183,10 @@ const TokenList: FunctionComponent = () => {
   }
   const formatAmount = (val: number | string | BigNumber, coinName: string) => {
     try {
-      const formattedCoinName = coinName.includes('/') ? coinName.split('/')[0] : coinName
-      if (!formattedCoinName) return '--'
-      const str = applyTokenPrecision(getTokenPrecision(coinName), val)
+      const str = applyTokenPrecision(
+        marketPricesData?.find((token) => token.displaySymbol?.toUpperCase() === coinName?.toUpperCase())?.rulePairInfo,
+        val
+      )
       return str
     } catch (err) {
       console.error('Error formatting amount for coin:', coinName, err)
@@ -225,7 +227,7 @@ const TokenList: FunctionComponent = () => {
                   {t('home:market:LastPrice')}
                 </span>
               </div>
-              <button className="mt-1.5 h-4 w-4" aria-label="Sort by price" onClick={() => toggleSort('price')}>
+              {/* <button className="mt-1.5 h-4 w-4" aria-label="Sort by price" onClick={() => toggleSort('price')}>
                 <Image
                   alt="Sort by price"
                   className="cursor-pointer"
@@ -233,7 +235,7 @@ const TokenList: FunctionComponent = () => {
                   width={16}
                   height={16}
                 />
-              </button>
+              </button> */}
             </div>
 
             <div className="relative flex h-[22px] w-[130px] items-center gap-1">
@@ -242,7 +244,7 @@ const TokenList: FunctionComponent = () => {
                   {t('home:market:Change')}
                 </span>
               </div>
-              <button className="mt-1.5 h-4 w-4" aria-label="Sort by change" onClick={() => toggleSort('change')}>
+              {/* <button className="mt-1.5 h-4 w-4" aria-label="Sort by change" onClick={() => toggleSort('change')}>
                 <Image
                   alt="Sort by change"
                   className="cursor-pointer"
@@ -250,7 +252,7 @@ const TokenList: FunctionComponent = () => {
                   width={16}
                   height={16}
                 />
-              </button>
+              </button> */}
             </div>
             <div className="relative flex h-[22px] w-[130px] items-center gap-1">
               <div>
@@ -258,7 +260,7 @@ const TokenList: FunctionComponent = () => {
                   {t('home:market:Last24h')}
                 </span>
               </div>
-              <button className="mt-1.5 h-4 w-4" aria-label="Sort by change" onClick={() => toggleSort('last')}>
+              {/* <button className="mt-1.5 h-4 w-4" aria-label="Sort by change" onClick={() => toggleSort('last')}>
                 <Image
                   alt="Sort by change"
                   className="cursor-pointer"
@@ -266,7 +268,7 @@ const TokenList: FunctionComponent = () => {
                   width={16}
                   height={16}
                 />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

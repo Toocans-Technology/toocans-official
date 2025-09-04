@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 import { getMutation } from '@/lib/api'
 import { getUrlByMarket } from '@/lib/api/getUrl'
+
 const HourlyMarketPriceResponseSchema = z.record(
   z.string(),
   z.array(
