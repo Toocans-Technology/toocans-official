@@ -324,8 +324,7 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
                     openToast(t('market:UpdateOrderSuccess'), 'success')
                     onClose()
                   },
-                  onError: () => {
-                  },
+                  onError: () => {},
                 }
               )
             }}

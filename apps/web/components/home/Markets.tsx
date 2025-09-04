@@ -29,7 +29,8 @@ const TokenList: FunctionComponent = () => {
         const tokenId = token.baseToken?.toUpperCase() || ''
         const tokenIcon = getToken(tokenId)?.icon || ''
         const updatedToken = marketWSData?.find(
-          (updated) => updated.displaySymbol?.split('/')[0]?.toUpperCase() === token.displaySymbol?.split('/')[0]?.toUpperCase()
+          (updated) =>
+            updated.displaySymbol?.split('/')[0]?.toUpperCase() === token.displaySymbol?.split('/')[0]?.toUpperCase()
         )
         return {
           id: token.id || `t${i + 1}`,
@@ -183,8 +184,7 @@ const TokenList: FunctionComponent = () => {
   const formatAmount = (val: number | string | BigNumber, coinName: string) => {
     try {
       const str = applyTokenPrecision(
-        marketPricesData?.find((token) => token.displaySymbol?.toUpperCase() === coinName?.toUpperCase())
-          ?.rulePairInfo,
+        marketPricesData?.find((token) => token.displaySymbol?.toUpperCase() === coinName?.toUpperCase())?.rulePairInfo,
         val
       )
       return str

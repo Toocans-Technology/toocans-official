@@ -6,8 +6,8 @@ import React from 'react'
 import { useAssetAll } from '@/hooks/asset'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
-import { Link } from '../common'
 import { applyTokenPrecision } from '@/lib/utils'
+import { Link } from '../common'
 
 function safeMul(a: string | number | null | undefined, b: string | number | null | undefined) {
   const n1 = new BigNumber(a ?? 0)
@@ -18,7 +18,7 @@ function safeMul(a: string | number | null | undefined, b: string | number | nul
 const TokenTable = () => {
   const { t } = useT('overview')
   const { data } = useAssetAll()
-  const { tokens: allTokenResp,getTokenPrecision } = useAllToken()
+  const { tokens: allTokenResp, getTokenPrecision } = useAllToken()
   const allTokenData = allTokenResp || []
   const assets = data || []
 
@@ -28,9 +28,9 @@ const TokenTable = () => {
     if (found && typeof found.icon === 'string' && found.icon) return found.icon
     return undefined
   }
- const formatAmount = (val: number | string | BigNumber,coinName:string) => {
+  const formatAmount = (val: number | string | BigNumber, coinName: string) => {
     try {
-      const str = applyTokenPrecision(getTokenPrecision(coinName),val)
+      const str = applyTokenPrecision(getTokenPrecision(coinName), val)
       return str
     } catch {
       return '--'
@@ -111,13 +111,7 @@ const TokenTable = () => {
                 </div>
                 <div className="min-w-[80px] text-right">
                   <div className="font-din text-right text-[14px] font-bold leading-[22px] text-[#0d0d0d]">
-                    {assets.length === 0
-                      ? '0.00'
-                      : formatAmount(
-                            asset.total ?? 0,
-                            asset.tokenId as string
-                          )
-                        }
+                    {assets.length === 0 ? '0.00' : formatAmount(asset.total ?? 0, asset.tokenId as string)}
                   </div>
                   <div className="font-din text-right text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
                     $
