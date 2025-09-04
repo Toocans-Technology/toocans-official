@@ -3,7 +3,7 @@
 import { sortBy } from 'es-toolkit'
 import { XIcon } from 'lucide-react'
 import Image from 'next/image'
-import { ChangeEvent, FunctionComponent, useCallback, useMemo, useState } from 'react'
+import { ChangeEvent, FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Input, Label } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
 import { Link } from '@/components/common'
@@ -35,6 +35,7 @@ const OnChain: FunctionComponent<Props> = ({
 }) => {
   const { t } = useT('withdrawal')
   const [open, setOpen] = useState(false)
+  const ref = useRef<string>(token.tokenId)
   const [selectedAddress, setSelectedAddress] = useState<WithdrawAddress>()
 
   const networkList = useMemo(() => {
@@ -58,6 +59,13 @@ const OnChain: FunctionComponent<Props> = ({
     onAddressChange?.('')
     onSelectAddress?.(undefined)
   }, [onAddressChange, onSelectAddress])
+
+  useEffect(() => {
+    if (ref.current !== token.tokenId) {
+      handleClearAddress()
+      ref.current = token.tokenId
+    }
+  }, [token, handleClearAddress])
 
   const handleAddressChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
