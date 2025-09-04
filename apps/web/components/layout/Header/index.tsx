@@ -19,8 +19,8 @@ const Header: FunctionComponent<Props> = () => {
   const menuItems = [
     { name: 'home', path: '/' },
     { name: 'market', path: '/market' },
-    { name: 'trade', path: '/trade' },
-    { name: 'about', path: '/about' },
+    // { name: 'trade', path: '/trade' },
+    // { name: 'about', path: '/about' },
   ]
 
   const getActiveClass = (path: string) => {
