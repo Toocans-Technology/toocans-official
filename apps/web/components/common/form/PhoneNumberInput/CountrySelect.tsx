@@ -21,10 +21,11 @@ import { Locale } from '@/i18n/config'
 import { Country, getCountryList } from '@/services/login'
 
 interface Props {
+  nationalCode?: string
   onChange?: (country: Country) => void
 }
 
-const CountrySelect: FunctionComponent<Props> = ({ onChange }) => {
+const CountrySelect: FunctionComponent<Props> = ({ onChange, nationalCode }) => {
   const { t } = useT(['common'])
   const lang = useLang()
   const [open, setOpen] = useState(false)
@@ -33,7 +34,7 @@ const CountrySelect: FunctionComponent<Props> = ({ onChange }) => {
 
   useEffect(() => {
     if (countryList?.length) {
-      const defaultValue = countryList.find((country) => country.nationalCode === '1')
+      const defaultValue = countryList.find((country) => country.nationalCode === (nationalCode ?? '1'))
 
       if (!defaultValue) {
         return
@@ -42,7 +43,7 @@ const CountrySelect: FunctionComponent<Props> = ({ onChange }) => {
       setValue(defaultValue.nationalCode)
       onChange?.(defaultValue)
     }
-  }, [countryList])
+  }, [countryList, onChange, nationalCode])
 
   const handleSelect = useCallback(
     (nationalCode: string) => {

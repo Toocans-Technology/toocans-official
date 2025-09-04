@@ -97,7 +97,7 @@ const WithdrawSteps: FunctionComponent = () => {
   const handleSelectAddress = useCallback(
     (address?: WithdrawAddress) => {
       if (address?.tokenNetWork) {
-        const network = selectedToken?.subTokenList.find((item) => item.tokenId === address?.tokenNetWork)
+        const network = selectedToken?.subTokenList.find((item) => item.chainTokenId === address?.tokenNetWork)
 
         if (network) {
           setSelectedNetwork(network)

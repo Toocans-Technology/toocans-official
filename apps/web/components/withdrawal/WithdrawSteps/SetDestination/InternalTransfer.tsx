@@ -1,6 +1,6 @@
 'use client'
 
-import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js'
+import parsePhoneNumber, { isValidPhoneNumber } from 'libphonenumber-js'
 import Image from 'next/image'
 import { ChangeEvent, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Label, toast } from '@workspace/ui/components'
@@ -47,7 +47,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
   const [email, setEmail] = useState<InputValueType>(INPUT_DEFAULT_VALUE)
   const [phone, setPhone] = useState<InputValueType>(INPUT_DEFAULT_VALUE)
   const [uid, setUid] = useState<InputValueType>(INPUT_DEFAULT_VALUE)
-  const [countryCode, setCountryCode] = useState<CountryCode>()
+  const [countryCode, setCountryCode] = useState<string>()
   const [transferType, setTransferType] = useState(InternalTransferType.Email)
   const [selectedAddress, setSelectedAddress] = useState<WithdrawAddress>()
 
@@ -175,7 +175,9 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
           setEmail((s) => ({ ...s, value: address.address, isInvalid: false }))
         } else if (address.addressType === AddressType.Phone) {
           type = InternalTransferType.Phone
-          setPhone((s) => ({ ...s, value: address.address, isInvalid: false }))
+          const phoneNumber = parsePhoneNumber(`+${address.address ?? ''}`)
+          setCountryCode(phoneNumber?.countryCallingCode ?? '1')
+          setPhone((s) => ({ ...s, value: phoneNumber?.nationalNumber ?? '', isInvalid: false }))
         } else {
           type = InternalTransferType.UID
           setUid((s) => ({ ...s, value: address.address, isInvalid: false }))
@@ -225,7 +227,8 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
               value={phone.value}
               invalid={phone.isInvalid}
               onChange={handlePhoneChange}
-              onCountryChange={(country: Country) => setCountryCode(country.nationalCode as CountryCode)}
+              onCountryChange={(country: Country) => setCountryCode(country.nationalCode)}
+              nationalCode={countryCode}
               onBlur={handlePhoneBlur}
               onClear={handleClearAddress}
               endContent={
