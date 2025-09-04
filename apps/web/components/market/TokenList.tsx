@@ -70,11 +70,7 @@ const TokenList: FunctionComponent<TokenListProps> = ({
           sort: item?.sort,
         }
       })
-      return mapped.sort((a, b) => {
-        const aSort = typeof a.sort === 'number' ? a.sort : Number(a.sort) || 0
-        const bSort = typeof b.sort === 'number' ? b.sort : Number(b.sort) || 0
-        return aSort - bSort
-      })
+      return mapped
     }
     return []
   }, [marketPricesData, favoritesIds, marketWSData])
