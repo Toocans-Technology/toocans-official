@@ -107,7 +107,7 @@ const OnChain: FunctionComponent<Props> = ({
           className="hover:border-ring hover:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-2 overflow-hidden rounded-md bg-[#f8f8f8] px-3 py-1 hover:ring-[1px]"
         >
           <div className="flex flex-1 flex-col items-start">
-            {selectedAddress && (
+            {selectedAddress?.addressName && (
               <span className="text-brand border-brand inline-flex rounded border border-solid px-2 text-[10px]">
                 {selectedAddress.addressName}
               </span>
