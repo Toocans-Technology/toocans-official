@@ -66,7 +66,7 @@ const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
       setValue('tokenId', token.tokenId)
       setNetworkList(
         token.subTokenList.map((item) => ({
-          id: item.tokenId,
+          id: item.chainTokenId,
           name: item.chainName,
           icon: item.chainIcon || '/images/symbol-placeholder.png',
           protocolName: item.protocolName,

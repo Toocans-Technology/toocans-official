@@ -17,7 +17,7 @@ interface Props {
   chargeType: ChargeType
   onTabChange?: (value: string) => void
   onSelectNetwork: (value: string) => void
-  onAddressChange: (value: string) => void
+  onAddressChange: (value: string, network?: Token) => void
   onTransferTabChange: (type: InternalTransferType) => void
   onInternalTransferChange: (data?: User) => void
   onSelectAddress?: (address?: WithdrawAddress) => void
