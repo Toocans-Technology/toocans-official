@@ -13,10 +13,11 @@ import { openToast } from '@/utils'
 interface EditTokenProps {
   tokens: Array<{ id: string | number; pair: string; tokenName: string }>
   onClose: () => void
+  onClearAll: () => void
   searchCoin?: string
 }
 
-const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchCoin }) => {
+const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, onClearAll, searchCoin }) => {
   const { t } = useT('market')
   const [selectedTokens, setSelectedTokens] = useState<string[]>([])
   const [confirmOpen, setConfirmOpen] = useState(false)
@@ -353,7 +354,7 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
               .filter((tokenName) => tokenName !== null)
 
             const remainingCount = orderedTokens.filter((t) => !selectedTokens.includes(t.id)).length
-            setOrderedTokens((prev) => prev.filter((t) => !selectedTokens.includes(t.id)))
+            
             deleteFavorite(
               { symbolIds: selectedTokenNames },
               {
@@ -361,7 +362,9 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, searchC
                   notification.destroy()
                   openToast(t('market:RemovedFromFavoritesToast'), 'success')
                   if (remainingCount === 0) {
-                    onClose()
+                    onClearAll()
+                  }else{
+setOrderedTokens((prev) => prev.filter((t) => !selectedTokens.includes(t.id)))
                   }
                 },
                 onError: () => {},

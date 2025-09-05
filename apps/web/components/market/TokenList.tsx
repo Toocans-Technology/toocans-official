@@ -3,7 +3,6 @@
 import Image from 'next/image'
 import { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import { PaginationControls } from '@/components/common'
-import { Empty } from '@/components/common'
 import { useLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { applyTokenPrecision } from '@/lib/utils'
@@ -260,11 +259,7 @@ const TokenList: FunctionComponent<TokenListProps> = ({
           </div>
         </div>
         <div className="relative flex w-full flex-[0_0_auto] flex-col items-start self-stretch">
-          {displayData.length === 0 || pagedData.length === 0 ? (
-            <div className="w-full py-10">
-              <Empty />
-            </div>
-          ) : (
+          {displayData?.length > 0 && pagedData?.length > 0 && (
             <>
               {pagedData.map((token) => (
                 <div
@@ -294,7 +289,23 @@ const TokenList: FunctionComponent<TokenListProps> = ({
                           />
                         </button>
                       )}
-
+  {!isLoggedIn && (
+                        <button
+                          onClick={() => handleTokenSelect(token.id, token.tokenName as string, token.isFavorite)}
+                          className="relative aspect-[1] h-5 w-5 cursor-pointer"
+                          aria-label={t('market:AriaSelectToken', { pair: token.name })}
+                        >
+                          <Image
+                            alt={
+                              t('market:CheckboxUnselected')
+                            }
+                            src={'/images/market/dark-action-favoourite-3.svg'
+                            }
+                            width={20}
+                            height={20}
+                          />
+                        </button>
+                      )}
                       <div
                         onClick={() => handleTokenSelect(token.id, token.tokenName as string, token.isFavorite)}
                         className={`text-[var(--light-text-primary,#222)]} relative w-fit cursor-pointer text-center font-[Inter] text-[14px] font-normal leading-normal`}
