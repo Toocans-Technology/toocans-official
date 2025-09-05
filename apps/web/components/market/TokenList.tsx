@@ -289,7 +289,23 @@ const TokenList: FunctionComponent<TokenListProps> = ({
                           />
                         </button>
                       )}
-
+  {!isLoggedIn && (
+                        <button
+                          onClick={() => handleTokenSelect(token.id, token.tokenName as string, token.isFavorite)}
+                          className="relative aspect-[1] h-5 w-5 cursor-pointer"
+                          aria-label={t('market:AriaSelectToken', { pair: token.name })}
+                        >
+                          <Image
+                            alt={
+                              t('market:CheckboxUnselected')
+                            }
+                            src={'/images/market/dark-action-favoourite-3.svg'
+                            }
+                            width={20}
+                            height={20}
+                          />
+                        </button>
+                      )}
                       <div
                         onClick={() => handleTokenSelect(token.id, token.tokenName as string, token.isFavorite)}
                         className={`text-[var(--light-text-primary,#222)]} relative w-fit cursor-pointer text-center font-[Inter] text-[14px] font-normal leading-normal`}
