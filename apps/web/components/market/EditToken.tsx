@@ -1,5 +1,8 @@
 'use client'
 
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { notification } from 'antd'
 import Image from 'next/image'
 import { FunctionComponent, useState, useEffect, useMemo, useRef } from 'react'
@@ -22,8 +25,6 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, onClear
   const [selectedTokens, setSelectedTokens] = useState<string[]>([])
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [orderedTokens, setOrderedTokens] = useState<Array<{ id: string; name: string; tokenName: string }>>([])
-  const [draggingId, setDraggingId] = useState<string | null>(null)
-  const [dragOverId, setDragOverId] = useState<string | null>(null)
   const dragStartOrderRef = useRef<string[] | null>(null)
   const { mutate: deleteFavorite } = useDeleteFavorite()
   const { mutate: updateFavoriteOrder } = useUpdateFavoriteOrder()
@@ -86,35 +87,31 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, onClear
     // openToast(t('market:PinSuccess'), 'success')
   }
 
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, id: string) => {
-    setDraggingId(id)
-    e.dataTransfer.effectAllowed = 'move'
-    e.dataTransfer.setData('text/plain', id)
-    dragStartOrderRef.current = orderedTokens.map((t) => t.id)
-  }
-  const handleDragEnter = (id: string) => {
-    if (!draggingId || id === draggingId) return
-    setDragOverId(id)
-    setOrderedTokens((prev) => {
-      const from = prev.findIndex((t) => t.id === draggingId)
-      const to = prev.findIndex((t) => t.id === id)
-      if (from === -1 || to === -1 || from === to) return prev
-      const next = [...prev]
-      const [item] = next.splice(from, 1)
-      if (!item) return prev
-      next.splice(to, 0, item)
-      return next
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 5 },
     })
+  )
+
+  const handleDragStartDnd = () => {
+    dragStartOrderRef.current = orderedTokens.map((t) => t.id)
+    setIsDraggingAny(true)
   }
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-  }
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    setDraggingId(null)
-    setDragOverId(null)
-  }
-  const handleDragEnd = () => {
+
+  const handleDragEndDnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) {
+      dragStartOrderRef.current = null
+      setIsDraggingAny(false)
+      return
+    }
+
+    setOrderedTokens((prev) => {
+      const oldIndex = prev.findIndex((t) => t.id === active.id)
+      const newIndex = prev.findIndex((t) => t.id === over.id)
+      if (oldIndex === -1 || newIndex === -1) return prev
+      return arrayMove(prev, oldIndex, newIndex)
+    })
     if (dragStartOrderRef.current) {
       const endOrder = orderedTokens.map((t) => t.id)
       if (JSON.stringify(endOrder) !== JSON.stringify(dragStartOrderRef.current)) {
@@ -122,8 +119,94 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, onClear
       }
     }
     dragStartOrderRef.current = null
-    setDraggingId(null)
-    setDragOverId(null)
+    setIsDraggingAny(false)
+  }
+
+  const handleDragCancelDnd = () => {
+    dragStartOrderRef.current = null
+    setIsDraggingAny(false)
+  }
+
+  const [isDraggingAny, setIsDraggingAny] = useState(false)
+
+  const SortableTokenRow: FunctionComponent<{ token: { id: string; name: string; tokenName: string } }> = ({
+    token,
+  }) => {
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: token.id })
+
+    const style: React.CSSProperties = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      background: isDragging ? '#9cff1f' : undefined,
+      opacity: isDragging ? 0.5 : 1,
+    }
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={`relative flex w-full flex-[0_0_auto] flex-col items-start justify-center self-stretch ${!isDraggingAny ? 'border-b border-[#F4F4F4]' : ''}`}
+        role="option"
+      >
+        <div className="relative flex h-[72px] w-full items-center justify-between self-stretch">
+          <div className="relative flex h-[22px] w-24 items-center gap-2">
+            <button
+              onClick={() => handleTokenSelect(token.id)}
+              className="relative aspect-[1] h-5 w-5 cursor-pointer"
+              aria-label={`Select ${token.name}`}
+              type="button"
+            >
+              <Image
+                alt={isTokenSelected(token.id) ? 'Checkbox selected' : 'Checkbox unselect'}
+                src={
+                  isTokenSelected(token.id)
+                    ? '/images/market/frame-2131328381.svg'
+                    : '/images/market/checkbox-unselect-4.svg'
+                }
+                width={20}
+                height={20}
+              />
+            </button>
+
+            <div
+              onClick={() => handleTokenSelect(token.id)}
+              className={`text-[var(--light-text-primary,#222)]} relative w-fit cursor-pointer text-center font-[Inter] text-[14px] font-normal leading-normal`}
+            >
+              {token.name}
+            </div>
+          </div>
+
+          <div className="relative flex h-[22px] w-[120px] select-none items-center gap-5">
+            <div className="flex w-12 justify-end text-right">
+              <button
+                type="button"
+                onClick={() => handlePin(token.id)}
+                className="inline-flex"
+                aria-label={t('market:TopColumn')}
+              >
+                <Image
+                  className="w-[20px] cursor-pointer"
+                  alt={t('market:TopColumn')}
+                  src="/images/market/top.svg"
+                  width={20}
+                  height={20}
+                />
+              </button>
+            </div>
+
+            <div className="flex w-12 justify-end text-right" {...attributes} {...listeners}>
+              <Image
+                className="w-[20px] cursor-move"
+                alt={t('market:DragColumn')}
+                src="/images/market/drag.svg"
+                width={20}
+                height={20}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   const isTokenSelected = (tokenId: string) => selectedTokens.includes(tokenId)
@@ -166,78 +249,19 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, onClear
               <Empty />
             </div>
           ) : (
-            tokenData.map((token) => (
-              <div
-                key={token.id}
-                className={`relative flex w-full flex-[0_0_auto] flex-col items-start justify-center self-stretch border-b border-[#F4F4F4] transition-colors ${dragOverId === token.id && draggingId !== token.id ? 'bg-[#F7F7F7]' : ''} ${draggingId === token.id ? 'width-[300px] border border-dashed border-[#1ACA75] opacity-80' : ''}`}
-                draggable
-                onDragStart={(e) => handleDragStart(e, token.id)}
-                onDragEnter={() => handleDragEnter(token.id)}
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e)}
-                onDragEnd={handleDragEnd}
-                aria-grabbed={draggingId === token.id}
-                role="option"
-              >
-                <div className="relative flex h-[72px] w-full items-center justify-between self-stretch">
-                  <div className="relative flex h-[22px] w-24 items-center gap-2">
-                    <button
-                      onClick={() => handleTokenSelect(token.id)}
-                      className="relative aspect-[1] h-5 w-5 cursor-pointer"
-                      aria-label={`Select ${token.name}`}
-                    >
-                      <Image
-                        alt={isTokenSelected(token.id) ? 'Checkbox selected' : 'Checkbox unselect'}
-                        src={
-                          isTokenSelected(token.id)
-                            ? '/images/market/frame-2131328381.svg'
-                            : '/images/market/checkbox-unselect-4.svg'
-                        }
-                        width={20}
-                        height={20}
-                      />
-                    </button>
-
-                    <div
-                      onClick={() => handleTokenSelect(token.id)}
-                      // className={`relative w-fit cursor-pointer text-center font-[Inter] text-[14px] font-normal leading-normal text-[var(--light-text-primary,#222)] ${token.name === 'DOGE/USDT' ? 'mr-[-11.00px]' : ''}`}
-                      className={`text-[var(--light-text-primary,#222)]} relative w-fit cursor-pointer text-center font-[Inter] text-[14px] font-normal leading-normal`}
-                    >
-                      {token.name}
-                    </div>
-                  </div>
-
-                  <div className="relative flex h-[22px] w-[120px] select-none items-center gap-5">
-                    <div className="flex w-12 justify-end text-right">
-                      <button
-                        type="button"
-                        onClick={() => handlePin(token.id)}
-                        className="inline-flex"
-                        aria-label={t('market:TopColumn')}
-                      >
-                        <Image
-                          className="w-[20px] cursor-pointer"
-                          alt={t('market:TopColumn')}
-                          src="/images/market/top.svg"
-                          width={20}
-                          height={20}
-                        />
-                      </button>
-                    </div>
-
-                    <div className="flex w-12 justify-end text-right">
-                      <Image
-                        className="w-[20px] cursor-move"
-                        alt={t('market:DragColumn')}
-                        src="/images/market/drag.svg"
-                        width={20}
-                        height={20}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragStart={handleDragStartDnd}
+              onDragEnd={handleDragEndDnd}
+              onDragCancel={handleDragCancelDnd}
+            >
+              <SortableContext items={tokenData.map((t) => t.id)} strategy={verticalListSortingStrategy}>
+                {tokenData.map((token) => (
+                  <SortableTokenRow key={token.id} token={token} />
+                ))}
+              </SortableContext>
+            </DndContext>
           )}
         </div>
       </div>
@@ -354,7 +378,7 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, onClear
               .filter((tokenName) => tokenName !== null)
 
             const remainingCount = orderedTokens.filter((t) => !selectedTokens.includes(t.id)).length
-            
+
             deleteFavorite(
               { symbolIds: selectedTokenNames },
               {
@@ -363,8 +387,8 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, onClear
                   openToast(t('market:RemovedFromFavoritesToast'), 'success')
                   if (remainingCount === 0) {
                     onClearAll()
-                  }else{
-setOrderedTokens((prev) => prev.filter((t) => !selectedTokens.includes(t.id)))
+                  } else {
+                    setOrderedTokens((prev) => prev.filter((t) => !selectedTokens.includes(t.id)))
                   }
                 },
                 onError: () => {},
