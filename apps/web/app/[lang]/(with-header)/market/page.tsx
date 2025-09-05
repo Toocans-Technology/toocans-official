@@ -110,7 +110,6 @@ export default function Page() {
         )
       )
       notification.destroy()
-      openToast(isFavorite ? t('market:RemovedFromFavoritesToast') : t('market:AddedToFavoritesToast'), 'success')
       return
     }
 
