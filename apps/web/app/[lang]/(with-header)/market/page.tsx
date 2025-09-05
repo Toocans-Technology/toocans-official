@@ -76,12 +76,14 @@ export default function Page() {
 
   const sortedCryptoData = useMemo(() => {
     if (!cryptoData || cryptoData.length === 0) return [] as typeof cryptoData
+    setUserLoading(false)
     console.log([...cryptoData].sort((a, b) => (b.customOrder ?? 0) - (a.customOrder ?? 0)))
     return [...cryptoData].sort((a, b) => (b.customOrder ?? 0) - (a.customOrder ?? 0))
   }, [cryptoData])
 
   const filteredMarketPricesData = useMemo(() => {
     if (!marketPricesData || !Array.isArray(marketPricesData) || cryptoData.length === 0) return []
+    setUserLoading(false)
     const pairSet = new Set(cryptoData.map((c) => c.pair).filter(Boolean))
     const orderMap = new Map(cryptoData.map((c) => [c.pair, c.customOrder ?? 0]))
     return (marketPricesData ?? [])
@@ -91,6 +93,13 @@ export default function Page() {
         const ob = orderMap.get(b?.displaySymbol ?? '') ?? -Infinity
         return ob - oa
       })
+  }, [marketPricesData, cryptoData])
+
+ useEffect(() => {
+  if(marketPricesData &&marketPricesData.length>0 
+    ){
+    setUserLoading(false)
+  }
   }, [marketPricesData, cryptoData])
 
   const toggleFavorite = (tokenName: string, isFavorite: boolean) => {
@@ -192,6 +201,7 @@ export default function Page() {
         }))
         .sort((a, b) => b.customOrder - a.customOrder)
       setIsEmpty(false)
+      setUserLoading(false)
       setCryptoData(
         updatedCryptoData as Array<{
           id: number
@@ -459,9 +469,18 @@ export default function Page() {
             />
           )}
           {
-            (userLoading && !userFavorites) && <Loading />
+            (userLoading && searchValue === '') && (
+              <Loading />
+            )
           }
-          {!isEdit && !userLoading && !isAdd && (userFavorites?.length ?? 0) === 0 && filteredCryptoData.length === 0 && (
+          {
+            (filteredCryptoData.length === 0
+              && (userFavorites?.length ?? 0) > 0
+              && searchValue !== '' && activeTab === 'favorites')
+              && <Empty />
+          }
+          {!isEdit && !userLoading && activeTab === 'favorites' && !isAdd && (userFavorites?.length ?? 0) === 0 && filteredCryptoData.length === 0 && 
+          (
             <Empty />
           )}
           {!isEdit &&
@@ -469,7 +488,7 @@ export default function Page() {
             ((userFavorites?.length ?? 0) === 0 || isClear) &&
             filteredCryptoData.length > 0 &&
             renderCryptoRow(filteredCryptoData)}
-          {!isEdit && !isAdd && userFavorites?.length === 0 && (
+          {(!isEdit && !isAdd && filteredCryptoData.length > 0 && (userFavorites?.length === 0 || isClear)) && (
             <button
               className={`relative flex h-10 w-[210px] cursor-pointer items-center justify-center gap-2.5 rounded-[40px] bg-[#9cff1f] px-[127px] py-2 transition-colors hover:bg-[#8ae01b] focus:outline-none focus:ring-2 focus:ring-[#9cff1f] focus:ring-offset-2 ${!hasFavorite ? 'opacity-50' : ''}`}
               onClick={() => {
