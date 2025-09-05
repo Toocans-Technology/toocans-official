@@ -475,6 +475,7 @@ export default function Page() {
           }
           {
             (filteredCryptoData.length === 0
+              && (userFavorites?.length ?? 0) > 0
               && searchValue !== '' && activeTab === 'favorites')
               && <Empty />
           }
@@ -487,7 +488,7 @@ export default function Page() {
             ((userFavorites?.length ?? 0) === 0 || isClear) &&
             filteredCryptoData.length > 0 &&
             renderCryptoRow(filteredCryptoData)}
-          {(!isEdit && !isAdd && (userFavorites?.length === 0 || isClear)) && (
+          {(!isEdit && !isAdd && filteredCryptoData.length > 0 && (userFavorites?.length === 0 || isClear)) && (
             <button
               className={`relative flex h-10 w-[210px] cursor-pointer items-center justify-center gap-2.5 rounded-[40px] bg-[#9cff1f] px-[127px] py-2 transition-colors hover:bg-[#8ae01b] focus:outline-none focus:ring-2 focus:ring-[#9cff1f] focus:ring-offset-2 ${!hasFavorite ? 'opacity-50' : ''}`}
               onClick={() => {
