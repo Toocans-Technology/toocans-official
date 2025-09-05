@@ -3,7 +3,6 @@
 import Image from 'next/image'
 import { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import { PaginationControls } from '@/components/common'
-import { Empty } from '@/components/common'
 import { useLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { applyTokenPrecision } from '@/lib/utils'
@@ -70,11 +69,7 @@ const TokenList: FunctionComponent<TokenListProps> = ({
           sort: item?.sort,
         }
       })
-      return mapped.sort((a, b) => {
-        const aSort = typeof a.sort === 'number' ? a.sort : Number(a.sort) || 0
-        const bSort = typeof b.sort === 'number' ? b.sort : Number(b.sort) || 0
-        return aSort - bSort
-      })
+      return mapped
     }
     return []
   }, [marketPricesData, favoritesIds, marketWSData])
@@ -265,8 +260,7 @@ const TokenList: FunctionComponent<TokenListProps> = ({
         </div>
         <div className="relative flex w-full flex-[0_0_auto] flex-col items-start self-stretch">
           {displayData.length === 0 || pagedData.length === 0 ? (
-            <div className="w-full py-10">
-              <Empty />
+            <div>
             </div>
           ) : (
             <>

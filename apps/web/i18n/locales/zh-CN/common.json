@@ -51,6 +51,7 @@
   "selectToken": "选择币种",
   "searchToken": "搜索币种",
   "noData": "暂无数据",
+  "loading": "加载中...",
   "all": "全部",
   "verifyModal": {
     "title": "请完成账户认证",
