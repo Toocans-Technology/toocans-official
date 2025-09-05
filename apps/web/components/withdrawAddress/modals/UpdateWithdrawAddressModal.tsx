@@ -48,8 +48,6 @@ const UpdateWithdrawAddressModal: FunctionComponent<Props> = ({ data, onSuccess 
   const onSubmit = useCallback(
     async (data: UpdateWithdrawAddressReq) => {
       try {
-        console.log('data', data)
-
         const res = await mutateUpdateAddressName(data)
 
         if (!res) {
