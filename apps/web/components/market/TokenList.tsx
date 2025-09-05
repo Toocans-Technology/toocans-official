@@ -94,21 +94,18 @@ const TokenList: FunctionComponent<TokenListProps> = ({
     }
   }
 
-  const pagedData = useMemo(() => {
-    const start = (currentPage - 1) * pageSize
-    const end = start + pageSize
-    let page = data.slice(start, end)
+  const processedData = useMemo(() => {
+    let list = data
     if (searchCoin) {
-      console.log('Filtering by searchCoin:', searchCoin)
       const key = searchCoin.trim().toLowerCase()
-      page = page.filter((d) => {
+      list = list.filter((d) => {
         const pair = d.name || ''
         const base = typeof pair === 'string' ? (pair.split('/')[0]?.toLowerCase() ?? '') : ''
         return base.includes(key)
       })
     }
     if (sortKey) {
-      page = [...page].sort((a, b) => {
+      list = [...list].sort((a, b) => {
         const aVal = a[sortKey]
         const bVal = b[sortKey]
         if (!isNaN(Number(aVal)) && !isNaN(Number(bVal))) {
@@ -118,12 +115,16 @@ const TokenList: FunctionComponent<TokenListProps> = ({
         return sortOrder === 'asc' ? cmp : -cmp
       })
     }
-    return page
-  }, [data, currentPage, searchCoin, sortKey, sortOrder, pageSize])
+    return list
+  }, [data, searchCoin, sortKey, sortOrder])
 
-  const displayData = useMemo(() => data, [data])
+  const totalPages = useMemo(() => Math.ceil(processedData.length / pageSize), [processedData])
 
-  const totalPages = useMemo(() => Math.ceil(displayData.length / pageSize), [displayData])
+  const pagedData = useMemo(() => {
+    const start = (currentPage - 1) * pageSize
+    const end = start + pageSize
+    return processedData.slice(start, end)
+  }, [processedData, currentPage])
 
   const getSortIcon = (key: 'name' | 'price' | 'change') => {
     if (sortKey !== key) return '/images/market/normal.svg'
@@ -265,7 +266,7 @@ const TokenList: FunctionComponent<TokenListProps> = ({
               <Empty />
             </div>
           )}
-          {displayData?.length > 0 && pagedData?.length > 0 && (
+          {processedData?.length > 0 && pagedData?.length > 0 && (
             <>
               {pagedData.map((token) => (
                 <div
