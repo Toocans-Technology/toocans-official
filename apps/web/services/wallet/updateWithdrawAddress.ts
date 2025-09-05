@@ -6,7 +6,7 @@ import { WithdrawAddressSchema } from './schemas'
 
 export const UpdateWithdrawAddressReqSchema = z.object({
   id: z.string(),
-  addressName: z.string().min(1).max(20),
+  addressName: z.optional(z.string().min(1).max(20)),
 })
 
 export type UpdateWithdrawAddressReq = z.infer<typeof UpdateWithdrawAddressReqSchema>

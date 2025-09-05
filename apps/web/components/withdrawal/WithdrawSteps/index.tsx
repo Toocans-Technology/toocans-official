@@ -42,14 +42,13 @@ const WithdrawSteps: FunctionComponent = () => {
 
   const handleSelectNetwork = useCallback(
     (value: string) => {
-      const network = selectedToken?.subTokenList.find((item) => item.tokenId === value)
+      const network = selectedToken?.subTokenList.find((item) => item.chainTokenId === value)
 
       if (!network) {
         return
       }
 
       setSelectedNetwork(network)
-      setAddress('')
 
       if (network && address) {
         setStep(WithdrawStep.WithdrawAmount)
@@ -59,12 +58,12 @@ const WithdrawSteps: FunctionComponent = () => {
   )
 
   const handleAddressChange = useCallback(
-    (value: string) => {
+    (value: string, network?: Token) => {
       const isValidAddress = validateAddress(value)
 
       setAddress(value)
 
-      if (selectedNetwork && isValidAddress) {
+      if ((selectedNetwork || network) && isValidAddress) {
         setStep(WithdrawStep.WithdrawAmount)
       } else {
         setStep(WithdrawStep.ChooseNetwork)
@@ -93,21 +92,6 @@ const WithdrawSteps: FunctionComponent = () => {
       }
     },
     [setStep, setAddress]
-  )
-
-  const handleSelectAddress = useCallback(
-    (address?: WithdrawAddress) => {
-      if (address?.tokenNetWork) {
-        const network = selectedToken?.subTokenList.find((item) => item.tokenId === address?.tokenNetWork)
-
-        if (network && network.tokenSetting?.allowWithdraw === AllowWithdraw.enabled) {
-          setSelectedNetwork(network)
-        } else {
-          setSelectedNetwork(undefined)
-        }
-      }
-    },
-    [selectedToken?.subTokenList]
   )
 
   return (
@@ -148,7 +132,6 @@ const WithdrawSteps: FunctionComponent = () => {
               chargeType={chargeType}
               selectedNetwork={selectedNetwork}
               onTabChange={handleTabChange}
-              onSelectAddress={handleSelectAddress}
               onSelectNetwork={handleSelectNetwork}
               onAddressChange={handleAddressChange}
               onTransferTabChange={setTransferType}
