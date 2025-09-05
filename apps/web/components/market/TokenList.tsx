@@ -3,7 +3,6 @@
 import Image from 'next/image'
 import { FunctionComponent, useEffect, useMemo, useState } from 'react'
 import { PaginationControls } from '@/components/common'
-import { Empty } from '@/components/common'
 import { useLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { applyTokenPrecision } from '@/lib/utils'
@@ -261,8 +260,7 @@ const TokenList: FunctionComponent<TokenListProps> = ({
         </div>
         <div className="relative flex w-full flex-[0_0_auto] flex-col items-start self-stretch">
           {displayData.length === 0 || pagedData.length === 0 ? (
-            <div className="w-full py-10">
-              <Empty />
+            <div>
             </div>
           ) : (
             <>

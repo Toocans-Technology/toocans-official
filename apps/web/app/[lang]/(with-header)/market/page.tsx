@@ -312,7 +312,7 @@ export default function Page() {
         id="crypto-content"
         role="tabpanel"
       >
-        {!isEdit && !isAdd && cryptoData.length === 0 && (
+        {!isEdit && !isAdd && !userLoading && cryptoData.length === 0 && (
           <h2 className="relative mt-[-1.00px] self-stretch font-[Inter] text-[14px] font-normal leading-normal text-[var(--light-text-secondary,#666)]">
             {t('market:SelectCrypto')}
           </h2>
