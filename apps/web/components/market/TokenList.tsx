@@ -259,10 +259,7 @@ const TokenList: FunctionComponent<TokenListProps> = ({
           </div>
         </div>
         <div className="relative flex w-full flex-[0_0_auto] flex-col items-start self-stretch">
-          {displayData.length === 0 || pagedData.length === 0 ? (
-            <div>
-            </div>
-          ) : (
+          {displayData?.length > 0 && pagedData?.length > 0 && (
             <>
               {pagedData.map((token) => (
                 <div
