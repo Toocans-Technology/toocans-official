@@ -43,15 +43,13 @@ const UpdateWithdrawAddressModal: FunctionComponent<Props> = ({ data, onSuccess 
     },
   })
 
-  const { handleSubmit, formState } = form
+  const { handleSubmit } = form
 
   const onSubmit = useCallback(
     async (data: UpdateWithdrawAddressReq) => {
-      if (!data) {
-        return
-      }
-
       try {
+        console.log('data', data)
+
         const res = await mutateUpdateAddressName(data)
 
         if (!res) {
@@ -120,7 +118,7 @@ const UpdateWithdrawAddressModal: FunctionComponent<Props> = ({ data, onSuccess 
             <Button rounded="full" variant="secondary" onClick={() => handleOpenChange(false)}>
               {t('common:cancel')}
             </Button>
-            <Button rounded="full" disabled={!formState.isValid || isPending} onClick={handleSubmit(onSubmit)}>
+            <Button rounded="full" disabled={isPending} onClick={handleSubmit(onSubmit)}>
               {isPending && <Loader2Icon className="animate-spin" />}
               {t('common:confirm')}
             </Button>
