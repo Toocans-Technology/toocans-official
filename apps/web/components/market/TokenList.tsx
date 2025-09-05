@@ -96,14 +96,6 @@ const TokenList: FunctionComponent<TokenListProps> = ({
 
   const processedData = useMemo(() => {
     let list = data
-    if (searchCoin) {
-      const key = searchCoin.trim().toLowerCase()
-      list = list.filter((d) => {
-        const pair = d.name || ''
-        const base = typeof pair === 'string' ? (pair.split('/')[0]?.toLowerCase() ?? '') : ''
-        return base.includes(key)
-      })
-    }
     if (sortKey) {
       list = [...list].sort((a, b) => {
         const aVal = a[sortKey]
@@ -116,7 +108,7 @@ const TokenList: FunctionComponent<TokenListProps> = ({
       })
     }
     return list
-  }, [data, searchCoin, sortKey, sortOrder])
+  }, [data, sortKey, sortOrder])
 
   const totalPages = useMemo(() => Math.ceil(processedData.length / pageSize), [processedData])
 
@@ -125,6 +117,25 @@ const TokenList: FunctionComponent<TokenListProps> = ({
     const end = start + pageSize
     return processedData.slice(start, end)
   }, [processedData, currentPage])
+
+  const filteredPagedData = useMemo(() => {
+    if (!searchCoin) return pagedData
+    const key = searchCoin.trim().toUpperCase()
+    return pagedData.filter((d) => {
+      const pair = d.name || ''
+      const base = typeof pair === 'string' ? (pair.split('/')[0]?.toUpperCase() ?? '') : ''
+      return base.includes(key)
+    })
+  }, [pagedData, searchCoin])
+
+  const displayTotalPages = searchCoin ? Math.max(1, Math.ceil(filteredPagedData.length / pageSize)) : totalPages
+  const displayCurrentPage = searchCoin ? 1 : currentPage
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages === 0 ? 1 : totalPages)
+    }
+  }, [totalPages, currentPage])
 
   const getSortIcon = (key: 'name' | 'price' | 'change') => {
     if (sortKey !== key) return '/images/market/normal.svg'
@@ -261,14 +272,14 @@ const TokenList: FunctionComponent<TokenListProps> = ({
           </div>
         </div>
         <div className="relative flex w-full flex-[0_0_auto] flex-col items-start self-stretch">
-          {pagedData?.length === 0 && (
+          {filteredPagedData?.length === 0 && (
             <div className="flex w-full justify-center py-10">
               <Empty />
             </div>
           )}
-          {processedData?.length > 0 && pagedData?.length > 0 && (
+          {filteredPagedData?.length > 0 && (
             <>
-              {pagedData.map((token) => (
+              {filteredPagedData.map((token) => (
                 <div
                   key={token.id}
                   className="relative flex w-full self-stretch border-b border-[#F4F4F4]"
@@ -333,7 +344,14 @@ const TokenList: FunctionComponent<TokenListProps> = ({
                 </div>
               ))}
               <div className="mt-4 flex w-full justify-end">
-                <PaginationControls totalPages={totalPages} currentPage={currentPage} onPageChange={setCurrentPage} />
+                <PaginationControls
+                  totalPages={displayTotalPages}
+                  currentPage={displayCurrentPage}
+                  onPageChange={(p) => {
+                    if (searchCoin) return
+                    setCurrentPage(p)
+                  }}
+                />
               </div>
             </>
           )}
