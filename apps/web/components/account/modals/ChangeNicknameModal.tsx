@@ -46,7 +46,7 @@ const ChangeNicknameModal: FunctionComponent = () => {
 
   useEffect(() => {
     setValue('nickname', userInfo?.nickname || '')
-  }, [userInfo])
+  }, [setValue, userInfo])
 
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
@@ -68,7 +68,7 @@ const ChangeNicknameModal: FunctionComponent = () => {
         toast.error((error as HttpError).message)
       }
     },
-    [mutateUpdateNickname, refetch, userInfo]
+    [mutateUpdateNickname, refetch, t, userInfo]
   )
 
   return (

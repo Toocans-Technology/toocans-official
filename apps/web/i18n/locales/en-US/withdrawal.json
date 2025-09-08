@@ -6,6 +6,7 @@
   "setDestination": "Set destination",
   "onChainType": "On-chain type",
   "selectNetwork": "Select network",
+  "withdrawalAddress": "Withdrawal address",
   "addressPlaceholder": "Please enter",
   "setAmount": "Set withdrawal amount",
   "receivedAmount": "Received amount",
@@ -53,5 +54,33 @@
     "gaCodeError.required": "Please enter the Google Authenticator code",
     "codeError": "Verification code format error",
     "gaCodeError": "Google Authenticator code format error"
-  }
+  },
+  "onChain": "On-chain",
+  "internalTransfer": "Internal transfer",
+  "manageAddresses": "Manage addresses",
+  "accountName": "Account Name",
+  "free": "Free",
+  "email": "Email",
+  "emailPlaceholder": "Enter Email",
+  "emailError": "Invalid email format",
+  "phone": "Phone",
+  "phonePlaceholder": "Enter Phone",
+  "phoneError": "Phone number format error",
+  "uid": "UID",
+  "uidPlaceholder": "Enter Toocans UID",
+  "uidError": "Enter UID",
+  "nickname": "Nickname",
+  "hash": "Hash",
+  "selectAddressModal": {
+    "title": "Select {{ tokenName }} address",
+    "empty": "No address added",
+    "addNow": "Add now",
+    "addedOn": "Added on",
+    "searchPlaceholder": "Enter address or name"
+  },
+  "addAddressModal": {
+    "title": "Add Withdrawal Address",
+    "name": "Name(Optional)"
+  },
+  "networkChangeWarning": "You have switched the Network. Please confirm if you need to modify the withdrawal address"
 }
