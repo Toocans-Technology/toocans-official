@@ -14,7 +14,6 @@ export const isAbsoluteUrl = (url: string) => {
 
 export const openNewWindow = (url: string) => {
   const newWindow = window.open(url, '', 'noopener,noreferrer')
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   newWindow && (newWindow.opener = null)
 }
 

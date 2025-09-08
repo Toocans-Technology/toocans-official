@@ -15,7 +15,7 @@ import {
   toast,
 } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
-import { Link } from '@/components/common'
+import { Link, VerifyModal } from '@/components/common'
 import { useT } from '@/i18n'
 import { typedStorage } from '@/lib/utils'
 import { getQueryClient } from '@/lib/utils'

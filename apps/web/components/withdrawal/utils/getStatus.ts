@@ -1,6 +1,6 @@
 import { WithdrawalStatus } from '@/types/withdraw'
 
-export const getWithdrawalStatus = (status = WithdrawalStatus.PendingReview) => {
+export const getStatus = (status = WithdrawalStatus.PendingReview) => {
   switch (status) {
     case WithdrawalStatus.ManuallyRejected:
     case WithdrawalStatus.Failed:

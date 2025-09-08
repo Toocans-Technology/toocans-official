@@ -9,7 +9,6 @@ import { useRedirectIfNotLogin } from '@/hooks'
 import { useAssetAll } from '@/hooks/asset'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
-import { applyTokenPrecision } from '@/lib/utils'
 import { typedStorage } from '@/lib/utils/typedStorage/index'
 import type { GetAllAssetResponse } from '@/services/asset/useGetAllAsset'
 import { useUserVerifyInfo } from '@/services/user'
@@ -19,7 +18,7 @@ import { Link, VerifyModal } from '../common'
 export default function OverviewBalancePanel() {
   const { t } = useT('overview')
   const { data: data } = useAssetAll()
-  const { tokens: allTokenData, getTokenPrecision } = useAllToken()
+  const { tokens: allTokenData } = useAllToken()
   const { data: verifyInfo } = useUserVerifyInfo()
   const [openVerifyModal, setOpenVerifyModal] = useState(false)
   const isUnverified = verifyInfo?.kycLevel === KycLevel.unverified || !verifyInfo
@@ -37,10 +36,11 @@ export default function OverviewBalancePanel() {
     })
   }
 
-  const formatUsdtAmount = (val: number | string | BigNumber) => {
+  const formatAmount = (val: number | string | BigNumber) => {
     try {
-      const str = applyTokenPrecision(getTokenPrecision('USDT'), val)
-      return str
+      const num = new BigNumber(val)
+      if (!num.isFinite()) return '--'
+      return num.toFormat(2)
     } catch {
       return '--'
     }
@@ -91,12 +91,12 @@ export default function OverviewBalancePanel() {
       <div className="flex w-full flex-row items-center justify-between">
         <div className="flex flex-row flex-nowrap items-center gap-2">
           <div className="font-inter text-[32px] font-medium leading-[30px] text-black">
-            {show && total !== '--' ? formatUsdtAmount(total) : !show && total !== '--' ? '****' : ''}
+            {show && total !== '--' ? formatAmount(total) : !show && total !== '--' ? '****' : ''}
           </div>
           <div className="font-inter text-[14px] font-normal leading-[22px] text-[#666]">
             USDT ≈{' '}
             {show && availableTotal !== '--'
-              ? '$' + formatUsdtAmount(availableTotal)
+              ? '$' + formatAmount(availableTotal)
               : !show && availableTotal !== '--'
                 ? '****'
                 : ''}

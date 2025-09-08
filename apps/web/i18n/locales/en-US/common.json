@@ -59,8 +59,5 @@
     "requirements": "Requirements",
     "documents": "Government-issued documents",
     "personalInformation": "Personal Information"
-  },
-  "save": "Save",
-  "edit": "Edit",
-  "delete": "Delete"
+  }
 }

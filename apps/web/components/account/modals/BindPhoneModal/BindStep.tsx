@@ -79,15 +79,12 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
     return () => {
       reset()
     }
-  }, [reset])
+  }, [])
 
-  const handleCountryChange = useCallback(
-    (country: Country) => {
-      setValue('nationalCode', country.nationalCode)
-      setCountryCode(country.domainShortName as CountryCode)
-    },
-    [setValue]
-  )
+  const handleCountryChange = useCallback((country: Country) => {
+    setValue('nationalCode', country.nationalCode)
+    setCountryCode(country.domainShortName as CountryCode)
+  }, [])
 
   const handleSendCode = useCallback(async () => {
     await trigger('phoneNumber')
@@ -148,7 +145,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
               <FormLabel>{t('account:phoneVerificationCode')}</FormLabel>
               <div
                 aria-invalid={formState.errors.verificationCode ? true : false}
-                className="focus-within:border-ring focus-within:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-4 overflow-hidden rounded-md bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
+                className="focus-within:border-ring focus-within:ring-brand aria-invalid:border-ring aria-invalid:ring-destructive aria-invalid:ring-[1px] flex items-center gap-4 overflow-hidden rounded bg-[#f8f8f8] pr-4 focus-within:ring-[1px]"
               >
                 <FormControl>
                   <Input
@@ -156,7 +153,7 @@ const BindStep: FunctionComponent<Props> = ({ userInfo, onCancel, onSuccess }) =
                     autoComplete="off"
                     maxLength={6}
                     placeholder={t('account:phoneVerificationCode')}
-                    className="aria-invalid:ring-0 hover:ring-0 focus-visible:ring-0"
+                    className="aria-invalid:ring-0 focus-visible:ring-0"
                   />
                 </FormControl>
                 <span className={cn('text-link text-nowrap', !countdown && 'cursor-pointer')} onClick={handleSendCode}>
