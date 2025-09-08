@@ -1,5 +1,6 @@
 'use client'
 
+import dayjs from 'dayjs'
 import { FunctionComponent, useCallback, useState } from 'react'
 import { DateRange } from 'react-day-picker'
 import { Label } from '@workspace/ui/components'
@@ -29,7 +30,7 @@ const Filter: FunctionComponent<FilterProps> = ({ onChange }) => {
       setFilterParams((prev) => ({ ...prev, tokenId: value === 'all' ? '' : value }))
       onChange?.({ ...filterParams, tokenId: value === 'all' ? '' : value })
     },
-    [filterParams, onChange]
+    [filterParams]
   )
 
   const handleDateRangeChange = useCallback(
@@ -41,7 +42,7 @@ const Filter: FunctionComponent<FilterProps> = ({ onChange }) => {
       setFilterParams((prev) => ({ ...prev, ...params }))
       onChange?.({ ...filterParams, ...params })
     },
-    [filterParams, onChange]
+    [filterParams]
   )
 
   return (

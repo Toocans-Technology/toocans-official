@@ -16,7 +16,7 @@ const SelectLanguage: FunctionComponent = () => {
       const newPath = `/${locale}/${pathSegments.join('/')}`
       router.replace(newPath)
     },
-    [pathname, router]
+    [pathname]
   )
 
   return (

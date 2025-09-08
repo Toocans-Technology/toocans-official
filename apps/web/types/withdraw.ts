@@ -17,7 +17,7 @@ export const withdrawalStatusSchema = z.nativeEnum(WithdrawalStatus)
 
 export enum WithdrawMethod {
   Default = 0, // 默认
-  OnChain = 1, // 区块链交易
+  Blockchain = 1, // 区块链交易
   Internal = 2, // 内部转账
 }
 
@@ -29,27 +29,3 @@ export enum VerifyType {
 }
 
 export const verifyTypeSchema = z.nativeEnum(VerifyType)
-
-export enum InternalTransferType {
-  UID = 1,
-  Email = 2,
-  Phone = 3,
-}
-
-export const internalTransferTypeSchema = z.nativeEnum(InternalTransferType)
-
-export enum ChargeType {
-  OnChain = 1, // 链上
-  Internal = 2, // 内部转账
-}
-
-export const chargeTypeSchema = z.nativeEnum(ChargeType)
-
-export enum AddressType {
-  OnChain = 1, // 链上地址
-  UID = 2, // UID
-  Email = 3, // 邮箱
-  Phone = 4, // 手机号
-}
-
-export const addressTypeSchema = z.nativeEnum(AddressType)

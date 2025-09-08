@@ -6,8 +6,26 @@ import React from 'react'
 import { useAssetAll } from '@/hooks/asset'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
-import { applyTokenPrecision } from '@/lib/utils'
 import { Link } from '../common'
+
+const formatAmount = (val: number | string | BigNumber, precision: number = 4) => {
+  try {
+    const num = new BigNumber(val)
+    if (!num.isFinite()) return '--'
+    return num.toFormat(precision)
+  } catch {
+    return '--'
+  }
+}
+
+function formatRateAmount(val: string | number | null | undefined, precision: number = 4) {
+  const num = new BigNumber(val ?? 0)
+  if (!num.isFinite()) return '--'
+  return num.toFormat(precision, {
+    groupSeparator: ',',
+    decimalSeparator: '.',
+  })
+}
 
 function safeMul(a: string | number | null | undefined, b: string | number | null | undefined) {
   const n1 = new BigNumber(a ?? 0)
@@ -15,10 +33,24 @@ function safeMul(a: string | number | null | undefined, b: string | number | nul
   return n1.multipliedBy(n2)
 }
 
+function formatTrailingZeros(val: string | number | null | undefined): string {
+  const num = new BigNumber(val ?? 0)
+  if (!num.isFinite()) return '--'
+  const formatted = num.toFixed()
+  const [integerPart, decimalPart] = formatted.split('.')
+
+  if (decimalPart) {
+    const trimmedDecimal = decimalPart.replace(/0+$/, '')
+    return trimmedDecimal.length > 0 ? `${integerPart}.${trimmedDecimal}` : `${integerPart}.00`
+  }
+
+  return `${integerPart}`
+}
+
 const TokenTable = () => {
   const { t } = useT('overview')
   const { data } = useAssetAll()
-  const { tokens: allTokenResp, getTokenPrecision } = useAllToken()
+  const { tokens: allTokenResp } = useAllToken()
   const allTokenData = allTokenResp || []
   const assets = data || []
 
@@ -28,13 +60,11 @@ const TokenTable = () => {
     if (found && typeof found.icon === 'string' && found.icon) return found.icon
     return undefined
   }
-  const formatAmount = (val: number | string | BigNumber, coinName: string) => {
-    try {
-      const str = applyTokenPrecision(getTokenPrecision(coinName), val)
-      return str
-    } catch {
-      return '--'
-    }
+
+  const getTokenPrecision = (tokenId: string, hasAsset: boolean = true): number => {
+    if (!hasAsset) return 2
+    const found = allTokenData.find((item) => item.tokenId === tokenId)
+    return typeof found?.minPrecision === 'number' ? found.minPrecision : 4
   }
 
   const filteredSortedAssets = React.useMemo(() => {
@@ -95,7 +125,7 @@ const TokenTable = () => {
                     {asset.tokenId}
                   </div>
                   <div className="font-din text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
-                    ${formatAmount(Number(asset.marketPrice), asset.tokenId as string)}
+                    ${asset.tokenId === 'USDT' ? '1' : formatAmount(Number(asset.marketPrice), 2)}
                     <span
                       className={`font-inter ml-2 items-center justify-center gap-2 rounded px-3 py-1 text-right text-sm font-normal leading-5 ${
                         asset.marketPriceChange != null && parseFloat(asset.marketPriceChange) < 0
@@ -111,13 +141,23 @@ const TokenTable = () => {
                 </div>
                 <div className="min-w-[80px] text-right">
                   <div className="font-din text-right text-[14px] font-bold leading-[22px] text-[#0d0d0d]">
-                    {assets.length === 0 ? '0.00' : formatAmount(asset.total ?? 0, asset.tokenId as string)}
+                    {assets.length === 0
+                      ? '0.00'
+                      : formatTrailingZeros(
+                          formatRateAmount(
+                            asset.total ?? 0,
+                            getTokenPrecision(
+                              typeof asset.tokenId === 'string' ? asset.tokenId : '',
+                              !!asset.total && asset.total !== '0'
+                            )
+                          )
+                        )}
                   </div>
                   <div className="font-din text-right text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
                     $
                     {formatAmount(
                       safeMul(asset.total ?? 0, asset.tokenId === 'USDT' ? 1 : (asset.marketPrice ?? 0)).toString(),
-                      'USDT'
+                      2
                     )}
                   </div>
                 </div>

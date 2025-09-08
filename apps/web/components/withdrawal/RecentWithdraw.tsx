@@ -7,7 +7,7 @@ import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
 import { getWithdrawOrder } from '@/services/wallet'
 import { Empty } from '../common'
-import { getWithdrawalStatus } from './utils'
+import { getStatus } from './utils'
 
 const RecentWithdraw: FunctionComponent = () => {
   const { t } = useT('withdrawal')
@@ -39,8 +39,8 @@ const RecentWithdraw: FunctionComponent = () => {
                 <TableCell className="p-3">{order.address}</TableCell>
                 <TableCell className="p-3">{dayjs(Number(order.createdAt)).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                 <TableCell className="p-3">
-                  <span className={cn('rounded-full px-2.5 py-1 text-[#222]', getWithdrawalStatus(order.status).color)}>
-                    {t(`withdrawal:${getWithdrawalStatus(order.status).text}`)}
+                  <span className={cn('rounded-full px-2.5 py-1 text-[#222]', getStatus(order.status).color)}>
+                    {t(`withdrawal:${getStatus(order.status).text}`)}
                   </span>
                 </TableCell>
               </TableRow>

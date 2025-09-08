@@ -25,7 +25,7 @@ export default async function Page({ params }: Props) {
       <Markets />
       <SafeAndTrust lang={lang} />
       <AssetsAndMarkets lang={lang} />
-      <SignUpNow />
+      <SignUpNow lang={lang} />
       <Footer lang={lang} />
     </div>
   )

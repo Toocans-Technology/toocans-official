@@ -25,10 +25,8 @@ import { VERIFICATION_CODE_REGEX } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { useUserInfo } from '@/services/user/info'
 import { getWithdrawOrder, useSendCode, useWithdraw, Withdrawal } from '@/services/wallet'
-import { User } from '@/services/wallet/searchUser'
 import { HttpError } from '@/types/http'
-import { ChargeType, InternalTransferType, VerifyType } from '@/types/withdraw'
-import WithdrawInfo from './WithdrawInfo'
+import { VerifyType } from '@/types/withdraw'
 
 const COUNT_DOWN = 59 * 1000
 
@@ -36,25 +34,12 @@ interface Props {
   token: Token
   address: string
   amount: number
-  targetUser?: User
   disabled?: boolean
-  chargeType?: ChargeType
   tokenFee: string | number
-  transferType?: InternalTransferType
   openDetail?: (open: boolean, data: Withdrawal) => void
 }
 
-const WithdrawModal: FunctionComponent<Props> = ({
-  address,
-  token,
-  amount,
-  tokenFee,
-  targetUser,
-  chargeType,
-  transferType,
-  openDetail,
-  disabled = true,
-}) => {
+const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, tokenFee, openDetail, disabled = true }) => {
   const { data: userInfo } = useUserInfo()
   const hasGaKey = userInfo?.hasGaKey ?? false
   const { t } = useT(['withdrawal', 'common'])
@@ -73,7 +58,7 @@ const WithdrawModal: FunctionComponent<Props> = ({
           ? z.string().regex(VERIFICATION_CODE_REGEX, t('withdrawal:withdrawModal.gaCodeError')).length(6)
           : z.string().optional(),
       }),
-    [hasGaKey, t]
+    [hasGaKey]
   )
 
   useEffect(() => {
@@ -92,9 +77,8 @@ const WithdrawModal: FunctionComponent<Props> = ({
   }, [userInfo])
 
   const form = useForm<z.infer<typeof FormSchema>>({
-    mode: 'onBlur',
-    reValidateMode: 'onChange',
     resolver: zodResolver(FormSchema),
+    mode: 'onChange',
     defaultValues: {
       code: '',
       gaCode: '',
@@ -132,7 +116,7 @@ const WithdrawModal: FunctionComponent<Props> = ({
       return countdown ? t('withdrawal:emailVerification', { email: userInfo?.email }) : t('withdrawal:emailAuth')
     }
     return countdown ? t('withdrawal:phoneVerification', { phone: userInfo?.concatMobile }) : t('withdrawal:phoneAuth')
-  }, [verifyType, countdown, t, userInfo?.concatMobile, userInfo?.email])
+  }, [verifyType, countdown])
 
   const handleSwitchVerifyType = useCallback(() => {
     setVerifyType(verifyType === VerifyType.email ? VerifyType.sms : VerifyType.email)
@@ -146,18 +130,15 @@ const WithdrawModal: FunctionComponent<Props> = ({
       }
 
       try {
-        const params = {
+        const res = await mutateWithdraw({
           ...data,
           address,
           amount,
           tokenFee: Number(tokenFee),
           tokenId: token.tokenId,
           accountId: userInfo.accountId,
-          chargeType: chargeType ?? ChargeType.OnChain,
-          addressTag: chargeType === ChargeType.Internal && transferType ? transferType.toString() : undefined,
-        }
-
-        const res = await mutateWithdraw(params)
+          chargeType: 1,
+        })
 
         if (!res) {
           return
@@ -171,19 +152,7 @@ const WithdrawModal: FunctionComponent<Props> = ({
         toast.error((error as HttpError).message)
       }
     },
-    [
-      userInfo,
-      mutateWithdraw,
-      address,
-      amount,
-      tokenFee,
-      token.tokenId,
-      chargeType,
-      transferType,
-      reset,
-      refetch,
-      openDetail,
-    ]
+    [mutateWithdraw, address, amount, tokenFee, token, reset, userInfo, refetch]
   )
 
   return (
@@ -193,27 +162,43 @@ const WithdrawModal: FunctionComponent<Props> = ({
           fullWidth
           rounded="full"
           disabled={disabled}
-          className="mt-4 max-w-[456px]"
+          className="mt-4 max-w-[518px]"
           onClick={() => setOpen(true)}
         >
           {t('common:next')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]" onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{t('withdrawal:withdrawModal.title')}</DialogTitle>
           <Separator />
         </DialogHeader>
-        <WithdrawInfo
-          token={token}
-          address={address}
-          amount={amount}
-          tokenFee={tokenFee}
-          userInfo={targetUser}
-          chargeType={chargeType}
-        />
+        <div className="grid gap-2">
+          <div className="grid grid-cols-2 items-center py-1.5 text-sm">
+            <div className="text-[#999]">{t('withdrawal:network')}</div>
+            <div className="text-right font-medium">
+              {token?.protocolName ? `${token?.chainName}(${token?.protocolName})` : (token?.chainName ?? '-')}
+            </div>
+          </div>
+          <div className="grid grid-cols-2 items-center py-1.5 text-sm">
+            <div className="text-[#999]">{t('withdrawal:address')}</div>
+            <div className="overflow-hidden break-words text-right font-medium">{address}</div>
+          </div>
+          <div className="grid grid-cols-2 items-center py-1.5 text-sm">
+            <div className="text-[#999]">{t('withdrawal:withdrawAmount')}</div>
+            <div className="text-right font-medium">
+              {amount} {token?.tokenName}
+            </div>
+          </div>
+          <div className="grid grid-cols-2 items-center py-1.5 text-sm">
+            <div className="text-[#999]">{t('withdrawal:chargeAndNetwork')}</div>
+            <div className="text-right font-medium">
+              {tokenFee} {token?.tokenName}
+            </div>
+          </div>
+        </div>
         <Form {...form}>
-          <div className="grid gap-4">
+          <div className="mt-4 grid gap-6">
             <FormField
               control={form.control}
               name="code"
@@ -230,7 +215,7 @@ const WithdrawModal: FunctionComponent<Props> = ({
                         maxLength={6}
                         autoComplete="off"
                         placeholder={t('withdrawal:emailAuthPlaceholder')}
-                        className="aria-invalid:ring-0 hover:ring-0 focus-visible:ring-0"
+                        className="aria-invalid:ring-0 focus-visible:ring-0"
                       />
                     </FormControl>
                     <span
@@ -271,12 +256,9 @@ const WithdrawModal: FunctionComponent<Props> = ({
             )}
           </div>
           <DialogFooter>
-            <Button rounded="full" variant="secondary" onClick={() => setOpen(false)}>
-              {t('common:cancel')}
-            </Button>
             <Button rounded="full" disabled={!formState.isValid || isPending} onClick={handleSubmit(onSubmit)}>
               {isPending && <Loader2Icon className="animate-spin" />}
-              {t('common:confirm')}
+              {t('common:next')}
             </Button>
           </DialogFooter>
         </Form>

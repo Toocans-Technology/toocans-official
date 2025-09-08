@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useQuery } from '@tanstack/react-query'
 import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
