@@ -6,21 +6,21 @@ interface Props {
 
 export async function generateMetadata({ params }: Props) {
   const { lang } = await params
-  const { t } = await getT(lang, 'home')
+  const { t } = await getT(lang, 'privacy')
 
   return {
-    title: t('home:termsOfUse'),
+    title: t('privacy:termsOfUse'),
   }
 }
 
 export default async function Page({ params }: Props) {
   const { lang } = await params
-  const { t } = await getT(lang, 'home')
+  const { t } = await getT(lang, 'privacy')
 
   return (
     <div className="flex min-h-svh flex-col bg-[#f6f6f6]">
       <div className="container mx-auto flex max-w-[1000px] flex-col gap-4 px-6 py-14">
-        <h1 className="text-[32px] font-medium">{t('home:termsOfUse')}</h1>
+        <h1 className="text-[32px] font-medium">{t('privacy:termsOfUse')}</h1>
         <p>
           These Terms constitute a legally binding agreement between you (<b>“you”</b> or <b>“your”</b>) and Toocans (
           <b>“Toocans”</b>, <b>“we”</b>, <b>“our”</b> or <b>“us”</b>). The Terms govern your use of the Toocans Services
