@@ -69,9 +69,18 @@ const InternalTransferAddresses: FunctionComponent<Props> = ({ chargeType, onSuc
     setSelectedIds([])
   }, [])
 
-  const handleCopy = useCallback(() => {
-    toast.success(t('common:copySuccess'))
-  }, [t])
+  const getRecipientType = useCallback(
+    (addressType: AddressType) => {
+      if (addressType === AddressType.Email) {
+        return t('withdrawAddress:email')
+      } else if (addressType === AddressType.Phone) {
+        return t('withdrawAddress:phone')
+      } else {
+        return t('withdrawAddress:uid')
+      }
+    },
+    [t]
+  )
 
   const handleSelect = useCallback((id: string) => {
     setSelectedIds((prev) => {
@@ -111,14 +120,11 @@ const InternalTransferAddresses: FunctionComponent<Props> = ({ chargeType, onSuc
         <TableHeader className="bg-[#f8f8f8]">
           <TableRow className="border-none">
             <TableHead className="text-[#666]">
-              <div className="flex items-center gap-2">
-                <Checkbox checked={checkedAll} onCheckedChange={handleSelectAll} />
-                <span>{t('withdrawAddress:token')}</span>
-              </div>
+              <Checkbox checked={checkedAll} onCheckedChange={handleSelectAll} />
             </TableHead>
-            <TableHead className="text-[#666]">{t('withdrawAddress:address')}</TableHead>
-            <TableHead className="text-[#666]">{t('withdrawAddress:network')}</TableHead>
-            <TableHead className="text-[#666]">{t('withdrawAddress:name')}</TableHead>
+            <TableHead className="text-[#666]">{t('withdrawAddress:recipientType')}</TableHead>
+            <TableHead className="text-[#666]">{t('withdrawAddress:recipient')}</TableHead>
+            <TableHead className="text-[#666]">{t('withdrawAddress:recipientName')}</TableHead>
             <TableHead className="text-[#666]">{t('withdrawAddress:updated')}</TableHead>
             <TableHead className="text-[#666]">{t('withdrawAddress:action')}</TableHead>
           </TableRow>
@@ -128,28 +134,14 @@ const InternalTransferAddresses: FunctionComponent<Props> = ({ chargeType, onSuc
             addressesList?.map((record) => (
               <TableRow key={record.id}>
                 <TableCell className="py-3 font-medium">
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id={record.id}
-                      checked={selectedIds.includes(record.id)}
-                      onCheckedChange={() => handleSelect(record.id)}
-                    />
-                    <span>{record.tokenId || '-'}</span>
-                  </div>
+                  <Checkbox
+                    id={record.id}
+                    checked={selectedIds.includes(record.id)}
+                    onCheckedChange={() => handleSelect(record.id)}
+                  />
                 </TableCell>
-                <TableCell className="py-3">
-                  <div className="flex items-center gap-2">
-                    <span className="max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap">
-                      {record.address}
-                    </span>
-                    <CopyToClipboard text={record.address || ''} onCopy={handleCopy}>
-                      <Button size="icon" variant="ghost">
-                        <Image src="/icons/copy.svg" alt="copy" width={20} height={20} />
-                      </Button>
-                    </CopyToClipboard>
-                  </div>
-                </TableCell>
-                <TableCell className="py-3">{record.tokenNetWork ?? '-'}</TableCell>
+                <TableCell className="py-3">{getRecipientType(record.addressType as AddressType)}</TableCell>
+                <TableCell className="py-3">{record.address ?? '-'}</TableCell>
                 <TableCell className="py-3">{record.addressName ?? '-'}</TableCell>
                 <TableCell className="py-3">{dayjs(Number(record.updated)).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                 <TableCell className="py-3">
