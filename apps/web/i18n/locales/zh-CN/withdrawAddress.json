@@ -30,5 +30,11 @@
   "invalidAddress": "无效地址",
   "accountError": "输入地址格式错误",
   "addSuccess": "添加成功",
-  "phoneError": "手机号码格式错误"
+  "phoneError": "手机号码格式错误",
+  "recipientType": "收款类型",
+  "recipient": "收款人",
+  "recipientName": "收款人名称",
+  "email": "邮箱",
+  "phone": "手机",
+  "uid": "用户ID"
 }

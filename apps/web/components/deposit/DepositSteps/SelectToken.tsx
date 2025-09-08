@@ -21,6 +21,7 @@ import { Empty } from '@/components/common'
 import { useAssetAll } from '@/hooks'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
+import { applyTokenPrecision } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import DefaultTokens from './DefaultTokens'
 
@@ -40,7 +41,7 @@ const SelectToken: FunctionComponent<Props> = ({
   popoverClassName,
 }) => {
   const { t } = useT('common')
-  const { tokens } = useAllToken()
+  const { tokens, getTokenPrecision } = useAllToken()
   const { data } = useAssetAll()
   const [open, setOpen] = useState(false)
   const [selectedToken, setSelectedToken] = useState<Token>()
@@ -58,13 +59,15 @@ const SelectToken: FunctionComponent<Props> = ({
         ?.filter((token) => availableTokens?.includes(token.tokenId))
         .map((token) => {
           const asset = data?.find((item) => item.tokenId === token.tokenId)
+          const precision = getTokenPrecision(token.tokenId)
+
           return {
             id: token.id,
             icon: token.icon,
             name: token.tokenName,
             fullName: token.tokenFullName,
-            amount: asset?.total,
-            availableBalance: Number(asset?.availableAssetTotal || 0),
+            amount: applyTokenPrecision(precision, asset?.total || 0),
+            availableBalance: applyTokenPrecision(precision, asset?.availableAssetTotal || 0),
           }
         })
 
@@ -81,7 +84,7 @@ const SelectToken: FunctionComponent<Props> = ({
 
       return sortBy(list, ['name'])
     }
-  }, [tokens, data, showAvailable])
+  }, [tokens, data, showAvailable, getTokenPrecision])
 
   const handleSelectToken = useCallback(
     (value: string) => {
