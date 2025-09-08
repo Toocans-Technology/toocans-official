@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
-import { useLogin } from '@/hooks'
 import { getQuery } from '@/lib/api'
 import { getUrl } from '@/lib/api/getUrl'
 import { allowDepositSchema, allowWithdrawSchema, withdrawChargeTypeSchema } from '@/types/token'
@@ -80,8 +79,6 @@ const AllTokenParamsSchema = z
 export type AllTokenParams = z.infer<typeof AllTokenParamsSchema>
 
 export const getAllToken = (params?: AllTokenParams) => {
-  const { isLoggedIn } = useLogin()
-
   return useQuery({
     ...getQuery({
       method: 'GET',
@@ -89,6 +86,5 @@ export const getAllToken = (params?: AllTokenParams) => {
       query: AllTokenParamsSchema.parse(params),
       transfer: AllTokenSchema.parse,
     }),
-    enabled: isLoggedIn,
   })
 }

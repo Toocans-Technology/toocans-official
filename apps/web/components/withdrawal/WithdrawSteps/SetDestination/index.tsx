@@ -1,9 +1,10 @@
 'use client'
 
-import { ChangeEvent, FunctionComponent } from 'react'
+import { FunctionComponent } from 'react'
 import { Separator, Tabs, TabsContent, TabsList, TabsTrigger } from '@workspace/ui/components'
 import { useT } from '@/i18n'
 import { Token } from '@/services/basicConfig'
+import { WithdrawAddress } from '@/services/wallet/schemas/address.schema'
 import { User } from '@/services/wallet/searchUser'
 import { ChargeType, InternalTransferType } from '@/types/withdraw'
 import InternalTransfer from './InternalTransfer'
@@ -16,9 +17,10 @@ interface Props {
   chargeType: ChargeType
   onTabChange?: (value: string) => void
   onSelectNetwork: (value: string) => void
-  onTransferTabChange?: (type: InternalTransferType) => void
-  onAddressChange: (event: ChangeEvent<HTMLInputElement>) => void
+  onAddressChange: (value: string, network?: Token) => void
+  onTransferTabChange: (type: InternalTransferType) => void
   onInternalTransferChange: (data?: User) => void
+  onSelectAddress?: (address?: WithdrawAddress) => void
 }
 
 const SetDestination: FunctionComponent<Props> = ({
@@ -29,6 +31,7 @@ const SetDestination: FunctionComponent<Props> = ({
   onTabChange,
   onSelectNetwork,
   onAddressChange,
+  onSelectAddress,
   onTransferTabChange,
   onInternalTransferChange,
 }) => {
@@ -49,10 +52,16 @@ const SetDestination: FunctionComponent<Props> = ({
             selectedNetwork={selectedNetwork}
             onSelectNetwork={onSelectNetwork}
             onAddressChange={onAddressChange}
+            onSelectAddress={onSelectAddress}
           />
         </TabsContent>
         <TabsContent value={ChargeType.Internal.toString()} className="mt-2">
-          <InternalTransfer onChange={onInternalTransferChange} onTransferTabChange={onTransferTabChange} />
+          <InternalTransfer
+            token={token}
+            onSelectAddress={onSelectAddress}
+            onChange={onInternalTransferChange}
+            onTransferTabChange={onTransferTabChange}
+          />
         </TabsContent>
       </Tabs>
     </div>
