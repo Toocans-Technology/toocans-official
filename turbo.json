@@ -4,7 +4,14 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "env": ["NEXT_PUBLIC_ENV_NAME", "NEXT_PUBLIC_API_ENDPOINT", "GENERATE_STATIC"],
+      "env": [
+        "NEXT_PUBLIC_ENV_NAME",
+        "NEXT_PUBLIC_API_ENDPOINT",
+        "GENERATE_STATIC",
+        "NODE_ENV",
+        "NEXT_PUBLIC_MARKET_API_ENDPOINT",
+        "NEXT_PUBLIC_QUOTATION_WSS"
+      ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
