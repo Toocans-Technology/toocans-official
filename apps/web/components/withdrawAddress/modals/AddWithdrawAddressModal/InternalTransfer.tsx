@@ -88,11 +88,17 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
       try {
+        let address = data.address
+
+        if (transferType === InternalTransferType.Phone) {
+          address = `${nationalCode}${data.address}`
+        }
+
         await addWithdrawAddress({
           ...data,
           tokenId: '',
           addressType,
-          address: `${nationalCode}${data.address}`,
+          address,
         })
         toast.success(t('withdrawAddress:addSuccess'))
         onSuccess?.(addressType)
@@ -100,7 +106,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
         toast.error((error as HttpError).message)
       }
     },
-    [addWithdrawAddress, addressType, nationalCode, onSuccess, t]
+    [addWithdrawAddress, addressType, nationalCode, onSuccess, t, transferType]
   )
 
   const handleTransferTabChange = useCallback(
