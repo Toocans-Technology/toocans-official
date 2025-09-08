@@ -62,7 +62,5 @@
   },
   "save": "Save",
   "edit": "Edit",
-  "delete": "Delete",
-  "privacyPolicy": "Privacy Policy",
-  "termsOfUse": "Terms of Use"
+  "delete": "Delete"
 }

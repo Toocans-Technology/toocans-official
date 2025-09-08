@@ -41,5 +41,7 @@
     "Change": "Change",
     "Last24h": "Last 24h"
   },
-  "totalBalance": "Total Balance"
+  "totalBalance": "Total Balance",
+  "privacyPolicy": "Privacy Policy",
+  "termsOfUse": "Terms of Use"
 }
