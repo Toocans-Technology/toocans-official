@@ -118,7 +118,7 @@ const OnChain: FunctionComponent<Props> = ({
           <Label className="text-sm text-[#222]" htmlFor="withdrawalAddress">
             {t('withdrawal:withdrawalAddress')}
           </Label>
-          <Link href={PATHNAMES.withdrawAddress} className="text-link hover:text-link/80 text-sm">
+          <Link href={PATHNAMES.withdrawAddress} target="_blank" className="text-link hover:text-link/80 text-sm">
             {t('withdrawal:manageAddresses')}
           </Link>
         </div>

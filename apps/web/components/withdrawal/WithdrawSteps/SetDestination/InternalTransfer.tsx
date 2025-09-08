@@ -27,7 +27,7 @@ const AccountNameLabel: FunctionComponent<AccountNameLabelProps> = ({ htmlFor })
       <Label className="text-sm text-[#222]" htmlFor={htmlFor}>
         {t('withdrawal:accountName')}
       </Label>
-      <Link href={PATHNAMES.withdrawAddress} className="text-link hover:text-link/80 text-sm">
+      <Link href={PATHNAMES.withdrawAddress} target="_blank" className="text-link hover:text-link/80 text-sm">
         {t('withdrawal:manageAddresses')}
       </Link>
     </div>
