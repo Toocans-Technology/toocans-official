@@ -60,6 +60,9 @@
     "documents": "Government-issued documents",
     "personalInformation": "Personal Information"
   },
+  "save": "Save",
+  "edit": "Edit",
+  "delete": "Delete",
   "privacyPolicy": "Privacy Policy",
   "termsOfUse": "Terms of Use"
 }
