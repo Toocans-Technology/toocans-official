@@ -8,7 +8,7 @@ import { useT } from '@/i18n'
 import { applyTokenPrecision, formatInputAmount } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { Withdrawal } from '@/services/wallet'
-import { User } from '@/services/wallet/searchUser'
+import { ExtendedUser } from '@/services/wallet/searchUser'
 import { InputValueType } from '@/types/form'
 import { ChargeType, InternalTransferType } from '@/types/withdraw'
 import { WithdrawDetailModal } from '../modals'
@@ -18,7 +18,7 @@ interface Props {
   token?: Token
   network?: Token
   address?: string
-  targetUser?: User
+  targetUser?: ExtendedUser
   chargeType?: ChargeType
   transferType?: InternalTransferType
 }

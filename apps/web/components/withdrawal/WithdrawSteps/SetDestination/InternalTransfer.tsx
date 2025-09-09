@@ -10,7 +10,7 @@ import { EMAIL_REGEX, INPUT_DEFAULT_VALUE, PATHNAMES } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { Country } from '@/services/login'
 import { WithdrawAddress } from '@/services/wallet/schemas/address.schema'
-import { User, useSearchUser } from '@/services/wallet/searchUser'
+import { ExtendedUser, useSearchUser } from '@/services/wallet/searchUser'
 import { InputValueType } from '@/types/form'
 import { AddressType, InternalTransferType } from '@/types/withdraw'
 import { SelectAddressModal } from '../../modals'
@@ -36,7 +36,7 @@ const AccountNameLabel: FunctionComponent<AccountNameLabelProps> = ({ htmlFor })
 
 interface Props {
   token: Token
-  onChange?: (data?: User) => void
+  onChange?: (data?: ExtendedUser) => void
   onSelectAddress?: (address?: WithdrawAddress) => void
   onTransferTabChange?: (type: InternalTransferType) => void
 }
@@ -77,6 +77,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
   const handleTabChange = useCallback(
     (value: InternalTransferType) => {
       setTransferType(value)
+
       if (value === InternalTransferType.Phone) {
         setPhone(INPUT_DEFAULT_VALUE)
       } else if (value === InternalTransferType.UID) {
@@ -95,7 +96,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
     const { data, error } = await refetch()
 
     if (data) {
-      onChange?.(data)
+      onChange?.({ ...data, email: email.value, phone: phone.value })
     } else {
       onChange?.(undefined)
 
@@ -103,7 +104,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
         toast.error(error?.message)
       }
     }
-  }, [refetch, onChange])
+  }, [refetch, onChange, email.value, phone.value])
 
   useEffect(() => {
     if (selectedAddress) {
@@ -187,12 +188,13 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
         }
 
         setTransferType(type)
+        onTransferTabChange?.(type)
       }
 
       setSelectedAddress(address)
       onSelectAddress?.(address)
     },
-    [onSelectAddress]
+    [onSelectAddress, onTransferTabChange]
   )
 
   return (

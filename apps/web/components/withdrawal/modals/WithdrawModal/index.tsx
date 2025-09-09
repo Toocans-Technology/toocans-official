@@ -25,7 +25,7 @@ import { VERIFICATION_CODE_REGEX } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { useUserInfo } from '@/services/user/info'
 import { getWithdrawOrder, useSendCode, useWithdraw, Withdrawal } from '@/services/wallet'
-import { User } from '@/services/wallet/searchUser'
+import { ExtendedUser } from '@/services/wallet/searchUser'
 import { HttpError } from '@/types/http'
 import { ChargeType, InternalTransferType, VerifyType } from '@/types/withdraw'
 import WithdrawInfo from './WithdrawInfo'
@@ -36,9 +36,9 @@ interface Props {
   token: Token
   address: string
   amount: number
-  targetUser?: User
   disabled?: boolean
   chargeType?: ChargeType
+  targetUser?: ExtendedUser
   tokenFee: string | number
   transferType?: InternalTransferType
   openDetail?: (open: boolean, data: Withdrawal) => void
@@ -210,6 +210,7 @@ const WithdrawModal: FunctionComponent<Props> = ({
           amount={amount}
           tokenFee={tokenFee}
           userInfo={targetUser}
+          transferType={transferType}
           chargeType={chargeType}
         />
         <Form {...form}>
