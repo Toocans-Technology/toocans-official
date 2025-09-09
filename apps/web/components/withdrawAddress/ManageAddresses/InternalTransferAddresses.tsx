@@ -106,6 +106,11 @@ const InternalTransferAddresses: FunctionComponent<Props> = ({ chargeType, onSuc
     [onSuccess, refetch]
   )
 
+  const handleDeleteSuccess = useCallback(() => {
+    refetch()
+    setSelectedIds([])
+  }, [refetch])
+
   return (
     <>
       <div className="flex justify-between">
@@ -170,7 +175,7 @@ const InternalTransferAddresses: FunctionComponent<Props> = ({ chargeType, onSuc
                   <span>
                     ({selectedIds.length}/{data?.length}) {t('withdrawAddress:selected')}
                   </span>
-                  <BatchDeleteWithdrawAddressModal ids={selectedIds} onSuccess={refetch} />
+                  <BatchDeleteWithdrawAddressModal ids={selectedIds} onSuccess={handleDeleteSuccess} />
                 </div>
               </TableCell>
             </TableRow>
