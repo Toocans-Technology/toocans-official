@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useCallback } from 'react'
+import { applyTokenPrecision } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { WithdrawChargeType } from '@/types/token'
 import { ChargeType } from '@/types/withdraw'
@@ -29,11 +30,9 @@ export const useTokenFee = (token?: Token, chargeType?: ChargeType) => {
         return 0
       }
 
-      return BigNumber(amount)
-        .times(chargeValue)
-        .toFixed(tokenPrecision?.displayPrecision || 4)
+      return applyTokenPrecision(tokenPrecision, BigNumber(amount).times(chargeValue))
     },
-    [withdrawChargeType, chargeValue, tokenPrecision?.displayPrecision, isInternal]
+    [withdrawChargeType, chargeValue, tokenPrecision, isInternal]
   )
 
   /**
@@ -42,23 +41,19 @@ export const useTokenFee = (token?: Token, chargeType?: ChargeType) => {
   const getMaxOrderAmount = useCallback(
     (balance: BigNumber.Value) => {
       if (isInternal) {
-        return BigNumber(balance).toFixed(tokenPrecision?.displayPrecision || 4, BigNumber.ROUND_FLOOR)
+        return applyTokenPrecision(tokenPrecision, BigNumber(balance))
       }
 
       if (withdrawChargeType === WithdrawChargeType.fixed) {
         if (BigNumber(balance).lt(chargeValue)) {
           return 0
         }
-        return BigNumber(balance)
-          .minus(chargeValue)
-          .toFixed(tokenPrecision?.displayPrecision || 4, BigNumber.ROUND_FLOOR)
+        return applyTokenPrecision(tokenPrecision, BigNumber(balance).minus(chargeValue))
       }
 
-      return BigNumber(balance)
-        .div(BigNumber(1).plus(chargeValue))
-        .toFixed(tokenPrecision?.displayPrecision || 4, BigNumber.ROUND_FLOOR)
+      return applyTokenPrecision(tokenPrecision, BigNumber(balance).div(BigNumber(1).plus(chargeValue)))
     },
-    [withdrawChargeType, chargeValue, tokenPrecision?.displayPrecision, isInternal]
+    [isInternal, withdrawChargeType, tokenPrecision, chargeValue]
   )
 
   return { getTokenFee, getMaxOrderAmount }

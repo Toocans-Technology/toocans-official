@@ -38,7 +38,7 @@ const ReceivedAmount: FunctionComponent<Props> = ({
   const [transferId, setTransferId] = useState<string | undefined>(undefined)
   const [open, setOpen] = useState(false)
   const [amount, setAmount] = useState<InputValueType>({ value: '', error: '', isInvalid: false })
-  const { getTokenFee, getMaxOrderAmount } = useTokenFee(network, chargeType)
+  const { getTokenFee, getMaxOrderAmount } = useTokenFee(token, chargeType)
   const tokenFee = useMemo(() => getTokenFee(amount.value), [getTokenFee, amount.value])
   const isOnChain = chargeType === ChargeType.OnChain
   const tokenPrecision = getTokenPrecision(token?.tokenId || '')
