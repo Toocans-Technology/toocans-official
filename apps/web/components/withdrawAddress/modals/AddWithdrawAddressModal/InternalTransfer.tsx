@@ -20,6 +20,7 @@ import {
 import { Input, PhoneNumberInput, TransferTypeTab } from '@/components/common'
 import { useT } from '@/i18n'
 import { EMAIL_REGEX, NUMBER_REGEX } from '@/lib/utils'
+import { Country } from '@/services/login'
 import { useAddWithdrawAddress } from '@/services/wallet'
 import { HttpError } from '@/types/http'
 import { AddressType, addressTypeSchema, InternalTransferType } from '@/types/withdraw'
@@ -30,7 +31,8 @@ interface Props {
 
 const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
   const { t } = useT(['withdrawal', 'withdrawAddress'])
-  const [nationalCode, setNationalCode] = useState<CountryCode>()
+  const [nationalCode, setNationalCode] = useState<string>()
+  const [countryCode, setCountryCode] = useState<CountryCode>()
   const [transferType, setTransferType] = useState(InternalTransferType.Email)
   const { mutateAsync: addWithdrawAddress, isPending } = useAddWithdrawAddress()
 
@@ -60,7 +62,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
           if (transferType === InternalTransferType.Email) {
             return EMAIL_REGEX.test(value)
           } else if (transferType === InternalTransferType.Phone) {
-            return isValidPhoneNumber(`+${nationalCode}${value}`)
+            return isValidPhoneNumber(value, countryCode)
           } else {
             return value.length > 0 && NUMBER_REGEX.test(value)
           }
@@ -70,7 +72,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
         }
       ),
     })
-  }, [t, transferType, nationalCode])
+  }, [t, transferType, countryCode])
 
   const form = useForm<z.infer<typeof FormSchema>>({
     mode: 'onBlur',
@@ -117,6 +119,14 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
     [resetField]
   )
 
+  const handleCountryChange = useCallback(
+    (country: Country) => {
+      setNationalCode(country.nationalCode)
+      setCountryCode(country.domainShortName as CountryCode)
+    },
+    [setNationalCode]
+  )
+
   return (
     <>
       <TransferTypeTab value={transferType} onTransferTabChange={handleTransferTabChange} />
@@ -148,7 +158,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
                     <PhoneNumberInput
                       {...field}
                       onChange={(value) => field.onChange(value)}
-                      onCountryChange={(country) => setNationalCode(country.nationalCode as CountryCode)}
+                      onCountryChange={handleCountryChange}
                     />
                   </FormControl>
                   <FormMessage />
