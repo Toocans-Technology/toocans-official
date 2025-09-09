@@ -19,14 +19,13 @@ export default function Page() {
   const onNext = useCallback(() => {
     if (!agreed) return
     if (isLoggedIn) {
-      // 直接退出登录
       typedStorage.clearToken()
       getQueryClient().clear()
+      localStorage.setItem('pathname', pathname)
       router.push(PATHNAMES.login)
       return
     }
-    // 未登录，跳转登录并携带 from 参数，登录成功后返回
-    router.push(PATHNAMES.login, { query: { from: pathname } })
+    router.push(PATHNAMES.login)
   }, [agreed, isLoggedIn, pathname, router])
 
   return (
