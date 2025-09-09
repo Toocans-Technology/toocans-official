@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { sortBy } from 'es-toolkit'
 import { Loader2Icon } from 'lucide-react'
 import { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -64,15 +65,14 @@ const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
   const handleSelectToken = useCallback(
     (token: Token) => {
       setValue('tokenId', token.tokenId)
-      setNetworkList(
-        token.subTokenList.map((item) => ({
-          id: item.chainTokenId,
-          name: item.chainName,
-          icon: item.chainIcon || '/images/symbol-placeholder.png',
-          protocolName: item.protocolName,
-          disabled: item.tokenSetting?.allowWithdraw === AllowWithdraw.disabled,
-        }))
-      )
+      const tokenList = token.subTokenList.map((item) => ({
+        id: item.chainTokenId,
+        name: item.chainName,
+        icon: item.chainIcon || '/images/symbol-placeholder.png',
+        protocolName: item.protocolName,
+        disabled: item.tokenSetting?.allowWithdraw === AllowWithdraw.disabled,
+      }))
+      setNetworkList(sortBy(tokenList, ['name']))
     },
     [setValue]
   )

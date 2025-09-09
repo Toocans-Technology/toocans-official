@@ -166,6 +166,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
                   <FormControl>
                     <Input
                       {...field}
+                      maxLength={19}
                       placeholder={t('withdrawal:uidPlaceholder')}
                       onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         const value = e.target.value
