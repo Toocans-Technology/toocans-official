@@ -15,20 +15,28 @@ import WithdrawModal from '../modals/WithdrawModal'
 
 interface Props {
   token?: Token
+  network?: Token
   address?: string
   targetUser?: User
   chargeType?: ChargeType
   transferType?: InternalTransferType
 }
 
-const ReceivedAmount: FunctionComponent<Props> = ({ token, address, chargeType, transferType, targetUser }) => {
+const ReceivedAmount: FunctionComponent<Props> = ({
+  token,
+  network,
+  address,
+  chargeType,
+  transferType,
+  targetUser,
+}) => {
   const { t } = useT('withdrawal')
-  const minAmount = token?.tokenSetting?.withdrawMinQuantity || 0
+  const minAmount = network?.tokenSetting?.withdrawMinQuantity || 0
   const { data } = useAssetAll(token?.tokenId)
   const [transferId, setTransferId] = useState<string | undefined>(undefined)
   const [open, setOpen] = useState(false)
   const [amount, setAmount] = useState<InputValueType>({ value: '', error: '', isInvalid: false })
-  const { getTokenFee, getMaxOrderAmount } = useTokenFee(token, chargeType)
+  const { getTokenFee, getMaxOrderAmount } = useTokenFee(network, chargeType)
   const tokenFee = useMemo(() => getTokenFee(amount.value), [getTokenFee, amount.value])
   const isOnChain = chargeType === ChargeType.OnChain
 
@@ -80,7 +88,6 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address, chargeType, 
 
   const handleAll = useCallback(() => {
     const maxAmount = getMaxOrderAmount(userAsset?.available || 0)
-    console.log('maxAmount', maxAmount)
     const validatedAmount = validateAmount(maxAmount.toString())
     setAmount(validatedAmount)
   }, [getMaxOrderAmount, userAsset?.available, validateAmount])
@@ -133,7 +140,7 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address, chargeType, 
       </div>
       {address && token && (
         <WithdrawModal
-          token={token}
+          token={network || token}
           address={address}
           disabled={disabled}
           tokenFee={tokenFee}
