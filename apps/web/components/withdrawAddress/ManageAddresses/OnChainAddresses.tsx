@@ -167,7 +167,7 @@ const OnChainAddresses: FunctionComponent<Props> = ({ chargeType, onSuccess }) =
                     </Tooltip>
                   </div>
                 </TableCell>
-                <TableCell className="py-3">{record.tokenNetWork}</TableCell>
+                <TableCell className="py-3">{record.chainName}</TableCell>
                 <TableCell className="py-3">{record.addressName || '-'}</TableCell>
                 <TableCell className="py-3">{dayjs(Number(record.updated)).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                 <TableCell className="py-3">
