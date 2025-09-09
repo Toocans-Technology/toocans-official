@@ -6,15 +6,16 @@ import { Input, SelectToken } from '@/components/common'
 import { useT } from '@/i18n'
 
 export interface FilterParams {
-  tokenId: string
+  tokenId?: string
   keyword?: string
 }
 
 interface FilterProps {
+  showSelectToken?: boolean
   onChange?: (params: FilterParams) => void
 }
 
-const Filter: FunctionComponent<FilterProps> = ({ onChange }) => {
+const Filter: FunctionComponent<FilterProps> = ({ showSelectToken = true, onChange }) => {
   const { t } = useT('withdrawAddress:searchPlaceholder')
   const [filterParams, setFilterParams] = useState<FilterParams>({
     tokenId: '',
@@ -39,7 +40,7 @@ const Filter: FunctionComponent<FilterProps> = ({ onChange }) => {
 
   return (
     <div className="flex items-center gap-10">
-      <SelectToken onSelect={handleTokenChange} />
+      {showSelectToken && <SelectToken onSelect={handleTokenChange} />}
       <Input
         name="keyword"
         className="border-1 border-[#D3D2D2] bg-white focus-within:border-[#D3D2D2] focus-within:ring-0 hover:border-[#D3D2D2] hover:ring-0"

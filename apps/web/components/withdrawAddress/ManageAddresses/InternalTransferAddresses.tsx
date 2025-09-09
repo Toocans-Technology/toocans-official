@@ -109,7 +109,7 @@ const InternalTransferAddresses: FunctionComponent<Props> = ({ chargeType, onSuc
   return (
     <>
       <div className="flex justify-between">
-        <Filter onChange={handleChange} />
+        <Filter showSelectToken={false} onChange={handleChange} />
         <AddWithdrawAddressModal chargeType={chargeType} onSuccess={handleSuccess} />
       </div>
       <Table className="mt-4">
