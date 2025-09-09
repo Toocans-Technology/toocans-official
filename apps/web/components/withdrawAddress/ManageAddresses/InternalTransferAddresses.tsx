@@ -143,7 +143,7 @@ const InternalTransferAddresses: FunctionComponent<Props> = ({ chargeType, onSuc
                 </TableCell>
                 <TableCell className="py-3">{getRecipientType(record.addressType as AddressType)}</TableCell>
                 <TableCell className="py-3">{record.address ?? '-'}</TableCell>
-                <TableCell className="py-3">{record.addressName ?? '-'}</TableCell>
+                <TableCell className="py-3">{record.addressName || '-'}</TableCell>
                 <TableCell className="py-3">{dayjs(Number(record.updated)).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                 <TableCell className="py-3">
                   <div className="flex items-center gap-1">
