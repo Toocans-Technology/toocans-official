@@ -1,20 +1,49 @@
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useMemo } from 'react'
 import { useT } from '@/i18n'
 import { Token } from '@/services/basicConfig'
-import { User } from '@/services/wallet/searchUser'
-import { ChargeType } from '@/types/withdraw'
+import { ExtendedUser } from '@/services/wallet/searchUser'
+import { ChargeType, InternalTransferType } from '@/types/withdraw'
 
 interface Props {
   token?: Token
   address?: string
   amount?: number
   tokenFee?: string | number
-  userInfo?: User
+  userInfo?: ExtendedUser
   chargeType?: ChargeType
+  transferType?: InternalTransferType
 }
 
-const WithdrawInfo: FunctionComponent<Props> = ({ token, address, amount, tokenFee, userInfo, chargeType }) => {
+const WithdrawInfo: FunctionComponent<Props> = ({
+  token,
+  address,
+  amount,
+  tokenFee,
+  userInfo,
+  chargeType,
+  transferType,
+}) => {
   const { t } = useT('withdrawal')
+
+  const transferTypeLabel = useMemo(() => {
+    if (transferType === InternalTransferType.UID) {
+      return t('withdrawal:uid')
+    } else if (transferType === InternalTransferType.Email) {
+      return t('withdrawal:email')
+    } else {
+      return t('withdrawal:phone')
+    }
+  }, [transferType, t])
+
+  const userInfoItem = useMemo(() => {
+    if (transferType === InternalTransferType.UID) {
+      return userInfo?.uid
+    } else if (transferType === InternalTransferType.Email) {
+      return userInfo?.email
+    } else {
+      return userInfo?.phone
+    }
+  }, [transferType, userInfo])
 
   return (
     <>
@@ -56,8 +85,8 @@ const WithdrawInfo: FunctionComponent<Props> = ({ token, address, amount, tokenF
           </div>
           <div className="mt-4 grid gap-2">
             <div className="grid grid-cols-2 items-center py-1.5 text-sm">
-              <div className="text-[#999]">{t('withdrawal:uid')}</div>
-              <div className="overflow-hidden break-words text-right font-medium">{userInfo?.uid || '-'}</div>
+              <div className="text-[#999]">{transferTypeLabel}</div>
+              <div className="overflow-hidden break-words text-right font-medium">{userInfoItem || '-'}</div>
             </div>
             <div className="grid grid-cols-2 items-center py-1.5 text-sm">
               <div className="text-[#999]">{t('withdrawal:nickname')}</div>

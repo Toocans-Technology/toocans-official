@@ -10,6 +10,11 @@ const UserSchema = z.object({
 
 export type User = z.infer<typeof UserSchema>
 
+export type ExtendedUser = User & {
+  email?: string
+  phone?: string
+}
+
 const SearchUserParamsSchema = z
   .object({
     searchKey: z.optional(z.string()), // UID、邮箱或 手机号码
