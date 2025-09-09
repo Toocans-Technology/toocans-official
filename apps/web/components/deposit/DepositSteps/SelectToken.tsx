@@ -73,14 +73,16 @@ const SelectToken: FunctionComponent<Props> = ({
 
       return sortBy(list, ['availableBalance']).reverse()
     } else {
-      list = tokens?.map((token) => ({
-        id: token.id,
-        icon: token.icon,
-        name: token.tokenName,
-        fullName: token.tokenFullName,
-        amount: '',
-        availableBalance: '',
-      }))
+      list = tokens
+        ?.filter((token) => token.status === 1)
+        .map((token) => ({
+          id: token.id,
+          icon: token.icon,
+          name: token.tokenName,
+          fullName: token.tokenFullName,
+          amount: '',
+          availableBalance: '',
+        }))
 
       return sortBy(list, ['name'])
     }
