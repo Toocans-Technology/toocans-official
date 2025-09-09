@@ -53,10 +53,7 @@ const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
     reValidateMode: 'onChange',
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      address: '',
-      tokenId: '',
       addressName: '',
-      tokenNetWork: '',
       addressType: AddressType.OnChain,
     },
   })

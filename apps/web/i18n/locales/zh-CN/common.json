@@ -59,5 +59,8 @@
     "requirements": "认证要求",
     "documents": "政府签发的身份证件",
     "personalInformation": "个人信息"
-  }
+  },
+  "save": "保存",
+  "edit": "编辑",
+  "delete": "删除"
 }

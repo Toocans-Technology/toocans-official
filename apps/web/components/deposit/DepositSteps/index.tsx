@@ -33,7 +33,7 @@ const DepositSteps: FunctionComponent = () => {
 
   const handleCopy = useCallback(() => {
     toast(t('deposit:copySuccess'))
-  }, [])
+  }, [t])
 
   const networkList = useMemo(() => {
     if (!selectedToken) {
