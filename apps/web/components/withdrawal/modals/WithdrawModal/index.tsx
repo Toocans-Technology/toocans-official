@@ -199,7 +199,11 @@ const WithdrawModal: FunctionComponent<Props> = ({
           {t('common:next')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]" onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent
+        className="sm:max-w-[425px]"
+        onInteractOutside={(e) => e.preventDefault()}
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>{t('withdrawal:withdrawModal.title')}</DialogTitle>
           <Separator />
