@@ -168,13 +168,9 @@ const LoginBox: FunctionComponent = () => {
         typedStorage.expireIn = expires_in
 
         openToast(t('login:successfully', { name: t('login:login') }))
-        // const from = routerParams.get('from') || ''
-        // const safeFrom = from.startsWith('/') ? from : ''
-        // router.replace(safeFrom || '/overview')
-        if(localStorage.getItem('pathname')) {
-          localStorage.removeItem('pathname');
-          router.replace(localStorage.getItem('pathname') || '/overview')
-        }
+        const from = routerParams.get('from') || ''
+        const safeFrom = from.startsWith('/') ? from : ''
+        router.replace(safeFrom || '/overview')
       } catch (error) {
         openToast((error as Error).message, 'error')
       }
