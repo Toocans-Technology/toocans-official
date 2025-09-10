@@ -29,7 +29,12 @@ const ListItem: FunctionComponent<Props> = ({ data, isSelected, onSelect }) => {
         {data.tokenId && (
           <div className="flex items-center gap-2 text-sm">
             <span className="text-sm font-medium">{data.tokenId}</span>
-            {data.tokenNetWork && <span className="rounded bg-[#f8f8f8] px-1.5">{data.tokenNetWork}</span>}
+            {data.chainName && (
+              <span className="rounded bg-[#f8f8f8] px-1.5">
+                {data.chainName}
+                {data.protocolName ? `(${data.protocolName})` : ''}
+              </span>
+            )}
           </div>
         )}
         <div className="text-xs text-[#666]">{data.address}</div>

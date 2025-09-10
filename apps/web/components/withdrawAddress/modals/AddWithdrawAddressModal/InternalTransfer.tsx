@@ -20,6 +20,7 @@ import {
 import { Input, PhoneNumberInput, TransferTypeTab } from '@/components/common'
 import { useT } from '@/i18n'
 import { EMAIL_REGEX, NUMBER_REGEX } from '@/lib/utils'
+import { Country } from '@/services/login'
 import { useAddWithdrawAddress } from '@/services/wallet'
 import { HttpError } from '@/types/http'
 import { AddressType, addressTypeSchema, InternalTransferType } from '@/types/withdraw'
@@ -30,7 +31,8 @@ interface Props {
 
 const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
   const { t } = useT(['withdrawal', 'withdrawAddress'])
-  const [nationalCode, setNationalCode] = useState<CountryCode>()
+  const [nationalCode, setNationalCode] = useState<string>()
+  const [countryCode, setCountryCode] = useState<CountryCode>()
   const [transferType, setTransferType] = useState(InternalTransferType.Email)
   const { mutateAsync: addWithdrawAddress, isPending } = useAddWithdrawAddress()
 
@@ -60,7 +62,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
           if (transferType === InternalTransferType.Email) {
             return EMAIL_REGEX.test(value)
           } else if (transferType === InternalTransferType.Phone) {
-            return isValidPhoneNumber(`+${nationalCode}${value}`)
+            return isValidPhoneNumber(value, countryCode)
           } else {
             return value.length > 0 && NUMBER_REGEX.test(value)
           }
@@ -70,7 +72,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
         }
       ),
     })
-  }, [t, transferType, nationalCode])
+  }, [t, transferType, countryCode])
 
   const form = useForm<z.infer<typeof FormSchema>>({
     mode: 'onBlur',
@@ -88,11 +90,17 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
   const onSubmit = useCallback(
     async (data: z.infer<typeof FormSchema>) => {
       try {
+        let address = data.address
+
+        if (transferType === InternalTransferType.Phone) {
+          address = `${nationalCode}${data.address}`
+        }
+
         await addWithdrawAddress({
           ...data,
           tokenId: '',
           addressType,
-          address: `${nationalCode}${data.address}`,
+          address,
         })
         toast.success(t('withdrawAddress:addSuccess'))
         onSuccess?.(addressType)
@@ -100,7 +108,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
         toast.error((error as HttpError).message)
       }
     },
-    [addWithdrawAddress, addressType, nationalCode, onSuccess, t]
+    [addWithdrawAddress, addressType, nationalCode, onSuccess, t, transferType]
   )
 
   const handleTransferTabChange = useCallback(
@@ -109,6 +117,14 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
       resetField('address')
     },
     [resetField]
+  )
+
+  const handleCountryChange = useCallback(
+    (country: Country) => {
+      setNationalCode(country.nationalCode)
+      setCountryCode(country.domainShortName as CountryCode)
+    },
+    [setNationalCode]
   )
 
   return (
@@ -122,7 +138,9 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('withdrawAddress:account')}</FormLabel>
+                  <FormLabel className="before:text-destructive gap-1 before:inline-block before:content-['*']">
+                    {t('withdrawAddress:account')}
+                  </FormLabel>
                   <FormControl>
                     <Input {...field} autoCapitalize="off" placeholder={t('withdrawal:emailPlaceholder')} />
                   </FormControl>
@@ -137,12 +155,14 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('withdrawAddress:account')}</FormLabel>
+                  <FormLabel className="before:text-destructive gap-1 before:inline-block before:content-['*']">
+                    {t('withdrawAddress:account')}
+                  </FormLabel>
                   <FormControl>
                     <PhoneNumberInput
                       {...field}
                       onChange={(value) => field.onChange(value)}
-                      onCountryChange={(country) => setNationalCode(country.nationalCode as CountryCode)}
+                      onCountryChange={handleCountryChange}
                     />
                   </FormControl>
                   <FormMessage />
@@ -156,10 +176,13 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('withdrawAddress:account')}</FormLabel>
+                  <FormLabel className="before:text-destructive gap-1 before:inline-block before:content-['*']">
+                    {t('withdrawAddress:account')}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
+                      maxLength={19}
                       placeholder={t('withdrawal:uidPlaceholder')}
                       onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         const value = e.target.value

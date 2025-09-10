@@ -102,6 +102,11 @@ const OnChainAddresses: FunctionComponent<Props> = ({ chargeType, onSuccess }) =
     [onSuccess, refetch]
   )
 
+  const handleDeleteSuccess = useCallback(() => {
+    refetch()
+    setSelectedIds([])
+  }, [refetch])
+
   return (
     <>
       <div className="flex justify-between">
@@ -140,11 +145,16 @@ const OnChainAddresses: FunctionComponent<Props> = ({ chargeType, onSuccess }) =
                 </TableCell>
                 <TableCell className="py-3">
                   <div className="flex items-center gap-2">
-                    <CopyToClipboard text={record.address || ''} onCopy={handleCopy}>
-                      <span className="max-w-[120px] cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap">
-                        {record.address}
-                      </span>
-                    </CopyToClipboard>
+                    <Tooltip>
+                      <TooltipTrigger className="max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap">
+                        <CopyToClipboard text={record.address || ''} onCopy={handleCopy}>
+                          <span>{record.address}</span>
+                        </CopyToClipboard>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{record.address}</p>
+                      </TooltipContent>
+                    </Tooltip>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Image src="/icons/qrcode.svg" alt="copy" width={20} height={20} />
@@ -157,8 +167,11 @@ const OnChainAddresses: FunctionComponent<Props> = ({ chargeType, onSuccess }) =
                     </Tooltip>
                   </div>
                 </TableCell>
-                <TableCell className="py-3">{record.tokenNetWork}</TableCell>
-                <TableCell className="py-3">{record.addressName ?? '-'}</TableCell>
+                <TableCell className="py-3">
+                  {record.chainName}
+                  {record.protocolName ? `(${record.protocolName})` : ''}
+                </TableCell>
+                <TableCell className="py-3">{record.addressName || '-'}</TableCell>
                 <TableCell className="py-3">{dayjs(Number(record.updated)).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
                 <TableCell className="py-3">
                   <div className="flex items-center justify-end gap-1">
@@ -190,7 +203,7 @@ const OnChainAddresses: FunctionComponent<Props> = ({ chargeType, onSuccess }) =
                   <span>
                     ({selectedIds.length}/{data?.length}) {t('withdrawAddress:selected')}
                   </span>
-                  <BatchDeleteWithdrawAddressModal ids={selectedIds} onSuccess={refetch} />
+                  <BatchDeleteWithdrawAddressModal ids={selectedIds} onSuccess={handleDeleteSuccess} />
                 </div>
               </TableCell>
             </TableRow>

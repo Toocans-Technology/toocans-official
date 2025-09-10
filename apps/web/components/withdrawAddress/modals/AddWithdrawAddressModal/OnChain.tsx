@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { sortBy } from 'es-toolkit'
 import { Loader2Icon } from 'lucide-react'
 import { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -52,10 +53,7 @@ const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
     reValidateMode: 'onChange',
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      address: '',
-      tokenId: '',
       addressName: '',
-      tokenNetWork: '',
       addressType: AddressType.OnChain,
     },
   })
@@ -64,15 +62,14 @@ const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
   const handleSelectToken = useCallback(
     (token: Token) => {
       setValue('tokenId', token.tokenId)
-      setNetworkList(
-        token.subTokenList.map((item) => ({
-          id: item.tokenId,
-          name: item.chainName,
-          icon: item.chainIcon || '/images/symbol-placeholder.png',
-          protocolName: item.protocolName,
-          disabled: item.tokenSetting?.allowWithdraw === AllowWithdraw.disabled,
-        }))
-      )
+      const tokenList = token.subTokenList.map((item) => ({
+        id: item.chainTokenId,
+        name: item.chainName,
+        icon: item.chainIcon || '/images/symbol-placeholder.png',
+        protocolName: item.protocolName,
+        disabled: item.tokenSetting?.allowWithdraw === AllowWithdraw.disabled,
+      }))
+      setNetworkList(sortBy(tokenList, ['name']))
     },
     [setValue]
   )
@@ -101,7 +98,9 @@ const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
           name="tokenId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('withdrawAddress:token')}</FormLabel>
+              <FormLabel className="before:text-destructive gap-1 before:inline-block before:content-['*']">
+                {t('withdrawAddress:token')}
+              </FormLabel>
               <FormControl>
                 <SelectToken
                   {...field}
@@ -119,7 +118,9 @@ const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('withdrawAddress:address')}</FormLabel>
+              <FormLabel className="before:text-destructive gap-1 before:inline-block before:content-['*']">
+                {t('withdrawAddress:address')}
+              </FormLabel>
               <FormControl>
                 <Input {...field} autoCapitalize="off" placeholder={t('withdrawAddress:addressPlaceholder')} />
               </FormControl>
@@ -132,7 +133,9 @@ const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
           name="tokenNetWork"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('withdrawAddress:network')}</FormLabel>
+              <FormLabel className="before:text-destructive gap-1 before:inline-block before:content-['*']">
+                {t('withdrawAddress:network')}
+              </FormLabel>
               <FormControl>
                 <SelectNetwork value={field.value || ''} networks={networkList} onValueChange={field.onChange} />
               </FormControl>

@@ -19,8 +19,8 @@ interface Props {
   address?: string
   selectedNetwork?: Token
   onSelectNetwork: (value: string) => void
-  onAddressChange: (value: string) => void
   onSelectAddress?: (address?: WithdrawAddress) => void
+  onAddressChange: (value: string, network?: Token) => void
 }
 
 const OnChain: FunctionComponent<Props> = ({
@@ -42,7 +42,7 @@ const OnChain: FunctionComponent<Props> = ({
     }
 
     const list = token.subTokenList.map((item) => ({
-      id: item.tokenId,
+      id: item.chainTokenId,
       name: item.chainName,
       icon: item.chainIcon || '/images/symbol-placeholder.png',
       protocolName: item.protocolName,
@@ -84,10 +84,20 @@ const OnChain: FunctionComponent<Props> = ({
   const handleConfirm = useCallback(
     (address?: WithdrawAddress) => {
       setSelectedAddress(address)
-      onSelectAddress?.(address)
-      onAddressChange?.(address?.address || '')
+
+      if (address?.tokenNetWork) {
+        const network = token?.subTokenList.find((item) => item.chainTokenId === address?.tokenNetWork)
+
+        if (network && network.tokenSetting?.allowWithdraw === AllowWithdraw.enabled) {
+          onSelectNetwork(network.chainTokenId)
+          onAddressChange?.(address?.address || '', network)
+        } else {
+          onSelectNetwork('')
+          onAddressChange?.('')
+        }
+      }
     },
-    [onAddressChange, onSelectAddress]
+    [onAddressChange, onSelectNetwork, token?.subTokenList]
   )
 
   return (
@@ -95,20 +105,20 @@ const OnChain: FunctionComponent<Props> = ({
       <div className="flex flex-col gap-2">
         <Label className="text-sm text-[#222]">{t('withdrawal:onChainType')}</Label>
         <SelectNetwork
-          value={selectedNetwork?.tokenId || ''}
+          value={selectedNetwork?.chainTokenId || ''}
           networks={networkList}
           onValueChange={handleSelectNetwork}
         />
-        {selectedAddress && selectedNetwork && selectedNetwork?.tokenId !== selectedAddress.tokenNetWork && (
+        {/* {selectedAddress && selectedNetwork && selectedNetwork?.chainTokenId !== selectedAddress.tokenNetWork && (
           <div className="bg-warning rounded-md px-3 py-2 text-sm">{t('withdrawal:networkChangeWarning')}</div>
-        )}
+        )} */}
       </div>
       <div className="mt-4 flex flex-col gap-2">
         <div className="flex justify-between">
           <Label className="text-sm text-[#222]" htmlFor="withdrawalAddress">
             {t('withdrawal:withdrawalAddress')}
           </Label>
-          <Link href={PATHNAMES.withdrawAddress} className="text-link hover:text-link/80 text-sm">
+          <Link href={PATHNAMES.withdrawAddress} target="_blank" className="text-link hover:text-link/80 text-sm">
             {t('withdrawal:manageAddresses')}
           </Link>
         </div>
@@ -127,8 +137,8 @@ const OnChain: FunctionComponent<Props> = ({
       </div>
       <SelectAddressModal
         open={open}
-        value={selectedAddress?.id}
         token={token}
+        value={selectedAddress?.id}
         addressTypes={[AddressType.OnChain]}
         onOpenChange={setOpen}
         onConfirm={handleConfirm}

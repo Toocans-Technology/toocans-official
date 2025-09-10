@@ -30,5 +30,11 @@
   "invalidAddress": "Invalid address",
   "accountError": "Enter address format error",
   "addSuccess": "Add successfully",
-  "phoneError": "Phone number format error"
+  "phoneError": "Phone number format error",
+  "recipientType": "Recipient type",
+  "recipient": "Recipient",
+  "recipientName": "Recipient name",
+  "email": "Email",
+  "phone": "Phone",
+  "uid": "UID"
 }

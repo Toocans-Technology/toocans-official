@@ -53,7 +53,7 @@ const PhoneNumberInput: FunctionComponent<Props> = ({
           </span>
         )}
         <div className="flex w-full items-center gap-2">
-          <CountrySelect nationalCode={nationalCode} onChange={onCountryChange} />
+          <CountrySelect value={nationalCode} onChange={onCountryChange} />
           <Separator orientation="vertical" className="bg-[#999] data-[orientation=vertical]:h-2.5" />
           <Input
             id="phone"
