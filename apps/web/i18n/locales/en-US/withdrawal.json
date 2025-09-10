@@ -82,5 +82,6 @@
     "title": "Add Withdrawal Address",
     "name": "Name(Optional)"
   },
-  "networkChangeWarning": "You have switched the Network. Please confirm if you need to modify the withdrawal address"
+  "networkChangeWarning": "You have switched the Network. Please confirm if you need to modify the withdrawal address",
+  "action": "Action"
 }
