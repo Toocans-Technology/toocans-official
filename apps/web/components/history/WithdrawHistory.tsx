@@ -2,18 +2,22 @@
 
 import dayjs from 'dayjs'
 import { Loader2Icon } from 'lucide-react'
+import Image from 'next/image'
 import { FunctionComponent, useCallback, useState } from 'react'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@workspace/ui/components'
+import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@workspace/ui/components'
 import { Empty, PaginationControls } from '@/components/common'
 import { useT } from '@/i18n'
 import { getRecordList, RecordParams } from '@/services/user'
 import { BusinessType } from '@/types/user'
+import { WithdrawDetailModal } from '../withdrawal/modals'
 import Filter, { FilterParams } from './Filter'
 
 const pageSize = 20
 
 const WithdrawHistory: FunctionComponent = () => {
   const { t } = useT('history')
+  const [open, setOpen] = useState(false)
+  const [orderId, setOrderId] = useState('')
   const [params, setParams] = useState<RecordParams>({
     pageNo: 1,
     pageSize,
@@ -23,6 +27,16 @@ const WithdrawHistory: FunctionComponent = () => {
     endTime: dayjs().toDate().getTime(),
   })
   const { data: recordData, isLoading } = getRecordList(params)
+
+  const handleOpenDetail = useCallback((id: string) => {
+    setOpen(true)
+    setOrderId(id)
+  }, [])
+
+  const handleOpenChange = useCallback((open: boolean) => {
+    setOpen(open)
+    setOrderId('')
+  }, [])
 
   const handleChange = useCallback((filterParams: FilterParams) => {
     setParams({ ...filterParams, businessType: BusinessType.withdraw, pageNo: 1, pageSize })
@@ -36,7 +50,8 @@ const WithdrawHistory: FunctionComponent = () => {
           <TableRow className="border-none">
             <TableHead className="text-[#666]">{t('history:token')}</TableHead>
             <TableHead className="text-[#666]">{t('history:amount')}</TableHead>
-            <TableHead className="text-right text-[#666]">{t('history:time')}</TableHead>
+            <TableHead className="text-[#666]">{t('history:time')}</TableHead>
+            <TableHead className="text-[#666]">{t('withdrawal:action')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -45,8 +60,11 @@ const WithdrawHistory: FunctionComponent = () => {
               <TableRow key={record.id} className="border-none">
                 <TableCell className="p-3 font-medium text-[#222]">{record.tokenName}</TableCell>
                 <TableCell className="text-destructive p-3">-{record.amount}</TableCell>
-                <TableCell className="p-3 text-right">
-                  {dayjs(Number(record.createDate)).format('YYYY-MM-DD HH:mm:ss')}
+                <TableCell className="p-3">{dayjs(Number(record.createDate)).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
+                <TableCell className="p-3">
+                  <Button variant="ghost" size="icon" onClick={() => handleOpenDetail(record.businessId)}>
+                    <Image src="/icons/list.svg" alt="list" width={20} height={20} />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))
@@ -73,6 +91,7 @@ const WithdrawHistory: FunctionComponent = () => {
           onPageChange={(page: number) => params && setParams({ ...params, pageNo: page })}
         />
       ) : null}
+      <WithdrawDetailModal id={orderId} open={open} onOpenChange={handleOpenChange} isDetail={true} />
     </>
   )
 }
