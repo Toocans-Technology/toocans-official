@@ -26,9 +26,9 @@ const PaginationControls: FunctionComponent<PaginationControlsProps> = ({
   siblingCount = 1,
   onPageChange,
 }) => {
-  const pageTextCls = 'font-[Inter] text-[14px] leading-[22px] font-normal text-center text-[var(--BG-666,#666)]'
+  const pageTextCls = 'font-[Inter] text-[14px] leading-[22px] font-normal text-center text-[#222222]'
   const pageContainerBase = 'w-8 h-8 flex items-center justify-center'
-  const activeItemCls = `${pageContainerBase} rounded bg-[var(--dark-brand-default,#9CFF1F)] text-[var(--BG-222222,#222)]`
+  const activeItemCls = `${pageContainerBase} rounded bg-[var(--dark-brand-default,#9CFF1F)] text-[#222222]`
   const pageButtonBase = 'w-full h-full hover:bg-transparent active:bg-transparent focus-visible:ring-0 transition-none'
   const pageRange = useMemo(() => {
     const range: number[] = []

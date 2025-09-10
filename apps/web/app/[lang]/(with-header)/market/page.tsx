@@ -225,11 +225,11 @@ export default function Page() {
 
   return (
     <main className="relative mx-auto mt-16 flex w-[1000px] flex-col gap-6">
-      <header className="text-design-token-text-light-primary relative mt-[-1.00px] w-fit text-center text-[32px] font-medium leading-[normal] tracking-[0] [font-family:'Inter',Helvetica]">
+      <header className="text-design-token-text-light-primary relative mt-[-1.00px] w-fit text-center text-[32px] font-medium leading-[normal] tracking-[0] [font-family:'Inter',Helvetica]  ml-[-2px]">
         {t('market:PageTitle')}
       </header>
 
-      <section ref={tabsWrapRef} className="relative flex w-[1000px] flex-[0_0_auto] flex-col items-start gap-4">
+      <section ref={tabsWrapRef} className="relative flex w-[1000px] flex-[0_0_auto] flex-col items-start gap-4 ml-[-12px]">
         <Tabs
           value={activeTab}
           onValueChange={(val) => handleTabChange(val as 'favorites' | 'markets')}
