@@ -98,7 +98,9 @@ const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
           name="tokenId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('withdrawAddress:token')}</FormLabel>
+              <FormLabel className="before:text-destructive gap-1 before:inline-block before:content-['*']">
+                {t('withdrawAddress:token')}
+              </FormLabel>
               <FormControl>
                 <SelectToken
                   {...field}
@@ -116,7 +118,9 @@ const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('withdrawAddress:address')}</FormLabel>
+              <FormLabel className="before:text-destructive gap-1 before:inline-block before:content-['*']">
+                {t('withdrawAddress:address')}
+              </FormLabel>
               <FormControl>
                 <Input {...field} autoCapitalize="off" placeholder={t('withdrawAddress:addressPlaceholder')} />
               </FormControl>
@@ -129,7 +133,9 @@ const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
           name="tokenNetWork"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('withdrawAddress:network')}</FormLabel>
+              <FormLabel className="before:text-destructive gap-1 before:inline-block before:content-['*']">
+                {t('withdrawAddress:network')}
+              </FormLabel>
               <FormControl>
                 <SelectNetwork value={field.value || ''} networks={networkList} onValueChange={field.onChange} />
               </FormControl>

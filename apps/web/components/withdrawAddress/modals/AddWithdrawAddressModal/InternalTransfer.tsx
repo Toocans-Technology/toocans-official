@@ -138,7 +138,9 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('withdrawAddress:account')}</FormLabel>
+                  <FormLabel className="before:text-destructive gap-1 before:inline-block before:content-['*']">
+                    {t('withdrawAddress:account')}
+                  </FormLabel>
                   <FormControl>
                     <Input {...field} autoCapitalize="off" placeholder={t('withdrawal:emailPlaceholder')} />
                   </FormControl>
@@ -153,7 +155,9 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('withdrawAddress:account')}</FormLabel>
+                  <FormLabel className="before:text-destructive gap-1 before:inline-block before:content-['*']">
+                    {t('withdrawAddress:account')}
+                  </FormLabel>
                   <FormControl>
                     <PhoneNumberInput
                       {...field}
@@ -172,7 +176,9 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('withdrawAddress:account')}</FormLabel>
+                  <FormLabel className="before:text-destructive gap-1 before:inline-block before:content-['*']">
+                    {t('withdrawAddress:account')}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
