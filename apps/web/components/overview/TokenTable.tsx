@@ -2,7 +2,7 @@
 
 import BigNumber from 'bignumber.js'
 import Image from 'next/image'
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useAssetAll } from '@/hooks/asset'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
@@ -17,10 +17,8 @@ function safeMul(a: string | number | null | undefined, b: string | number | nul
 
 const TokenTable = () => {
   const { t } = useT('overview')
-  const { data } = useAssetAll()
-  const { tokens: allTokenResp, getTokenPrecision } = useAllToken()
-  const allTokenData = allTokenResp || []
-  const assets = data || []
+  const { data: assets = [] } = useAssetAll()
+  const { tokens: allTokenData = [], getTokenPrecision } = useAllToken()
 
   const getTokenIcon = (tokenId: string): string | undefined => {
     if (!Array.isArray(allTokenData)) return undefined
@@ -28,14 +26,17 @@ const TokenTable = () => {
     if (found && typeof found.icon === 'string' && found.icon) return found.icon
     return undefined
   }
-  const formatAmount = (val: number | string | BigNumber, coinName: string) => {
-    try {
-      const str = applyTokenPrecision(getTokenPrecision(coinName), val)
-      return str
-    } catch {
-      return '--'
-    }
-  }
+  const formatAmount = useCallback(
+    (val: number | string | BigNumber, coinName: string) => {
+      try {
+        const str = applyTokenPrecision(getTokenPrecision(coinName), val)
+        return str
+      } catch {
+        return '--'
+      }
+    },
+    [getTokenPrecision]
+  )
 
   const filteredSortedAssets = React.useMemo(() => {
     return assets.length === 0
