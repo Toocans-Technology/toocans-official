@@ -213,7 +213,7 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, onClear
   const isAllSelected = tokenData.length > 0 && selectedTokens.length === tokenData.length
 
   return (
-    <div className="relative flex w-[1000px] flex-col items-start gap-4">
+    <div className="relative flex w-[1000px] flex-col items-start">
       <div className="relative flex w-full flex-[0_0_auto] flex-col items-start self-stretch">
         <div className="relative flex w-full flex-[0_0_auto] flex-col items-start gap-2 self-stretch">
           <div
@@ -266,7 +266,7 @@ const EditToken: FunctionComponent<EditTokenProps> = ({ tokens, onClose, onClear
         </div>
       </div>
 
-      <div className="relative flex w-[1000px] flex-[0_0_auto] items-center justify-between">
+      <div className="relative flex w-[1000px] flex-[0_0_auto] h-[64px] items-center border-b border-[#F4F4F4] justify-between">
         <div className="relative flex flex-[0_0_auto] items-center gap-3">
           <div className="relative flex flex-[0_0_auto] items-end gap-2">
             <button

@@ -21,11 +21,10 @@ export default function Page() {
     if (isLoggedIn) {
       typedStorage.clearToken()
       getQueryClient().clear()
-      localStorage.setItem('pathname', pathname)
       router.push(PATHNAMES.login)
       return
     }
-    router.push(PATHNAMES.login)
+    router.push(PATHNAMES.login, { query: { from: pathname } })
   }, [agreed, isLoggedIn, pathname, router])
 
   return (
