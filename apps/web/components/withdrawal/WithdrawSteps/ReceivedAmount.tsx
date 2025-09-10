@@ -32,7 +32,6 @@ const ReceivedAmount: FunctionComponent<Props> = ({
   targetUser,
 }) => {
   const { t } = useT('withdrawal')
-  const minAmount = network?.tokenSetting?.withdrawMinQuantity || 0
   const { getTokenPrecision } = useAllToken()
   const { data } = useAssetAll(token?.tokenId)
   const [transferId, setTransferId] = useState<string | undefined>(undefined)
@@ -42,6 +41,10 @@ const ReceivedAmount: FunctionComponent<Props> = ({
   const tokenFee = useMemo(() => getTokenFee(amount.value), [getTokenFee, amount.value])
   const isOnChain = chargeType === ChargeType.OnChain
   const tokenPrecision = getTokenPrecision(token?.tokenId || '')
+
+  const minAmount = useMemo(() => {
+    return network?.tokenSetting?.withdrawMinQuantity || token?.tokenSetting?.withdrawMinQuantity || 0
+  }, [network, token])
 
   const userAsset = useMemo(() => {
     if (!data?.length) {
