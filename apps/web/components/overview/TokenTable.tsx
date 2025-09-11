@@ -116,10 +116,9 @@ const TokenTable = () => {
                   </div>
                   <div className="font-din text-right text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
                     $
-                    {formatAmount(
-                      safeMul(asset.total ?? 0, asset.tokenId === 'USDT' ? 1 : (asset.marketPrice ?? 0)).toString(),
-                      'USDT'
-                    )}
+                    {BigNumber(
+                      safeMul(asset.total ?? 0, asset.tokenId === 'USDT' ? 1 : (asset.marketPrice ?? 0))
+                    ).toFixed(2)}
                   </div>
                 </div>
               </div>
