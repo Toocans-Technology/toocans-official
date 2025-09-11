@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import { getQuery } from '@/lib/api'
@@ -53,6 +54,8 @@ export const getDepositOrder = (params?: DepositOrderParams) => {
       query: DepositOrderParamsSchema.parse(params),
       transfer: DepositOrderListSchema.parse,
     }),
+    staleTime: 0,
+    refetchOnWindowFocus: true,
     // enabled: !!params?.tokenId,
   })
 }
