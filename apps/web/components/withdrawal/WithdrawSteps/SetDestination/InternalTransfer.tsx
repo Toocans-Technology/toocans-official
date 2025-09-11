@@ -1,6 +1,7 @@
 'use client'
 
-import parsePhoneNumber, { isValidPhoneNumber } from 'libphonenumber-js'
+import parsePhoneNumber from 'libphonenumber-js'
+import { isValidPhoneNumber } from 'libphonenumber-js/mobile'
 import Image from 'next/image'
 import { ChangeEvent, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Label, toast } from '@workspace/ui/components'
