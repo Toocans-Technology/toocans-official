@@ -98,7 +98,7 @@ const UpdateWithdrawAddressModal: FunctionComponent<Props> = ({ data, onSuccess 
               name="addressName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('withdrawAddress:addressName')}</FormLabel>
+                  <FormLabel className="font-normal">{t('withdrawAddress:addressName')}</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
