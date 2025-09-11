@@ -91,12 +91,12 @@ export default function OverviewBalancePanel() {
       <div className="flex w-full flex-row items-center justify-between">
         <div className="flex flex-row flex-nowrap items-center gap-2">
           <div className="font-inter text-[32px] font-medium leading-[30px] text-black">
-            {show && total !== '--' ? formatUsdtAmount(total) : !show && total !== '--' ? '****' : ''}
+            {show && total !== '--' ? BigNumber(total).toFixed(2) : !show && total !== '--' ? '****' : ''}
           </div>
           <div className="font-inter text-[14px] font-normal leading-[22px] text-[#666]">
             USDT ≈{' '}
             {show && availableTotal !== '--'
-              ? '$' + formatUsdtAmount(availableTotal)
+              ? '$' + BigNumber(availableTotal).toFixed(2)
               : !show && availableTotal !== '--'
                 ? '****'
                 : ''}
