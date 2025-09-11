@@ -1,7 +1,8 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CountryCode, isValidPhoneNumber } from 'libphonenumber-js'
+import { CountryCode } from 'libphonenumber-js'
+import { isValidPhoneNumber } from 'libphonenumber-js/mobile'
 import { Loader2Icon } from 'lucide-react'
 import { ChangeEvent, FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -161,7 +162,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ onSuccess }) => {
                   <FormControl>
                     <PhoneNumberInput
                       {...field}
-                      onChange={(value) => field.onChange(value)}
+                      invalid={!!formState.errors.address}
                       onCountryChange={handleCountryChange}
                     />
                   </FormControl>
