@@ -9,7 +9,6 @@ import { useRedirectIfNotLogin } from '@/hooks'
 import { useAssetAll } from '@/hooks/asset'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
-import { applyTokenPrecision } from '@/lib/utils'
 import { typedStorage } from '@/lib/utils/typedStorage/index'
 import type { GetAllAssetResponse } from '@/services/asset/useGetAllAsset'
 import { useUserVerifyInfo } from '@/services/user'
@@ -19,7 +18,7 @@ import { Link, VerifyModal } from '../common'
 export default function OverviewBalancePanel() {
   const { t } = useT('overview')
   const { data: data } = useAssetAll()
-  const { tokens: allTokenData, getTokenPrecision } = useAllToken()
+  const { tokens: allTokenData } = useAllToken()
   const { data: verifyInfo } = useUserVerifyInfo()
   const [openVerifyModal, setOpenVerifyModal] = useState(false)
   const isUnverified = verifyInfo?.kycLevel === KycLevel.unverified || !verifyInfo
@@ -35,15 +34,6 @@ export default function OverviewBalancePanel() {
       typedStorage.hideAssets = newValue
       return newValue
     })
-  }
-
-  const formatUsdtAmount = (val: number | string | BigNumber) => {
-    try {
-      const str = applyTokenPrecision(getTokenPrecision('USDT'), val)
-      return str
-    } catch {
-      return '--'
-    }
   }
 
   const total = useMemo(() => {
