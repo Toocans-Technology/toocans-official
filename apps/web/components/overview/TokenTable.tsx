@@ -112,7 +112,7 @@ const TokenTable = () => {
                 </div>
                 <div className="min-w-[80px] text-right">
                   <div className="font-din text-right text-[14px] font-bold leading-[22px] text-[#0d0d0d]">
-                    {assets.length === 0 ? '0.00' : formatAmount(asset.total ?? 0, asset.tokenId as string)}
+                    {assets.length === 0 ? '0.00' : formatAmount(0.576519, asset.tokenId as string)}
                   </div>
                   <div className="font-din text-right text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
                     $

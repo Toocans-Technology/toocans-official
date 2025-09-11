@@ -161,7 +161,11 @@ const WithdrawDetailModal: FunctionComponent<Props> = ({ id, open, isDetail, onO
           </div>
           <div className="grid grid-cols-2 items-center py-1.5 text-sm">
             <div className="text-[#999]">{t('withdrawal:time')}</div>
-            <div className="text-right">{dayjs(Number(data?.createdAt)).format('YYYY-MM-DD HH:mm:ss')}</div>
+            <div className="text-right">
+              {dayjs(
+                Number(getWithdrawalStatus(data?.status).text === 'sent' ? data?.arriveTime : data?.createdAt)
+              ).format('YYYY-MM-DD HH:mm:ss')}
+            </div>
           </div>
         </div>
         <DialogFooter>
