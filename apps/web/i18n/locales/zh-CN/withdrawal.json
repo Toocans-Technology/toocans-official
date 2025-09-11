@@ -82,5 +82,6 @@
     "title": "添加提币地址",
     "name": "名称（可选）"
   },
-  "networkChangeWarning": "您已切换网络，请确认是否需要修改提币地址"
+  "networkChangeWarning": "您已切换网络，请确认是否需要修改提币地址",
+  "action": "操作"
 }

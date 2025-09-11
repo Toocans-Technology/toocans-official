@@ -66,9 +66,14 @@ const DeleteWithdrawAddressModal: FunctionComponent<Props> = ({ data, onSuccess 
           <Button rounded="full" variant="secondary" onClick={() => setOpen(false)}>
             {t('common:cancel')}
           </Button>
-          <Button rounded="full" disabled={isPending} onClick={handleSubmit}>
+          <Button
+            rounded="full"
+            disabled={isPending}
+            onClick={handleSubmit}
+            className="bg-foreground text-background hover:bg-foreground/80"
+          >
             {isPending && <Loader2Icon className="animate-spin" />}
-            {t('common:confirm')}
+            {t('common:delete')}
           </Button>
         </DialogFooter>
       </DialogContent>

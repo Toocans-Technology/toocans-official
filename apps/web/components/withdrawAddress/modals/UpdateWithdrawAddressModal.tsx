@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2Icon } from 'lucide-react'
 import Image from 'next/image'
-import { FunctionComponent, useCallback, useEffect, useState } from 'react'
+import { FunctionComponent, useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {
   Button,
@@ -42,18 +42,11 @@ const UpdateWithdrawAddressModal: FunctionComponent<Props> = ({ data, onSuccess 
       addressName: data?.addressName || '',
     },
   })
-  const { handleSubmit, setValue, formState } = form
 
-  useEffect(() => {
-    setValue('addressName', data?.addressName || '')
-  }, [setValue, data])
+  const { handleSubmit } = form
 
   const onSubmit = useCallback(
     async (data: UpdateWithdrawAddressReq) => {
-      if (!data) {
-        return
-      }
-
       try {
         const res = await mutateUpdateAddressName(data)
 
@@ -71,8 +64,16 @@ const UpdateWithdrawAddressModal: FunctionComponent<Props> = ({ data, onSuccess 
     [mutateUpdateAddressName, t, onSuccess]
   )
 
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      setOpen(open)
+      form.reset()
+    },
+    [form]
+  )
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -97,7 +98,7 @@ const UpdateWithdrawAddressModal: FunctionComponent<Props> = ({ data, onSuccess 
               name="addressName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('withdrawAddress:addressName')}</FormLabel>
+                  <FormLabel className="font-normal">{t('withdrawAddress:addressName')}</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -112,10 +113,10 @@ const UpdateWithdrawAddressModal: FunctionComponent<Props> = ({ data, onSuccess 
             />
           </div>
           <DialogFooter>
-            <Button rounded="full" variant="secondary" onClick={() => setOpen(false)}>
+            <Button rounded="full" variant="secondary" onClick={() => handleOpenChange(false)}>
               {t('common:cancel')}
             </Button>
-            <Button rounded="full" disabled={!formState.isValid || isPending} onClick={handleSubmit(onSubmit)}>
+            <Button rounded="full" disabled={isPending} onClick={handleSubmit(onSubmit)}>
               {isPending && <Loader2Icon className="animate-spin" />}
               {t('common:confirm')}
             </Button>

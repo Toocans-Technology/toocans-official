@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js'
 import { ChangeEvent, FunctionComponent, useCallback, useMemo, useState } from 'react'
 import { Input, Label } from '@workspace/ui/components'
+import { useAllToken } from '@/hooks'
 import { useAssetAll } from '@/hooks/asset'
 import { useTokenFee } from '@/hooks/useTokenFee'
 import { useT } from '@/i18n'
-import { formatInputAmount } from '@/lib/utils'
+import { applyTokenPrecision, formatInputAmount } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { Withdrawal } from '@/services/wallet'
-import { User } from '@/services/wallet/searchUser'
+import { ExtendedUser } from '@/services/wallet/searchUser'
 import { InputValueType } from '@/types/form'
 import { ChargeType, InternalTransferType } from '@/types/withdraw'
 import { WithdrawDetailModal } from '../modals'
@@ -15,22 +16,35 @@ import WithdrawModal from '../modals/WithdrawModal'
 
 interface Props {
   token?: Token
+  network?: Token
   address?: string
-  targetUser?: User
+  targetUser?: ExtendedUser
   chargeType?: ChargeType
   transferType?: InternalTransferType
 }
 
-const ReceivedAmount: FunctionComponent<Props> = ({ token, address, chargeType, transferType, targetUser }) => {
+const ReceivedAmount: FunctionComponent<Props> = ({
+  token,
+  network,
+  address,
+  chargeType,
+  transferType,
+  targetUser,
+}) => {
   const { t } = useT('withdrawal')
-  const minAmount = token?.tokenSetting?.withdrawMinQuantity || 0
+  const { getTokenPrecision } = useAllToken()
   const { data } = useAssetAll(token?.tokenId)
   const [transferId, setTransferId] = useState<string | undefined>(undefined)
   const [open, setOpen] = useState(false)
   const [amount, setAmount] = useState<InputValueType>({ value: '', error: '', isInvalid: false })
-  const { getTokenFee, getMaxOrderAmount } = useTokenFee(token, chargeType)
+  const { getTokenFee, getMaxOrderAmount } = useTokenFee(network, chargeType)
   const tokenFee = useMemo(() => getTokenFee(amount.value), [getTokenFee, amount.value])
   const isOnChain = chargeType === ChargeType.OnChain
+  const tokenPrecision = getTokenPrecision(token?.tokenId || '')
+
+  const minAmount = useMemo(() => {
+    return network?.tokenSetting?.withdrawMinQuantity || token?.tokenSetting?.withdrawMinQuantity || 0
+  }, [network, token])
 
   const userAsset = useMemo(() => {
     if (!data?.length) {
@@ -80,7 +94,6 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address, chargeType, 
 
   const handleAll = useCallback(() => {
     const maxAmount = getMaxOrderAmount(userAsset?.available || 0)
-    console.log('maxAmount', maxAmount)
     const validatedAmount = validateAmount(maxAmount.toString())
     setAmount(validatedAmount)
   }, [getMaxOrderAmount, userAsset?.available, validateAmount])
@@ -119,7 +132,7 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address, chargeType, 
       </div>
       <div className="flex justify-between text-sm">
         <span className="text-[#999]">{t('withdrawal:availableBalance')}</span>
-        <span>{userAsset?.available ?? 0}</span>
+        <span>{applyTokenPrecision(tokenPrecision, userAsset?.available || 0)}</span>
       </div>
       <div className="flex justify-between text-sm">
         <span className="text-[#999]">{t('withdrawal:chargeAndNetwork')}</span>
@@ -133,7 +146,7 @@ const ReceivedAmount: FunctionComponent<Props> = ({ token, address, chargeType, 
       </div>
       {address && token && (
         <WithdrawModal
-          token={token}
+          token={network || token}
           address={address}
           disabled={disabled}
           tokenFee={tokenFee}

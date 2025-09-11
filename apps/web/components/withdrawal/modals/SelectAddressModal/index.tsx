@@ -41,7 +41,7 @@ const SelectAddressModal: FunctionComponent<Props> = ({
   const { t } = useT(['withdrawal', 'common'])
   const isOnChain = addressTypes?.includes(AddressType.OnChain)
   const { data: addressList } = useWithdrawAddressList({
-    tokenId: isOnChain ? token?.tokenId : undefined,
+    tokenNetWorks: isOnChain ? token?.subTokenList.map((item) => item.chainTokenId).join(',') : undefined,
     addressTypes: addressTypes?.join(','),
   })
   const [selectedAddressId, setSelectedAddressId] = useState<string>()
@@ -52,18 +52,12 @@ const SelectAddressModal: FunctionComponent<Props> = ({
 
   const handleSelect = useCallback(
     (id: string) => {
-      if (selectedAddressId === id) {
-        setSelectedAddressId(undefined)
-        onConfirm?.(undefined)
-      } else {
-        const address = addressList?.find((item) => item.id === id)
-        setSelectedAddressId(id)
-        onConfirm?.(address)
-      }
-
+      const address = addressList?.find((item) => item.id === id)
+      setSelectedAddressId(id)
+      onConfirm?.(address)
       onOpenChange?.(false)
     },
-    [addressList, onConfirm, onOpenChange, selectedAddressId]
+    [addressList, onConfirm, onOpenChange]
   )
 
   return (

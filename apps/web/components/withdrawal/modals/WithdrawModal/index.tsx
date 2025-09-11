@@ -25,7 +25,7 @@ import { VERIFICATION_CODE_REGEX } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { useUserInfo } from '@/services/user/info'
 import { getWithdrawOrder, useSendCode, useWithdraw, Withdrawal } from '@/services/wallet'
-import { User } from '@/services/wallet/searchUser'
+import { ExtendedUser } from '@/services/wallet/searchUser'
 import { HttpError } from '@/types/http'
 import { ChargeType, InternalTransferType, VerifyType } from '@/types/withdraw'
 import WithdrawInfo from './WithdrawInfo'
@@ -36,9 +36,9 @@ interface Props {
   token: Token
   address: string
   amount: number
-  targetUser?: User
   disabled?: boolean
   chargeType?: ChargeType
+  targetUser?: ExtendedUser
   tokenFee: string | number
   transferType?: InternalTransferType
   openDetail?: (open: boolean, data: Withdrawal) => void
@@ -92,8 +92,9 @@ const WithdrawModal: FunctionComponent<Props> = ({
   }, [userInfo])
 
   const form = useForm<z.infer<typeof FormSchema>>({
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
     resolver: zodResolver(FormSchema),
-    mode: 'onChange',
     defaultValues: {
       code: '',
       gaCode: '',
@@ -198,7 +199,11 @@ const WithdrawModal: FunctionComponent<Props> = ({
           {t('common:next')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]" onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent
+        className="sm:max-w-[425px]"
+        onInteractOutside={(e) => e.preventDefault()}
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>{t('withdrawal:withdrawModal.title')}</DialogTitle>
           <Separator />
@@ -209,6 +214,7 @@ const WithdrawModal: FunctionComponent<Props> = ({
           amount={amount}
           tokenFee={tokenFee}
           userInfo={targetUser}
+          transferType={transferType}
           chargeType={chargeType}
         />
         <Form {...form}>

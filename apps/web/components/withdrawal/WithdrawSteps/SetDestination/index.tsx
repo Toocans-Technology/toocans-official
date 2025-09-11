@@ -5,7 +5,7 @@ import { Separator, Tabs, TabsContent, TabsList, TabsTrigger } from '@workspace/
 import { useT } from '@/i18n'
 import { Token } from '@/services/basicConfig'
 import { WithdrawAddress } from '@/services/wallet/schemas/address.schema'
-import { User } from '@/services/wallet/searchUser'
+import { ExtendedUser } from '@/services/wallet/searchUser'
 import { ChargeType, InternalTransferType } from '@/types/withdraw'
 import InternalTransfer from './InternalTransfer'
 import OnChain from './OnChain'
@@ -17,9 +17,9 @@ interface Props {
   chargeType: ChargeType
   onTabChange?: (value: string) => void
   onSelectNetwork: (value: string) => void
-  onAddressChange: (value: string) => void
+  onAddressChange: (value: string, network?: Token) => void
   onTransferTabChange: (type: InternalTransferType) => void
-  onInternalTransferChange: (data?: User) => void
+  onInternalTransferChange: (data?: ExtendedUser) => void
   onSelectAddress?: (address?: WithdrawAddress) => void
 }
 

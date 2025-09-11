@@ -25,10 +25,18 @@ const ListItem: FunctionComponent<Props> = ({ data, isSelected, onSelect }) => {
       onClick={handleSelect}
     >
       <div className="flex flex-1 flex-col gap-2 pb-4">
-        <div className="flex items-center gap-2 text-sm">
-          <span className="font-medium">{data.addressName}</span>
-          {data.tokenNetWork && <span className="rounded bg-[#f8f8f8] px-1.5">{data.tokenNetWork}</span>}
-        </div>
+        {data.addressName && <div className="font-medium">{data.addressName}</div>}
+        {data.tokenId && (
+          <div className="flex items-center gap-2 text-sm">
+            <span className="text-sm font-medium">{data.tokenId}</span>
+            {data.chainName && (
+              <span className="rounded bg-[#f8f8f8] px-1.5">
+                {data.chainName}
+                {data.protocolName ? `(${data.protocolName})` : ''}
+              </span>
+            )}
+          </div>
+        )}
         <div className="text-xs text-[#666]">{data.address}</div>
         <div className="flex items-center gap-2 text-xs text-[#666]">
           {`${t('withdrawal:selectAddressModal.addedOn')} ${dayjs(Number(data.created)).format('YYYY-MM-DD HH:mm')}`}

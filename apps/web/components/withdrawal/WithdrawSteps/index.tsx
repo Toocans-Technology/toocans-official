@@ -7,8 +7,7 @@ import { useRedirectIfNotLogin } from '@/hooks'
 import { useT } from '@/i18n'
 import { validateAddress } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
-import { WithdrawAddress } from '@/services/wallet/schemas/address.schema'
-import { User } from '@/services/wallet/searchUser'
+import { ExtendedUser } from '@/services/wallet/searchUser'
 import { ChargeType, InternalTransferType } from '@/types/withdraw'
 import RecentWithdraw from '../RecentWithdraw'
 import ReceivedAmount from './ReceivedAmount'
@@ -27,7 +26,7 @@ const WithdrawSteps: FunctionComponent = () => {
   const [selectedNetwork, setSelectedNetwork] = useState<Token>()
   const [chargeType, setChargeType] = useState<ChargeType>(ChargeType.OnChain)
   const [address, setAddress] = useState<string>('')
-  const [targetUser, setTargetUser] = useState<User>()
+  const [targetUser, setTargetUser] = useState<ExtendedUser>()
   const [transferType, setTransferType] = useState<InternalTransferType>(InternalTransferType.Email)
 
   useRedirectIfNotLogin()
@@ -41,14 +40,13 @@ const WithdrawSteps: FunctionComponent = () => {
 
   const handleSelectNetwork = useCallback(
     (value: string) => {
-      const network = selectedToken?.subTokenList.find((item) => item.tokenId === value)
+      const network = selectedToken?.subTokenList.find((item) => item.chainTokenId === value)
 
       if (!network) {
         return
       }
 
       setSelectedNetwork(network)
-      setAddress('')
 
       if (network && address) {
         setStep(WithdrawStep.WithdrawAmount)
@@ -58,12 +56,12 @@ const WithdrawSteps: FunctionComponent = () => {
   )
 
   const handleAddressChange = useCallback(
-    (value: string) => {
+    (value: string, network?: Token) => {
       const isValidAddress = validateAddress(value)
 
       setAddress(value)
 
-      if (selectedNetwork && isValidAddress) {
+      if ((selectedNetwork || network) && isValidAddress) {
         setStep(WithdrawStep.WithdrawAmount)
       } else {
         setStep(WithdrawStep.ChooseNetwork)
@@ -80,7 +78,7 @@ const WithdrawSteps: FunctionComponent = () => {
   }, [])
 
   const handleInternalTransferChange = useCallback(
-    (data?: User) => {
+    (data?: ExtendedUser) => {
       if (data) {
         setAddress(data.uid)
         setTargetUser(data)
@@ -92,19 +90,6 @@ const WithdrawSteps: FunctionComponent = () => {
       }
     },
     [setStep, setAddress]
-  )
-
-  const handleSelectAddress = useCallback(
-    (address?: WithdrawAddress) => {
-      if (address?.tokenNetWork) {
-        const network = selectedToken?.subTokenList.find((item) => item.tokenId === address?.tokenNetWork)
-
-        if (network) {
-          setSelectedNetwork(network)
-        }
-      }
-    },
-    [selectedToken?.subTokenList]
   )
 
   return (
@@ -145,7 +130,6 @@ const WithdrawSteps: FunctionComponent = () => {
               chargeType={chargeType}
               selectedNetwork={selectedNetwork}
               onTabChange={handleTabChange}
-              onSelectAddress={handleSelectAddress}
               onSelectNetwork={handleSelectNetwork}
               onAddressChange={handleAddressChange}
               onTransferTabChange={setTransferType}
@@ -169,7 +153,8 @@ const WithdrawSteps: FunctionComponent = () => {
           </div>
           {step >= WithdrawStep.WithdrawAmount && (
             <ReceivedAmount
-              token={selectedNetwork ?? selectedToken}
+              token={selectedToken}
+              network={selectedNetwork}
               address={address}
               chargeType={chargeType}
               targetUser={targetUser}

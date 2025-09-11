@@ -30,6 +30,29 @@ const roundModeMap: Record<number, BigNumber.RoundingMode> = {
 }
 
 /**
+ * 五舍六入
+ * @param value 原始数值
+ * @param digits 小数位数
+ * @returns 处理后的字符串
+ */
+export function fiveSixRound(value: BigNumber.Value, digits: number) {
+  const num = new BigNumber(value)
+  const str = num.toFixed(digits + 1, BigNumber.ROUND_DOWN) // 先多取一位
+  const [intPart, fracPart = ''] = str.split('.')
+  const targetDigit = parseInt(fracPart[digits] || '0', 10)
+  const nextDigits = fracPart.slice(digits + 1) // 忽略后续位
+  let rounded = new BigNumber(intPart + '.' + fracPart.slice(0, digits))
+
+  if (targetDigit >= 6) {
+    // 六入
+    const increment = new BigNumber(1).div(new BigNumber(10).pow(digits))
+    rounded = rounded.plus(increment)
+  }
+
+  return rounded.toFixed(digits)
+}
+
+/**
  * 根据 tokenPrecisionAutoVO 规则格式化数值
  * @param precisionVO 精度规则对象 (可空)
  * @param value 原始数值 (字符串/数字/BigNumber 支持)
@@ -71,7 +94,13 @@ export function applyTokenPrecision(
       ? roundModeMap[modeRaw as keyof typeof roundModeMap]
       : BigNumber.ROUND_DOWN
 
-  let result = num.toFixed(digits, roundingMode)
+  let result
+
+  if (roundingMode === BigNumber.ROUND_HALF_DOWN) {
+    result = fiveSixRound(num, digits)
+  } else {
+    result = num.toFixed(digits, roundingMode)
+  }
 
   if (precisionVO.padWithZeros !== 0) {
     if (result.indexOf('.') >= 0) {

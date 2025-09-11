@@ -10,7 +10,6 @@ import { useAllToken, useLogin } from '@/hooks'
 import { useTotalBalance } from '@/hooks/useTotalBalance'
 import { useT } from '@/i18n'
 import { applyTokenPrecision, formatByPrecision } from '@/lib/utils'
-import { EMAIL_REGEX } from '@/lib/utils/constants'
 import { useUserVerifyInfo } from '@/services/user'
 import { KycLevel } from '@/types/user'
 
@@ -18,7 +17,6 @@ const HeroSection: FunctionComponent = () => {
   const { t } = useT(['home', 'common'])
   const router = useRouter()
   const { isLoggedIn } = useLogin()
-  const [isValid, setIsValid] = useState(false)
   const [email, setEmail] = useState('')
   const { totalBalance } = useTotalBalance()
   const { getTokenPrecision } = useAllToken()
@@ -27,17 +25,10 @@ const HeroSection: FunctionComponent = () => {
   const isUnverified = verifyInfo?.kycLevel === KycLevel.unverified || !verifyInfo
 
   const usdtTokenPrecision = getTokenPrecision('USDT')
-  const validateEmail = useCallback((email: string) => {
-    const isValid = EMAIL_REGEX.test(email)
-    setEmail(email)
-    setIsValid(isValid)
-  }, [])
 
   const handleStartNow = useCallback(() => {
-    if (isValid) {
-      router.push(`/login?email=${email}`)
-    }
-  }, [isValid, router, email])
+    router.push(`/login?email=${email}`)
+  }, [router, email])
 
   return (
     <div className="w-full bg-black">
@@ -74,14 +65,13 @@ const HeroSection: FunctionComponent = () => {
                   <Input
                     value={email}
                     placeholder={t('home:hero.inputPlaceholder')}
-                    className="h-9 border-none bg-transparent focus-visible:outline-none focus-visible:ring-0"
-                    onChange={(e) => validateEmail(e.target.value)}
+                    className="h-9 border-none bg-transparent hover:ring-0 focus-visible:outline-none focus-visible:ring-0"
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                   <Button rounded="full" className="text-[#222]" onClick={handleStartNow}>
                     {t('home:startNow')}
                   </Button>
                 </div>
-                {!isValid && <p className="text-destructive">{t('home:invalidEmail')}</p>}
               </>
             )}
           </div>
