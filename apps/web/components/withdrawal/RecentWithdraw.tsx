@@ -52,7 +52,11 @@ const RecentWithdraw: FunctionComponent = () => {
                 <TableCell className="p-3 font-medium text-[#222]">{order.tokenName}</TableCell>
                 <TableCell className="text-destructive p-3">-{order.totalQuantity}</TableCell>
                 <TableCell className="p-3">{order.address}</TableCell>
-                <TableCell className="p-3">{dayjs(Number(order.createdAt)).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
+                <TableCell className="p-3">
+                  {dayjs(
+                    Number(getWithdrawalStatus(order.status).text === 'sent' ? order.arriveTime : order.createdAt)
+                  ).format('YYYY-MM-DD HH:mm:ss')}
+                </TableCell>
                 <TableCell className="p-3">
                   <span className={cn('rounded-full px-2.5 py-1 text-[#222]', getWithdrawalStatus(order.status).color)}>
                     {t(`withdrawal:${getWithdrawalStatus(order.status).text}`)}
