@@ -143,7 +143,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
   )
 
   const handlePhoneBlur = useCallback(() => {
-    const isPhone = isValidPhoneNumber(`+${countryCode}${phone.value}`)
+    const isPhone = isValidPhoneNumber(phone.value ?? '', countryCode)
 
     if (isPhone) {
       setPhone((s) => ({ ...s, error: '', isInvalid: false }))
@@ -190,7 +190,9 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
         } else if (address.addressType === AddressType.Phone) {
           type = InternalTransferType.Phone
           const phoneNumber = parsePhoneNumber(`+${address.address ?? ''}`)
+          console.log(phoneNumber)
           setNationalCode(phoneNumber?.countryCallingCode ?? '1')
+          setCountryCode(phoneNumber?.country ?? 'US')
           setPhone((s) => ({ ...s, value: phoneNumber?.nationalNumber ?? '', isInvalid: false }))
         } else {
           type = InternalTransferType.UID
@@ -243,7 +245,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
               onChange={handlePhoneChange}
               tag={selectedAddress?.addressName}
               onCountryChange={handleCountryChange}
-              nationalCode={countryCode}
+              nationalCode={nationalCode}
               onBlur={handlePhoneBlur}
               onClear={handleClearAddress}
               endContent={
