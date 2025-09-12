@@ -140,7 +140,7 @@ const OnChainAddresses: FunctionComponent<Props> = ({ chargeType, onSuccess }) =
                       checked={selectedIds.includes(record.id)}
                       onCheckedChange={() => handleSelect(record.id)}
                     />
-                    <span>{record.tokenId}</span>
+                    <span>{record.tokenName}</span>
                   </div>
                 </TableCell>
                 <TableCell className="py-3">
