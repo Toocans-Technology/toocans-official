@@ -1,6 +1,6 @@
 'use client'
 
-import parsePhoneNumber from 'libphonenumber-js'
+import parsePhoneNumber, { CountryCode } from 'libphonenumber-js'
 import { isValidPhoneNumber } from 'libphonenumber-js/mobile'
 import Image from 'next/image'
 import { ChangeEvent, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
@@ -48,7 +48,8 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
   const [email, setEmail] = useState<InputValueType>(INPUT_DEFAULT_VALUE)
   const [phone, setPhone] = useState<InputValueType>(INPUT_DEFAULT_VALUE)
   const [uid, setUid] = useState<InputValueType>(INPUT_DEFAULT_VALUE)
-  const [countryCode, setCountryCode] = useState<string>()
+  const [nationalCode, setNationalCode] = useState<string>()
+  const [countryCode, setCountryCode] = useState<CountryCode>()
   const [transferType, setTransferType] = useState(InternalTransferType.Email)
   const [selectedAddress, setSelectedAddress] = useState<WithdrawAddress>()
 
@@ -56,11 +57,11 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
     if (transferType === InternalTransferType.UID) {
       return uid.value
     } else if (transferType === InternalTransferType.Phone) {
-      return isValidPhoneNumber(`+${countryCode}${phone.value}`) ? `${countryCode}${phone.value}` : undefined
+      return phone.value && isValidPhoneNumber(phone.value, countryCode) ? `${nationalCode}${phone.value}` : undefined
     } else {
       return email.value && EMAIL_REGEX.test(email.value) ? email.value : undefined
     }
-  }, [transferType, uid.value, phone.value, email.value, countryCode])
+  }, [transferType, uid.value, phone.value, countryCode, nationalCode, email.value])
 
   const addressTypes = useMemo(() => [AddressType.UID, AddressType.Email, AddressType.Phone], [])
 
@@ -170,6 +171,14 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
     }
   }, [handleRefetch, t, uid.value])
 
+  const handleCountryChange = useCallback(
+    (country: Country) => {
+      setNationalCode(country.nationalCode)
+      setCountryCode(country.domainShortName as CountryCode)
+    },
+    [setNationalCode]
+  )
+
   const handleConfirm = useCallback(
     (address?: WithdrawAddress) => {
       if (address) {
@@ -181,7 +190,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
         } else if (address.addressType === AddressType.Phone) {
           type = InternalTransferType.Phone
           const phoneNumber = parsePhoneNumber(`+${address.address ?? ''}`)
-          setCountryCode(phoneNumber?.countryCallingCode ?? '1')
+          setNationalCode(phoneNumber?.countryCallingCode ?? '1')
           setPhone((s) => ({ ...s, value: phoneNumber?.nationalNumber ?? '', isInvalid: false }))
         } else {
           type = InternalTransferType.UID
@@ -233,7 +242,7 @@ const InternalTransfer: FunctionComponent<Props> = ({ token, onChange, onSelectA
               invalid={phone.isInvalid}
               onChange={handlePhoneChange}
               tag={selectedAddress?.addressName}
-              onCountryChange={(country: Country) => setCountryCode(country.nationalCode)}
+              onCountryChange={handleCountryChange}
               nationalCode={countryCode}
               onBlur={handlePhoneBlur}
               onClear={handleClearAddress}
