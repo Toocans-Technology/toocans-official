@@ -26,9 +26,9 @@ const ListItem: FunctionComponent<Props> = ({ data, isSelected, onSelect }) => {
     >
       <div className="flex flex-1 flex-col gap-2 pb-4">
         {data.addressName && <div className="font-medium">{data.addressName}</div>}
-        {data.tokenId && (
+        {data.tokenName && (
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-sm font-medium">{data.tokenId}</span>
+            <span className="text-sm font-medium">{data.tokenName}</span>
             {data.chainName && (
               <span className="rounded bg-[#f8f8f8] px-1.5">
                 {data.chainName}
