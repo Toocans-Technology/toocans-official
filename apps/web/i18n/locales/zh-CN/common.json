@@ -51,6 +51,7 @@
   "selectToken": "选择币种",
   "searchToken": "搜索币种",
   "noData": "暂无数据",
+  "loading": "加载中...",
   "all": "全部",
   "verifyModal": {
     "title": "请完成账户认证",
@@ -59,5 +60,8 @@
     "requirements": "认证要求",
     "documents": "政府签发的身份证件",
     "personalInformation": "个人信息"
-  }
+  },
+  "save": "保存",
+  "edit": "编辑",
+  "delete": "删除"
 }

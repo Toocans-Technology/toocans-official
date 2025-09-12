@@ -6,6 +6,7 @@
   "setDestination": "设置提币地址",
   "onChainType": "链上类型",
   "selectNetwork": "选择网络",
+  "withdrawalAddress": "提币地址",
   "addressPlaceholder": "请输入",
   "setAmount": "设置提币数量",
   "receivedAmount": "到账金额",
@@ -53,5 +54,34 @@
     "gaCodeError.required": "请输入谷歌验证码",
     "codeError": "验证码格式错误",
     "gaCodeError": "谷歌验证码格式错误"
-  }
+  },
+  "onChain": "链上转账",
+  "internalTransfer": "内部转账",
+  "manageAddresses": "管理地址",
+  "accountName": "账户名称",
+  "free": "免费",
+  "email": "邮箱",
+  "emailPlaceholder": "请输入邮箱",
+  "emailError": "邮箱格式错误",
+  "phone": "手机",
+  "phonePlaceholder": "请输入手机号",
+  "phoneError": "手机号码格式错误",
+  "uid": "用户ID",
+  "uidPlaceholder": "请输入Toocans用户ID",
+  "uidError": "请输入用户ID",
+  "nickname": "昵称",
+  "hash": "哈希值",
+  "selectAddressModal": {
+    "title": "选择{{ tokenName }}地址",
+    "empty": "暂无地址",
+    "addNow": "立即添加",
+    "addedOn": "添加于",
+    "searchPlaceholder": "请输入地址或名称"
+  },
+  "addAddressModal": {
+    "title": "添加提币地址",
+    "name": "名称（可选）"
+  },
+  "networkChangeWarning": "您已切换网络，请确认是否需要修改提币地址",
+  "action": "操作"
 }

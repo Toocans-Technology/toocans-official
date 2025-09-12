@@ -1,8 +1,9 @@
 import Image from 'next/image'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@workspace/ui/components'
+import { cn } from '@workspace/ui/lib/utils'
 import { useT } from '@/i18n'
 
-interface Network {
+export interface NetworkItem {
   id: string
   name: string
   icon?: string
@@ -12,17 +13,23 @@ interface Network {
 
 interface SelectNetworkProps {
   value: string
-  networks: Network[]
+  networks: NetworkItem[]
   placeholder?: string
+  className?: string
   onValueChange: (value: string) => void
 }
 
-const SelectNetwork: React.FC<SelectNetworkProps> = ({ value, networks, onValueChange, placeholder }) => {
+const SelectNetwork: React.FC<SelectNetworkProps> = ({ value, networks, onValueChange, placeholder, className }) => {
   const { t } = useT('deposit')
 
   return (
     <Select onValueChange={onValueChange} value={value}>
-      <SelectTrigger className="hover:border-brand focus:border-brand w-[518px] rounded border-[#f8f8f8] bg-[#f8f8f8] px-3 py-2 data-[size=default]:h-11">
+      <SelectTrigger
+        className={cn(
+          'hover:border-brand focus:border-brand w-full rounded-md border-[#f8f8f8] bg-[#f8f8f8] px-3 py-2 data-[size=default]:h-11',
+          className
+        )}
+      >
         <SelectValue placeholder={placeholder || t('deposit:selectNetwork')} />
       </SelectTrigger>
       <SelectContent>

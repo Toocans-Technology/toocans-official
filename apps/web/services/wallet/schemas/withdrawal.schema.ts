@@ -14,7 +14,7 @@ export const WithdrawalSchema = z.object({
   addressTag: z.nullable(z.string()),
   arriveQuantity: z.string(),
   platformFee: z.string(),
-  feeTokenId: z.nullable(z.string()),
+  feeTokenId: z.nullable(z.string()), // 手续费tokenId。是tokenId, 或者是 miner_fee_token_id
   language: z.nullable(z.string()),
   status: withdrawalStatusSchema,
   isCancel: z.nullable(z.boolean()),

@@ -21,42 +21,66 @@ import { Locale } from '@/i18n/config'
 import { Country, getCountryList } from '@/services/login'
 
 interface Props {
+  value?: string
   onChange?: (country: Country) => void
 }
 
-const CountrySelect: FunctionComponent<Props> = ({ onChange }) => {
+const CountrySelect: FunctionComponent<Props> = ({ onChange, value }) => {
   const { t } = useT(['common'])
   const lang = useLang()
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState('1')
+  const [nationalCode, setNationalCode] = useState('1')
   const { data: countryList } = getCountryList()
+
+  const getCountryByNationalCode = useCallback(
+    (value: string) => {
+      if (countryList?.length) {
+        return countryList.find((country) => country.nationalCode === value)
+      }
+      return null
+    },
+    [countryList]
+  )
 
   useEffect(() => {
     if (countryList?.length) {
-      const defaultValue = countryList.find((country) => country.nationalCode === '1')
+      const country = getCountryByNationalCode(nationalCode)
 
-      if (!defaultValue) {
+      if (!country) {
         return
       }
 
-      setValue(defaultValue.nationalCode)
-      onChange?.(defaultValue)
+      setNationalCode(country.nationalCode)
+      onChange?.(country)
     }
-  }, [countryList])
+  }, [countryList, getCountryByNationalCode, onChange, nationalCode])
+
+  useEffect(() => {
+    if (value) {
+      const country = getCountryByNationalCode(value)
+
+      if (!country) {
+        return
+      }
+
+      setNationalCode(country.nationalCode)
+      onChange?.(country)
+    }
+  }, [value, getCountryByNationalCode, onChange])
 
   const handleSelect = useCallback(
-    (nationalCode: string) => {
-      const selectedCountry = countryList?.find((country) => country.nationalCode === nationalCode)
+    (value: string) => {
+      const selectedCountry = countryList?.find((country) => country.nationalCode === value)
 
       if (!selectedCountry) {
         return
       }
 
-      setValue(nationalCode)
+      setNationalCode(value)
       setOpen(false)
       onChange?.(selectedCountry)
     },
-    [countryList, setOpen, setValue, onChange]
+    [countryList, setOpen, setNationalCode, onChange]
   )
 
   return (
@@ -68,7 +92,7 @@ const CountrySelect: FunctionComponent<Props> = ({ onChange }) => {
           aria-expanded={open}
           className="h-5 w-auto justify-between border-none bg-transparent hover:bg-transparent has-[>svg]:px-0"
         >
-          +{value}
+          +{nationalCode}
           <ChevronDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
