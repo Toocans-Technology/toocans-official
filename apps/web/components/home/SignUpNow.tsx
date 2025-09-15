@@ -1,10 +1,16 @@
+'use client'
+
 import { FunctionComponent } from 'react'
 import { Button } from '@workspace/ui/components'
-import { getT } from '@/i18n/server'
+import { useLogin } from '@/hooks'
+import { useT } from '@/i18n'
 import Link from '../common/Link'
 
-const SignUpNow: FunctionComponent<{ lang: string }> = async ({ lang }) => {
-  const { t } = await getT(lang, 'home')
+const SignUpNow: FunctionComponent = () => {
+  const { t } = useT(['home'])
+  const { isLoggedIn } = useLogin()
+
+  if (isLoggedIn) return null
 
   return (
     <div className="w-full bg-black">

@@ -2,57 +2,64 @@
 
 import BigNumber from 'bignumber.js'
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useAssetAll } from '@/hooks/asset'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
+import { applyTokenPrecision } from '@/lib/utils'
+import type { TokenPrecisionAutoVO } from '@/lib/utils/formatTokenPrecision'
+import { useMarketPrices, type MarketPricesResponse } from '@/services/market/marketPrices'
 import { Link } from '../common'
-
-const formatAmount = (val: number | string | BigNumber, precision: number = 4) => {
-  try {
-    const num = new BigNumber(val)
-    if (!num.isFinite()) return '--'
-    return num.toFormat(precision)
-  } catch {
-    return '--'
-  }
-}
-
-function formatRateAmount(val: string | number | null | undefined, precision: number = 4) {
-  const num = new BigNumber(val ?? 0)
-  if (!num.isFinite()) return '--'
-  return num.toFormat(precision, {
-    groupSeparator: ',',
-    decimalSeparator: '.',
-  })
-}
 
 function safeMul(a: string | number | null | undefined, b: string | number | null | undefined) {
   const n1 = new BigNumber(a ?? 0)
   const n2 = new BigNumber(b ?? 0)
   return n1.multipliedBy(n2)
 }
+const WS_SUBSCRIBE_MSG = { method: 'subscribe_live_price', sn: '1' }
 
-function formatTrailingZeros(val: string | number | null | undefined): string {
-  const num = new BigNumber(val ?? 0)
-  if (!num.isFinite()) return '--'
-  const formatted = num.toFixed()
-  const [integerPart, decimalPart] = formatted.split('.')
-
-  if (decimalPart) {
-    const trimmedDecimal = decimalPart.replace(/0+$/, '')
-    return trimmedDecimal.length > 0 ? `${integerPart}.${trimmedDecimal}` : `${integerPart}.00`
-  }
-
-  return `${integerPart}`
+interface WsPricePayload {
+  baseTokenId?: string
+  marketPrice?: string
+  marketPriceChange?: string
 }
 
 const TokenTable = () => {
   const { t } = useT('overview')
   const { data } = useAssetAll()
   const { tokens: allTokenResp } = useAllToken()
-  const allTokenData = allTokenResp || []
-  const assets = data || []
+  const { mutateAsync: fetchMarketPrices } = useMarketPrices()
+  const [marketPrices, setMarketPrices] = useState<MarketPricesResponse | undefined>(undefined)
+
+  useEffect(() => {
+    let mounted = true
+    fetchMarketPrices({})
+      .then((res) => {
+        if (!mounted) return
+        if (Array.isArray(res)) {
+          setMarketPrices(res)
+          setLivePrices((prev) => {
+            const next = { ...prev }
+            res.forEach((item) => {
+              const base = item.baseToken?.toUpperCase?.()
+              if (!base) return
+              next[base] = {
+                price: item.marketPrice ?? prev[base]?.price ?? null,
+                change: item.marketPriceChange ?? prev[base]?.change ?? null,
+              }
+            })
+            return next
+          })
+        }
+      })
+      .catch(() => {})
+    return () => {
+      mounted = false
+    }
+  }, [fetchMarketPrices])
+
+  const allTokenData = useMemo(() => allTokenResp || [], [allTokenResp])
+  const assets = useMemo(() => data || [], [data])
 
   const getTokenIcon = (tokenId: string): string | undefined => {
     if (!Array.isArray(allTokenData)) return undefined
@@ -60,14 +67,69 @@ const TokenTable = () => {
     if (found && typeof found.icon === 'string' && found.icon) return found.icon
     return undefined
   }
-
-  const getTokenPrecision = (tokenId: string, hasAsset: boolean = true): number => {
-    if (!hasAsset) return 2
-    const found = allTokenData.find((item) => item.tokenId === tokenId)
-    return typeof found?.minPrecision === 'number' ? found.minPrecision : 4
+  const formatAmount = (val: number | string | BigNumber, tokenId?: string | null) => {
+    try {
+      const upper = tokenId?.toUpperCase?.()
+      const rule = upper ? marketPriceRuleMap[upper] : undefined
+      return applyTokenPrecision(rule, val, { fallbackDigits: 4 })
+    } catch {
+      return '--'
+    }
   }
 
-  const filteredSortedAssets = React.useMemo(() => {
+  const [livePrices, setLivePrices] = useState<Record<string, { price: string | null; change: string | null }>>({})
+
+  const marketPriceRuleMap = useMemo(() => {
+    const map: Record<string, TokenPrecisionAutoVO | null | undefined> = {}
+    if (Array.isArray(marketPrices)) {
+      marketPrices.forEach((item) => {
+        const base = item.baseToken?.toUpperCase?.()
+        if (base) map[base] = item.rulePairInfo
+      })
+    }
+    return map
+  }, [marketPrices])
+
+  useEffect(() => {
+    const wsUrl = process.env.NEXT_PUBLIC_QUOTATION_WSS
+    if (!wsUrl) return
+    const ws = new window.WebSocket(wsUrl)
+    let closed = false
+    ws.onopen = () => {
+      ws.send(JSON.stringify(WS_SUBSCRIBE_MSG))
+    }
+    ws.onmessage = (event) => {
+      try {
+        const parsed = JSON.parse(event.data)
+        const payloads = parsed?.payloads
+        if (Array.isArray(payloads)) {
+          setLivePrices((prev) => {
+            const next = { ...prev }
+            payloads.forEach((p: WsPricePayload) => {
+              const base = p.baseTokenId?.toUpperCase?.()
+              if (!base) return
+              next[base] = {
+                price: p.marketPrice ?? prev[base]?.price ?? null,
+                change: p.marketPriceChange ?? prev[base]?.change ?? null,
+              }
+            })
+            return next
+          })
+        }
+      } catch {
+        // ignore parse error
+      }
+    }
+    ws.onerror = () => {}
+    ws.onclose = () => {
+      closed = true
+    }
+    return () => {
+      if (!closed) ws.close()
+    }
+  }, [])
+
+  const filteredSortedAssets = useMemo(() => {
     return assets.length === 0
       ? []
       : assets
@@ -77,11 +139,19 @@ const TokenTable = () => {
             )
           })
           .sort((a, b) => {
-            const aTotal = safeMul(a.total ?? 0, a.tokenId === 'USDT' ? 1 : (a.marketPrice ?? 0))
-            const bTotal = safeMul(b.total ?? 0, b.tokenId === 'USDT' ? 1 : (b.marketPrice ?? 0))
+            const aLive =
+              a.tokenId === 'USDT'
+                ? 1
+                : (livePrices[(a.tokenId as string)?.toUpperCase?.()]?.price ?? a.marketPrice ?? 0)
+            const bLive =
+              b.tokenId === 'USDT'
+                ? 1
+                : (livePrices[(b.tokenId as string)?.toUpperCase?.()]?.price ?? b.marketPrice ?? 0)
+            const aTotal = safeMul(a.total ?? 0, aLive)
+            const bTotal = safeMul(b.total ?? 0, bLive)
             return bTotal.comparedTo(aTotal) || 0
           })
-  }, [assets, allTokenData])
+  }, [assets, allTokenData, livePrices])
 
   return (
     <div className="mt-4 overflow-hidden rounded-2xl bg-white p-0">
@@ -125,40 +195,62 @@ const TokenTable = () => {
                     {asset.tokenId}
                   </div>
                   <div className="font-din text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
-                    ${asset.tokenId === 'USDT' ? '1' : formatAmount(Number(asset.marketPrice), 2)}
+                    $
+                    {(() => {
+                      if (asset.tokenId === 'USDT') return '1.00'
+                      const upper = (asset.tokenId as string)?.toUpperCase?.()
+                      const price = livePrices[upper]?.price ?? asset.marketPrice ?? 0
+                      const rule = marketPriceRuleMap[upper] // rulePairInfo
+                      try {
+                        return applyTokenPrecision(rule, price, { fallbackDigits: 4 })
+                      } catch {
+                        return '0'
+                      }
+                    })()}
                     <span
-                      className={`font-inter ml-2 items-center justify-center gap-2 rounded px-3 py-1 text-right text-sm font-normal leading-5 ${
-                        asset.marketPriceChange != null && parseFloat(asset.marketPriceChange) < 0
-                          ? 'bg-[rgba(253,99,132,0.20)] text-[#FD6384]'
-                          : asset.marketPriceChange != null
-                            ? `bg-[rgba(26,202,117,0.20)] text-[#1ACA75]`
-                            : ''
-                      }`}
+                      className={`font-inter ml-2 items-center justify-center gap-2 rounded px-3 py-1 text-right text-sm font-normal leading-5 ${(() => {
+                        const ch =
+                          livePrices[(asset.tokenId as string)?.toUpperCase?.()]?.change ?? asset.marketPriceChange
+                        if (ch == null) return ''
+                        const num = parseFloat(ch)
+                        if (isNaN(num)) return ''
+                        if (num < 0) return 'bg-[rgba(253,99,132,0.20)] text-[#FD6384]'
+                        return 'bg-[rgba(26,202,117,0.20)] text-[#1ACA75]'
+                      })()}`}
                     >
-                      {asset.marketPriceChange == null ? '' : parseFloat(asset.marketPriceChange).toFixed(2)}%
+                      {(() => {
+                        const ch =
+                          livePrices[(asset.tokenId as string)?.toUpperCase?.()]?.change ?? asset.marketPriceChange
+                        if (ch == null) return ''
+                        const num = parseFloat(ch)
+                        if (isNaN(num)) return ''
+                        return num.toFixed(2)
+                      })()}
+                      %
                     </span>
                   </div>
                 </div>
                 <div className="min-w-[80px] text-right">
                   <div className="font-din text-right text-[14px] font-bold leading-[22px] text-[#0d0d0d]">
-                    {assets.length === 0
-                      ? '0.00'
-                      : formatTrailingZeros(
-                          formatRateAmount(
-                            asset.total ?? 0,
-                            getTokenPrecision(
-                              typeof asset.tokenId === 'string' ? asset.tokenId : '',
-                              !!asset.total && asset.total !== '0'
-                            )
-                          )
-                        )}
+                    {assets.length === 0 ? '0.00' : formatAmount(asset.total ?? 0, asset.tokenId as string)}
                   </div>
                   <div className="font-din text-right text-[12px] font-bold leading-[22px] text-[rgba(13,13,13,0.5)]">
                     $
-                    {formatAmount(
-                      safeMul(asset.total ?? 0, asset.tokenId === 'USDT' ? 1 : (asset.marketPrice ?? 0)).toString(),
-                      2
-                    )}
+                    {(() => {
+                      try {
+                        const totalUSD = safeMul(
+                          asset.total ?? 0,
+                          asset.tokenId === 'USDT'
+                            ? 1
+                            : (livePrices[(asset.tokenId as string)?.toUpperCase?.()]?.price ?? asset.marketPrice ?? 0)
+                        )
+                        const fixed = totalUSD.toFixed(2)
+                        if (!isFinite(Number(fixed))) return '--'
+                        return fixed
+                      } catch {
+                        return '--'
+                      }
+                    })()}
                   </div>
                 </div>
               </div>

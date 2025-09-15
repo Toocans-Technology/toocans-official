@@ -33,7 +33,7 @@ const DepositSteps: FunctionComponent = () => {
 
   const handleCopy = useCallback(() => {
     toast(t('deposit:copySuccess'))
-  }, [])
+  }, [t])
 
   const networkList = useMemo(() => {
     if (!selectedToken) {
@@ -74,7 +74,7 @@ const DepositSteps: FunctionComponent = () => {
   return (
     <>
       <div className="mt-3 w-full rounded-[10px] bg-white p-6">
-        <div className="flex flex-col gap-10">
+        <div className="flex max-w-[456px] flex-col gap-10">
           <div className="flex flex-col gap-2">
             <div>
               <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#222] text-xs text-white">
@@ -82,7 +82,7 @@ const DepositSteps: FunctionComponent = () => {
               </span>
               <span className="ml-2 text-sm">{t('deposit:chooseToken')}</span>
             </div>
-            <SelectToken onSelect={handleSelectToken} />
+            <SelectToken onSelect={handleSelectToken} popoverClassName="w-[456px]" />
           </div>
           <div className="flex flex-col gap-2">
             <div>
@@ -121,7 +121,7 @@ const DepositSteps: FunctionComponent = () => {
               </span>
             </div>
             {step >= DepositStep.DepositDetails && (
-              <div className="max-w-[518px]">
+              <div className="max-w-[456px]">
                 <div className="flex items-center gap-2 rounded bg-[#f8f8f8] p-3">
                   <div className="rounded-md bg-white p-1.5">
                     <QRCodeSVG value={address?.address || ''} size={52} />

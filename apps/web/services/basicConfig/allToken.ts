@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import { getQuery } from '@/lib/api'
@@ -22,6 +23,12 @@ const TokenSettingSchema = z.object({
   createdAt: z.string().nullable(),
   updatedAt: z.string().nullable(),
   blockExploreUrl: z.string().nullable(),
+  tokenPrecisionAutoVO: z.object({
+    displayPrecision: z.number(),
+    padWithZeros: z.number(),
+    roundMode: z.number(),
+    ruleName: z.string(),
+  }),
 })
 
 const TokenSchema = z.object({
@@ -72,12 +79,12 @@ const AllTokenParamsSchema = z
 export type AllTokenParams = z.infer<typeof AllTokenParamsSchema>
 
 export const getAllToken = (params?: AllTokenParams) => {
-  return useQuery(
-    getQuery({
+  return useQuery({
+    ...getQuery({
       method: 'GET',
       url: getUrl('/bc/baseConfig/allToken'),
       query: AllTokenParamsSchema.parse(params),
       transfer: AllTokenSchema.parse,
-    })
-  )
+    }),
+  })
 }

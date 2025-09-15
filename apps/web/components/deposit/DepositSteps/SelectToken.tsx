@@ -21,18 +21,27 @@ import { Empty } from '@/components/common'
 import { useAssetAll } from '@/hooks'
 import { useAllToken } from '@/hooks/useAllToken'
 import { useT } from '@/i18n'
+import { applyTokenPrecision } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import DefaultTokens from './DefaultTokens'
 
 interface Props {
+  className?: string
+  popoverClassName?: string
   showAvailable?: boolean
   showDefaultTokens?: boolean
   onSelect?: (token: Token) => void
 }
 
-const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = true, showAvailable = false }) => {
+const SelectToken: FunctionComponent<Props> = ({
+  onSelect,
+  showDefaultTokens = true,
+  showAvailable = false,
+  className,
+  popoverClassName,
+}) => {
   const { t } = useT('common')
-  const { tokens } = useAllToken()
+  const { tokens, getTokenPrecision } = useAllToken()
   const { data } = useAssetAll()
   const [open, setOpen] = useState(false)
   const [selectedToken, setSelectedToken] = useState<Token>()
@@ -50,30 +59,34 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
         ?.filter((token) => availableTokens?.includes(token.tokenId))
         .map((token) => {
           const asset = data?.find((item) => item.tokenId === token.tokenId)
+          const precision = getTokenPrecision(token.tokenId)
+
           return {
             id: token.id,
             icon: token.icon,
             name: token.tokenName,
             fullName: token.tokenFullName,
-            amount: asset?.total,
-            availableBalance: Number(asset?.availableAssetTotal || 0),
+            amount: applyTokenPrecision(precision, asset?.total || 0),
+            availableBalance: applyTokenPrecision(precision, asset?.availableAssetTotal || 0),
           }
         })
 
       return sortBy(list, ['availableBalance']).reverse()
     } else {
-      list = tokens?.map((token) => ({
-        id: token.id,
-        icon: token.icon,
-        name: token.tokenName,
-        fullName: token.tokenFullName,
-        amount: '',
-        availableBalance: '',
-      }))
+      list = tokens
+        ?.filter((token) => token.status === 1)
+        .map((token) => ({
+          id: token.id,
+          icon: token.icon,
+          name: token.tokenName,
+          fullName: token.tokenFullName,
+          amount: '',
+          availableBalance: '',
+        }))
 
       return sortBy(list, ['name'])
     }
-  }, [tokens, data])
+  }, [tokens, data, showAvailable, getTokenPrecision])
 
   const handleSelectToken = useCallback(
     (value: string) => {
@@ -87,7 +100,7 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
       setSelectedToken(selectedToken)
       onSelect?.(selectedToken)
     },
-    [tokens]
+    [onSelect, tokens]
   )
 
   return (
@@ -95,11 +108,14 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
       <Popover open={open} onOpenChange={setOpen} modal={true}>
         <PopoverTrigger asChild>
           <Button
-            rounded="sm"
+            rounded="md"
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="hover:border-brand focus:border-brand h-11 w-[518px] justify-between border-[#f8f8f8] bg-[#f8f8f8] px-3"
+            className={cn(
+              'hover:border-brand focus:border-brand h-11 justify-between border-[#f8f8f8] bg-[#f8f8f8] px-3',
+              className
+            )}
           >
             <div className="flex items-center gap-2">
               {selectedToken ? (
@@ -113,13 +129,13 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect, showDefaultTokens = t
                   <div className="text-sm text-[#333]">{selectedToken?.tokenName}</div>
                 </>
               ) : (
-                <span className="text-xs text-[#999]">{t('common:searchToken')}</span>
+                <span className="text-xs text-[#999]">{t('common:selectToken')}</span>
               )}
             </div>
             <ChevronDown className="opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[518px] border-none p-0 shadow-lg" align="start">
+        <PopoverContent className={cn('w-full border-none p-0 shadow-lg', popoverClassName)} align="start">
           <Command
             className="p-3"
             filter={(value, search) => {

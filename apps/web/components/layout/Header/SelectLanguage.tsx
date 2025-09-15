@@ -14,9 +14,16 @@ const SelectLanguage: FunctionComponent = () => {
     (locale: Locale) => {
       const pathSegments = pathname.split('/').slice(2)
       const newPath = `/${locale}/${pathSegments.join('/')}`
+      console.log('Current path after language change1:', window.location.pathname)
       router.replace(newPath)
+      setTimeout(() => {
+        console.log('Current path after language change2:', window.location.pathname)
+        if (!window.location.pathname.startsWith(`/${locale}/`)) {
+          router.replace(newPath)
+        }
+      }, 200)
     },
-    [pathname]
+    [pathname, router]
   )
 
   return (

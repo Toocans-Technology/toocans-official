@@ -12,6 +12,7 @@ interface Props {
 const SelectToken: FunctionComponent<Props> = ({ onSelect }) => {
   const { t } = useT('common')
   const { tokens } = useAllToken()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const allToken = { id: 'all', icon: '', name: t('common:all') }
 
   const tokenList = useMemo(() => {
@@ -19,13 +20,15 @@ const SelectToken: FunctionComponent<Props> = ({ onSelect }) => {
       return [allToken]
     }
 
-    const list = tokens?.map((token) => ({
-      id: token.tokenId,
-      icon: token.icon,
-      name: token.tokenName,
-    }))
+    const list = tokens
+      ?.filter((token) => token.status === 1)
+      .map((token) => ({
+        id: token.tokenId,
+        icon: token.icon,
+        name: token.tokenName,
+      }))
     return [allToken, ...sortBy(list, ['name'])]
-  }, [tokens])
+  }, [allToken, tokens])
 
   const options = useMemo(() => {
     return tokenList.map((token) => ({

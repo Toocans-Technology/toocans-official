@@ -25,8 +25,10 @@ import { VERIFICATION_CODE_REGEX } from '@/lib/utils'
 import { Token } from '@/services/basicConfig'
 import { useUserInfo } from '@/services/user/info'
 import { getWithdrawOrder, useSendCode, useWithdraw, Withdrawal } from '@/services/wallet'
+import { ExtendedUser } from '@/services/wallet/searchUser'
 import { HttpError } from '@/types/http'
-import { VerifyType } from '@/types/withdraw'
+import { ChargeType, InternalTransferType, VerifyType } from '@/types/withdraw'
+import WithdrawInfo from './WithdrawInfo'
 
 const COUNT_DOWN = 59 * 1000
 
@@ -35,11 +37,24 @@ interface Props {
   address: string
   amount: number
   disabled?: boolean
+  chargeType?: ChargeType
+  targetUser?: ExtendedUser
   tokenFee: string | number
+  transferType?: InternalTransferType
   openDetail?: (open: boolean, data: Withdrawal) => void
 }
 
-const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, tokenFee, openDetail, disabled = true }) => {
+const WithdrawModal: FunctionComponent<Props> = ({
+  address,
+  token,
+  amount,
+  tokenFee,
+  targetUser,
+  chargeType,
+  transferType,
+  openDetail,
+  disabled = true,
+}) => {
   const { data: userInfo } = useUserInfo()
   const hasGaKey = userInfo?.hasGaKey ?? false
   const { t } = useT(['withdrawal', 'common'])
@@ -58,7 +73,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
           ? z.string().regex(VERIFICATION_CODE_REGEX, t('withdrawal:withdrawModal.gaCodeError')).length(6)
           : z.string().optional(),
       }),
-    [hasGaKey]
+    [hasGaKey, t]
   )
 
   useEffect(() => {
@@ -77,8 +92,9 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
   }, [userInfo])
 
   const form = useForm<z.infer<typeof FormSchema>>({
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
     resolver: zodResolver(FormSchema),
-    mode: 'onChange',
     defaultValues: {
       code: '',
       gaCode: '',
@@ -116,7 +132,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
       return countdown ? t('withdrawal:emailVerification', { email: userInfo?.email }) : t('withdrawal:emailAuth')
     }
     return countdown ? t('withdrawal:phoneVerification', { phone: userInfo?.concatMobile }) : t('withdrawal:phoneAuth')
-  }, [verifyType, countdown])
+  }, [verifyType, countdown, t, userInfo?.concatMobile, userInfo?.email])
 
   const handleSwitchVerifyType = useCallback(() => {
     setVerifyType(verifyType === VerifyType.email ? VerifyType.sms : VerifyType.email)
@@ -130,15 +146,18 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
       }
 
       try {
-        const res = await mutateWithdraw({
+        const params = {
           ...data,
           address,
           amount,
           tokenFee: Number(tokenFee),
           tokenId: token.tokenId,
           accountId: userInfo.accountId,
-          chargeType: 1,
-        })
+          chargeType: chargeType ?? ChargeType.OnChain,
+          addressTag: chargeType === ChargeType.Internal && transferType ? transferType.toString() : undefined,
+        }
+
+        const res = await mutateWithdraw(params)
 
         if (!res) {
           return
@@ -152,7 +171,19 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
         toast.error((error as HttpError).message)
       }
     },
-    [mutateWithdraw, address, amount, tokenFee, token, reset, userInfo, refetch]
+    [
+      userInfo,
+      mutateWithdraw,
+      address,
+      amount,
+      tokenFee,
+      token.tokenId,
+      chargeType,
+      transferType,
+      reset,
+      refetch,
+      openDetail,
+    ]
   )
 
   return (
@@ -162,43 +193,32 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
           fullWidth
           rounded="full"
           disabled={disabled}
-          className="mt-4 max-w-[518px]"
+          className="mt-4 max-w-[456px]"
           onClick={() => setOpen(true)}
         >
           {t('common:next')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent
+        className="sm:max-w-[425px]"
+        onInteractOutside={(e) => e.preventDefault()}
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>{t('withdrawal:withdrawModal.title')}</DialogTitle>
           <Separator />
         </DialogHeader>
-        <div className="grid gap-2">
-          <div className="grid grid-cols-2 items-center py-1.5 text-sm">
-            <div className="text-[#999]">{t('withdrawal:network')}</div>
-            <div className="text-right font-medium">
-              {token?.protocolName ? `${token?.chainName}(${token?.protocolName})` : (token?.chainName ?? '-')}
-            </div>
-          </div>
-          <div className="grid grid-cols-2 items-center py-1.5 text-sm">
-            <div className="text-[#999]">{t('withdrawal:address')}</div>
-            <div className="overflow-hidden break-words text-right font-medium">{address}</div>
-          </div>
-          <div className="grid grid-cols-2 items-center py-1.5 text-sm">
-            <div className="text-[#999]">{t('withdrawal:withdrawAmount')}</div>
-            <div className="text-right font-medium">
-              {amount} {token?.tokenName}
-            </div>
-          </div>
-          <div className="grid grid-cols-2 items-center py-1.5 text-sm">
-            <div className="text-[#999]">{t('withdrawal:chargeAndNetwork')}</div>
-            <div className="text-right font-medium">
-              {tokenFee} {token?.tokenName}
-            </div>
-          </div>
-        </div>
+        <WithdrawInfo
+          token={token}
+          address={address}
+          amount={amount}
+          tokenFee={tokenFee}
+          userInfo={targetUser}
+          transferType={transferType}
+          chargeType={chargeType}
+        />
         <Form {...form}>
-          <div className="mt-4 grid gap-6">
+          <div className="grid gap-4">
             <FormField
               control={form.control}
               name="code"
@@ -215,7 +235,7 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
                         maxLength={6}
                         autoComplete="off"
                         placeholder={t('withdrawal:emailAuthPlaceholder')}
-                        className="aria-invalid:ring-0 focus-visible:ring-0"
+                        className="aria-invalid:ring-0 hover:ring-0 focus-visible:ring-0"
                       />
                     </FormControl>
                     <span
@@ -256,9 +276,12 @@ const WithdrawModal: FunctionComponent<Props> = ({ address, token, amount, token
             )}
           </div>
           <DialogFooter>
+            <Button rounded="full" variant="secondary" onClick={() => setOpen(false)}>
+              {t('common:cancel')}
+            </Button>
             <Button rounded="full" disabled={!formState.isValid || isPending} onClick={handleSubmit(onSubmit)}>
               {isPending && <Loader2Icon className="animate-spin" />}
-              {t('common:next')}
+              {t('common:confirm')}
             </Button>
           </DialogFooter>
         </Form>
