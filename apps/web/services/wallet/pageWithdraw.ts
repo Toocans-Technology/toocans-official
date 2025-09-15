@@ -27,6 +27,8 @@ export const getWithdrawOrder = (params?: WithdrawOrderParams) => {
       query: WithdrawOrderParamsSchema.parse(params),
       transfer: WithdrawOrderListSchema.parse,
     }),
+    staleTime: 0,
+    refetchOnWindowFocus: true,
     // enabled: !!params?.tokenId,
   })
 }

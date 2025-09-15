@@ -4,6 +4,7 @@ export const WithdrawAddressSchema = z.object({
   id: z.string(),
   userId: z.optional(z.string()),
   tokenId: z.optional(z.string()),
+  tokenName: z.optional(z.string()).nullable(),
   address: z.optional(z.string()),
   addressName: z.optional(z.string()),
   addressType: z.optional(z.number()), // 类型1，链上地址，2 uid,3 email，4 phone
