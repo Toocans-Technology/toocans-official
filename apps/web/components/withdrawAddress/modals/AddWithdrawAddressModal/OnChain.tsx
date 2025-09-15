@@ -137,7 +137,12 @@ const OnChain: FunctionComponent<Props> = ({ onSuccess }) => {
                 {t('withdrawAddress:network')}
               </FormLabel>
               <FormControl>
-                <SelectNetwork value={field.value || ''} networks={networkList} onValueChange={field.onChange} />
+                <SelectNetwork
+                  {...field}
+                  value={field.value || ''}
+                  networks={networkList}
+                  onValueChange={field.onChange}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
