@@ -169,6 +169,9 @@ importers:
       '@storybook/addon-onboarding':
         specifier: ^9.1.5
         version: 9.1.5(storybook@9.1.5(@testing-library/dom@10.4.1)(prettier@3.5.1))
+      '@storybook/addon-styling-webpack':
+        specifier: ^2.0.0
+        version: 2.0.0(storybook@9.1.5(@testing-library/dom@10.4.1)(prettier@3.5.1))(webpack@5.101.3(esbuild@0.25.9))
       '@storybook/nextjs':
         specifier: ^9.1.5
         version: 9.1.5(esbuild@0.25.9)(next@15.2.3(@babel/core@7.28.4)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.89.2))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.89.2)(storybook@9.1.5(@testing-library/dom@10.4.1)(prettier@3.5.1))(type-fest@2.19.0)(typescript@5.7.3)(webpack-hot-middleware@2.26.1)(webpack@5.101.3(esbuild@0.25.9))
@@ -2421,6 +2424,12 @@ packages:
     resolution: {integrity: sha512-UJpkWLbugcSGzSUzivTTNdO0Y8gpAn//qJzn2TobwkPJgSwQEoHcjUfWjgZ3mSpQrSQO2e1O1yC3SJTBQt/fqQ==}
     peerDependencies:
       storybook: ^9.1.5
+
+  '@storybook/addon-styling-webpack@2.0.0':
+    resolution: {integrity: sha512-N8jWhWnk3/nbL4P9zl0OEV/47P0Cxn/kPzSHjdAClyDYnqj9jI6upeLsraZgIV9Ro3QSeqeIloeXb1zMasWpOw==}
+    peerDependencies:
+      storybook: ^9.0.0
+      webpack: ^5.0.0
 
   '@storybook/builder-webpack5@9.1.5':
     resolution: {integrity: sha512-hZ2LMFEie+RPiTiN+3LpvbzoOel4FBj2BieoKZBxpiHlE3lSbHIFDL0BJayoB8c5wLCm41dJ3jP5Qx5xeTbsRg==}
@@ -8913,6 +8922,11 @@ snapshots:
   '@storybook/addon-onboarding@9.1.5(storybook@9.1.5(@testing-library/dom@10.4.1)(prettier@3.5.1))':
     dependencies:
       storybook: 9.1.5(@testing-library/dom@10.4.1)(prettier@3.5.1)
+
+  '@storybook/addon-styling-webpack@2.0.0(storybook@9.1.5(@testing-library/dom@10.4.1)(prettier@3.5.1))(webpack@5.101.3(esbuild@0.25.9))':
+    dependencies:
+      storybook: 9.1.5(@testing-library/dom@10.4.1)(prettier@3.5.1)
+      webpack: 5.101.3(esbuild@0.25.9)
 
   '@storybook/builder-webpack5@9.1.5(esbuild@0.25.9)(storybook@9.1.5(@testing-library/dom@10.4.1)(prettier@3.5.1))(typescript@5.7.3)':
     dependencies:

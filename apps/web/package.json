@@ -58,6 +58,7 @@
     "@chromatic-com/storybook": "^4.1.1",
     "@storybook/addon-docs": "^9.1.5",
     "@storybook/addon-onboarding": "^9.1.5",
+    "@storybook/addon-styling-webpack": "^2.0.0",
     "@storybook/nextjs": "^9.1.5",
     "@types/node": "^20.17.19",
     "@types/react": "^19",
