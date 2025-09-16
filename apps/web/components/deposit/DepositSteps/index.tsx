@@ -27,7 +27,7 @@ const DepositSteps: FunctionComponent = () => {
   const [step, setStep] = useState(DepositStep.ChooseToken)
   const [selectedToken, setSelectedToken] = useState<Token>()
   const [selectedNetwork, setSelectedNetwork] = useState<Token>()
-  const { data: address } = getAddress({ tokenId: selectedNetwork?.tokenId })
+  const { data: address, error } = getAddress({ tokenId: selectedNetwork?.tokenId })
 
   useRedirectIfNotLogin()
 
@@ -120,7 +120,7 @@ const DepositSteps: FunctionComponent = () => {
                 {t('deposit:depositDetails')}
               </span>
             </div>
-            {step >= DepositStep.DepositDetails && (
+            {step >= DepositStep.DepositDetails && !error && (
               <div className="max-w-[456px]">
                 <div className="flex items-center gap-2 rounded bg-[#f8f8f8] p-3">
                   <div className="rounded-md bg-white p-1.5">
