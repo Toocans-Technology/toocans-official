@@ -96,6 +96,10 @@ export const Rounded: Story = {
 export const IconOnly: Story = {
   args: {
     size: 'icon',
-    children: '+',
   },
+  render: (args) => (
+    <Button {...args}>
+      <PlusIcon size={24} />
+    </Button>
+  ),
 }
