@@ -5,7 +5,7 @@ import { FunctionComponent } from 'react'
 import { Input as InputBase } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
 
-interface Props extends React.ComponentProps<'input'> {
+export interface Props extends React.ComponentProps<'input'> {
   invalid?: boolean // 是否显示错误提示
   startContent?: React.ReactNode // 输入框的左侧内容
   endContent?: React.ReactNode // 输入框的右侧内容

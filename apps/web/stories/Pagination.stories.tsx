@@ -5,7 +5,7 @@ import { PaginationControlsProps } from '@/components/common/PaginationControls'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
-  title: 'Example/Pagination',
+  title: 'Components/Pagination',
   component: Pagination,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
