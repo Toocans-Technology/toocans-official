@@ -47,14 +47,17 @@ const Calendar: FunctionComponent<CalendarProps> = ({ onConfirm }) => {
     setOpen(false)
     setSelectedDateRange(dateRange)
     onConfirm?.(dateRange)
-  }, [dateRange])
+  }, [dateRange, onConfirm])
 
-  const clearDateRange = useCallback((e: MouseEvent<HTMLSpanElement>) => {
-    e.stopPropagation()
-    setSelectedDateRange(undefined)
-    setDateRange(undefined)
-    onConfirm?.(undefined)
-  }, [])
+  const clearDateRange = useCallback(
+    (e: MouseEvent<HTMLSpanElement>) => {
+      e.stopPropagation()
+      setSelectedDateRange(undefined)
+      setDateRange(undefined)
+      onConfirm?.(undefined)
+    },
+    [onConfirm]
+  )
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

@@ -8,7 +8,7 @@ const Empty: FunctionComponent = () => {
   return (
     <div className="flex flex-col items-center justify-center">
       <Image src="/images/loading.png" alt="loading" width={50} height={50} />
-      <p className="text-center text-[#666] pt-4">{t('common:loading')}</p>
+      <p className="pt-4 text-center text-[#666]">{t('common:loading')}</p>
     </div>
   )
 }
