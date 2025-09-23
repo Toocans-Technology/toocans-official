@@ -11,7 +11,7 @@ import {
 } from '@workspace/ui/components'
 import { cn } from '@workspace/ui/lib/utils'
 
-interface PaginationControlsProps {
+export interface PaginationControlsProps {
   className?: string
   totalPages: number
   currentPage: number

@@ -11,12 +11,12 @@ import '@/styles/antd/globals.scss'
 import themeConfig from '@/styles/themeConfig'
 import Fix from '@/utils/fix'
 
-const fontSans = Geist({
+export const fontSans = Geist({
   subsets: ['latin'],
   variable: '--font-sans',
 })
 
-const fontInter = Inter({
+export const fontInter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
 })
